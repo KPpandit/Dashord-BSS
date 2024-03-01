@@ -42,6 +42,9 @@ export default function AddRatesOffer(){
                 
                 toast.success('Rates Added Successfully', { autoClose: 2000 });
             }
+        }).catch(e=>{
+            console.log(e+"catching erro")
+            toast.error(e.response.data.message, { autoClose: 2000 });
         })
         }
     })

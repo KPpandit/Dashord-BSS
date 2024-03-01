@@ -56,7 +56,7 @@ export default function EditRatesOffer(props) {
                 console.log(...values + "valuesss updated");
                 if (res.status == 200) {
 
-                    toast.success('Rates Added Successfully', { autoClose: 2000 });
+                    toast.success('Rates Updated Successfully', { autoClose: 2000 });
                 }
 
             })

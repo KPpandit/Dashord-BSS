@@ -144,7 +144,7 @@ export default function Sidenavbar() {
   const username = localStorage.getItem('userName');
 
   const theme = useTheme();
-  const [open, setOpen] = React.useState(true);
+  const [open, setOpen] = React.useState(false);
   const [openMenu, setOpenMenu] = React.useState('');
   const navigate = useNavigate();
   const [auth, setAuth] = React.useState('')
@@ -153,7 +153,7 @@ export default function Sidenavbar() {
   };
   let Links;
   const handleDrawerClose = () => {
-    setOpen(true);
+    setOpen(false);
   };
   const data = localStorage.getItem('auth')
   const links = {
@@ -366,7 +366,8 @@ export default function Sidenavbar() {
             route: "/volte"
           },{
             label:'LU Registrations',
-            route:'/lu'
+            route:'/lu',
+           
           }
         ]
       },
@@ -397,7 +398,10 @@ export default function Sidenavbar() {
             route:'/vendormanagement'
           }
         ]
-      },
+      },{
+        label:'Test',
+        route:'/test'
+      }
     ],
   }
   return (

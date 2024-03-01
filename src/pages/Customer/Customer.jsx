@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import SearchIcon from '@mui/icons-material/Search';
 import axios from "axios";
-
+import blanPhoto from '../../assets/blanPhoto.png'
 
 const Customer = (props) => {
     const columns = [
@@ -22,7 +22,7 @@ const Customer = (props) => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get('http://172.5.10.2:9090/api/customers', {
+                const response = await axios.get('http://172.5.10.2:9090/api/customers/pack/details', {
                     headers: {
                         Authorization: `Bearer ${tokenValue}`,
                         "Accept": "application/json",
@@ -148,281 +148,295 @@ const Customer = (props) => {
                     <Paper elevation={10}>
 
 
-                        <Card variant="outlined" sx={{ maxWidth: 340, fontFamily: "Roboto" }}>
+                        <Grid xs={12}>
+                            <Card variant="outlined" sx={{ maxWidth: 340, fontFamily: "Roboto" }}>
 
-                            <Box sx={{ p: 1 }}>
+                                <Box sx={{ p: 1 }}>
 
-                                <Grid sx={{ padding: 1, backgroundColor: '#253A7D' }}>
-                                    <Stack direction="row"
-                                        sx={{ borderRadius: '30%', }}
-                                        justifyContent="space-between" alignItems="center">
-                                        <Typography
-                                            style={{
-                                                fontSize: '17px',
+                                    <Grid sx={{ padding: 1, backgroundColor: '#253A7D' }}>
+                                        <Stack direction="row"
+                                            sx={{ borderRadius: '30%', }}
+                                            justifyContent="space-between" alignItems="center">
+                                            <Typography
+                                                style={{
+                                                    fontSize: '17px',
 
-                                                color: 'white',
-                                                marginBottom: '2px',
+                                                    color: 'white',
+                                                    marginBottom: '2px',
 
-                                                // Add this line for circular border
-                                                backgroundColor: '#253A7D',  // Add this line for background color
-                                                padding: '2px',  // Add this line for padding
-                                                display: 'inline-block',
+                                                    // Add this line for circular border
+                                                    backgroundColor: '#253A7D',  // Add this line for background color
+                                                    padding: '2px',  // Add this line for padding
+                                                    display: 'inline-block',
 
-                                            }}
-                                            gutterBottom component="div">
-                                            {selectedRecord.firstName}
-                                        </Typography>
+                                                }}
+                                                gutterBottom component="div">
+                                                {selectedRecord.firstName}
+                                            </Typography>
 
-                                    </Stack>
-                                </Grid>
-
-                            </Box>
-                            <Grid container>
-                                <Grid item xs={12} paddingLeft={1}>
-
-                                    <Grid item xs={12}>
-                                        <Grid container>
-                                            <Grid item xs={8} >
-                                                <Grid container spacing={1.5} >
-                                                    <Grid item xs={3} sx={{ fontWeight: '480', fontSize: '17px', textAlign: 'right' }}>
-                                                        Title :
-                                                    </Grid>
-                                                    <Grid item xs={8}>
-                                                        {selectedRecord.personTitle}
-                                                    </Grid>
-                                                    <Grid item xs={3.7} sx={{ fontWeight: '480', fontSize: '17px', textAlign: 'right' }}>
-                                                        Name :
-                                                    </Grid>
-                                                    <Grid item xs={8}>
-                                                        {selectedRecord.firstName} {selectedRecord.lastName}
-                                                    </Grid>
-
-                                                    <Grid item xs={4.2} sx={{ fontWeight: '480', fontSize: '17px', textAlign: 'right' }}>
-                                                        Gender :
-                                                    </Grid>
-                                                    <Grid item xs={7}>
-                                                    <Typography sx={{ textAlign: 'left' }}>
-                                                    {selectedRecord.gender}
-                                                        </Typography>
-                                                       
-                                                    </Grid>
-                                                    <Grid item xs={6.4} sx={{ fontWeight: '480', fontSize: '17px', textAlign: 'right' }}>
-                                                        EKYC Status :
-                                                    </Grid>
-                                                    <Grid item xs={5} sx={{ textAlign: 'left' }}>
-                                                        <Typography sx={{ textAlign: 'left' }}>
-                                                            {selectedRecord.ekycStatus}
-                                                        </Typography>
-                                                    </Grid>
-                                                    
-                                                    <Grid item xs={3.6} sx={{ fontWeight: '480', fontSize: '17px', textAlign: 'right' }}>
-                                                    Email :
-                                                    </Grid>
-                                                    <Grid item xs={8} sx={{ textAlign: 'left' }}>
-                                                        <Typography sx={{ textAlign: 'left' }}  gutterBottom >
-                                                        {selectedRecord.email}
-                                                        </Typography>
-                                                    </Grid>
-                                                    <Divider light />
-
-                                                </Grid>
-                                            </Grid>
-                                            <Grid item xs={4} sx={{ paddingRight: 1 }}>
-                                                {selectedPhoto ? (
-                                                    <>
-                                                        {/* <CancelIcon sx={{ position: 'absolute', top: 0, right: 0, cursor: 'pointer', color: '#1976D2' }} onClick={handleCancelPhoto} /> */}
-                                                        <img
-                                                            src={selectedPhoto}
-                                                            alt="Selected"
-                                                            style={{
-                                                                maxWidth: '100%',
-                                                                maxHeight: '200px',
-                                                                paddingBottom: '0px',
-                                                                border: '5px solid grey', // Set border style, adjust color and width as needed
-                                                                borderRadius: '15px', // Optional: Add border-radius for rounded corners
-                                                            }}
-                                                        />
-                                                    </>
-                                                ) : (
-                                                    <Typography variant="body1" color="textSecondary">
-                                                        Photo Not Available
-                                                    </Typography>
-                                                )}
-                                            </Grid>
-
-
-                                        </Grid>
-
+                                        </Stack>
                                     </Grid>
 
-                                   
-                                    
-                                    <Divider light />
+                                </Box>
+                                <Grid container>
+                                    <Grid item xs={12} paddingLeft={1}>
 
-                                    <Box sx={{ p: 1 }}>
-                                        <Grid container>
-                                            <Grid item xs={6}>
-                                                <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
-                                                    Created Date :
-                                                </Typography>
-                                            </Grid>
-                                            <Grid item xs={6} alignItems={'left'} sx={{ marginLeft: -6 }}>
-                                                <Typography
-                                                    sx={{ fontSize: '17px', textAlign: 'left' }}
-                                                    gutterBottom variant="body2"
-                                                >
-                                                    {/* {new Date(selectedRecord.createDateTime).toISOString().split('T')[0]} */}
-                                                    {/* {selectedRecord.createDateTime} */}
-                                                </Typography>
-                                            </Grid>
-                                        </Grid>
-                                    </Box>
-                                    <Divider light />
+                                        <Grid item xs={12}>
+                                            <Grid container>
+                                                <Grid item xs={8} >
+                                                    <Grid container spacing={1.5} >
+                                                        <Grid item xs={3} sx={{ fontWeight: '480', fontSize: '17px', textAlign: 'right' }}>
+                                                            Title :
+                                                        </Grid>
+                                                        <Grid item xs={8}>
+                                                            {selectedRecord.personTitle}
+                                                        </Grid>
+                                                        <Grid item xs={3.7} sx={{ fontWeight: '480', fontSize: '17px', textAlign: 'right' }}>
+                                                            Name :
+                                                        </Grid>
+                                                        <Grid item xs={8}>
+                                                            {selectedRecord.firstName} {selectedRecord.lastName}
+                                                        </Grid>
 
-                                    <Box sx={{ p: 1 }}>
-                                        <Grid container>
-                                            <Grid item xs={6}>
-                                                <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
-                                                    Monthly Limit :
-                                                </Typography>
-                                            </Grid>
-                                            <Grid item xs={6} alignItems={'left'} sx={{ marginLeft: -6 }}>
-                                                <Typography
-                                                    sx={{ fontSize: '17px', textAlign: 'left' }}
-                                                    gutterBottom variant="body2">
-                                                    {selectedRecord.monthlyLimit}
-                                                </Typography>
-                                            </Grid>
-                                        </Grid>
-                                    </Box>
-                                    <Divider light />
+                                                        <Grid item xs={4.2} sx={{ fontWeight: '480', fontSize: '17px', textAlign: 'right' }}>
+                                                            Gender :
+                                                        </Grid>
+                                                        <Grid item xs={7}>
+                                                            <Typography sx={{ textAlign: 'left' }}>
+                                                                {selectedRecord.gender}
+                                                            </Typography>
 
-                                    <Box sx={{ p: 1 }}>
-                                        <Grid container>
-                                            <Grid item xs={6}>
-                                                <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
-                                                    LandLine No. :
-                                                </Typography>
+                                                        </Grid>
+                                                        <Grid item xs={6.4} sx={{ fontWeight: '480', fontSize: '17px', textAlign: 'right' }}>
+                                                            EKYC Status :
+                                                        </Grid>
+                                                        <Grid item xs={5} sx={{ textAlign: 'left' }}>
+                                                            <Typography sx={{ textAlign: 'left' }}>
+                                                                {selectedRecord.ekycStatus}
+                                                            </Typography>
+                                                        </Grid>
+
+                                                        <Grid item xs={3.6} sx={{ fontWeight: '480', fontSize: '17px', textAlign: 'right' }}>
+                                                            Email :
+                                                        </Grid>
+                                                        <Grid item xs={8} sx={{ textAlign: 'left' }}>
+                                                            <Typography sx={{ textAlign: 'left' }} gutterBottom >
+                                                                {selectedRecord.email}
+                                                            </Typography>
+                                                        </Grid>
+                                                        <Divider light />
+
+                                                    </Grid>
+                                                </Grid>
+                                                <Grid item xs={4} sx={{ paddingRight: 1 }}>
+                                                    {selectedPhoto ? (
+                                                        <>
+                                                            {/* <CancelIcon sx={{ position: 'absolute', top: 0, right: 0, cursor: 'pointer', color: '#1976D2' }} onClick={handleCancelPhoto} /> */}
+                                                            <img
+                                                                src={selectedPhoto}
+                                                                alt="Selected"
+                                                                style={{
+                                                                    maxWidth: '100%',
+                                                                    maxHeight: '200px',
+                                                                    paddingBottom: '0px',
+                                                                    border: '5px solid grey', // Set border style, adjust color and width as needed
+                                                                    borderRadius: '15px', // Optional: Add border-radius for rounded corners
+                                                                }}
+                                                            />
+                                                        </>
+                                                    ) : (
+                                                        <>
+                                                            {/* <CancelIcon sx={{ position: 'absolute', top: 0, right: 0, cursor: 'pointer', color: '#1976D2' }} onClick={handleCancelPhoto} /> */}
+                                                            <img
+                                                                src={blanPhoto}
+                                                                alt="Selected"
+                                                                style={{
+                                                                    maxWidth: '100%',
+                                                                    maxHeight: '250px',
+                                                                    paddingBottom: '0px',
+                                                                    border: '5px solid grey', // Set border style, adjust color and width as needed
+                                                                    borderRadius: '15px', // Optional: Add border-radius for rounded corners
+                                                                }}
+                                                            />
+                                                        </>
+                                                    )}
+                                                </Grid>
+
+
                                             </Grid>
-                                            <Grid item xs={6} alignItems={'left'} sx={{ marginLeft: -6 }}>
-                                                <Typography
-                                                    sx={{ fontSize: '17px', textAlign: 'left' }}
-                                                    gutterBottom variant="body2">
-                                                    {selectedRecord.landlineNumber}
-                                                </Typography>
-                                            </Grid>
+
                                         </Grid>
-                                    </Box>
-                                    <Divider light />
-                                    <Box sx={{ p: 1 }}>
-                                        <Grid container>
-                                            <Grid item xs={6}>
-                                                <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
-                                                    Ekyc Status :
-                                                </Typography>
+
+
+
+                                        <Divider light />
+
+                                        <Box sx={{ p: 1 }}>
+                                            <Grid container>
+                                                <Grid item xs={6}>
+                                                    <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
+                                                        Created Date :
+                                                    </Typography>
+                                                </Grid>
+                                                <Grid item xs={6} alignItems={'left'} sx={{ marginLeft: -4 }}>
+                                                    <Typography
+                                                        sx={{ fontSize: '17px', textAlign: 'left' }}
+                                                        gutterBottom variant="body2"
+                                                    >
+                                                        {/* {new Date(selectedRecord.createDateTime).toISOString().split('T')[0]} */}
+                                                        {/* {selectedRecord.createDateTime} */}
+                                                        {selectedRecord.createDateTime && selectedRecord.createDateTime.join('/').toString().substring(0, 8)}
+                                                    </Typography>
+                                                </Grid>
                                             </Grid>
-                                            <Grid item xs={6} alignItems={'left'} sx={{ marginLeft: -6 }}>
-                                                <Typography
-                                                    sx={{ fontSize: '17px', textAlign: 'left' }}
-                                                    gutterBottom variant="body2">
-                                                    {selectedRecord.ekycStatus}
-                                                </Typography>
+                                        </Box>
+                                        <Divider light />
+
+                                        <Box sx={{ p: 1 }}>
+                                            <Grid container>
+                                                <Grid item xs={6}>
+                                                    <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
+                                                        Monthly Limit :
+                                                    </Typography>
+                                                </Grid>
+                                                <Grid item xs={6} alignItems={'left'} sx={{ marginLeft: -4 }}>
+                                                    <Typography
+                                                        sx={{ fontSize: '17px', textAlign: 'left' }}
+                                                        gutterBottom variant="body2">
+                                                        {selectedRecord.monthlyLimit}
+                                                    </Typography>
+                                                </Grid>
                                             </Grid>
-                                        </Grid>
-                                    </Box>
-                                    <Divider light />
-                                    <Box sx={{ p: 1 }}>
-                                        <Grid container>
-                                            <Grid item xs={6}>
-                                                <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
-                                                    Ekyc Date :
-                                                </Typography>
+                                        </Box>
+                                        <Divider light />
+
+                                        <Box sx={{ p: 1 }}>
+                                            <Grid container>
+                                                <Grid item xs={6}>
+                                                    <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
+                                                        LandLine No. :
+                                                    </Typography>
+                                                </Grid>
+                                                <Grid item xs={6} alignItems={'left'} sx={{ marginLeft: -4 }}>
+                                                    <Typography
+                                                        sx={{ fontSize: '17px', textAlign: 'left' }}
+                                                        gutterBottom variant="body2">
+                                                        {selectedRecord.landlineNumber}
+                                                    </Typography>
+                                                </Grid>
                                             </Grid>
-                                            <Grid item xs={6} alignItems={'left'} sx={{ marginLeft: -6 }}>
-                                                <Typography
-                                                    sx={{ fontSize: '17px', textAlign: 'left' }}
-                                                    gutterBottom variant="body2">
-                                                    {/* {new Date(selectedRecord.ekycDate).toISOString().split('T')[0]} */}
-                                                </Typography>
+                                        </Box>
+                                        <Divider light />
+                                        <Box sx={{ p: 1 }}>
+                                            <Grid container>
+                                                <Grid item xs={6}>
+                                                    <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
+                                                        Ekyc Status :
+                                                    </Typography>
+                                                </Grid>
+                                                <Grid item xs={6} alignItems={'left'} sx={{ marginLeft: -6 }}>
+                                                    <Typography
+                                                        sx={{ fontSize: '17px', textAlign: 'left' }}
+                                                        gutterBottom variant="body2">
+                                                        {selectedRecord.ekycStatus}
+                                                    </Typography>
+                                                </Grid>
                                             </Grid>
-                                        </Grid>
-                                    </Box>
-                                    <Divider light />
-                                    <Box sx={{ p: 1 }}>
-                                        <Grid container>
-                                            <Grid item xs={6}>
-                                                <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
-                                                    Ekyc Token :
-                                                </Typography>
+                                        </Box>
+                                        <Divider light />
+                                        <Box sx={{ p: 1 }}>
+                                            <Grid container>
+                                                <Grid item xs={6}>
+                                                    <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
+                                                        Ekyc Date :
+                                                    </Typography>
+                                                </Grid>
+                                                <Grid item xs={6} alignItems={'left'} sx={{ marginLeft: -6 }}>
+                                                    <Typography
+                                                        sx={{ fontSize: '17px', textAlign: 'left' }}
+                                                        gutterBottom variant="body2">
+                                                        {selectedRecord.ekycDate && selectedRecord.ekycDate.join('/').toString().substring(0, 8)}
+                                                    </Typography>
+                                                </Grid>
                                             </Grid>
-                                            <Grid item xs={6} alignItems={'left'} sx={{ marginLeft: -6 }}>
-                                                <Typography
-                                                    sx={{ fontSize: '17px', textAlign: 'left' }}
-                                                    gutterBottom variant="body2">
-                                                    {selectedRecord.ekycToken}
-                                                </Typography>
+                                        </Box>
+                                        <Divider light />
+                                        <Box sx={{ p: 1 }}>
+                                            <Grid container>
+                                                <Grid item xs={6}>
+                                                    <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
+                                                        Ekyc Token :
+                                                    </Typography>
+                                                </Grid>
+                                                <Grid item xs={6} alignItems={'left'} sx={{ marginLeft: -6 }}>
+                                                    <Typography
+                                                        sx={{ fontSize: '17px', textAlign: 'left' }}
+                                                        gutterBottom variant="body2">
+                                                        {selectedRecord.ekycToken}
+                                                    </Typography>
+                                                </Grid>
                                             </Grid>
-                                        </Grid>
-                                    </Box>
-                                    <Divider light />
-                                    <Box sx={{ p: 1 }}>
-                                        <Grid container>
-                                            <Grid item xs={6}>
-                                                <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
-                                                    MSISDN :
-                                                </Typography>
+                                        </Box>
+                                        <Divider light />
+                                        <Box sx={{ p: 1 }}>
+                                            <Grid container>
+                                                <Grid item xs={6}>
+                                                    <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
+                                                       Payment Status :
+                                                    </Typography>
+                                                </Grid>
+                                                <Grid item xs={6} alignItems={'left'} sx={{ marginLeft: -2 }}>
+                                                    <Typography
+                                                        sx={{ fontSize: '17px', textAlign: 'left' }}
+                                                        gutterBottom variant="body2">
+                                                        {String(selectedRecord.paymentStatus)}
+                                                    </Typography>
+                                                </Grid>
                                             </Grid>
-                                            <Grid item xs={6} alignItems={'left'} sx={{ marginLeft: -6 }}>
-                                                <Typography
-                                                    sx={{ fontSize: '17px', textAlign: 'left' }}
-                                                    gutterBottom variant="body2">
-                                                    {/* {selectedRecord.msisdnInventory.msisdn} */}
-                                                </Typography>
-                                            </Grid>
-                                        </Grid>
-                                    </Box>
-                                    <Divider light />
+                                        </Box>
+                                        <Divider light />
+                                    </Grid>
+
+
                                 </Grid>
 
+                                <Grid container spacing={1} padding={1}>
+                                    <Grid item>
+                                        <Button variant="contained"
+                                            sx={{ backgroundColor: '#253A7D' }}
+                                            onClick={() => navigate('/addPayment', { state: { id: selectedRecord.id, name: selectedRecord.name } })}
+                                        >Make Payment</Button>
+                                    </Grid>
+                                    <Grid item>
+                                        <Button
+                                            onClick={() => navigate("/createOrder", { state: { customerObject: selectedRecord } })}
+                                            sx={{ backgroundColor: '#253A7D' }}
+                                            variant="contained">Create Order</Button>
+                                    </Grid>
+                                    <Grid item>
+                                        <Button variant="contained"
+                                            sx={{ backgroundColor: '#253A7D' }}
+                                            onClick={() => {
+                                                navigate('/editCustomer', { state: { id: selectedRecord.id, type: selectedRecord.customerType } })
+                                            }}
+                                        >Edit</Button>
+                                    </Grid>
+                                    <Grid item>
+                                        <Button
+                                            onClick={() => {
+                                                handleOpenConfirmationDialog(selectedRecord.id)
+                                                console.log("From teh Customer De;eet Button")
+                                            }}
+                                            sx={{ backgroundColor: '#253A7D' }}
+                                            variant="contained">Delete</Button>
+                                    </Grid>
 
-                            </Grid>
 
-                            <Grid container spacing={1} padding={1}>
-                                <Grid item>
-                                    <Button variant="contained"
-                                        sx={{ backgroundColor: '#253A7D' }}
-                                        onClick={() => navigate('/addPayment', { state: { id: selectedRecord.id, name: selectedRecord.name } })}
-                                    >Make Payment</Button>
+
+
                                 </Grid>
-                                <Grid item>
-                                    <Button
-                                        onClick={() => navigate("/createOrder", { state: { customerObject: selectedRecord } })}
-                                        sx={{ backgroundColor: '#253A7D' }}
-                                        variant="contained">Create Order</Button>
-                                </Grid>
-                                <Grid item>
-                                    <Button variant="contained"
-                                        sx={{ backgroundColor: '#253A7D' }}
-                                        onClick={() => {
-                                            navigate('/editCustomer', { state: { id: selectedRecord.id, type: selectedRecord.customerType } })
-                                        }}
-                                    >Edit</Button>
-                                </Grid>
-                                <Grid item>
-                                    <Button
-                                        onClick={() => {
-                                            handleOpenConfirmationDialog(selectedRecord.id)
-                                            console.log("From teh Customer De;eet Button")
-                                        }}
-                                        sx={{ backgroundColor: '#253A7D' }}
-                                        variant="contained">Delete</Button>
-                                </Grid>
-
-
-
-
-                            </Grid>
-                        </Card>
+                            </Card>
+                        </Grid>
 
                     </Paper>
                     <Grid>
@@ -472,7 +486,7 @@ const Customer = (props) => {
                                     fontWeight: 'bold',
 
                                 }}
-                            >Customer's List</Typography>
+                            >Customer List</Typography>
                         </Grid>
                     </Paper>
                 </Box>
@@ -548,7 +562,7 @@ const Customer = (props) => {
                                                                 {column.id === 'ekycDate' ? (
                                                                     // Render this content if the condition is true
                                                                     <>{
-                                                                        // new Date(row[column.id]).toISOString().split('T')[0]
+                                                                        row[column.id].join('/').toString().substring(0, 8)
 
                                                                     }</>
                                                                 ) : (

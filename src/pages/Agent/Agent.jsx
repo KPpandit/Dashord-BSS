@@ -5,7 +5,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import axios from 'axios';
 export default function Agent(props) {
     const columns = [
-        { id: 'fristName', name: 'Name1' },
+        { id: 'fristName', name: 'Name' },
         { id: 'email', name: 'Email' },
         { id: 'parentId', name: 'Parent ID' },
         { id: 'totalPayments', name: 'Total Payment' },
@@ -326,7 +326,7 @@ export default function Agent(props) {
                                                 <Typography
                                                     sx={{ fontSize: '17px', textAlign: 'left' }}
                                                     gutterBottom variant="body2">
-                                                    {selectedRecord.partnerCommission.partnerId}
+                                                    {/* {selectedRecord.partnerCommission.partnerId} */}
                                                 </Typography>
                                             </Grid>
                                         </Grid>

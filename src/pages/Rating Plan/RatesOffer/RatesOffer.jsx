@@ -5,7 +5,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import axios from "axios";
 export default function RatesOffer(){
     const columns = [
-        { id: 'price', name: 'Price' },
+        { id: 'price', name: 'Price11' },
         { id: 'price_type', name: 'Price Type' },
         { id: 'period', name: 'Period' },
         
@@ -45,12 +45,13 @@ export default function RatesOffer(){
         fetchData(); // Invoke the fetchData function when the component mounts
     }, [tokenValue]);
     const handleConfirmDelete = () => {
+        console.log("from Delete ")
         // Perform the delete operation here using the recordIdToDelete
         // After successful deletion, you can update the UI accordingly
         console.log(`Deleting record with ID: ${recordIdToDelete}`);
     
         // Make an API call to delete the record
-        axios.delete(`http://172.5.10.2:9696/api/rates/detail/delete/${recordIdToDelete}`, {
+        axios.delete('http://172.5.10.2:9696/api/rates/offer/delete/'+recordIdToDelete, {
             headers: {
                 Authorization: `Bearer ${tokenValue}`,
                 "Accept": "application/json",
@@ -73,23 +74,7 @@ export default function RatesOffer(){
         // Close the confirmation dialog
         setConfirmationDialogOpen(false);
     };
-    const fetchData = async () => {
-        try {
-            const response = await axios.get('http://172.5.10.2:9090/api/customers', {
-                headers: {
-                    Authorization: `Bearer ${tokenValue}`,
-                    Accept: 'application/json',
-                    'Content-Type': 'application/json',
-                },
-            });
-            setRows(response.data);
-        } catch (error) {
-            console.log("response from Error");
-
-            console.error('Error fetching data from API:', error);
-        }
-    };
-    // const [rows, rowchange] = useState(generateData());
+   ;
     const [page, pagechange] = useState(0);
     const [rowperpage, rowperpagechange] = useState(5);
 
@@ -353,7 +338,7 @@ export default function RatesOffer(){
                                                         }
                                                     >
                                                         {columns.map((column) => (
-                                                            console.log(column.id + "from customer row"),
+                                                            // console.log(column.id + "from customer row"),
 
                                                             <TableCell key={column.id} sx={{ textAlign: 'left', fontSize: '17px' }}>
 
