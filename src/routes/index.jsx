@@ -78,6 +78,7 @@ import LU from '../pages/Session/LU';
 import AddVendor from '../pages/Inventory/VendorMagement/AddVendor';
 
 import AllCustomerReport from '../pages/Test/AllCustomerReport';
+import InvoiceSample from '../pages/Test/InvoiceSample';
 
 
 
@@ -223,8 +224,10 @@ export const Routers = () => {
                         <Route path='/addVendor' element={<AddVendor/>}/>
 
 
-                        {/* All Customer */}
+                        {/* Test */}
                            <Route path='/test' element={<AllCustomerReport/>}/>
+                           <Route path='/invoiceDesign' element={<InvoiceSample/>}/>
+
                         {/* <Route path='/add-Noc-sub' element={<AddNoc />} />
                         <Route path='/all-Noc-sub' element={<AllNoc />} />
                         <Route path='/all-Noc-query' element={<NOCQuery />} />
