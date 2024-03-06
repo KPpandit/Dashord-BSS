@@ -5,7 +5,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import axios from 'axios';
 export default function InterfaceRecords(props) {
     const columns = [
-        { id: 'name', name: 'Name' },
+        { id: 'name', name: 'Name'},
         { id: 'ip', name: 'IP' },
         { id: 'port', name: 'Port' },
         { id: 'realm', name: 'Realm' },
