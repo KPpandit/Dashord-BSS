@@ -79,6 +79,7 @@ import AddVendor from '../pages/Inventory/VendorMagement/AddVendor';
 
 import AllCustomerReport from '../pages/Test/AllCustomerReport';
 import InvoiceSample from '../pages/Test/InvoiceSample';
+import CustomerInvoice from '../pages/Customer/CustomerInvoice';
 
 
 
@@ -100,6 +101,7 @@ export const Routers = () => {
                         <Route path='/addCustomerDetails' element={<AddCustomerDetails />} />
                         <Route path='/editCustomer' element={<EditCustomerDetails />} />
                         <Route path='/createOrder' element={<CreateOrder />} />
+                        <Route path='/custInvoice' element={<CustomerInvoice/>}/>
                         {/* Agent */}
                         <Route path='/agent' element={<Agent />} />
                         <Route path='/newAgent' element={<AddAgent />} />

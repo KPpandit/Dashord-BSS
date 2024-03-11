@@ -401,19 +401,19 @@ const Customer = (props) => {
                                 </Grid>
 
                                 <Grid container spacing={1} padding={1}>
-                                    <Grid item>
+                                    <Grid item sx={6}>
                                         <Button variant="contained"
                                             sx={{ backgroundColor: '#253A7D' }}
                                             onClick={() => navigate('/addPayment', { state: { id: selectedRecord.id, name: selectedRecord.name } })}
                                         >Make Payment</Button>
                                     </Grid>
-                                    <Grid item>
+                                    <Grid item sx={6}>
                                         <Button
                                             onClick={() => navigate("/createOrder", { state: { customerObject: selectedRecord } })}
                                             sx={{ backgroundColor: '#253A7D' }}
                                             variant="contained">Create Order</Button>
                                     </Grid>
-                                    <Grid item>
+                                    <Grid item sx={6}>
                                         <Button variant="contained"
                                             sx={{ backgroundColor: '#253A7D' }}
                                             onClick={() => {
@@ -421,7 +421,7 @@ const Customer = (props) => {
                                             }}
                                         >Edit</Button>
                                     </Grid>
-                                    <Grid item>
+                                    <Grid item sx={6}>
                                         <Button
                                             onClick={() => {
                                                 handleOpenConfirmationDialog(selectedRecord.id)
@@ -429,6 +429,14 @@ const Customer = (props) => {
                                             }}
                                             sx={{ backgroundColor: '#253A7D' }}
                                             variant="contained">Delete</Button>
+                                    </Grid>
+                                    <Grid item sx={6}>
+                                        <Button
+                                            onClick={() => {
+                                                navigate('/custInvoice', { state: { id: selectedRecord.id, type: selectedRecord.customerType } })
+                                            }}
+                                            sx={{ backgroundColor: '#253A7D' }}
+                                            variant="contained">Invoice</Button>
                                     </Grid>
 
 
@@ -562,7 +570,7 @@ const Customer = (props) => {
                                                                 {column.id === 'ekycDate' ? (
                                                                     // Render this content if the condition is true
                                                                     <>{
-                                                                        row[column.id].join('/').toString().substring(0, 8)
+                                                                        row[column.id].join('/').toString().substring(0, 9)
 
                                                                     }</>
                                                                 ) : (

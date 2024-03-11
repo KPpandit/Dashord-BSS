@@ -81,7 +81,7 @@ export default function AddCustomerDetails() {
     const tokenValue = localStorage.getItem('token');
 
     const [msisdn, setMsisdn] = useState('');
-    const [sim, setSim] = useState('');
+    const [partner, setpartner] = useState('');
     const [device, setDevice] = useState('');
 
     const [userId, setuserId] = useState('');
@@ -158,12 +158,12 @@ export default function AddCustomerDetails() {
 
         onSubmit: async (values) => {
 
-
+            console.log(partner+"partner ID")
 
             console.log(values);
-            console.log(msisdn + " Msisdn " + sim + " Sim " + device)
+            console.log(msisdn + " Msisdn " + partner + " partner " + device)
             // Define the base URL
-            let baseUrl = 'http://172.5.10.2:9090/api/savecustomer/account/1/invoice/2/partner/11/baseuser/3/orderperiod/1?';
+            let baseUrl = 'http://172.5.10.2:9090/api/savecustomer/account/1/invoice/2/baseuser/3/orderperiod/1?';
 
             // Check conditions and add parameters accordingly
             if (msisdn) {
@@ -171,16 +171,16 @@ export default function AddCustomerDetails() {
                 console.log("MSISDN WORK")
             }
 
-            if (sim) {
-                baseUrl += `&msisdn=${sim}`;
-                console.log("SIM WORK")
+            if (partner) {
+                baseUrl += `&partner=${partner}`;
+                console.log("partner WORK")
             }
 
             if (device) {
                 baseUrl += `&device=${device}`;
                 console.log("Device WORK")
             }
-
+console.log(device+" device ID"+partner+" partner ID"+ msisdn +" Msisdn")
             const res1 = await axios.post(
                 baseUrl,
                 { ...values },
@@ -212,29 +212,36 @@ export default function AddCustomerDetails() {
                 }
             }).catch(e => {
                 setNotification({
-                    open: true,
-                    message: 'Failed to add Customer record. Please try again.',
+                    open:true,
+                    message:e.message,
                     severity: 'error',
-                });
-                if (e.response && e.response.status === 401) {
-                    console.log("From inside if condition");
-                    localStorage.removeItem('token');
-                    navigate("/");
-                }
-                if (e.response && e.response.status === 409) {
-                    setNotification({
-                        open: true,
-                        message: 'MSISDN Already Exist',
-                        severity: 'error',
-                    });
-                }
-                if (e.response && e.response.status === 404) {
-                    setNotification({
-                        open: true,
-                        message: 'Please Provide Valid MSISDN',
-                        severity: 'error',
-                    });
-                }
+                })
+
+
+                // setNotification({
+                //     open: true,
+                //     message: 'Failed to add Customer record. Please try again.',
+                //     severity: 'error',
+                // });
+                // if (e.response && e.response.status === 401) {
+                //     console.log("From inside if condition");
+                //     localStorage.removeItem('token');
+                //     navigate("/");
+                // }
+                // if (e.response && e.response.status === 409) {
+                //     setNotification({
+                //         open: true,
+                //         message: 'MSISDN Already Exist',
+                //         severity: 'error',
+                //     });
+                // }
+                // if (e.response && e.response.status === 404) {
+                //     setNotification({
+                //         open: true,
+                //         message: 'Please Provide Valid MSISDN',
+                //         severity: 'error',
+                //     });
+                // }
             })
             console.log("API 1 response :", res1)
         }
@@ -430,9 +437,9 @@ export default function AddCustomerDetails() {
                                     </Grid>
                                     <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
                                         <FormControl fullWidth >
-                                            <InputLabel id="demo-simple-select-label">Subscriber Status</InputLabel>
+                                            <InputLabel id="demo-partnerple-select-label">Subscriber Status</InputLabel>
                                             <Select
-                                                labelId="demo-simple-select-label"
+                                                labelId="demo-partnerple-select-label"
                                                 id="demo-simple-select"
                                                 // value={values.useParentPricing}
                                                 label="useParentPricing"
@@ -941,20 +948,30 @@ export default function AddCustomerDetails() {
                                     <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
                                         <TextField
 
-                                            label="SIM MSISDN"
+                                            label="Partner Id"
                                             InputLabelProps={{ shrink: true }}
                                             type="number"
-                                            name='sim'
-                                            value={sim}
-                                            onChange={e => setSim(e.target.value)}
+                                            name='partner'
+                                            value={partner}
+                                            onChange={e => setpartner(e.target.value)}
 
                                             fullWidth
-                                        // name="accountType"
-                                        // value={values.accountType}
-                                        // onChange={handleChange}
-                                        // onBlur={handleBlur}
+                                      
                                         />
                                     </Grid>
+                                    <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
+                                    <TextField
+                                            label="MSISDN"
+                                            type="number"
+                                            fullWidth
+
+                                            name="msisdn"
+                                            value={msisdn}
+                                            onChange={e => setMsisdn(e.target.value)}
+
+                                        />
+                                    </Grid>
+                                   
                                     <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
                                         <TextField
 
