@@ -19,36 +19,9 @@ const Customer = (props) => {
     const [rows, setRows] = useState([]);
     const tokenValue = localStorage.getItem('token');
     // Generate sample data
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await axios.get('http://172.5.10.2:9090/api/customers/pack/details', {
-                    headers: {
-                        Authorization: `Bearer ${tokenValue}`,
-                        "Accept": "application/json",
-                        "Content-Type": "application/json"
-                    }
-                });
-                // Assuming your API response is an array of objects similar to the data structure in your generateData function
-                const apiData = response.data;
-
-                // Update the state with the API data
-                setRows(apiData);
-            } catch (error) {
-
-                if (error.response && error.response.status === 401) {
-                    // console.log("From inside if condition");
-                    // localStorage.removeItem('token');
-                    // navigate("/");
-                }
-
-                console.error('Error fetching data from API:', error);
-                // Handle error as needed
-            }
-        };
-
-        fetchData(); // Invoke the fetchData function when the component mounts
-    }, [tokenValue]);
+    const[abc,setAbc]=useState(false)
+    const [delete1,SetDelete]=useState([])
+    
     const handleConfirmDelete = () => {
         // Perform the delete operation here using the recordIdToDelete
         // After successful deletion, you can update the UI accordingly
@@ -64,15 +37,19 @@ const Customer = (props) => {
         })
             .then(response => {
                 // Handle success, you can update the UI or take other actions
+                SetDelete(prevState => prevState === 'deleted' ? 'not-deleted' : 'deleted');
+                fetchData();
                 console.log(`Record with ID ${recordIdToDelete} deleted successfully.`);
-                SetDelete('deleted');
+               setAbc(true);
 
                 // Fetch updated data after successful deletion
-                fetchData();
+                
             })
             .catch(error => {
                 // Handle error, you can display an error message or take other actions
                 console.error(`Error deleting record with ID ${recordIdToDelete}:`, error);
+                SetDelete(prevState => prevState === 'deleted' ? 'not-deleted' : 'deleted');
+                setAbc(true);
             });
 
         // Close the confirmation dialog
@@ -107,6 +84,63 @@ const Customer = (props) => {
     };
     const [selectedPhoto, setSelectedPhoto] = useState(null);
     const [selectedRecord, setSelectedRecord] = useState(null);
+    
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await axios.get('http://172.5.10.2:9090/api/customers/pack/details', {
+                    headers: {
+                        Authorization: `Bearer ${tokenValue}`,
+                        "Accept": "application/json",
+                        "Content-Type": "application/json"
+                    }
+                });
+                // Assuming your API response is an array of objects similar to the data structure in your generateData function
+                const apiData = response.data;
+
+                // Update the state with the API data
+                setRows(apiData);
+            } catch (error) {
+
+                if (error.response && error.response.status === 401) {
+                    // console.log("From inside if condition");
+                    // localStorage.removeItem('token');
+                    // navigate("/");
+                }
+
+                console.error('Error fetching data from API:', error);
+                // Handle error as needed
+            }
+        };
+
+        fetchData(); // Invoke the fetchData function when the component mounts
+    }, [tokenValue,delete1]);
+    const fetchData = async () => {
+        try {
+            const response = await axios.get('http://172.5.10.2:9090/api/customers/pack/details', {
+                headers: {
+                    Authorization: `Bearer ${tokenValue}`,
+                    "Accept": "application/json",
+                    "Content-Type": "application/json"
+                }
+            });
+            // Assuming your API response is an array of objects similar to the data structure in your generateData function
+            const apiData = response.data;
+
+            // Update the state with the API data
+            setRows(apiData);
+        } catch (error) {
+
+            if (error.response && error.response.status === 401) {
+                // console.log("From inside if condition");
+                // localStorage.removeItem('token');
+                // navigate("/");
+            }
+
+            console.error('Error fetching data from API:', error);
+            // Handle error as needed
+        }
+    };
     const handleRowClick = (row) => {
         setSelectedRecord(row);
 
@@ -285,7 +319,7 @@ const Customer = (props) => {
                                                     >
                                                         {/* {new Date(selectedRecord.createDateTime).toISOString().split('T')[0]} */}
                                                         {/* {selectedRecord.createDateTime} */}
-                                                        {selectedRecord.createDateTime && selectedRecord.createDateTime.join('/').toString().substring(0, 8)}
+                                                        {selectedRecord.createDateTime }
                                                     </Typography>
                                                 </Grid>
                                             </Grid>
@@ -355,7 +389,7 @@ const Customer = (props) => {
                                                     <Typography
                                                         sx={{ fontSize: '17px', textAlign: 'left' }}
                                                         gutterBottom variant="body2">
-                                                        {selectedRecord.ekycDate && selectedRecord.ekycDate.join('/').toString().substring(0, 8)}
+                                                        {selectedRecord.ekycDate}
                                                     </Typography>
                                                 </Grid>
                                             </Grid>
@@ -430,14 +464,16 @@ const Customer = (props) => {
                                             sx={{ backgroundColor: '#253A7D' }}
                                             variant="contained">Delete</Button>
                                     </Grid>
-                                    <Grid item sx={6}>
+                                    {console.log(selectedRecord.customerType+"account type")}
+                                    {selectedRecord.customerType ==="Post-Paid" || selectedRecord.customerType ==="post-paid"?<Grid item sx={6}>
                                         <Button
                                             onClick={() => {
-                                                navigate('/custInvoice', { state: { id: selectedRecord.id, type: selectedRecord.customerType } })
+                                                navigate('/custInvoice', { state: { id: selectedRecord.simInventory.msisdn, type: selectedRecord.customerType } })
                                             }}
                                             sx={{ backgroundColor: '#253A7D' }}
                                             variant="contained">Invoice</Button>
-                                    </Grid>
+                                    </Grid>:<></>}
+                                    
 
 
 
@@ -474,6 +510,7 @@ const Customer = (props) => {
 
     const handleRowMouseEnter = (row) => {
         setHighlightedRow(row)
+        console.log("from hnadle row mouse enter");
     };
 
     const handleRowMouseLeave = () => {
@@ -555,6 +592,7 @@ const Customer = (props) => {
                                                         key={i}
                                                         onClick={() => handleRowClick(row)}
                                                         onMouseEnter={() => handleRowMouseEnter(row)}
+                                                        
                                                         //   onMouseLeave={handleRowMouseLeave}
                                                         sx={
                                                             highlightedRow === row
@@ -570,7 +608,7 @@ const Customer = (props) => {
                                                                 {column.id === 'ekycDate' ? (
                                                                     // Render this content if the condition is true
                                                                     <>{
-                                                                        row[column.id].join('/').toString().substring(0, 9)
+                                                                        row[column.id]
 
                                                                     }</>
                                                                 ) : (

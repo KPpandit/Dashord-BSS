@@ -18,7 +18,7 @@ export default function CustomerInvoice() {
     const [rows, setRows] = useState([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
-
+console.log(id+"   this is mSISDN" )
     const pdfContainerRef = useRef(null);
 
     useEffect(() => {
@@ -180,7 +180,7 @@ export default function CustomerInvoice() {
                                                                     </Grid>
                                                                     <Grid item xs={8} textAlign={'left'}>
                                                                         <Typography sx={{ fontSize: '10px', fontWeight: 'bold' }}>
-                                                                            {rows.phonePhoneNumber}
+                                                                            {id}
                                                                         </Typography>
                                                                     </Grid>
                                                                     <Grid item xs={4} textAlign={'left'}>
