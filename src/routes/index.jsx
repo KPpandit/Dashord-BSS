@@ -76,6 +76,7 @@ import VendorManagement from '../pages/Inventory/VendorMagement/VendorManagement
 import EditVendor from '../pages/Inventory/VendorMagement/EditVendor';
 import LU from '../pages/Session/LU';
 import AddVendor from '../pages/Inventory/VendorMagement/AddVendor';
+<<<<<<< HEAD
 import AllcustomerReport from '../pages/Report/AllCustomerReport';
 import Individualreport from '../pages/Report/IndividualReport';
 import PrepaidCustomerReport from '../pages/Report/PrepaidCustomerReport';
@@ -88,6 +89,12 @@ import PCRF from '../pages/Session/PCRFSession';
 import InterfaceRecords from '../pages/Session/IndividualInterfaceRecords';
 
 
+=======
+
+import AllCustomerReport from '../pages/Test/AllCustomerReport';
+import InvoiceSample from '../pages/Test/InvoiceSample';
+import CustomerInvoice from '../pages/Customer/CustomerInvoice';
+>>>>>>> b0c96f111ac58fe1cd7281f9758c199b2a7910ac
 
 
 
@@ -109,6 +116,10 @@ export const Routers = () => {
                         <Route path='/addCustomerDetails' element={<AddCustomerDetails />} />
                         <Route path='/editCustomer' element={<EditCustomerDetails />} />
                         <Route path='/createOrder' element={<CreateOrder />} />
+<<<<<<< HEAD
+=======
+                        <Route path='/custInvoice' element={<CustomerInvoice/>}/>
+>>>>>>> b0c96f111ac58fe1cd7281f9758c199b2a7910ac
                         {/* Agent */}
                         <Route path='/agent' element={<Agent />} />
                         <Route path='/newAgent' element={<AddAgent />} />
@@ -204,10 +215,13 @@ export const Routers = () => {
                         <Route path='/dataMangenet' element={<DataSession />} />
                         <Route path='/volte' element={<Volte />} />
                         <Route path='/lu' element={<LU />} />
+<<<<<<< HEAD
                         <Route path='/pcrf' element={<PCRF />} />
                         <Route path='/individualinterfaceRecords' element={<InterfaceRecords />} />
 
 
+=======
+>>>>>>> b0c96f111ac58fe1cd7281f9758c199b2a7910ac
 
                         {/* HSS */}
                         <Route path='/hss' element={<Hss2 />} />
@@ -236,6 +250,7 @@ export const Routers = () => {
                         <Route path='/EditVendorManagement' element={<EditVendor/>}/>
                         <Route path='/addVendor' element={<AddVendor/>}/>
 
+<<<<<<< HEAD
                         {/* Reports */}
                         <Route path='/allcustomerReport' element={<AllcustomerReport/>}/>
                         <Route path='/individualReport' element={<Individualreport/>}/>
@@ -246,6 +261,12 @@ export const Routers = () => {
                         <Route path='/allagentreport' element={<AllAgentReport/>}/>
                         <Route path='/individualagentreport' element={<IndividualAgentreport/>}/>
 
+=======
+
+                        {/* Test */}
+                           <Route path='/test' element={<AllCustomerReport/>}/>
+                           <Route path='/invoiceDesign' element={<InvoiceSample/>}/>
+>>>>>>> b0c96f111ac58fe1cd7281f9758c199b2a7910ac
 
                         {/* <Route path='/add-Noc-sub' element={<AddNoc />} />
                         <Route path='/all-Noc-sub' element={<AllNoc />} />

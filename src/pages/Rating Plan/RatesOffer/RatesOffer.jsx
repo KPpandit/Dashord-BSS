@@ -5,7 +5,11 @@ import SearchIcon from '@mui/icons-material/Search';
 import axios from "axios";
 export default function RatesOffer(){
     const columns = [
+<<<<<<< HEAD
         { id: 'price', name: 'Price' },
+=======
+        { id: 'price', name: 'Price11' },
+>>>>>>> b0c96f111ac58fe1cd7281f9758c199b2a7910ac
         { id: 'price_type', name: 'Price Type' },
         { id: 'period', name: 'Period' },
         
@@ -45,12 +49,20 @@ export default function RatesOffer(){
         fetchData(); // Invoke the fetchData function when the component mounts
     }, [tokenValue]);
     const handleConfirmDelete = () => {
+<<<<<<< HEAD
+=======
+        console.log("from Delete ")
+>>>>>>> b0c96f111ac58fe1cd7281f9758c199b2a7910ac
         // Perform the delete operation here using the recordIdToDelete
         // After successful deletion, you can update the UI accordingly
         console.log(`Deleting record with ID: ${recordIdToDelete}`);
     
         // Make an API call to delete the record
+<<<<<<< HEAD
         axios.delete(`http://172.5.10.2:9696/api/rates/detail/delete/${recordIdToDelete}`, {
+=======
+        axios.delete('http://172.5.10.2:9696/api/rates/offer/delete/'+recordIdToDelete, {
+>>>>>>> b0c96f111ac58fe1cd7281f9758c199b2a7910ac
             headers: {
                 Authorization: `Bearer ${tokenValue}`,
                 "Accept": "application/json",
@@ -73,6 +85,7 @@ export default function RatesOffer(){
         // Close the confirmation dialog
         setConfirmationDialogOpen(false);
     };
+<<<<<<< HEAD
     const fetchData = async () => {
         try {
             const response = await axios.get('http://172.5.10.2:9090/api/customers', {
@@ -90,6 +103,9 @@ export default function RatesOffer(){
         }
     };
     // const [rows, rowchange] = useState(generateData());
+=======
+   ;
+>>>>>>> b0c96f111ac58fe1cd7281f9758c199b2a7910ac
     const [page, pagechange] = useState(0);
     const [rowperpage, rowperpagechange] = useState(5);
 
@@ -353,7 +369,11 @@ export default function RatesOffer(){
                                                         }
                                                     >
                                                         {columns.map((column) => (
+<<<<<<< HEAD
                                                             console.log(column.id + "from customer row"),
+=======
+                                                            // console.log(column.id + "from customer row"),
+>>>>>>> b0c96f111ac58fe1cd7281f9758c199b2a7910ac
 
                                                             <TableCell key={column.id} sx={{ textAlign: 'left', fontSize: '17px' }}>
 

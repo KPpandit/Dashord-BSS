@@ -58,7 +58,11 @@ export default function Mediation(props) {
         if (selectedRecord) {
             return (
                 <Grid>
+<<<<<<< HEAD
                     <Paper sx={{ marginBottom: 2 }}>
+=======
+                    <Paper elevation={15} sx={{ marginBottom: 2 }}>
+>>>>>>> b0c96f111ac58fe1cd7281f9758c199b2a7910ac
 
 
                         <Card variant="outlined" sx={{ maxWidth: 360 }}>
@@ -99,7 +103,11 @@ export default function Mediation(props) {
 
                     </Paper>
 
+<<<<<<< HEAD
                     <Paper sx={{ marginTop: 2 }}>
+=======
+                    <Paper elevation={15} sx={{ marginTop: 2 }}>
+>>>>>>> b0c96f111ac58fe1cd7281f9758c199b2a7910ac
                         <Grid sx={{ backgroundColor: '#253A7D' }}>
                             <Typography sx={{ paddingTop: 2, paddingLeft: 2, paddingBottom: 2, color: 'white' }} style={{ fontFamily: 'Roboto', fontSize: '14', fontWeight: '400' }}>
                                  NOTES
@@ -128,7 +136,11 @@ export default function Mediation(props) {
                         </Box>
                     </Paper>
 
+<<<<<<< HEAD
                     <Paper sx={{ marginTop: 2 }}>
+=======
+                    <Paper elevation={15} sx={{ marginTop: 2 }}>
+>>>>>>> b0c96f111ac58fe1cd7281f9758c199b2a7910ac
                         <Grid sx={{ backgroundColor: '#253A7D' }}>
                             <Typography sx={{ paddingTop: 2, paddingLeft: 2, paddingBottom: 2, color: 'white' }} style={{ fontFamily: 'Roboto', fontSize: '14', fontWeight: '400' }}> Lines</Typography>
                         </Grid>
@@ -207,14 +219,37 @@ export default function Mediation(props) {
         setHighlightedRow(null);
     };
     return (
+<<<<<<< HEAD
         <Box sx={{ display: 'container' }}>
             <Box sx={{ width: '70%', padding: '16px' }}>
                 <Box component="main" sx={{ flexGrow: 1, width: '100%' }} >
                     <Grid lg={6} sx={{ textAlign: 'right', marginY: -0.1 }}>
+=======
+        <Box sx={{ display: 'container', marginTop: -3  }}>
+            <Box sx={{ width: '70%' }}>
+            <Box component="main" sx={{ flexGrow: 1, p: 1, width: '100%' }}>
+                    <Paper elevation={10} sx={{ padding: 1, margin: 1, backgroundColor: 'white', color: '#253A7D', marginLeft: -0.8, marginRight: -0.8 }}>
+                        <Grid>
+                            <Typography
+                                style={{
+                                    fontFamily: 'Roboto',
+                                    fontSize: '20px',
+                                    paddingLeft: '15px',
+                                    fontWeight: 'bold',
+
+                                }}
+                            > Mediation List</Typography>
+                        </Grid>
+                    </Paper>
+                </Box>
+                <Box component="main" sx={{ flexGrow: 1, width: '100%' }} >
+                <Grid lg={6} sx={{ textAlign: 'right', marginY: -0.1 }}>
+>>>>>>> b0c96f111ac58fe1cd7281f9758c199b2a7910ac
                         <form
                             onSubmit={handleSerch}
                         >
 
+<<<<<<< HEAD
                             <Grid lg={8} paddingBottom={1} >
                                 <TextField
                                     onClick={handleSerch}
@@ -238,12 +273,43 @@ export default function Mediation(props) {
                                 />
 
                             </Grid>
+=======
+                            <Paper elevation={10} sx={{ marginBottom: 2 }}>
+                                <Grid lg={8}  >
+                                    <TextField
+                                        onClick={handleSerch}
+                                        label="Search"
+                                        type='text'
+                                        fullWidth
+                                        name='value'
+                                        // onChange={(e) => setValue(e.target.value)}
+                                        required
+                                        InputProps={{
+                                            endAdornment: (
+                                                <InputAdornment position='end'>
+                                                    <IconButton
+                                                    // onSubmit={handleSerch}
+                                                    >
+                                                        <SearchIcon />
+                                                    </IconButton>
+                                                </InputAdornment>
+                                            )
+                                        }}
+                                    />
+
+                                </Grid>
+                            </Paper>
+>>>>>>> b0c96f111ac58fe1cd7281f9758c199b2a7910ac
                             {/* <Grid paddingBottom={1}>
                             <Button type='submit' backgroundColor={'blue'} onSubmit={handleSerch} padding={2}> <SearchIcon /> Search</Button>
                             </Grid> */}
                         </form>
                     </Grid>
+<<<<<<< HEAD
                     <Paper>
+=======
+                    <Paper elevation={15}>
+>>>>>>> b0c96f111ac58fe1cd7281f9758c199b2a7910ac
                         <TableContainer sx={{ maxHeight: 600 }}>
                             <Table stickyHeader size='medium' padding="normal">
                                 <TableHead>

@@ -11,6 +11,10 @@ import Notification from '../Components/Notification/Notification';
 import MuiAlert from '@mui/material/Alert';
 import { useLocation } from 'react-router-dom';
 import CancelIcon from '@mui/icons-material/Cancel';
+<<<<<<< HEAD
+=======
+import blanPhoto from '../../assets/blanPhoto.png'
+>>>>>>> b0c96f111ac58fe1cd7281f9758c199b2a7910ac
 export default function EditCustomerDetails() {
     const location = useLocation();
 
@@ -64,9 +68,15 @@ export default function EditCustomerDetails() {
     };
 
     const tokenValue = localStorage.getItem('token');
+<<<<<<< HEAD
 
     const [msisdn, setMsisdn] = useState('');
     const [paymentId,setPaymentID]=useState('');
+=======
+    const [device, setDevice] = useState('');
+
+
+>>>>>>> b0c96f111ac58fe1cd7281f9758c199b2a7910ac
     const { handleChange, handleSubmit, handleBlur, values, setValues: setValues1, submitForm: submitMainForm1, resetForm: resetForm1 } = useFormik({
         initialValues: {
 
@@ -164,7 +174,11 @@ export default function EditCustomerDetails() {
     const { handleChange: handleChange2, handleSubmit: handleSubmit2, handleBlur: handleBlur2, values: values2, setValues: setValues2, submitForm: submitMainForm2, resetForm: resetForm2 } = useFormik({
         initialValues: {
             userId: "",
+<<<<<<< HEAD
             customerId:'',
+=======
+            customerId: '',
+>>>>>>> b0c96f111ac58fe1cd7281f9758c199b2a7910ac
             attempt: "",
             amount: "",
             deleted: "",
@@ -173,7 +187,12 @@ export default function EditCustomerDetails() {
             payoutId: "",
             balance: "",
             paymentPeriod: "",
+<<<<<<< HEAD
             paymentNotes: ""
+=======
+            paymentNotes: "",
+            paymentStatus: ""
+>>>>>>> b0c96f111ac58fe1cd7281f9758c199b2a7910ac
         },
         onSubmit: async (values2) => {
             // your submission logic for the second formik instance
@@ -210,7 +229,13 @@ export default function EditCustomerDetails() {
 
         },
     });
+<<<<<<< HEAD
 
+=======
+    const [sim, setSim] = useState(null);
+    const [msisdn, setMsisdn] = useState('');
+    const [paymentId, setPaymentID] = useState('');
+>>>>>>> b0c96f111ac58fe1cd7281f9758c199b2a7910ac
     useEffect(() => {
         const fetchCustomerDetails = async () => {
             console.log('Before fetchCustomerDetails - values:', values);
@@ -225,6 +250,7 @@ export default function EditCustomerDetails() {
                         "Content-Type": "application/json"
                     }
                 });
+<<<<<<< HEAD
                 
                 
               
@@ -236,6 +262,19 @@ export default function EditCustomerDetails() {
                 console.log("maisdn set value ------->"+msisdn)
                     setValues1({
                         referralFeePaid:  customerDetails.referralFeePaid,
+=======
+
+
+
+                if (customerResponse.status === 200) {
+                    const customerDetails = customerResponse.data;
+                    // Handle customer details
+                    // console.log('Customer Details:----->', customerDetails.referralFeePaid);
+                    // 
+                    // console.log("maisdn set value ------->" + msisdn)
+                    setValues1({
+                        referralFeePaid: customerDetails.referralFeePaid,
+>>>>>>> b0c96f111ac58fe1cd7281f9758c199b2a7910ac
                         autoPaymentType: customerDetails.autoPaymentType,
                         dueDateUnitId: customerDetails.dueDateUnitId,
                         dueDateValue: customerDetails.dueDateValue,
@@ -285,12 +324,38 @@ export default function EditCustomerDetails() {
                         vatId: customerDetails.vatId,
                         profession: customerDetails.profession,
                         maritalStatus: customerDetails.maritalStatus,
+<<<<<<< HEAD
                     });
                     console.log('After setting values1 - values:', values);
                     setMsisdn(customerDetails.msisdnInventory.msisdn);
 
                  } else {
                   
+=======
+
+                    });
+                    console.log('customerDetails:', customerDetails);
+                    console.log('sim:', customerDetails.simInventory.msisdn);
+                    // console.log('device:', customerDetails.deviceInventory.id);
+                    // console.log('msisdn:', customerDetails.msisdnInventory.msisdn);
+
+                    console.log('After setting values1 - values:', customerDetails.simInventory.msisdn);
+                    if(customerDetails.simInventory.msisdn!==null){
+                        setSim(customerDetails.simInventory.msisdn);
+                    }
+                    else if(customerDetails.deviceInventory.id !==null){
+                        setDevice(customerDetails.deviceInventory.id)
+                    }
+                    else if(customerDetails.msisdnInventory.msisdn !==null){
+                        setMsisdn(customerDetails.msisdnInventory.msisdn);
+                    }
+                    // setDevice(customerDetails.deviceInventory.id)
+                    // setMsisdn(customerDetails.msisdnInventory.msisdn);
+                    setSim(customerDetails.simInventory.msisdn);
+                    console.log('siiiiiiimmmmmmm:', sim);
+                } else {
+
+>>>>>>> b0c96f111ac58fe1cd7281f9758c199b2a7910ac
                 }
             } catch (error) {
                 // console.error('Error during customer details fetch:', error.message);
@@ -311,12 +376,21 @@ export default function EditCustomerDetails() {
                     const paymentDetails = paymentResponse.data;
                     // Handle payment details
                     console.log('Payment Details:', paymentDetails);
+<<<<<<< HEAD
                     console.log("Payment ID " +paymentDetails.id);
                     console.log('patment customer ID'+paymentDetails.customerId)
                     setPaymentID(paymentDetails.id);
                     setValues2({
                         userId: paymentDetails.userId,
                         customerId:paymentDetails.customerId,
+=======
+                    console.log("Payment ID " + paymentDetails.id);
+                    console.log('patment customer ID' + paymentDetails.customerId)
+                    setPaymentID(paymentDetails.id);
+                    setValues2({
+                        userId: paymentDetails.userId,
+                        customerId: paymentDetails.customerId,
+>>>>>>> b0c96f111ac58fe1cd7281f9758c199b2a7910ac
                         attempt: paymentDetails.attempt,
                         amount: paymentDetails.amount,
                         deleted: paymentDetails.deleted,
@@ -325,7 +399,12 @@ export default function EditCustomerDetails() {
                         payoutId: paymentDetails.payoutId,
                         balance: paymentDetails.balance,
                         paymentPeriod: paymentDetails.paymentPeriod,
+<<<<<<< HEAD
                         paymentNotes: paymentDetails.paymentNotes
+=======
+                        paymentNotes: paymentDetails.paymentNotes,
+                        paymentStatus: paymentDetails.paymentStatus
+>>>>>>> b0c96f111ac58fe1cd7281f9758c199b2a7910ac
                     });
                 } else {
                     console.error('Failed to fetch payment details.');
@@ -361,7 +440,11 @@ export default function EditCustomerDetails() {
         fetchCustomerDetails();
     }, [paymentId]);
 
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> b0c96f111ac58fe1cd7281f9758c199b2a7910ac
     return (
         <Box component="form" onSubmit={handleSubmit2} sx={{ marginTop: -3 }}>
             <Snackbar
@@ -426,9 +509,26 @@ export default function EditCustomerDetails() {
                                         />
                                     </>
                                 ) : (
+<<<<<<< HEAD
                                     <Typography variant="body1" color="textSecondary">
                                         Photo Not Available
                                     </Typography>
+=======
+                                    <>
+                                        {/* <CancelIcon sx={{ position: 'absolute', top: 0, right: 0, cursor: 'pointer', color: '#1976D2' }} onClick={handleCancelPhoto} /> */}
+                                        <img
+                                            src={blanPhoto}
+                                            alt="Selected"
+                                            style={{
+                                                maxWidth: '80%',
+                                                maxHeight: '200px',
+                                                paddingBottom: '0px',
+                                                border: '5px solid Grey', // Set border style, adjust color and width as needed
+                                                borderRadius: '15px', // Optional: Add border-radius for rounded corners
+                                            }}
+                                        />
+                                    </>
+>>>>>>> b0c96f111ac58fe1cd7281f9758c199b2a7910ac
                                 )}
 
                                 {/* <input
@@ -609,6 +709,7 @@ export default function EditCustomerDetails() {
                                         />
                                     </Grid>
 
+<<<<<<< HEAD
                                     <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
                                         <TextField
 
@@ -661,6 +762,9 @@ export default function EditCustomerDetails() {
                                             onBlur={handleBlur}
                                         />
                                     </Grid>
+=======
+
+>>>>>>> b0c96f111ac58fe1cd7281f9758c199b2a7910ac
                                     <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
                                         <TextField
 
@@ -674,6 +778,7 @@ export default function EditCustomerDetails() {
                                             onBlur={handleBlur}
                                         />
                                     </Grid>
+<<<<<<< HEAD
                                     <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
                                         <TextField
 
@@ -687,6 +792,9 @@ export default function EditCustomerDetails() {
                                             onBlur={handleBlur}
                                         />
                                     </Grid>
+=======
+
+>>>>>>> b0c96f111ac58fe1cd7281f9758c199b2a7910ac
                                     <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
                                         <TextField
 
@@ -700,6 +808,7 @@ export default function EditCustomerDetails() {
                                             onBlur={handleBlur}
                                         />
                                     </Grid>
+<<<<<<< HEAD
                                     <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
                                         <TextField
 
@@ -713,6 +822,9 @@ export default function EditCustomerDetails() {
                                             onBlur={handleBlur}
                                         />
                                     </Grid>
+=======
+
+>>>>>>> b0c96f111ac58fe1cd7281f9758c199b2a7910ac
 
 
 
@@ -737,6 +849,7 @@ export default function EditCustomerDetails() {
                                             </Select>
                                         </FormControl>
                                     </Grid>
+<<<<<<< HEAD
                                     <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
                                         <TextField
 
@@ -796,6 +909,9 @@ export default function EditCustomerDetails() {
                                             }}
                                         />
                                     </Grid>
+=======
+
+>>>>>>> b0c96f111ac58fe1cd7281f9758c199b2a7910ac
                                 </Grid>
                             </Grid>
                             <Grid item lg={6}>
@@ -811,6 +927,7 @@ export default function EditCustomerDetails() {
                                         // onBlur={handleBlur}
                                         />
                                     </Grid>
+<<<<<<< HEAD
                                     <Grid item lg={6} md={4} sm={6} xs={12} >
                                         <TextField
                                             label="creditLimit"
@@ -862,6 +979,10 @@ export default function EditCustomerDetails() {
                                         />
                                     </Grid>
                                     <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
+=======
+
+                                    <Grid item lg={6} md={4} sm={6} xs={12}>
+>>>>>>> b0c96f111ac58fe1cd7281f9758c199b2a7910ac
                                         <FormControl fullWidth >
                                             <InputLabel id="demo-simple-select-label">Invoice Delivery Method</InputLabel>
                                             <Select
@@ -883,7 +1004,11 @@ export default function EditCustomerDetails() {
                                     </Grid>
 
 
+<<<<<<< HEAD
                                     <Grid item lg={12} md={4} sm={6} xs={12} paddingBottom={2}>
+=======
+                                    <Grid item lg={12} md={4} sm={6} xs={12}>
+>>>>>>> b0c96f111ac58fe1cd7281f9758c199b2a7910ac
                                         {accountType === 'Post-Paid' && (
                                             <Grid container spacing={2}>
                                                 <Grid item lg={6} md={4} sm={6} xs={12} fullWidth paddingBottom={2}>
@@ -930,6 +1055,197 @@ export default function EditCustomerDetails() {
                                                             </Select>
                                                         </Grid>
 
+<<<<<<< HEAD
+=======
+
+                                                    </Grid>
+                                                    <Grid item lg={6} md={4} sm={6} xs={12} >
+                                                        <TextField
+                                                            label="creditLimit"
+                                                            type="number"
+                                                            value={values.creditLimit}
+                                                            fullWidth
+                                                            name="creditLimit"
+                                                            required
+                                                            onChange={handleChange}
+                                                            onBlur={handleBlur}
+                                                        />
+                                                    </Grid>
+                                                    <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
+                                                        <TextField
+
+                                                            label="Auto Recharge Amount"
+                                                            type="number"
+                                                            required
+                                                            fullWidth
+                                                            name="autoRecharge"
+                                                            value={values.autoRecharge}
+                                                            onChange={handleChange}
+                                                            onBlur={handleBlur}
+                                                        />
+                                                    </Grid>
+                                                    <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
+                                                        <TextField
+                                                            required
+                                                            label="Auto-Recharge Threshold"
+                                                            type="number"
+                                                            fullWidth
+                                                            name="rechargeThreshold"
+                                                            value={values.rechargeThreshold}
+                                                            onChange={handleChange}
+                                                            onBlur={handleBlur}
+                                                        />
+                                                    </Grid>
+                                                    <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
+                                                        <TextField
+
+                                                            label="Auto-Recharge Monthly Limit"
+                                                            type="number"
+                                                            name="monthlyLimit"
+                                                            fullWidth
+                                                            required
+                                                            value={values.monthlyLimit}
+                                                            onChange={handleChange}
+                                                            onBlur={handleBlur}
+                                                        />
+                                                    </Grid>
+                                                    <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
+                                                        <TextField
+
+                                                            label="autoPaymentType"
+                                                            type="number"
+                                                            required
+                                                            fullWidth
+                                                            name="autoPaymentType"
+                                                            value={values.autoPaymentType}
+                                                            onChange={handleChange}
+                                                            onBlur={handleBlur}
+                                                        />
+                                                    </Grid>
+                                                    <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
+                                                        <TextField
+
+                                                            label="dueDateUnitId"
+                                                            type="number"
+                                                            required
+                                                            fullWidth
+                                                            name="dueDateUnitId"
+                                                            value={values.dueDateUnitId}
+                                                            onChange={handleChange}
+                                                            onBlur={handleBlur}
+                                                        />
+                                                    </Grid>
+                                                    <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
+                                                        <TextField
+
+                                                            label="dueDateValue"
+                                                            type="number"
+                                                            required
+                                                            fullWidth
+                                                            name="dueDateValue"
+                                                            value={values.dueDateValue}
+                                                            onChange={handleChange}
+                                                            onBlur={handleBlur}
+                                                        />
+                                                    </Grid>
+                                                    <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
+                                                        <TextField
+
+                                                            label="dfFm"
+                                                            type="number"
+                                                            required
+                                                            fullWidth
+                                                            name="dfFm"
+                                                            value={values.dfFm}
+                                                            onChange={handleChange}
+                                                            onBlur={handleBlur}
+                                                        />
+                                                    </Grid>
+                                                    <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
+                                                        <TextField
+
+                                                            label="nextInvoiceDayOfPeriod"
+                                                            type="number"
+                                                            required
+                                                            fullWidth
+                                                            name="nextInvoiceDayOfPeriod"
+                                                            value={values.nextInvoiceDayOfPeriod}
+                                                            onChange={handleChange}
+                                                            onBlur={handleBlur}
+                                                        />
+                                                    </Grid>
+
+                                                    <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
+                                                        <TextField
+
+                                                            label="creditNotificationLimit1"
+                                                            type="number"
+                                                            required
+                                                            fullWidth
+                                                            name="creditNotificationLimit1"
+                                                            value={values.creditNotificationLimit1}
+                                                            onChange={handleChange}
+                                                            onBlur={handleBlur}
+                                                        />
+                                                    </Grid>
+                                                    <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
+                                                        <TextField
+
+                                                            label="creditNotificationLimit2"
+                                                            type="number"
+                                                            required
+                                                            fullWidth
+                                                            name="creditNotificationLimit2"
+                                                            value={values.creditNotificationLimit2}
+                                                            onChange={handleChange}
+                                                            onBlur={handleBlur}
+                                                        />
+                                                    </Grid>
+
+
+                                                    <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
+                                                        <TextField
+                                                            label="currentMonthlyAmount"
+                                                            type="number"
+                                                            required
+                                                            fullWidth
+                                                            name="currentMonthlyAmount"
+                                                            value={values.currentMonthlyAmount}
+                                                            onChange={handleChange}
+                                                            onBlur={handleBlur}
+                                                            InputProps={{
+                                                                inputProps: {
+                                                                    inputMode: "numeric",
+                                                                },
+                                                            }}
+                                                        />
+                                                    </Grid>
+                                                    <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
+                                                        <TextField
+
+                                                            label="excludeAging"
+                                                            type="number"
+                                                            required
+                                                            fullWidth
+                                                            name="excludeAging"
+                                                            value={values.excludeAging}
+                                                            onChange={handleChange}
+                                                            onBlur={handleBlur}
+                                                        />
+                                                    </Grid>
+                                                    <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
+                                                        <TextField
+
+                                                            label="dynamicBalance"
+                                                            type="number"
+                                                            required
+                                                            fullWidth
+                                                            name="dynamicBalance"
+                                                            value={values.dynamicBalance}
+                                                            onChange={handleChange}
+                                                            onBlur={handleBlur}
+                                                        />
+>>>>>>> b0c96f111ac58fe1cd7281f9758c199b2a7910ac
                                                     </Grid>
                                                 </Grid>
 
@@ -938,7 +1254,20 @@ export default function EditCustomerDetails() {
 
                                     </Grid>
                                     <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2} >
+<<<<<<< HEAD
                                         <TextField fullWidth label='Inventory ID' />
+=======
+                                        <TextField
+                                            fullWidth
+                                            label='Device ID'
+                                            InputLabelProps={{ shrink: true }}
+                                            name='device'
+                                            value={device}
+                                            type='number'
+                                            disabled
+                                        // onChange={e => setDevice(e.target.value)}
+                                        />
+>>>>>>> b0c96f111ac58fe1cd7281f9758c199b2a7910ac
 
                                     </Grid>
 
@@ -964,6 +1293,10 @@ export default function EditCustomerDetails() {
                                         <TextField
                                             label="MSISDN"
                                             type="number"
+<<<<<<< HEAD
+=======
+                                            InputLabelProps={{ shrink: true }}
+>>>>>>> b0c96f111ac58fe1cd7281f9758c199b2a7910ac
                                             fullWidth
                                             required
                                             name="msisdn"
@@ -989,6 +1322,7 @@ export default function EditCustomerDetails() {
 
                                     <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
                                         <TextField
+<<<<<<< HEAD
 
                                             label="SIM IMSI"
                                             type="number"
@@ -998,6 +1332,18 @@ export default function EditCustomerDetails() {
                                         // value={values.accountType}
                                         // onChange={handleChange}
                                         // onBlur={handleBlur}
+=======
+                                            label="SIM - MSISDN"
+                                            InputLabelProps={{ shrink: true }}
+                                            type="number"
+                                            fullWidth
+                                            required
+                                            name="sim"
+                                            value={sim}
+                                            // onChange={e => setMsisdn(e.target.value)}
+                                            disabled
+
+>>>>>>> b0c96f111ac58fe1cd7281f9758c199b2a7910ac
                                         />
                                     </Grid>
                                 </Grid>
@@ -1520,7 +1866,11 @@ export default function EditCustomerDetails() {
                                                             onBlur={handleBlur2}
                                                         />
                                                     </Grid>
+<<<<<<< HEAD
                                                      <Grid item lg={6}>
+=======
+                                                    <Grid item lg={6}>
+>>>>>>> b0c96f111ac58fe1cd7281f9758c199b2a7910ac
                                                         <TextField
                                                             label="customerId"
                                                             sx={{ width: 210 }}
@@ -1643,6 +1993,27 @@ export default function EditCustomerDetails() {
                                                             onBlur={handleBlur2}
                                                         />
                                                     </Grid>
+<<<<<<< HEAD
+=======
+                                                    <Grid item xs={6}>
+                                                        <FormControl sx={{ width: 210 }}>
+                                                            <InputLabel id="demo-simple-select-label">Payment Status</InputLabel>
+                                                            <Select
+                                                                labelId="demo-simple-select-label"
+                                                                id="demo-simple-select"
+                                                                label="paymentStatus"
+                                                                value={values2.paymentStatus}
+                                                                onChange={handleChange2}
+                                                                name='paymentStatus'
+                                                            >
+
+                                                                <MenuItem value={true}>True</MenuItem>
+                                                                <MenuItem value={false}>False</MenuItem>
+
+                                                            </Select>
+                                                        </FormControl>
+                                                    </Grid>
+>>>>>>> b0c96f111ac58fe1cd7281f9758c199b2a7910ac
                                                     <Grid item lg={6}>
                                                         <TextField label='Payment Notes'
 

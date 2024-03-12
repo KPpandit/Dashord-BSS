@@ -64,7 +64,11 @@ export default function Configuration(props) {
     <Grid container marginTop={-2.5}>
     {/* Left side with the list */}
     <Grid item xs={5} md={2} marginTop={2} style={{ position: 'relative' }}>
+<<<<<<< HEAD
       <Paper style={{ backgroundColor: 'white', maxHeight: '500px', overflow: 'auto' }}>
+=======
+      <Paper elevation={24} style={{ backgroundColor: 'white', maxHeight: '500px', overflow: 'auto' }}>
+>>>>>>> b0c96f111ac58fe1cd7281f9758c199b2a7910ac
         <List sx={{ backgroundColor: 'white' }}>
           {configurationItems.map((item) => (
             <React.Fragment key={item.id}>
@@ -74,7 +78,13 @@ export default function Configuration(props) {
                 onClick={() => handleItemClick(item)}
                 selected={selectedItem && selectedItem.name === item.name}
               >
+<<<<<<< HEAD
                 <ListItemText primary={item.name} style={{ color: selectedItem && selectedItem.name === item.name ? 'blue' : 'inherit' }} />
+=======
+                <ListItemText primary={item.name} style={{ color: selectedItem && selectedItem.name === item.name ? '#253A7D' : 'inherit' ,
+              
+              }} />
+>>>>>>> b0c96f111ac58fe1cd7281f9758c199b2a7910ac
               </ListItem>
               <Divider />
             </React.Fragment>

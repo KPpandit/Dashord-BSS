@@ -157,7 +157,11 @@ export default function EditRatingProfile(props) {
                                                 fontSize: '20px',
                                                 paddingLeft: 10,
                                                 fontWeight: 'bold',
+<<<<<<< HEAD
                                                 // paddingLeft: 32
+=======
+                                                paddingLeft: 32
+>>>>>>> b0c96f111ac58fe1cd7281f9758c199b2a7910ac
 
                                             }}
                                         > Edit Rating Profile</Typography>

@@ -144,7 +144,11 @@ export default function Sidenavbar() {
   const username = localStorage.getItem('userName');
 
   const theme = useTheme();
+<<<<<<< HEAD
   const [open, setOpen] = React.useState(true);
+=======
+  const [open, setOpen] = React.useState(false);
+>>>>>>> b0c96f111ac58fe1cd7281f9758c199b2a7910ac
   const [openMenu, setOpenMenu] = React.useState('');
   const navigate = useNavigate();
   const [auth, setAuth] = React.useState('')
@@ -153,7 +157,11 @@ export default function Sidenavbar() {
   };
   let Links;
   const handleDrawerClose = () => {
+<<<<<<< HEAD
     setOpen(true);
+=======
+    setOpen(false);
+>>>>>>> b0c96f111ac58fe1cd7281f9758c199b2a7910ac
   };
   const data = localStorage.getItem('auth')
   const links = {
@@ -353,6 +361,7 @@ export default function Sidenavbar() {
         icon: <AnalyticsIcon />,
         subRoute: [
           {
+<<<<<<< HEAD
             label: 'PCRF/PCF Session',
             route: "/pcrf"
           },
@@ -371,6 +380,9 @@ export default function Sidenavbar() {
           
           {
             label: 'Video Call Session',
+=======
+            label: 'Call Session',
+>>>>>>> b0c96f111ac58fe1cd7281f9758c199b2a7910ac
             route: "/callMangent"
           },
           {
@@ -381,8 +393,16 @@ export default function Sidenavbar() {
           {
             label: 'VoLTE Registrations',
             route: "/volte"
+<<<<<<< HEAD
           },
           
+=======
+          },{
+            label:'LU Registrations',
+            route:'/lu',
+           
+          }
+>>>>>>> b0c96f111ac58fe1cd7281f9758c199b2a7910ac
         ]
       },
       {
@@ -412,7 +432,24 @@ export default function Sidenavbar() {
             route:'/vendormanagement'
           }
         ]
+<<<<<<< HEAD
       },
+=======
+      },{
+        label: "Test",
+        // route: '/inventory',
+        icon: <Inventory2Icon />,
+        subRoute: [
+          {
+            label:'Invoice Sample Design',
+            route:'/invoiceDesign'
+          },{
+            label:'Invoice Sample Design',
+            route:'/test'
+          }
+        ]
+      }
+>>>>>>> b0c96f111ac58fe1cd7281f9758c199b2a7910ac
     ],
   }
   return (
@@ -462,7 +499,10 @@ export default function Sidenavbar() {
             <Grid item sx={{ marginRight: 2, marginLeft: 'auto', marginTop: -0.5 }}>
               <Button onClick={(e) => {
                 localStorage.removeItem('token');
+<<<<<<< HEAD
                 sessionStorage.clear();
+=======
+>>>>>>> b0c96f111ac58fe1cd7281f9758c199b2a7910ac
                 navigate("/")
               }}>
               <Typography sx={{ color: 'white', paddingRight:1.5}}>Logout</Typography>

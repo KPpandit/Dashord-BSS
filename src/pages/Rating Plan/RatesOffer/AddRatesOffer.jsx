@@ -42,6 +42,12 @@ export default function AddRatesOffer(){
                 
                 toast.success('Rates Added Successfully', { autoClose: 2000 });
             }
+<<<<<<< HEAD
+=======
+        }).catch(e=>{
+            console.log(e+"catching erro")
+            toast.error(e.response.data.message, { autoClose: 2000 });
+>>>>>>> b0c96f111ac58fe1cd7281f9758c199b2a7910ac
         })
         }
     })
@@ -72,7 +78,11 @@ export default function AddRatesOffer(){
                                 style={{
 
                                     fontSize: '20px',
+<<<<<<< HEAD
                                     // paddingLeft: 10,
+=======
+                                    paddingLeft: 10,
+>>>>>>> b0c96f111ac58fe1cd7281f9758c199b2a7910ac
                                     fontWeight: 'bold',
                                     paddingLeft:32
 

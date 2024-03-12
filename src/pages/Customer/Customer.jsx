@@ -3,7 +3,11 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import SearchIcon from '@mui/icons-material/Search';
 import axios from "axios";
+<<<<<<< HEAD
 
+=======
+import blanPhoto from '../../assets/blanPhoto.png'
+>>>>>>> b0c96f111ac58fe1cd7281f9758c199b2a7910ac
 
 const Customer = (props) => {
     const columns = [
@@ -19,6 +23,7 @@ const Customer = (props) => {
     const [rows, setRows] = useState([]);
     const tokenValue = localStorage.getItem('token');
     // Generate sample data
+<<<<<<< HEAD
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -49,6 +54,11 @@ const Customer = (props) => {
 
         fetchData(); // Invoke the fetchData function when the component mounts
     }, [tokenValue]);
+=======
+    const[abc,setAbc]=useState(false)
+    const [delete1,SetDelete]=useState([])
+    
+>>>>>>> b0c96f111ac58fe1cd7281f9758c199b2a7910ac
     const handleConfirmDelete = () => {
         // Perform the delete operation here using the recordIdToDelete
         // After successful deletion, you can update the UI accordingly
@@ -64,15 +74,30 @@ const Customer = (props) => {
         })
             .then(response => {
                 // Handle success, you can update the UI or take other actions
+<<<<<<< HEAD
                 console.log(`Record with ID ${recordIdToDelete} deleted successfully.`);
                 SetDelete('deleted');
 
                 // Fetch updated data after successful deletion
                 fetchData();
+=======
+                SetDelete(prevState => prevState === 'deleted' ? 'not-deleted' : 'deleted');
+                fetchData();
+                console.log(`Record with ID ${recordIdToDelete} deleted successfully.`);
+               setAbc(true);
+
+                // Fetch updated data after successful deletion
+                
+>>>>>>> b0c96f111ac58fe1cd7281f9758c199b2a7910ac
             })
             .catch(error => {
                 // Handle error, you can display an error message or take other actions
                 console.error(`Error deleting record with ID ${recordIdToDelete}:`, error);
+<<<<<<< HEAD
+=======
+                SetDelete(prevState => prevState === 'deleted' ? 'not-deleted' : 'deleted');
+                setAbc(true);
+>>>>>>> b0c96f111ac58fe1cd7281f9758c199b2a7910ac
             });
 
         // Close the confirmation dialog
@@ -107,9 +132,72 @@ const Customer = (props) => {
     };
     const [selectedPhoto, setSelectedPhoto] = useState(null);
     const [selectedRecord, setSelectedRecord] = useState(null);
+<<<<<<< HEAD
     const handleRowClick = (row) => {
         setSelectedRecord(row);
             console.log(row)
+=======
+    
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await axios.get('http://172.5.10.2:9090/api/customers/pack/details', {
+                    headers: {
+                        Authorization: `Bearer ${tokenValue}`,
+                        "Accept": "application/json",
+                        "Content-Type": "application/json"
+                    }
+                });
+                // Assuming your API response is an array of objects similar to the data structure in your generateData function
+                const apiData = response.data;
+
+                // Update the state with the API data
+                setRows(apiData);
+            } catch (error) {
+
+                if (error.response && error.response.status === 401) {
+                    // console.log("From inside if condition");
+                    // localStorage.removeItem('token');
+                    // navigate("/");
+                }
+
+                console.error('Error fetching data from API:', error);
+                // Handle error as needed
+            }
+        };
+
+        fetchData(); // Invoke the fetchData function when the component mounts
+    }, [tokenValue,delete1]);
+    const fetchData = async () => {
+        try {
+            const response = await axios.get('http://172.5.10.2:9090/api/customers/pack/details', {
+                headers: {
+                    Authorization: `Bearer ${tokenValue}`,
+                    "Accept": "application/json",
+                    "Content-Type": "application/json"
+                }
+            });
+            // Assuming your API response is an array of objects similar to the data structure in your generateData function
+            const apiData = response.data;
+
+            // Update the state with the API data
+            setRows(apiData);
+        } catch (error) {
+
+            if (error.response && error.response.status === 401) {
+                // console.log("From inside if condition");
+                // localStorage.removeItem('token');
+                // navigate("/");
+            }
+
+            console.error('Error fetching data from API:', error);
+            // Handle error as needed
+        }
+    };
+    const handleRowClick = (row) => {
+        setSelectedRecord(row);
+
+>>>>>>> b0c96f111ac58fe1cd7281f9758c199b2a7910ac
         fetchPhoto1(row);
     };
     const fetchPhoto1 = async (row) => {
@@ -148,6 +236,7 @@ const Customer = (props) => {
                     <Paper elevation={10}>
 
 
+<<<<<<< HEAD
                         <Card variant="outlined" sx={{ maxWidth: 340, fontFamily: "Roboto" }}>
 
                             <Box sx={{ p: 1 }}>
@@ -423,6 +512,307 @@ const Customer = (props) => {
 
                             </Grid>
                         </Card>
+=======
+                        <Grid xs={12}>
+                            <Card variant="outlined" sx={{ maxWidth: 340, fontFamily: "Roboto" }}>
+
+                                <Box sx={{ p: 1 }}>
+
+                                    <Grid sx={{ padding: 1, backgroundColor: '#253A7D' }}>
+                                        <Stack direction="row"
+                                            sx={{ borderRadius: '30%', }}
+                                            justifyContent="space-between" alignItems="center">
+                                            <Typography
+                                                style={{
+                                                    fontSize: '17px',
+
+                                                    color: 'white',
+                                                    marginBottom: '2px',
+
+                                                    // Add this line for circular border
+                                                    backgroundColor: '#253A7D',  // Add this line for background color
+                                                    padding: '2px',  // Add this line for padding
+                                                    display: 'inline-block',
+
+                                                }}
+                                                gutterBottom component="div">
+                                                {selectedRecord.firstName}
+                                            </Typography>
+
+                                        </Stack>
+                                    </Grid>
+
+                                </Box>
+                                <Grid container>
+                                    <Grid item xs={12} paddingLeft={1}>
+
+                                        <Grid item xs={12}>
+                                            <Grid container>
+                                                <Grid item xs={8} >
+                                                    <Grid container spacing={1.5} >
+                                                        <Grid item xs={3} sx={{ fontWeight: '480', fontSize: '17px', textAlign: 'right' }}>
+                                                            Title :
+                                                        </Grid>
+                                                        <Grid item xs={8}>
+                                                            {selectedRecord.personTitle}
+                                                        </Grid>
+                                                        <Grid item xs={3.7} sx={{ fontWeight: '480', fontSize: '17px', textAlign: 'right' }}>
+                                                            Name :
+                                                        </Grid>
+                                                        <Grid item xs={8}>
+                                                            {selectedRecord.firstName} {selectedRecord.lastName}
+                                                        </Grid>
+
+                                                        <Grid item xs={4.2} sx={{ fontWeight: '480', fontSize: '17px', textAlign: 'right' }}>
+                                                            Gender :
+                                                        </Grid>
+                                                        <Grid item xs={7}>
+                                                            <Typography sx={{ textAlign: 'left' }}>
+                                                                {selectedRecord.gender}
+                                                            </Typography>
+
+                                                        </Grid>
+                                                        <Grid item xs={6.4} sx={{ fontWeight: '480', fontSize: '17px', textAlign: 'right' }}>
+                                                            EKYC Status :
+                                                        </Grid>
+                                                        <Grid item xs={5} sx={{ textAlign: 'left' }}>
+                                                            <Typography sx={{ textAlign: 'left' }}>
+                                                                {selectedRecord.ekycStatus}
+                                                            </Typography>
+                                                        </Grid>
+
+                                                        <Grid item xs={3.6} sx={{ fontWeight: '480', fontSize: '17px', textAlign: 'right' }}>
+                                                            Email :
+                                                        </Grid>
+                                                        <Grid item xs={8} sx={{ textAlign: 'left' }}>
+                                                            <Typography sx={{ textAlign: 'left' }} gutterBottom >
+                                                                {selectedRecord.email}
+                                                            </Typography>
+                                                        </Grid>
+                                                        <Divider light />
+
+                                                    </Grid>
+                                                </Grid>
+                                                <Grid item xs={4} sx={{ paddingRight: 1 }}>
+                                                    {selectedPhoto ? (
+                                                        <>
+                                                            {/* <CancelIcon sx={{ position: 'absolute', top: 0, right: 0, cursor: 'pointer', color: '#1976D2' }} onClick={handleCancelPhoto} /> */}
+                                                            <img
+                                                                src={selectedPhoto}
+                                                                alt="Selected"
+                                                                style={{
+                                                                    maxWidth: '100%',
+                                                                    maxHeight: '200px',
+                                                                    paddingBottom: '0px',
+                                                                    border: '5px solid grey', // Set border style, adjust color and width as needed
+                                                                    borderRadius: '15px', // Optional: Add border-radius for rounded corners
+                                                                }}
+                                                            />
+                                                        </>
+                                                    ) : (
+                                                        <>
+                                                            {/* <CancelIcon sx={{ position: 'absolute', top: 0, right: 0, cursor: 'pointer', color: '#1976D2' }} onClick={handleCancelPhoto} /> */}
+                                                            <img
+                                                                src={blanPhoto}
+                                                                alt="Selected"
+                                                                style={{
+                                                                    maxWidth: '100%',
+                                                                    maxHeight: '250px',
+                                                                    paddingBottom: '0px',
+                                                                    border: '5px solid grey', // Set border style, adjust color and width as needed
+                                                                    borderRadius: '15px', // Optional: Add border-radius for rounded corners
+                                                                }}
+                                                            />
+                                                        </>
+                                                    )}
+                                                </Grid>
+
+
+                                            </Grid>
+
+                                        </Grid>
+
+
+
+                                        <Divider light />
+
+                                        <Box sx={{ p: 1 }}>
+                                            <Grid container>
+                                                <Grid item xs={6}>
+                                                    <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
+                                                        Created Date :
+                                                    </Typography>
+                                                </Grid>
+                                                <Grid item xs={6} alignItems={'left'} sx={{ marginLeft: -4 }}>
+                                                    <Typography
+                                                        sx={{ fontSize: '17px', textAlign: 'left' }}
+                                                        gutterBottom variant="body2"
+                                                    >
+                                                        {/* {new Date(selectedRecord.createDateTime).toISOString().split('T')[0]} */}
+                                                        {/* {selectedRecord.createDateTime} */}
+                                                        {selectedRecord.createDateTime }
+                                                    </Typography>
+                                                </Grid>
+                                            </Grid>
+                                        </Box>
+                                        <Divider light />
+
+                                        <Box sx={{ p: 1 }}>
+                                            <Grid container>
+                                                <Grid item xs={6}>
+                                                    <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
+                                                        Monthly Limit :
+                                                    </Typography>
+                                                </Grid>
+                                                <Grid item xs={6} alignItems={'left'} sx={{ marginLeft: -4 }}>
+                                                    <Typography
+                                                        sx={{ fontSize: '17px', textAlign: 'left' }}
+                                                        gutterBottom variant="body2">
+                                                        {selectedRecord.monthlyLimit}
+                                                    </Typography>
+                                                </Grid>
+                                            </Grid>
+                                        </Box>
+                                        <Divider light />
+
+                                        <Box sx={{ p: 1 }}>
+                                            <Grid container>
+                                                <Grid item xs={6}>
+                                                    <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
+                                                        LandLine No. :
+                                                    </Typography>
+                                                </Grid>
+                                                <Grid item xs={6} alignItems={'left'} sx={{ marginLeft: -4 }}>
+                                                    <Typography
+                                                        sx={{ fontSize: '17px', textAlign: 'left' }}
+                                                        gutterBottom variant="body2">
+                                                        {selectedRecord.landlineNumber}
+                                                    </Typography>
+                                                </Grid>
+                                            </Grid>
+                                        </Box>
+                                        <Divider light />
+                                        <Box sx={{ p: 1 }}>
+                                            <Grid container>
+                                                <Grid item xs={6}>
+                                                    <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
+                                                        Ekyc Status :
+                                                    </Typography>
+                                                </Grid>
+                                                <Grid item xs={6} alignItems={'left'} sx={{ marginLeft: -6 }}>
+                                                    <Typography
+                                                        sx={{ fontSize: '17px', textAlign: 'left' }}
+                                                        gutterBottom variant="body2">
+                                                        {selectedRecord.ekycStatus}
+                                                    </Typography>
+                                                </Grid>
+                                            </Grid>
+                                        </Box>
+                                        <Divider light />
+                                        <Box sx={{ p: 1 }}>
+                                            <Grid container>
+                                                <Grid item xs={6}>
+                                                    <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
+                                                        Ekyc Date :
+                                                    </Typography>
+                                                </Grid>
+                                                <Grid item xs={6} alignItems={'left'} sx={{ marginLeft: -6 }}>
+                                                    <Typography
+                                                        sx={{ fontSize: '17px', textAlign: 'left' }}
+                                                        gutterBottom variant="body2">
+                                                        {selectedRecord.ekycDate}
+                                                    </Typography>
+                                                </Grid>
+                                            </Grid>
+                                        </Box>
+                                        <Divider light />
+                                        <Box sx={{ p: 1 }}>
+                                            <Grid container>
+                                                <Grid item xs={6}>
+                                                    <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
+                                                        Ekyc Token :
+                                                    </Typography>
+                                                </Grid>
+                                                <Grid item xs={6} alignItems={'left'} sx={{ marginLeft: -6 }}>
+                                                    <Typography
+                                                        sx={{ fontSize: '17px', textAlign: 'left' }}
+                                                        gutterBottom variant="body2">
+                                                        {selectedRecord.ekycToken}
+                                                    </Typography>
+                                                </Grid>
+                                            </Grid>
+                                        </Box>
+                                        <Divider light />
+                                        <Box sx={{ p: 1 }}>
+                                            <Grid container>
+                                                <Grid item xs={6}>
+                                                    <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
+                                                       Payment Status :
+                                                    </Typography>
+                                                </Grid>
+                                                <Grid item xs={6} alignItems={'left'} sx={{ marginLeft: -2 }}>
+                                                    <Typography
+                                                        sx={{ fontSize: '17px', textAlign: 'left' }}
+                                                        gutterBottom variant="body2">
+                                                        {String(selectedRecord.paymentStatus)}
+                                                    </Typography>
+                                                </Grid>
+                                            </Grid>
+                                        </Box>
+                                        <Divider light />
+                                    </Grid>
+
+
+                                </Grid>
+
+                                <Grid container spacing={1} padding={1}>
+                                    <Grid item sx={6}>
+                                        <Button variant="contained"
+                                            sx={{ backgroundColor: '#253A7D' }}
+                                            onClick={() => navigate('/addPayment', { state: { id: selectedRecord.id, name: selectedRecord.name } })}
+                                        >Make Payment</Button>
+                                    </Grid>
+                                    <Grid item sx={6}>
+                                        <Button
+                                            onClick={() => navigate("/createOrder", { state: { customerObject: selectedRecord } })}
+                                            sx={{ backgroundColor: '#253A7D' }}
+                                            variant="contained">Create Order</Button>
+                                    </Grid>
+                                    <Grid item sx={6}>
+                                        <Button variant="contained"
+                                            sx={{ backgroundColor: '#253A7D' }}
+                                            onClick={() => {
+                                                navigate('/editCustomer', { state: { id: selectedRecord.id, type: selectedRecord.customerType } })
+                                            }}
+                                        >Edit</Button>
+                                    </Grid>
+                                    <Grid item sx={6}>
+                                        <Button
+                                            onClick={() => {
+                                                handleOpenConfirmationDialog(selectedRecord.id)
+                                                console.log("From teh Customer De;eet Button")
+                                            }}
+                                            sx={{ backgroundColor: '#253A7D' }}
+                                            variant="contained">Delete</Button>
+                                    </Grid>
+                                    {console.log(selectedRecord.customerType+"account type")}
+                                    {selectedRecord.customerType ==="Post-Paid" || selectedRecord.customerType ==="post-paid"?<Grid item sx={6}>
+                                        <Button
+                                            onClick={() => {
+                                                navigate('/custInvoice', { state: { id: selectedRecord.simInventory.msisdn, type: selectedRecord.customerType } })
+                                            }}
+                                            sx={{ backgroundColor: '#253A7D' }}
+                                            variant="contained">Invoice</Button>
+                                    </Grid>:<></>}
+                                    
+
+
+
+
+                                </Grid>
+                            </Card>
+                        </Grid>
+>>>>>>> b0c96f111ac58fe1cd7281f9758c199b2a7910ac
 
                     </Paper>
                     <Grid>
@@ -452,6 +842,10 @@ const Customer = (props) => {
 
     const handleRowMouseEnter = (row) => {
         setHighlightedRow(row)
+<<<<<<< HEAD
+=======
+        console.log("from hnadle row mouse enter");
+>>>>>>> b0c96f111ac58fe1cd7281f9758c199b2a7910ac
     };
 
     const handleRowMouseLeave = () => {
@@ -472,7 +866,11 @@ const Customer = (props) => {
                                     fontWeight: 'bold',
 
                                 }}
+<<<<<<< HEAD
                             >Customer's List</Typography>
+=======
+                            >Customer List</Typography>
+>>>>>>> b0c96f111ac58fe1cd7281f9758c199b2a7910ac
                         </Grid>
                     </Paper>
                 </Box>
@@ -533,6 +931,10 @@ const Customer = (props) => {
                                                         key={i}
                                                         onClick={() => handleRowClick(row)}
                                                         onMouseEnter={() => handleRowMouseEnter(row)}
+<<<<<<< HEAD
+=======
+                                                        
+>>>>>>> b0c96f111ac58fe1cd7281f9758c199b2a7910ac
                                                         //   onMouseLeave={handleRowMouseLeave}
                                                         sx={
                                                             highlightedRow === row
@@ -548,7 +950,11 @@ const Customer = (props) => {
                                                                 {column.id === 'ekycDate' ? (
                                                                     // Render this content if the condition is true
                                                                     <>{
+<<<<<<< HEAD
                                                                         // new Date(row[column.id]).toISOString().split('T')[0]
+=======
+                                                                        row[column.id]
+>>>>>>> b0c96f111ac58fe1cd7281f9758c199b2a7910ac
 
                                                                     }</>
                                                                 ) : (

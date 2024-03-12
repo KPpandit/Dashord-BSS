@@ -53,7 +53,11 @@ export default function AddNewCustomer() {
         alignItems: 'center',
       }}
     >
+<<<<<<< HEAD
       <Paper elevation={15} sx={{ margin: -2, paddingTop: 5, width: 500, height: 230 }}>
+=======
+      <Paper elevation={15} sx={{ margin: -2, paddingTop: 5, width: 500,paddingBottom: 2}}>
+>>>>>>> b0c96f111ac58fe1cd7281f9758c199b2a7910ac
         <form onSubmit={handleSubmit}>
           <Grid container spacing={2} textAlign='center'>
 

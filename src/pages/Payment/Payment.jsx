@@ -59,14 +59,24 @@ export default function Payment(props) {
         if (selectedRecord) {
             return (
                 <Grid>
+<<<<<<< HEAD
                     <Paper sx={{ marginBottom: 2 }}>
+=======
+                    <Paper elevation={15} sx={{ marginBottom: 2 }}>
+>>>>>>> b0c96f111ac58fe1cd7281f9758c199b2a7910ac
 
 
                         <Card variant="outlined" sx={{ maxWidth: 360 }}>
 
+<<<<<<< HEAD
                             <Box sx={{ p: 2, backgroundColor: '#1976d2' }}>
 
                                 <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ backgroundColor: '#1976d2' }}>
+=======
+                            <Box sx={{ p: 2, backgroundColor: '#253A7D' }}>
+
+                                <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ backgroundColor: '#253A7D' }}>
+>>>>>>> b0c96f111ac58fe1cd7281f9758c199b2a7910ac
                                     <Typography gutterBottom variant="h6.5" component="div" color={'white'}>
                                         PAYMENT 100
                                     </Typography>
@@ -115,7 +125,11 @@ export default function Payment(props) {
                             <Divider light />
                             <Box sx={{ p: 2 }}>
                                 <Typography gutterBottom variant="body2">
+<<<<<<< HEAD
                                     
+=======
+
+>>>>>>> b0c96f111ac58fe1cd7281f9758c199b2a7910ac
                                     METHOD : {selectedRecord.method}
                                 </Typography>
                             </Box>
@@ -125,8 +139,13 @@ export default function Payment(props) {
 
                     </Paper>
 
+<<<<<<< HEAD
                     <Paper sx={{ marginTop: 2 }}>
                         <Grid sx={{ backgroundColor: '#1976d2' }}>
+=======
+                    <Paper elevation={15} sx={{ marginTop: 2 }}>
+                        <Grid sx={{ backgroundColor: '#253A7D' }}>
+>>>>>>> b0c96f111ac58fe1cd7281f9758c199b2a7910ac
                             <Typography sx={{ paddingTop: 2, paddingLeft: 2, paddingBottom: 2, color: 'white' }} style={{ fontFamily: 'Roboto', fontSize: '14', fontWeight: '400' }}> PAYMENT INSTRUMENT(S)</Typography>
                         </Grid>
                         <Divider light />
@@ -141,6 +160,7 @@ export default function Payment(props) {
                             <Card sx={{ minWidth: 360 }}>
                                 <CardContent>
 
+<<<<<<< HEAD
                                     
                                 <Typography sx={{ paddingTop: 2 }} variant="body2">
                                 
@@ -148,20 +168,40 @@ export default function Payment(props) {
                                     cc.cardholder.name : Vijay <br/>
                                     cc.number : ************6789<br/>
                                     cc.expiry.date : 12/2024<br/>
+=======
+
+                                    <Typography sx={{ paddingTop: 2 }} variant="body2">
+
+                                        Instrument Name : Credit Card<br />
+                                        cc.cardholder.name : Vijay <br />
+                                        cc.number : ************6789<br />
+                                        cc.expiry.date : 12/2024<br />
+>>>>>>> b0c96f111ac58fe1cd7281f9758c199b2a7910ac
 
                                     </Typography>
                                 </CardContent>
                                 <CardActions>
+<<<<<<< HEAD
                                    
+=======
+
+>>>>>>> b0c96f111ac58fe1cd7281f9758c199b2a7910ac
                                 </CardActions>
                             </Card>
                         </Box>
                     </Paper>
                     <Grid padding={2} sx={{ width: 360 }}>
+<<<<<<< HEAD
                         <Button variant="contained" style={{ marginRight: '10px', marginBottom: '10px' }} onClick={toPayment} >{<EditIcon sx={{paddingRight:1}}/>}Edit</Button>
                         <Button variant="contained" style={{ marginRight: '10px', marginBottom: '10px' }}>{<DeleteIcon sx={{paddingRight:1}}/>}Delete</Button>
                         <Button variant="contained" style={{ marginRight: '10px', marginBottom: '10px' }}>{<MarkEmailReadIcon sx={{paddingRight:1}}/>}NOTIFY THIS PAYMENT BY EMAIL</Button>
                         
+=======
+                        <Button variant="contained" style={{ marginRight: '10px', marginBottom: '10px',backgroundColor:'#253A7D' }} onClick={toPayment} >{<EditIcon sx={{ paddingRight: 1 }} />}Edit</Button>
+                        <Button variant="contained" style={{ marginRight: '10px', marginBottom: '10px' ,backgroundColor:'#253A7D'}}>{<DeleteIcon sx={{ paddingRight: 1 }} />}Delete</Button>
+                        <Button variant="contained" style={{ marginRight: '10px', marginBottom: '10px',backgroundColor:'#253A7D' }}>{<MarkEmailReadIcon sx={{ paddingRight: 1 }} />}NOTIFY THIS PAYMENT BY EMAIL</Button>
+
+>>>>>>> b0c96f111ac58fe1cd7281f9758c199b2a7910ac
 
                     </Grid>
                     <Grid sx={{ padding: 2 }}>
@@ -170,6 +210,7 @@ export default function Payment(props) {
                 </Grid>
             )
         } else {
+<<<<<<< HEAD
             return <Card variant="outlined" sx={{ maxWidth: 360 }}>
                 <Box sx={{ p: 2 }}>
                     <Stack direction="row" justifyContent="space-between" alignItems="center">
@@ -188,6 +229,9 @@ export default function Payment(props) {
                 <Divider light />
 
             </Card>;
+=======
+            return <></>
+>>>>>>> b0c96f111ac58fe1cd7281f9758c199b2a7910ac
         }
     };
 
@@ -213,14 +257,35 @@ export default function Payment(props) {
         setHighlightedRow(null);
     };
     return (
+<<<<<<< HEAD
         <Box sx={{ display: 'container' }}>
             <Box sx={{ width: '70%', padding: '16px' }}>
+=======
+        <Box sx={{ display: 'container',marginTop:-2 }}>
+            <Box sx={{ width: '70%'}}>
+                <Box component="main" sx={{ flexGrow: 1, p: 1, width: '100%' }}>
+                    <Paper elevation={10} sx={{ padding: 1, margin: 1, marginRight:-0.8,marginLeft:-0.8,backgroundColor: 'white', color: '#253A7D' }}>
+                        <Grid lg={6} sx={{ textAlign: 'left', marginY: -0.1 }}>
+                            <Typography
+                                style={{
+                                    fontFamily: 'Roboto',
+                                    fontSize: '20px',
+
+                                    fontWeight: 'bold',
+
+                                }}
+                            > Payment's List</Typography>
+                        </Grid>
+                    </Paper>
+                </Box>
+>>>>>>> b0c96f111ac58fe1cd7281f9758c199b2a7910ac
                 <Box component="main" sx={{ flexGrow: 1, width: '100%' }} >
                     <Grid lg={6} sx={{ textAlign: 'right', marginY: -0.1 }}>
                         <form
                             onSubmit={handleSerch}
                         >
 
+<<<<<<< HEAD
                             <Grid lg={8} paddingBottom={1} >
                                 <TextField
                                     onClick={handleSerch}
@@ -244,18 +309,53 @@ export default function Payment(props) {
                                 />
 
                             </Grid>
+=======
+                            <Paper elevation={10} sx={{ marginBottom: 2 }}>
+                                <Grid lg={8}  >
+                                    <TextField
+                                        onClick={handleSerch}
+                                        label="Search"
+                                        type='text'
+                                        fullWidth
+                                        name='value'
+                                        // onChange={(e) => setValue(e.target.value)}
+                                        required
+                                        InputProps={{
+                                            endAdornment: (
+                                                <InputAdornment position='end'>
+                                                    <IconButton
+                                                    // onSubmit={handleSerch}
+                                                    >
+                                                        <SearchIcon />
+                                                    </IconButton>
+                                                </InputAdornment>
+                                            )
+                                        }}
+                                    />
+
+                                </Grid>
+                            </Paper>
+>>>>>>> b0c96f111ac58fe1cd7281f9758c199b2a7910ac
                             {/* <Grid paddingBottom={1}>
                             <Button type='submit' backgroundColor={'blue'} onSubmit={handleSerch} padding={2}> <SearchIcon /> Search</Button>
                             </Grid> */}
                         </form>
                     </Grid>
+<<<<<<< HEAD
                     <Paper>
+=======
+                    <Paper elevation={15}>
+>>>>>>> b0c96f111ac58fe1cd7281f9758c199b2a7910ac
                         <TableContainer sx={{ maxHeight: 600 }}>
                             <Table stickyHeader size='medium' padding="normal">
                                 <TableHead>
                                     <TableRow>
                                         {columns.map((column) => (
+<<<<<<< HEAD
                                             <TableCell style={{ backgroundColor: '#1976d2', color: 'white' }} key={column.id} sx={{ textAlign: 'center' }}><Typography fontFamily={'Sans-serif'}>{column.name}</Typography></TableCell>
+=======
+                                            <TableCell style={{ backgroundColor: '#253A7D', color: 'white' }} key={column.id} sx={{ textAlign: 'center' }}><Typography fontFamily={'Sans-serif'}>{column.name}</Typography></TableCell>
+>>>>>>> b0c96f111ac58fe1cd7281f9758c199b2a7910ac
                                         ))}
                                     </TableRow>
                                 </TableHead>
@@ -301,6 +401,7 @@ export default function Payment(props) {
 
                     <Box sx={{ paddingLeft: '16px', paddingBottom: '16px', paddingTop: '14px', display: 'flex', gap: '16px' }}>
                         <Button variant="contained" backgroundColor="#6471B5"
+<<<<<<< HEAD
                         //  onClick={handleButtonClick}
                          >
                             Downloade PDF
@@ -309,6 +410,17 @@ export default function Payment(props) {
                         <Button variant="contained" backgroundColor="#6471B5" 
                         // onClick={handleButtonClick} 
                         sx={{ marginLeft: '16px' }}>
+=======
+                            sx={{ backgroundColor: '#253A7D' }}
+                        //  onClick={handleButtonClick}
+                        >
+                            Downloade PDF
+                        </Button>
+
+                        <Button variant="contained" backgroundColor="#6471B5"
+                            // onClick={handleButtonClick} 
+                            sx={{ marginLeft: '16px', backgroundColor: '#253A7D' }}>
+>>>>>>> b0c96f111ac58fe1cd7281f9758c199b2a7910ac
                             DOWNLOADE CSV
                         </Button>
                     </Box>

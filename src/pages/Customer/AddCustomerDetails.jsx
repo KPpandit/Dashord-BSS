@@ -81,7 +81,11 @@ export default function AddCustomerDetails() {
     const tokenValue = localStorage.getItem('token');
 
     const [msisdn, setMsisdn] = useState('');
+<<<<<<< HEAD
     const [sim, setSim] = useState('');
+=======
+    const [partner, setpartner] = useState('');
+>>>>>>> b0c96f111ac58fe1cd7281f9758c199b2a7910ac
     const [device, setDevice] = useState('');
 
     const [userId, setuserId] = useState('');
@@ -158,12 +162,21 @@ export default function AddCustomerDetails() {
 
         onSubmit: async (values) => {
 
+<<<<<<< HEAD
 
 
             console.log(values);
             console.log(msisdn + " Msisdn " + sim + " Sim " + device)
             // Define the base URL
             let baseUrl = 'http://172.5.10.2:9090/api/savecustomer/account/1/invoice/1/partner/11/baseuser/3/orderperiod/1?';
+=======
+            console.log(partner+"partner ID")
+
+            console.log(values);
+            console.log(msisdn + " Msisdn " + partner + " partner " + device)
+            // Define the base URL
+            let baseUrl = 'http://172.5.10.2:9090/api/savecustomer/account/1/invoice/2/baseuser/3/orderperiod/1?';
+>>>>>>> b0c96f111ac58fe1cd7281f9758c199b2a7910ac
 
             // Check conditions and add parameters accordingly
             if (msisdn) {
@@ -171,16 +184,26 @@ export default function AddCustomerDetails() {
                 console.log("MSISDN WORK")
             }
 
+<<<<<<< HEAD
             if (sim) {
                 baseUrl += `&sim=${sim}`;
                 console.log("SIM WORK")
+=======
+            if (partner) {
+                baseUrl += `&partner=${partner}`;
+                console.log("partner WORK")
+>>>>>>> b0c96f111ac58fe1cd7281f9758c199b2a7910ac
             }
 
             if (device) {
                 baseUrl += `&device=${device}`;
                 console.log("Device WORK")
             }
+<<<<<<< HEAD
 
+=======
+console.log(device+" device ID"+partner+" partner ID"+ msisdn +" Msisdn")
+>>>>>>> b0c96f111ac58fe1cd7281f9758c199b2a7910ac
             const res1 = await axios.post(
                 baseUrl,
                 { ...values },
@@ -212,6 +235,7 @@ export default function AddCustomerDetails() {
                 }
             }).catch(e => {
                 setNotification({
+<<<<<<< HEAD
                     open: true,
                     message: 'Failed to add Customer record. Please try again.',
                     severity: 'error',
@@ -235,6 +259,38 @@ export default function AddCustomerDetails() {
                         severity: 'error',
                     });
                 }
+=======
+                    open:true,
+                    message:e.message,
+                    severity: 'error',
+                })
+
+
+                // setNotification({
+                //     open: true,
+                //     message: 'Failed to add Customer record. Please try again.',
+                //     severity: 'error',
+                // });
+                // if (e.response && e.response.status === 401) {
+                //     console.log("From inside if condition");
+                //     localStorage.removeItem('token');
+                //     navigate("/");
+                // }
+                // if (e.response && e.response.status === 409) {
+                //     setNotification({
+                //         open: true,
+                //         message: 'MSISDN Already Exist',
+                //         severity: 'error',
+                //     });
+                // }
+                // if (e.response && e.response.status === 404) {
+                //     setNotification({
+                //         open: true,
+                //         message: 'Please Provide Valid MSISDN',
+                //         severity: 'error',
+                //     });
+                // }
+>>>>>>> b0c96f111ac58fe1cd7281f9758c199b2a7910ac
             })
             console.log("API 1 response :", res1)
         }
@@ -265,8 +321,13 @@ export default function AddCustomerDetails() {
             payoutId: "",
             balance: "",
             paymentPeriod: "",
+<<<<<<< HEAD
             paymentNotes: ""
 
+=======
+            paymentNotes: "",
+            paymentStatus: ""
+>>>>>>> b0c96f111ac58fe1cd7281f9758c199b2a7910ac
         },
         onSubmit: async (values2) => {
 
@@ -430,9 +491,15 @@ export default function AddCustomerDetails() {
                                     </Grid>
                                     <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
                                         <FormControl fullWidth >
+<<<<<<< HEAD
                                             <InputLabel id="demo-simple-select-label">Subscriber Status</InputLabel>
                                             <Select
                                                 labelId="demo-simple-select-label"
+=======
+                                            <InputLabel id="demo-partnerple-select-label">Subscriber Status</InputLabel>
+                                            <Select
+                                                labelId="demo-partnerple-select-label"
+>>>>>>> b0c96f111ac58fe1cd7281f9758c199b2a7910ac
                                                 id="demo-simple-select"
                                                 // value={values.useParentPricing}
                                                 label="useParentPricing"
@@ -534,6 +601,7 @@ export default function AddCustomerDetails() {
                                         <Divider />
                                     </Grid >
 
+<<<<<<< HEAD
                                     <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
                                         <TextField
 
@@ -741,6 +809,11 @@ export default function AddCustomerDetails() {
                                             }}
                                         />
                                     </Grid>
+=======
+                                   
+
+
+>>>>>>> b0c96f111ac58fe1cd7281f9758c199b2a7910ac
                                 </Grid>
                             </Grid>
                             <Grid item lg={6}>
@@ -756,6 +829,7 @@ export default function AddCustomerDetails() {
                                         // onBlur={handleBlur}
                                         />
                                     </Grid>
+<<<<<<< HEAD
                                     <Grid item lg={6} md={4} sm={6} xs={12} >
                                         <TextField
                                             label="creditLimit"
@@ -807,6 +881,10 @@ export default function AddCustomerDetails() {
                                         />
                                     </Grid>
                                     <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
+=======
+
+                                    <Grid item lg={6} md={4} sm={6} xs={12} >
+>>>>>>> b0c96f111ac58fe1cd7281f9758c199b2a7910ac
                                         <FormControl fullWidth >
                                             <InputLabel id="demo-simple-select-label">Invoice Delivery Method</InputLabel>
                                             <Select
@@ -828,7 +906,11 @@ export default function AddCustomerDetails() {
                                     </Grid>
 
 
+<<<<<<< HEAD
                                     <Grid item lg={12} md={4} sm={6} xs={12} paddingBottom={2}>
+=======
+                                    <Grid item lg={12} md={4} sm={6} xs={12} >
+>>>>>>> b0c96f111ac58fe1cd7281f9758c199b2a7910ac
                                         {accountType === 'Post-Paid' && (
                                             <Grid container spacing={2}>
                                                 <Grid item lg={6} md={4} sm={6} xs={12} fullWidth paddingBottom={2}>
@@ -846,6 +928,7 @@ export default function AddCustomerDetails() {
                                                 </Grid>
                                                 <Grid item lg={6} md={4} sm={6} xs={12} fullWidth paddingBottom={2}>
                                                     <Grid container spacing={0} alignItems="center">
+<<<<<<< HEAD
                                                         <Grid item xs={8}>
                                                             {/* Left side for text input */}
                                                             <TextField
@@ -873,10 +956,294 @@ export default function AddCustomerDetails() {
                                                                 <MenuItem value={'year'}>Year</MenuItem>
                                                                 <MenuItem value={'semi-month'}>Semi-Month</MenuItem>
                                                             </Select>
+=======
+                                                        <Grid item xs={12}>
+                                                            <Grid container spacing={1}>
+                                                                <Grid item xs={8}>
+                                                                    {/* Left side for text input */}
+                                                                    <TextField
+                                                                        label="Due Date"
+                                                                        fullWidth
+                                                                    // name="creditLimit"
+                                                                    // value={values.creditLimit}
+                                                                    // onChange={handleChange}
+                                                                    // onBlur={handleBlur}
+
+                                                                    />
+                                                                </Grid>
+                                                                <Grid item xs={4}>
+                                                                    {/* Right side for dropdown */}
+                                                                    <Select
+
+                                                                        // value={values.selectedOption}
+                                                                        // onChange={handleChange}
+                                                                        // name="selectedOption"
+                                                                        fullWidth
+                                                                        displayEmpty
+
+                                                                    >
+                                                                        <MenuItem value={'month'}>Month</MenuItem>
+                                                                        <MenuItem value={'week'}>Week</MenuItem>
+                                                                        <MenuItem value={'day'}>Day</MenuItem>
+                                                                        <MenuItem value={'year'}>Year</MenuItem>
+                                                                        <MenuItem value={'semi-month'}>Semi-Month</MenuItem>
+                                                                    </Select>
+                                                                </Grid>
+                                                            </Grid>
+>>>>>>> b0c96f111ac58fe1cd7281f9758c199b2a7910ac
                                                         </Grid>
 
                                                     </Grid>
                                                 </Grid>
+<<<<<<< HEAD
+=======
+                                                <Grid item lg={6} md={4} sm={6} xs={12} >
+                                                    <TextField
+                                                        label="creditLimit"
+                                                        type="number"
+                                                        value={values.creditLimit}
+                                                        fullWidth
+                                                        name="creditLimit"
+                                                        required
+                                                        onChange={handleChange}
+                                                        onBlur={handleBlur}
+                                                    />
+                                                </Grid>
+                                                <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
+                                                    <TextField
+
+                                                        label="Auto Recharge Amount"
+                                                        type="number"
+                                                        required
+                                                        fullWidth
+                                                        name="autoRecharge"
+                                                        value={values.autoRecharge}
+                                                        onChange={handleChange}
+                                                        onBlur={handleBlur}
+                                                    />
+                                                </Grid>
+                                                <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
+                                                    <TextField
+                                                        required
+                                                        label="Auto-Recharge Threshold"
+                                                        type="number"
+                                                        fullWidth
+                                                        name="rechargeThreshold"
+                                                        value={values.rechargeThreshold}
+                                                        onChange={handleChange}
+                                                        onBlur={handleBlur}
+                                                    />
+                                                </Grid>
+                                                <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
+                                                    <TextField
+
+                                                        label="Auto-Recharge Monthly Limit"
+                                                        type="number"
+                                                        name="monthlyLimit"
+                                                        fullWidth
+                                                        required
+                                                        value={values.monthlyLimit}
+                                                        onChange={handleChange}
+                                                        onBlur={handleBlur}
+                                                    />
+                                                </Grid>
+                                                <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
+                                                    <TextField
+
+                                                        label="autoPaymentType"
+                                                        type="number"
+                                                        required
+                                                        fullWidth
+                                                        name="autoPaymentType"
+                                                        value={values.autoPaymentType}
+                                                        onChange={handleChange}
+                                                        onBlur={handleBlur}
+                                                    />
+                                                </Grid>
+                                                <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
+                                                    <TextField
+
+                                                        label="dueDateUnitId"
+                                                        type="number"
+                                                        required
+                                                        fullWidth
+                                                        name="dueDateUnitId"
+                                                        value={values.dueDateUnitId}
+                                                        onChange={handleChange}
+                                                        onBlur={handleBlur}
+                                                    />
+                                                </Grid>
+                                                <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
+                                                    <TextField
+
+                                                        label="dueDateValue"
+                                                        type="number"
+                                                        required
+                                                        fullWidth
+                                                        name="dueDateValue"
+                                                        value={values.dueDateValue}
+                                                        onChange={handleChange}
+                                                        onBlur={handleBlur}
+                                                    />
+                                                </Grid>
+                                                <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
+                                                    <TextField
+
+                                                        label="dfFm"
+                                                        type="number"
+                                                        required
+                                                        fullWidth
+                                                        name="dfFm"
+                                                        value={values.dfFm}
+                                                        onChange={handleChange}
+                                                        onBlur={handleBlur}
+                                                    />
+                                                </Grid>
+                                                <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
+                                                    <TextField
+
+                                                        label="nextInvoiceDayOfPeriod"
+                                                        type="number"
+                                                        required
+                                                        fullWidth
+                                                        name="nextInvoiceDayOfPeriod"
+                                                        value={values.nextInvoiceDayOfPeriod}
+                                                        onChange={handleChange}
+                                                        onBlur={handleBlur}
+                                                    />
+                                                </Grid>
+
+                                                <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
+                                                    <TextField
+
+                                                        label="creditNotificationLimit1"
+                                                        type="number"
+                                                        required
+                                                        fullWidth
+                                                        name="creditNotificationLimit1"
+                                                        value={values.creditNotificationLimit1}
+                                                        onChange={handleChange}
+                                                        onBlur={handleBlur}
+                                                    />
+                                                </Grid>
+                                                <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
+                                                    <TextField
+
+                                                        label="creditNotificationLimit2"
+                                                        type="number"
+                                                        required
+                                                        fullWidth
+                                                        name="creditNotificationLimit2"
+                                                        value={values.creditNotificationLimit2}
+                                                        onChange={handleChange}
+                                                        onBlur={handleBlur}
+                                                    />
+                                                </Grid>
+
+
+                                                <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
+                                                    <TextField
+                                                        label="currentMonthlyAmount"
+                                                        type="number"
+                                                        required
+                                                        fullWidth
+                                                        name="currentMonthlyAmount"
+                                                        value={values.currentMonthlyAmount}
+                                                        onChange={handleChange}
+                                                        onBlur={handleBlur}
+                                                        InputProps={{
+                                                            inputProps: {
+                                                                inputMode: "numeric",
+                                                            },
+                                                        }}
+                                                    />
+                                                </Grid>
+                                                <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
+                                                    <TextField
+
+                                                        label="excludeAging"
+                                                        type="number"
+                                                        required
+                                                        fullWidth
+                                                        name="excludeAging"
+                                                        value={values.excludeAging}
+                                                        onChange={handleChange}
+                                                        onBlur={handleBlur}
+                                                    />
+                                                </Grid>
+                                                <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
+                                                    <TextField
+
+                                                        label="dynamicBalance"
+                                                        type="number"
+                                                        required
+                                                        fullWidth
+                                                        name="dynamicBalance"
+                                                        value={values.dynamicBalance}
+                                                        onChange={handleChange}
+                                                        onBlur={handleBlur}
+                                                    />
+                                                </Grid>
+                                                <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
+                                                    <FormControl fullWidth >
+                                                        <InputLabel id="demo-simple-select-label">IS Parent ?</InputLabel>
+                                                        <Select
+                                                            labelId="demo-simple-select-label"
+                                                            id="demo-simple-select"
+                                                            value={values.isParent}
+                                                            label="useParentPricing"
+                                                            onChange={handleChange}
+                                                            onBlur={handleBlur}
+                                                            name="isParent"
+                                                        >
+                                                            <MenuItem value={1}>Yes</MenuItem>
+                                                            <MenuItem value={0}>No</MenuItem>
+
+
+                                                        </Select>
+                                                    </FormControl>
+                                                </Grid>
+
+                                                <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
+                                                    <TextField
+
+                                                        label="invoiceChild"
+                                                        type="number"
+                                                        required
+                                                        fullWidth
+                                                        name="invoiceChild"
+                                                        value={values.invoiceChild}
+                                                        onChange={handleChange}
+                                                        onBlur={handleBlur}
+                                                    />
+                                                </Grid>
+
+
+
+
+                                                <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
+                                                    <FormControl fullWidth >
+                                                        <InputLabel id="demo-simple-select-label">useParentPricing</InputLabel>
+                                                        <Select
+
+                                                            id="demo-simple-select"
+                                                            value={values.useParentPricing}
+                                                            label="useParentPricing"
+                                                            onChange={handleChange}
+                                                            onBlur={handleBlur}
+                                                            name="useParentPricing"
+                                                            required
+                                                        >
+                                                            <MenuItem value={true}>True</MenuItem>
+                                                            <MenuItem value={false}>False</MenuItem>
+
+
+
+                                                        </Select>
+                                                    </FormControl>
+                                                </Grid>
+
+>>>>>>> b0c96f111ac58fe1cd7281f9758c199b2a7910ac
 
                                             </Grid>
                                         )}
@@ -885,6 +1252,10 @@ export default function AddCustomerDetails() {
                                     <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2} >
                                         <TextField
                                             fullWidth
+<<<<<<< HEAD
+=======
+                                            InputLabelProps={{ shrink: true }}
+>>>>>>> b0c96f111ac58fe1cd7281f9758c199b2a7910ac
                                             label='Device ID'
                                             name='device'
                                             value={device}
@@ -912,7 +1283,11 @@ export default function AddCustomerDetails() {
 
 
 
+<<<<<<< HEAD
                                     <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
+=======
+                                    {/* <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
+>>>>>>> b0c96f111ac58fe1cd7281f9758c199b2a7910ac
                                         <TextField
                                             label="MSISDN"
                                             type="number"
@@ -923,7 +1298,11 @@ export default function AddCustomerDetails() {
                                             onChange={e => setMsisdn(e.target.value)}
 
                                         />
+<<<<<<< HEAD
                                     </Grid>
+=======
+                                    </Grid> */}
+>>>>>>> b0c96f111ac58fe1cd7281f9758c199b2a7910ac
                                     {/* <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
                                         <TextField
 
@@ -941,6 +1320,7 @@ export default function AddCustomerDetails() {
                                     <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
                                         <TextField
 
+<<<<<<< HEAD
                                             label="SIM"
                                             type="number"
                                             name='sim'
@@ -954,6 +1334,46 @@ export default function AddCustomerDetails() {
                                         // onBlur={handleBlur}
                                         />
                                     </Grid>
+=======
+                                            label="Partner Id"
+                                            InputLabelProps={{ shrink: true }}
+                                            type="number"
+                                            name='partner'
+                                            value={partner}
+                                            onChange={e => setpartner(e.target.value)}
+
+                                            fullWidth
+                                      
+                                        />
+                                    </Grid>
+                                    <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
+                                    <TextField
+                                            label="MSISDN"
+                                            type="number"
+                                            fullWidth
+
+                                            name="msisdn"
+                                            value={msisdn}
+                                            onChange={e => setMsisdn(e.target.value)}
+
+                                        />
+                                    </Grid>
+                                   
+                                    <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
+                                        <TextField
+
+                                            label="Referral Fee Paid"
+                                            type="number"
+                                            required
+                                            fullWidth
+                                            name="referralFeePaid"
+                                            value={values.referralFeePaid}
+                                            onChange={handleChange}
+                                            onBlur={handleBlur}
+                                        />
+                                    </Grid>
+
+>>>>>>> b0c96f111ac58fe1cd7281f9758c199b2a7910ac
                                 </Grid>
                             </Grid>
                         </Grid>
@@ -1616,11 +2036,36 @@ export default function AddCustomerDetails() {
                                                         />
                                                     </Grid>
                                                     <Grid item xs={6}>
+<<<<<<< HEAD
+=======
+                                                        <FormControl fullWidth>
+                                                            <InputLabel id="demo-simple-select-label">Payment Status</InputLabel>
+                                                            <Select
+                                                                labelId="demo-simple-select-label"
+                                                                id="demo-simple-select"
+                                                                label="paymentStatus"
+                                                                value={values2.paymentStatus}
+                                                                onChange={handleChange2}
+                                                                name='paymentStatus'
+                                                            >
+
+                                                                <MenuItem value={1}>Yes</MenuItem>
+                                                                <MenuItem value={0}>No</MenuItem>
+
+                                                            </Select>
+                                                        </FormControl>
+                                                    </Grid>
+                                                    <Grid item xs={12}>
+>>>>>>> b0c96f111ac58fe1cd7281f9758c199b2a7910ac
                                                         <TextField label='Payment Notes'
                                                             fullWidth
                                                             type='text'
                                                             value={values2.paymentNotes}
                                                             name='paymentNotes'
+<<<<<<< HEAD
+=======
+                                                            rows={4}
+>>>>>>> b0c96f111ac58fe1cd7281f9758c199b2a7910ac
                                                             required
                                                             onChange={handleChange2}
                                                             onBlur={handleBlur2}
