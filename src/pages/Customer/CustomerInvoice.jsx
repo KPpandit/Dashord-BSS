@@ -180,7 +180,7 @@ console.log(id+"   this is mSISDN" )
                                                                     </Grid>
                                                                     <Grid item xs={8} textAlign={'left'}>
                                                                         <Typography sx={{ fontSize: '10px', fontWeight: 'bold' }}>
-                                                                            {id} ABC
+                                                                            {id}
                                                                         </Typography>
                                                                     </Grid>
                                                                     <Grid item xs={4} textAlign={'left'}>
