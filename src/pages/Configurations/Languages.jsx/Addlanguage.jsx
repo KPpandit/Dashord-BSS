@@ -2,8 +2,11 @@ import { Box, Button, Grid, TextField, Typography, createTheme } from '@mui/mate
 import { useFormik } from 'formik';
 import React, { Component, useState } from 'react'
 import axios from "axios";
-
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from 'react-toastify';
 export default function AddLanguage(props) {
+    const tokenValue = localStorage.getItem('token');
     const { handleChange, handleSubmit, handleBlur, values } = useFormik({
         initialValues: {
             code: "",
@@ -19,36 +22,26 @@ export default function AddLanguage(props) {
                 { ...values }, {
 
                 headers: {
-                    "Authorization": "Bearer +00f35991-0de0-4f5c-a432-b5d20a7ce240 ",
+                    Authorization: `Bearer ${tokenValue}`,
                     "Accept": "application/json",
                     "Content-Type": "application/json"
                 }
             }
 
             ).then(res => {
-                if (res.status === 200) {
-                    setNotify({
-                        isOpen: true,
-                        message: 'Rates Added SuccessFully ',
-                        type: 'success'
-                    })
-                    setTimeout(() => { props.onClose(); }, 3000)
+                if (res.status === 201) {
+                    toast.success('Language Added Successfully', { autoClose: 2000 });
+                    props.onClose();
                 }
             })
         }
     })
-    const [notify, setNotify] = useState({ isOpen: false, message: '', type: '' });
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setNewData((prevData) => ({ ...prevData, [name]: value }));
-    };
-
-    const handleSave = () => {
-
-    };
+   
+   
     const defaultTheme = createTheme();
     return (
         <Grid >
+              <ToastContainer position="bottom-left" />
             <Box
                 sx={{
                     marginTop: 5,

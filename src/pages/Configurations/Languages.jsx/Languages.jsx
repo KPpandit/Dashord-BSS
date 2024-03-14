@@ -9,6 +9,10 @@ import { Save } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
 import Popup from '../../Components/PopUp';
 import AddLanguage from './Addlanguage';
+import axios from "axios";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from 'react-toastify';
 const EditModal = ({ isOpen, onClose, data, onSave }) => {
     const [editedData, setEditedData] = useState(data);
 
@@ -36,38 +40,30 @@ const EditModal = ({ isOpen, onClose, data, onSave }) => {
                     p: 2,
                 }}
             >
-                <Typography variant="h6" component="div" gutterBottom>
+                <Typography variant="h6" component="div" sx={{color:'#FAC22E'}} gutterBottom>
                     Edit Language
                 </Typography>
-                <TextField
-                    label="Language ID"
-                    name="languageid"
-                    value={editedData.languageid}
-                    onChange={handleInputChange}
-                    fullWidth
-                    disabled
-                    sx={{ mt: 2 }}
-                />
-                <TextField
-                    label="Language Name"
-                    name="language_name"
-                    value={editedData.language_name}
-                    onChange={handleInputChange}
-                    fullWidth
-                    sx={{ mt: 2 }}
-                />
+                
                 <TextField
                     label="Language Code"
-                    name="language_code"
-                    value={editedData.language_code}
+                    name="code"
+                    value={editedData.code}
                     onChange={handleInputChange}
                     fullWidth
                     sx={{ mt: 2 }}
                 />
-                <Button variant="contained" onClick={handleSave} sx={{ mt: 2 }}>
+                <TextField
+                    label="Language Decription"
+                    name="description"
+                    value={editedData.description}
+                    onChange={handleInputChange}
+                    fullWidth
+                    sx={{ mt: 2 }}
+                />
+                <Button variant="contained" onClick={handleSave} sx={{ mt: 2 ,backgroundColor:'#253A7D'}}>
                     {<SaveAltIcon sx={{ paddingRight: 1 }} />}  Save Changes
                 </Button>
-                <Button variant="contained" onClick={onClose} sx={{ mt: 2, ml: 2 }}>
+                <Button variant="contained" onClick={onClose} sx={{ mt: 2, ml: 2 ,backgroundColor:'#253A7D'}}>
                     {<CloseIcon sx={{ paddingRight: 1 }} />}
                     Close
                 </Button>
@@ -77,27 +73,72 @@ const EditModal = ({ isOpen, onClose, data, onSave }) => {
 };
 export default function Languages() {
     const columns = [
-        { id: 'languageid', name: 'LANGUAGE ID' },
-        { id: 'language_code', name: 'LANGUAGE CODE' },
-        { id: 'language_name', name: 'LANGUAGE NAME' },
+       
+        { id: 'code', name: 'Language Code' },
+        { id: 'description', name: 'Language Description' },
 
     ];
+    const [delete1,SetDelete]=useState([])
+    const tokenValue = localStorage.getItem('token');
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await axios.get('http://172.5.10.2:9090/api/alllanguage', {
+                    headers: {
+                        Authorization: `Bearer ${tokenValue}`,
+                        "Accept": "application/json",
+                        "Content-Type": "application/json"
+                    }
+                });
+                // Assuming your API response is an array of objects similar to the data structure in your generateData function
+                const apiData = response.data;
 
-    // Generate sample data
-    const generateData = () => {
-        const data = [];
-        for (let i = 0; i < 100; i++) {
-            data.push({
-                languageid: ` ${i}`,
-                language_code: `LANGUAGE CODE ${i}`,
-                language_name: `LANGUAGE NAME ${i}`,
+                // Update the state with the API data
+                setRows(apiData);
+            } catch (error) {
 
+                if (error.response && error.response.status === 401) {
+                    // console.log("From inside if condition");
+                    // localStorage.removeItem('token');
+                    // navigate("/");
+                }
+
+                console.error('Error fetching data from API:', error);
+                // Handle error as needed
+            }
+        };
+
+        fetchData(); // Invoke the fetchData function when the component mounts
+    }, [tokenValue,delete1]);
+    const fetchData = async () => {
+        try {
+            const response = await axios.get('http://172.5.10.2:9090/api/alllanguage', {
+                headers: {
+                    Authorization: `Bearer ${tokenValue}`,
+                    "Accept": "application/json",
+                    "Content-Type": "application/json"
+                }
             });
-        }
-        return data;
-    };
+            // Assuming your API response is an array of objects similar to the data structure in your generateData function
+            const apiData = response.data;
 
-    const [rows, rowchange] = useState(generateData());
+            // Update the state with the API data
+            setRows(apiData);
+        } catch (error) {
+
+            if (error.response && error.response.status === 401) {
+                // console.log("From inside if condition");
+                // localStorage.removeItem('token');
+                // navigate("/");
+            }
+
+            console.error('Error fetching data from API:', error);
+            // Handle error as needed
+        }
+    };
+    // Generate sample data
+   
+    const [rows, setRows] = useState([]);
     const [page, pagechange] = useState(0);
     const [rowperpage, rowperpagechange] = useState(5);
 
@@ -117,18 +158,22 @@ export default function Languages() {
     const handleRowClick = (row) => {
         setSelectedRecord(row);
     };
-    useEffect(() => {
-        fetch("http://172.5.10.2:9696/api/rates/offer/get/all")
-            .then(resp => {
-                setdata(resp.data);
-                return resp.json();
-            }).then(resp => {
-                rowchange(resp);
-            }).catch(e => {
-                console.log(e.message)
-            })
-        console.log("this is from rates");
-    }, [selectedRecord])
+    // useEffect(() => {
+    //     fetch("http://172.5.10.2:9090/api/alllanguage",{headers: {
+    //         Authorization: `Bearer ${tokenValue}`,
+    //         "Accept": "application/json",
+    //         "Content-Type": "application/json"
+    //     }})
+    //         .then(resp => {
+    //             setdata(resp.data);
+    //             return resp.json();
+    //         }).then(resp => {
+    //             rowchange(resp);
+    //         }).catch(e => {
+    //             console.log(e.message)
+    //         })
+    //     console.log("this is from rates");
+    // }, [selectedRecord])
 
 
     const [isEditModalOpen, setEditModalOpen] = useState(false);
@@ -143,16 +188,31 @@ export default function Languages() {
 
     const handleEditSave = (editedData) => {
         // Find the index of the selectedRecord in the rows array
-        const index = rows.findIndex((row) => row.languageid === selectedRecord.languageid);
+        console.log("handle Edit is called"+editedData.code);
+        axios.put(`http://172.5.10.2:9090/api/updatelanguage/${editedData.id}`, {
+            code: editedData.code,
+            description: editedData.description
+        }, {
+            headers: {
+                Authorization: `Bearer ${tokenValue}`,
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => {
+            console.log('Language updated successfully:', response.data);
+            toast.success('Language Updated Successfully', { autoClose: 2000 });
+            fetchData();
+            setTimeout(() => {
+                onClose();
+                // Other things to execute after 3 minutes
+            }, 3 * 1000);
 
-        if (index !== -1) {
-            // Update the rows array with the edited data
-            const updatedRows = [...rows];
-            updatedRows[index] = { ...selectedRecord, ...editedData };
-
-            // Update the state with the modified rows
-            rowchange(updatedRows);
-        }
+        })
+        .catch(error => {
+            console.error('Error updating language:', error);
+            // Optionally, show an error message to the user
+        });
+        
 
         // Close the edit modal
         handleEditModalClose();
@@ -183,16 +243,16 @@ export default function Languages() {
         if (selectedRecord) {
             return (
                 <Grid>
-                    <Grid sx={{ marginBottom: 2 }}>
+                    <Grid sx={{ marginBottom: 2 ,boxShadow:24}}>
 
 
-                        <Card variant="outlined" sx={{ maxWidth: 350 }}>
+                        <Card variant="outlined" sx={{ maxWidth: 350 }} elevation={24}>
 
-                            <Paper sx={{ p: 1, backgroundColor: '#1976d2' }}>
+                            <Paper  sx={{ p: 1, backgroundColor: '#253A7D' }}>
 
-                                <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ backgroundColor: '#1976d2' }}>
+                                <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ backgroundColor: '#253A7D' }}>
                                     <Typography gutterBottom variant="h6.5" component="div" color={'white'}>
-                                        {selectedRecord.language_name}
+                                        {selectedRecord.code}
                                     </Typography>
 
                                 </Stack>
@@ -204,30 +264,25 @@ export default function Languages() {
                                 <TableContainer component={Paper} sx={{ marginTop: 2 }}>
                                     <Table>
                                         <TableBody>
-                                            <TableRow>
-                                                <TableCell component="th" scope="row">
-                                                    Language ID
-                                                </TableCell>
-                                                <TableCell>{selectedRecord.languageid}</TableCell>
-                                            </TableRow>
-                                            <TableRow>
-                                                <TableCell component="th" scope="row">
-                                                    Language Name
-                                                </TableCell>
-                                                <TableCell>{selectedRecord.language_name}</TableCell>
-                                            </TableRow>
+                                            
                                             <TableRow>
                                                 <TableCell component="th" scope="row">
                                                     Language Code
                                                 </TableCell>
-                                                <TableCell>{selectedRecord.language_code}</TableCell>
+                                                <TableCell>{selectedRecord.code}</TableCell>
+                                            </TableRow>
+                                            <TableRow>
+                                                <TableCell component="th" scope="row">
+                                                    Language Description
+                                                </TableCell>
+                                                <TableCell>{selectedRecord.description}</TableCell>
                                             </TableRow>
                                         </TableBody>
                                     </Table>
                                 </TableContainer>
                             </CardContent>
                             <Grid >
-                                <Button sx={{ margin: 2 }} variant="contained" onClick={handleEditModalOpen}>
+                                <Button sx={{ margin: 2 ,backgroundColor:'#253A7D',boxShadow:24}} variant="contained" onClick={handleEditModalOpen}>
                                     Edit
                                 </Button>
                             </Grid>
@@ -267,10 +322,11 @@ export default function Languages() {
     };
     return (
         <Box sx={{ display: 'container' }}>
+              <ToastContainer position="bottom-left" />
             <Box sx={{ width: '68%', padding: '16px' }}>
                 <Box component="main" sx={{ flexGrow: 1, width: '100%' }} >
 
-                    <Paper>
+                    <Paper elevation={24}>
 
                         <TableContainer sx={{ maxHeight: 600 }}>
                             <Table stickyHeader size='medium' padding="normal">
@@ -280,7 +336,7 @@ export default function Languages() {
                                             <TableCell
                                                 key={column.id}
                                                 style={{
-                                                    backgroundColor: '#1976d2',
+                                                    backgroundColor: '#253A7D',
                                                     color: 'white',
                                                     textAlign: 'center',
                                                     height: '2px',
@@ -306,7 +362,7 @@ export default function Languages() {
                                                         onMouseLeave={handleRowMouseLeave}
                                                         sx={
                                                             highlightedRow === row
-                                                                ? { backgroundColor: 'lightblue' }
+                                                                ? { backgroundColor: '#FAC22E' }
                                                                 : {}
                                                         }
                                                     >
@@ -334,7 +390,7 @@ export default function Languages() {
                     </Paper>
 
                     <Grid >
-                        <Button sx={{ margin: 2 }} variant="contained" onClick={(e) => {
+                        <Button sx={{ margin: 2,backgroundColor:'#253A7D',boxShadow:24 }} variant="contained" onClick={(e) => {
                         setOpenPopup(true);
                     }}>
                             Add New
@@ -349,7 +405,7 @@ export default function Languages() {
                 openPopup={openPopup}
                 setOpenPopup={setOpenPopup}
             >
-               <AddLanguage/>
+               <AddLanguage onClose={() => setOpenPopup(false)}/>
             </Popup>
             </Box>
             <Box sx={{ paddingTop: 2 }} >
