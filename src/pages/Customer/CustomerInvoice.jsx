@@ -245,7 +245,7 @@ console.log(id+"   this is mSISDN" )
                                                                     </Grid>
                                                                     <Grid item xs={6} textAlign={'left'}>
                                                                         <Typography sx={{ fontSize: '10px', fontWeight: 'bold' }}>
-                                                                            15/02/2024
+                                                                           {rows.to_date}
                                                                         </Typography>
                                                                     </Grid>
                                                                     <Grid item xs={6} textAlign={'left'}>
@@ -256,7 +256,7 @@ console.log(id+"   this is mSISDN" )
                                                                     </Grid>
                                                                     <Grid item xs={6} textAlign={'left'}>
                                                                         <Typography sx={{ fontSize: '10px' }}>
-                                                                            15/02/2024
+                                                                        {rows.to_date}
                                                                         </Typography>
                                                                     </Grid>
                                                                     <Grid item xs={6} textAlign={'left'}>
@@ -267,7 +267,7 @@ console.log(id+"   this is mSISDN" )
                                                                     </Grid>
                                                                     <Grid item xs={6} textAlign={'left'}>
                                                                         <Typography sx={{ fontSize: '10px' }}>
-                                                                            15/01/2024 to 14/02/2024
+                                                                            {rows.from_date} to {rows.to_date}
                                                                         </Typography>
                                                                     </Grid>
                                                                     <Grid item xs={6} textAlign={'left'}>
@@ -512,7 +512,7 @@ console.log(id+"   this is mSISDN" )
                                                                         <Typography sx={{ fontSize: '9px', fontWeight: 'Bold' }}>Bill Period</Typography>
                                                                     </Grid>
                                                                     <Grid item xs={12}>
-                                                                        <Typography sx={{ fontSize: '9px' }}>15/01/2024 to 14/02/2024</Typography>
+                                                                        <Typography sx={{ fontSize: '9px' }}>{rows.from_date} to {rows.to_date}</Typography>
                                                                     </Grid>
 
                                                                 </Grid>
@@ -526,7 +526,7 @@ console.log(id+"   this is mSISDN" )
                                                                         <Typography sx={{ fontSize: '9px', fontWeight: 'Bold' }}>Neotel No</Typography>
                                                                     </Grid>
                                                                     <Grid item xs={12}>
-                                                                        <Typography sx={{ fontSize: '9px' }}> 9999320596</Typography>
+                                                                        <Typography sx={{ fontSize: '9px' }}>{rows.msisdn}</Typography>
                                                                     </Grid>
 
                                                                 </Grid>
@@ -834,7 +834,7 @@ console.log(id+"   this is mSISDN" )
                                                                     <Typography sx={{ fontSize: '10px', fontWeight: 'Bold' }}>Bill Period</Typography>
                                                                 </Grid>
                                                                 <Grid item xs={12}>
-                                                                    <Typography sx={{ fontSize: '10px' }}>15/01/2024 to 14/02/2024</Typography>
+                                                                    <Typography sx={{ fontSize: '10px' }}>{rows.from_date} to {rows.to_date}</Typography>
                                                                 </Grid>
 
                                                             </Grid>
@@ -848,7 +848,7 @@ console.log(id+"   this is mSISDN" )
                                                                     <Typography sx={{ fontSize: '10px', fontWeight: 'Bold' }}>Neotel No</Typography>
                                                                 </Grid>
                                                                 <Grid item xs={12}>
-                                                                    <Typography sx={{ fontSize: '10px' }}> 9999320596</Typography>
+                                                                    <Typography sx={{ fontSize: '10px' }}> {rows.msisdn}</Typography>
                                                                 </Grid>
 
                                                             </Grid>
@@ -954,7 +954,7 @@ console.log(id+"   this is mSISDN" )
                                                                     <Typography sx={{ fontSize: '11px', fontWeight: 'Bold' }}>Bill Period</Typography>
                                                                 </Grid>
                                                                 <Grid item xs={12}>
-                                                                    <Typography sx={{ fontSize: '11px' }}>15/01/2024 to 14/02/2024</Typography>
+                                                                    <Typography sx={{ fontSize: '11px' }}>{rows.from_date} to {rows.to_date}</Typography>
                                                                 </Grid>
 
                                                             </Grid>
@@ -968,7 +968,7 @@ console.log(id+"   this is mSISDN" )
                                                                     <Typography sx={{ fontSize: '11px', fontWeight: 'Bold' }}>Neotel No</Typography>
                                                                 </Grid>
                                                                 <Grid item xs={12}>
-                                                                    <Typography sx={{ fontSize: '11px' }}> 9999320596</Typography>
+                                                                    <Typography sx={{ fontSize: '11px' }}>{rows.msisdn}</Typography>
                                                                 </Grid>
 
                                                             </Grid>
@@ -1174,7 +1174,7 @@ console.log(id+"   this is mSISDN" )
                                                                     <Typography sx={{ fontSize: '11px', fontWeight: 'Bold' }}>Bill Period</Typography>
                                                                 </Grid>
                                                                 <Grid item xs={12}>
-                                                                    <Typography sx={{ fontSize: '11px' }}>15/01/2024 to 14/02/2024</Typography>
+                                                                    <Typography sx={{ fontSize: '11px' }}>{rows.from_date} to {rows.to_date}</Typography>
                                                                 </Grid>
 
                                                             </Grid>
@@ -1188,7 +1188,7 @@ console.log(id+"   this is mSISDN" )
                                                                     <Typography sx={{ fontSize: '11px', fontWeight: 'Bold' }}>Neotel No</Typography>
                                                                 </Grid>
                                                                 <Grid item xs={12}>
-                                                                    <Typography sx={{ fontSize: '11px' }}> 9999320596</Typography>
+                                                                    <Typography sx={{ fontSize: '11px' }}>{rows.msisdn}</Typography>
                                                                 </Grid>
 
                                                             </Grid>

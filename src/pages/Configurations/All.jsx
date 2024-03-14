@@ -62,10 +62,10 @@ export default function All() {
         if (selectedRecord) {
             return (
                 <>
-                    <Paper sx={{ marginBottom: 2 }}>
+                    <Paper elevation={10} sx={{ marginBottom: 2 }}>
                         <Card variant="outlined" sx={{ maxWidth: 360 }}>
-                            <Box sx={{ p: 1, backgroundColor: '#1976d2' }}>
-                                <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ backgroundColor: '#1976d2' }}>
+                            <Box sx={{ p: 1, backgroundColor: '#253A7D' }}>
+                                <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ backgroundColor: '#253A7D' }}>
                                     <Typography gutterBottom variant="h6.5" component="div" color={'white'}>
                                         {selectedRecord.preference}
                                     </Typography>
@@ -83,10 +83,10 @@ export default function All() {
                                 </Box>
                             </CardContent>
                             <Grid>
-                                <Button sx={{ margin: 2 }} variant="contained">
+                                <Button sx={{ margin: 2,backgroundColor:'#253A7D' }} variant="contained">
                                     Save Changes
                                 </Button>
-                                <Button sx={{ margin: 1 }} variant="contained">
+                                <Button sx={{ margin: 1 ,backgroundColor:"#253A7D"}} variant="contained">
                                     Cancel
                                 </Button>
                             </Grid>
@@ -127,7 +127,7 @@ export default function All() {
                                             <TableCell
                                                 key={column.id}
                                                 style={{
-                                                    backgroundColor: '#1976d2',
+                                                    backgroundColor: '#253A7D',
                                                     color: 'white',
                                                     textAlign: 'center',
                                                     height:'2px',
@@ -169,6 +169,7 @@ export default function All() {
                             </Table>
                         </TableContainer>
                         <TablePagination
+                        sx={{color:'#253A7D'}}
                             rowsPerPageOptions={[5, 10, 25]}
                             rowsPerPage={rowperpage}
                             page={page}

@@ -59,9 +59,9 @@ export default function AccountType(props) {
 
                         <Card variant="outlined" >
 
-                            <Box sx={{ p: 2, backgroundColor: '#1976d2' }}>
+                            <Box sx={{ p: 2, backgroundColor: '#253A7D' }}>
 
-                                <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ backgroundColor: '#1976d2' }}>
+                                <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ backgroundColor: '#253A7D' }}>
                                     <Typography gutterBottom variant="h6.5" component="div" color={'white'}>
                                         Basic {selectedRecord.id}
                                     </Typography>
@@ -98,7 +98,7 @@ export default function AccountType(props) {
                    
 
                     <Paper sx={{ marginTop: 2 }}>
-                        <Grid sx={{ backgroundColor: '#1976d2' }}>
+                        <Grid sx={{ backgroundColor: '#253A7D' }}>
                             <Typography sx={{ paddingTop: 2, paddingLeft: 2, paddingBottom: 2, color: 'white' }} style={{ fontFamily: 'Roboto', fontSize: '14', fontWeight: '400' }}>ACCOUNT INFORMATION TYPES</Typography>
                         </Grid>
                         <Divider light />
@@ -139,11 +139,11 @@ export default function AccountType(props) {
                         </Box>
                     </Paper>
                     <Grid padding={2} sx={{ width: 360 }}>
-                    <Button variant="contained" style={{ marginRight: '10px', marginBottom: '10px' }}>{<EditIcon sx={{ paddingRight: 1 }} />}EDIT</Button>
-                        <Button variant="contained" style={{ marginBottom: '10px' }}>{<DeleteIcon sx={{ paddingRight: 1 }} />}DELETE</Button>
+                    <Button variant="contained" style={{ marginRight: '10px', marginBottom: '10px',backgroundColor:'#253A7D' }}>{<EditIcon sx={{ paddingRight: 1 }} />}EDIT</Button>
+                        <Button variant="contained" style={{ marginBottom: '10px',backgroundColor:"#253A7D" }}>{<DeleteIcon sx={{ paddingRight: 1 }} />}DELETE</Button>
 
-                        <Button variant="contained" style={{ marginRight: '10px', marginBottom: '10px' }} onClick={toPayment} >{<DoneOutlineSharpIcon sx={{ paddingRight: 1 }} />}Clone</Button>
-                        <Button variant="contained" style={{ marginBottom: '10px' }}>{<DoneOutlineSharpIcon sx={{ paddingRight: 1 }} />}ADD INfo Type</Button>
+                        <Button variant="contained" style={{ marginRight: '10px', marginBottom: '10px',backgroundColor:"#253A7D" }} onClick={toPayment} >{<DoneOutlineSharpIcon sx={{ paddingRight: 1 }} />}Clone</Button>
+                        <Button variant="contained" style={{ marginBottom: '10px',backgroundColor:"#253A7D" }}>{<DoneOutlineSharpIcon sx={{ paddingRight: 1 }} />}ADD INfo Type</Button>
                         
                     </Grid>
                     <Grid sx={{ padding: 2 }}>
@@ -152,24 +152,7 @@ export default function AccountType(props) {
                 </Grid>
             )
         } else {
-            return <Card variant="outlined" sx={{ maxWidth: 360 }}>
-                <Box sx={{ p: 2 }}>
-                    <Stack direction="row" justifyContent="space-between" alignItems="center">
-                        <Typography gutterBottom variant="h5" component="div">
-                            No Agent Selected
-                        </Typography>
-                        <Typography gutterBottom variant="h6" component="div">
-
-                        </Typography>
-                    </Stack>
-                    <Divider light />
-                    <Typography sx={{ paddingTop: 1 }} color="text.secondary" variant="body2">
-                        Please select Agent to view
-                    </Typography>
-                </Box>
-                <Divider light />
-
-            </Card>;
+            return <></>
         }
     };
 
