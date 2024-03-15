@@ -121,7 +121,7 @@ export default function Email() {
             <form onSubmit={handleSubmit}>
                 <Grid container spacing={1} padding={2} textAlign='center' justifyContent="center" sx={{ marginX: 'auto', maxWidth: '100%' }}>
                     <Paper elevation={5} sx={{ width: 600 }}>
-                        <Paper elevation={10} item lg={12} paddingBottom={1} sx={{ backgroundColor: '#1976D2', height: 30 }}>
+                        <Paper elevation={10} item lg={12} paddingBottom={1} sx={{ backgroundColor: '#253A7D', height: 30 }}>
                             <Typography variant='h6' color={'grey'} sx={{ textAlign: 'left', color: 'white', paddingLeft: 2 }}>Email</Typography>
                         </Paper>
                         <Grid container spacing={2} padding={3}>
@@ -200,7 +200,7 @@ export default function Email() {
                                     <Grid item>
                                         <Button
                                             type="submit"
-                                            style={{ backgroundColor: '#1976D2', color: 'white' }}
+                                            style={{ backgroundColor: '#253A7D', color: 'white' }}
 
                                         >
                                             <SaveAltIcon sx={{ paddingRight: 1 }} />
@@ -210,7 +210,7 @@ export default function Email() {
                                     <Grid item >
                                         <Button
                                             type="submit"
-                                            style={{ backgroundColor: '#1976D2', color: 'white' }}
+                                            style={{ backgroundColor: '#253A7D', color: 'white' }}
                                         >
                                             <CancelIcon sx={{ paddingRight: 1 }} />
                                             Cancle

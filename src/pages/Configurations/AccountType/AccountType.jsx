@@ -180,7 +180,23 @@ export default function AccountType(props) {
     return (
         <Box sx={{ display: 'container' }}>
              <Box sx={{ width: '68%', padding: '16px' }}>
+             <Box component="main" sx={{ flexGrow: 1, p: 1, width: '100%' }}>
+                    <Paper elevation={10} sx={{ padding: 1, margin: 1, backgroundColor: 'white', color: '#253A7D', marginLeft: 0.2, marginRight: 0.2 }}>
+                        <Grid>
+                            <Typography
+                                style={{
+                                    fontFamily: 'Roboto',
+                                    fontSize: '20px',
+                                    paddingLeft: '15px',
+                                    fontWeight: 'bold',
+
+                                }}
+                            > Account Type</Typography>
+                        </Grid>
+                    </Paper>
+                </Box>
                 <Box component="main" sx={{ flexGrow: 1 }} >
+                    <Paper elevation={24}>
                     <Grid lg={12} md={12} sm={12} sx={{ textAlign: 'right', marginY: -0.1 }}>
                         <form
                             onSubmit={handleSerch}
@@ -214,13 +230,14 @@ export default function AccountType(props) {
                             </Grid> */}
                         </form>
                     </Grid>
-                    <Paper>
+                    </Paper>
+                    <Paper elevation={24}>
                         <TableContainer sx={{ maxHeight: 600 }}>
                             <Table stickyHeader size='medium' padding="normal">
                                 <TableHead>
                                     <TableRow>
                                         {columns.map((column) => (
-                                            <TableCell style={{ backgroundColor: '#1976d2', color: 'white' }} key={column.id} sx={{ textAlign: 'center' }}><Typography fontFamily={'Sans-serif'}>{column.name}</Typography></TableCell>
+                                            <TableCell style={{ backgroundColor: '#253A7D', color: 'white' }} key={column.id} sx={{ textAlign: 'center' }}><Typography fontFamily={'Sans-serif'}>{column.name}</Typography></TableCell>
                                         ))}
                                     </TableRow>
                                 </TableHead>
@@ -265,7 +282,7 @@ export default function AccountType(props) {
                     </Paper>
 
                     <Box sx={{  paddingBottom: '16px', paddingTop: '14px', display: 'flex', gap: '16px' }}>
-                        <Button variant="contained" backgroundColor="#6471B5"
+                        <Button variant="contained" sx={{backgroundColor:'#253A7D',boxShadow:24}}
                          onClick={addAccountType}
                         >
                             Add New

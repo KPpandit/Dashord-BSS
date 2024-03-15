@@ -75,16 +75,16 @@ export default function Users() {
         if (selectedRecord) {
             return (
                 <Grid>
-                    <Grid sx={{ marginBottom: 2 }}>
+                    <Grid sx={{ marginBottom: 2 ,boxShadow:24}}>
 
 
                         <Card variant="outlined" sx={{ maxWidth: 400, width: 320 }}>
 
-                            <Paper sx={{ p: 1, backgroundColor: '#1976d2' }}>
+                            <Paper sx={{ p: 1, backgroundColor: '#253A7D' }}>
 
-                                <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ backgroundColor: '#1976d2' }}>
+                                <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ backgroundColor: '#253A7D' }}>
                                     <Typography gutterBottom variant="h6.5" component="div" color={'white'}>
-                                   {selectedRecord.role}
+                                   {selectedRecord.name}
                                     </Typography>
 
                                 </Stack>
@@ -125,10 +125,10 @@ export default function Users() {
                                 </TableContainer>
                             </CardContent>
                             <Grid >
-                                <Button sx={{ margin: 2 }} variant="contained" >
+                                <Button sx={{ margin: 2 ,backgroundColor:'#253A7D'}} variant="contained" >
                                     Edit
                                 </Button>
-                                <Button sx={{ margin: 2 }} variant="contained" >
+                                <Button sx={{ margin: 2 ,backgroundColor:'#253A7D'}} variant="contained" >
                                     Delete
                                 </Button>
                             </Grid>
@@ -166,7 +166,7 @@ export default function Users() {
             <Box sx={{ width: '68%', padding: '16px' }}>
                 <Box component="main" sx={{ flexGrow: 1, width: '100%' }} >
 
-                    <Paper>
+                    <Paper elevation={24}>
 
                         <TableContainer sx={{ maxHeight: 600 }}>
                             <Table stickyHeader size='medium' padding="normal">
@@ -176,7 +176,7 @@ export default function Users() {
                                             <TableCell
                                                 key={column.id}
                                                 style={{
-                                                    backgroundColor: '#1976d2',
+                                                    backgroundColor: '#253A7D',
                                                     color: 'white',
                                                     textAlign: 'left',
                                                     height: '2px',
@@ -218,6 +218,7 @@ export default function Users() {
                             </Table>
                         </TableContainer>
                         <TablePagination
+                        sx={{color:'#253A7D'}}
                             rowsPerPageOptions={[5, 10, 25]}
                             rowsPerPage={rowperpage}
                             page={page}
@@ -230,7 +231,7 @@ export default function Users() {
                     </Paper>
 
                     <Grid >
-                        <Button sx={{ margin: 2 }} variant="contained" onClick={(e)=>{navigate("/addUsers")}}>
+                        <Button sx={{ margin: 2 ,backgroundColor:'#253A7D',boxShadow:24}} variant="contained" onClick={(e)=>{navigate("/addUsers")}}>
                             Add New
                         </Button>
 

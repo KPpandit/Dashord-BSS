@@ -75,10 +75,10 @@ const EditModal = ({ isOpen, onClose, data, onSave }) => {
                     fullWidth
                     sx={{ mt: 2 }}
                 />
-                <Button variant="contained" onClick={handleSave} sx={{ mt: 2 }}>
+                <Button variant="contained" onClick={handleSave} sx={{ mt: 2 ,backgroundColor:'#253A7D'}}>
                     {<SaveAltIcon sx={{ paddingRight: 1 }} />}  Save Changes
                 </Button>
-                <Button variant="contained" onClick={onClose} sx={{ mt: 2, ml: 2 }}>
+                <Button variant="contained" onClick={onClose} sx={{ mt: 2, ml: 2 ,backgroundColor:'#253A7D'}}>
                     {<CloseIcon sx={{ paddingRight: 1 }} />}
                     Close
                 </Button>
@@ -217,11 +217,11 @@ export default function OrderPeriod() {
                     <Grid sx={{ marginBottom: 2 }}>
 
 
-                        <Card variant="outlined" sx={{ maxWidth: 400, width: 320 }}>
+                        <Card elevation={24} variant="outlined" sx={{ maxWidth: 400, width: 320 }}>
 
-                            <Paper sx={{ p: 1, backgroundColor: '#1976d2' }}>
+                            <Paper sx={{ p: 1, backgroundColor: '#253A7D' }}>
 
-                                <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ backgroundColor: '#1976d2' }}>
+                                <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ backgroundColor: '#253A7D' }}>
                                     <Typography gutterBottom variant="h6.5" component="div" color={'white'}>
                                         {selectedRecord.description}
                                     </Typography>
@@ -258,10 +258,10 @@ export default function OrderPeriod() {
                                 </TableContainer>
                             </CardContent>
                             <Grid >
-                                <Button sx={{ margin: 2 }} variant="contained" onClick={handleEditModalOpen}>
+                                <Button sx={{ margin: 2 ,backgroundColor:'#253A7D'}} variant="contained" onClick={handleEditModalOpen}>
                                     Edit
                                 </Button>
-                                <Button sx={{ margin: 2 }} variant="contained" onClick={() => handleEditSave(null)}>
+                                <Button sx={{ margin: 2,backgroundColor:'#253A7D' }} variant="contained" onClick={() => handleEditSave(null)}>
                                     Delete
                                 </Button>
                             </Grid>
@@ -314,7 +314,7 @@ export default function OrderPeriod() {
                                             <TableCell
                                                 key={column.id}
                                                 style={{
-                                                    backgroundColor: '#1976d2',
+                                                    backgroundColor: '#253A7D',
                                                     color: 'white',
                                                     textAlign: 'center',
                                                     height: '2px',
@@ -356,6 +356,7 @@ export default function OrderPeriod() {
                             </Table>
                         </TableContainer>
                         <TablePagination
+                        sx={{color:'#253A7D'}}
                             rowsPerPageOptions={[5, 10, 25]}
                             rowsPerPage={rowperpage}
                             page={page}
@@ -368,7 +369,7 @@ export default function OrderPeriod() {
                     </Paper>
 
                     <Grid >
-                        <Button sx={{ margin: 2 }} variant="contained" onClick={handleAddModalOpen}>
+                        <Button sx={{ margin: 2 ,backgroundColor:'#253A7D'}} variant="contained" onClick={handleAddModalOpen}>
                             Add New
                         </Button>
 

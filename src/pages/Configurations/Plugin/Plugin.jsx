@@ -62,10 +62,10 @@ const EditModal = ({ isOpen, onClose, data, onSave }) => {
                     fullWidth
                     sx={{ mt: 2 }}
                 />
-                <Button variant="contained" onClick={handleSave} sx={{ mt: 2 }}>
+                <Button variant="contained" onClick={handleSave} sx={{ mt: 2 ,backgroundColor:'#253A7D'}}>
                     {<SaveAltIcon sx={{ paddingRight: 1 }} />}  Save Changes
                 </Button>
-                <Button variant="contained" onClick={onClose} sx={{ mt: 2, ml: 2 }}>
+                <Button variant="contained" onClick={onClose} sx={{ mt: 2, ml: 2 ,backgroundColor:'#253A7D'}}>
                     {<CloseIcon sx={{ paddingRight: 1 }} />}
                     Close
                 </Button>
@@ -210,7 +210,7 @@ export default function Plugin() {
 
             return (
                 <Grid>
-                    <Grid sx={{ marginBottom: 2 }}>
+                    <Grid sx={{ marginBottom: 2 ,boxShadow:24}}>
 
 
                         <Card variant="outlined" sx={{ maxWidth: 350, width: 300 }}>
@@ -224,7 +224,7 @@ export default function Plugin() {
                                     <TableCell
                                         key={column.id}
                                         style={{
-                                            backgroundColor: '#1976d2',
+                                            backgroundColor: '#253A7D',
                                             color: 'white',
                                             textAlign: 'center',
                                             height: '2px',
@@ -259,20 +259,12 @@ export default function Plugin() {
                                     );
                                 })}
                     </TableBody>
-                    <TablePagination
-                        rowsPerPageOptions={[5, 10, 25]}
-                        rowsPerPage={selectedRecordRowsPerPage}
-                        page={selectedRecordPage}
-                        count={selectedRecordRows.length}
-                        component="div"
-                        onPageChange={handleSelectedRecordPageChange}
-                        onRowsPerPageChange={handleSelectedRecordRowsPerPageChange}
-                    />
+                   
                 </TableContainer>
 
                             </CardContent>
                             <Grid >
-                                <Button sx={{ margin: 2 }} variant="contained" onClick={() => { navigate("/addPlugin", { state: { id: selectedRecord.Id } }) }}>
+                                <Button sx={{ margin: 2 ,backgroundColor:'#253A7D'}} variant="contained" onClick={() => { navigate("/addPlugin", { state: { id: selectedRecord.Id } }) }}>
                                     Add New
                                 </Button>
 
@@ -320,7 +312,7 @@ export default function Plugin() {
             <Box sx={{ width: '68%', padding: '16px' }}>
                 <Box component="main" sx={{ flexGrow: 1, width: '100%' }} >
 
-                    <Paper>
+                    <Paper elevation={24}>
 
                         <TableContainer sx={{ maxHeight: 600 }}>
                             <Table stickyHeader size='medium' padding="normal">
@@ -330,7 +322,7 @@ export default function Plugin() {
                                             <TableCell
                                                 key={column.id}
                                                 style={{
-                                                    backgroundColor: '#1976d2',
+                                                    backgroundColor: '#253A7D',
                                                     color: 'white',
                                                     textAlign: 'left',
                                                     height: '2px',
@@ -372,6 +364,7 @@ export default function Plugin() {
                             </Table>
                         </TableContainer>
                         <TablePagination
+                        sx={{color:'#253A7D'}}
                             rowsPerPageOptions={[5, 10, 25]}
                             rowsPerPage={rowperpage}
                             page={page}

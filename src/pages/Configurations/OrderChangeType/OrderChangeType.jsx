@@ -53,18 +53,18 @@ export default function OrderChangeType(props) {
         if (selectedRecord) {
             return (
                 <Grid>
-                    <Paper sx={{width:290}}>
+                    <Paper sx={{width:290}} elevation={24}>
 
 
                         <Card variant="outlined">
 
                             <Paper elevation={5}>
-                                <Box sx={{ p: 1, backgroundColor: '#1976D2' }}>
+                                <Box sx={{ p: 1, backgroundColor: '#253A7D' }}>
 
-                                    <Stack sx={{ backgroundColor: '#1976D2' }} direction="row" justifyContent="space-between" alignItems="center">
+                                    <Stack sx={{ backgroundColor: '#253A7D' }} direction="row" justifyContent="space-between" alignItems="center">
                                         
-                                            <Grid backgroundColor={'#1976D2'} color={'white'}>
-                                                <Typography gutterBottom variant="h5" component="div">
+                                            <Grid backgroundColor={'#253A7D'} color={'white'}>
+                                                <Typography gutterBottom  component="div">
                                                 DEFAULT
                                                 </Typography>
                                             </Grid>
@@ -136,13 +136,13 @@ export default function OrderChangeType(props) {
             <Box sx={{ width: '70%', padding: '16px' }}>
                 <Box component="main" sx={{ flexGrow: 1, p: 1, paddingTop: "4%", width: '100%' }} >
 
-                    <Paper>
+                    <Paper elevation={24}>
                         <TableContainer sx={{ maxHeight: 600 }}>
                             <Table stickyHeader size='medium' padding="normal">
                                 <TableHead>
                                     <TableRow>
                                         {columns.map((column) => (
-                                            <TableCell style={{ backgroundColor: '#1976D2', color: 'white' }} key={column.id} sx={{ textAlign: 'center' }}><Typography fontFamily={'Sans-serif'}>{column.name}</Typography></TableCell>
+                                            <TableCell style={{ backgroundColor: '#253A7D', color: 'white' }} key={column.id} sx={{ textAlign: 'center' }}><Typography fontFamily={'Sans-serif'}>{column.name}</Typography></TableCell>
                                         ))}
                                     </TableRow>
                                 </TableHead>
@@ -175,6 +175,7 @@ export default function OrderChangeType(props) {
                             </Table>
                         </TableContainer>
                         <TablePagination
+                        sx={{color:'#253A7D'}}
                             rowsPerPageOptions={[5, 10, 25]}
                             rowsPerPage={rowperpage}
                             page={page}
@@ -187,7 +188,7 @@ export default function OrderChangeType(props) {
                     </Paper>
 
                     <Box sx={{ paddingLeft: '16px', paddingBottom: '16px', paddingTop: '14px', display: 'flex', gap: '16px' }}>
-                        <Button variant="contained" backgroundColor="#6471B5" onClick={handleButtonClick}>
+                        <Button variant="contained" sx={{backgroundColor:'#253A7D'}} backgroundColor="#6471B5" onClick={handleButtonClick}>
                             ADD NEW
                         </Button>
 

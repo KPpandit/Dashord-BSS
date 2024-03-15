@@ -11,7 +11,7 @@ export default function Enumeration() {
     const columns = [
         { id: 'name', name: 'Name' },
         { id: 'detail', name: 'Details' },
-        
+
     ];
 
     // Generate sample data
@@ -21,8 +21,8 @@ export default function Enumeration() {
             data.push({
                 name: `Name ${i}`,
                 detail: `Details ${i}`,
-                
-               
+
+
 
 
             });
@@ -50,7 +50,7 @@ export default function Enumeration() {
     const handleRowClick = (row) => {
         setSelectedRecord(row);
     };
-    const addEnumeartion=()=>{
+    const addEnumeartion = () => {
         navigate('/addEnumeartion');
     }
     useEffect(() => {
@@ -75,9 +75,9 @@ export default function Enumeration() {
 
                         <Card variant="outlined" sx={{ maxWidth: 360 }}>
 
-                            <Box sx={{ p: 1, backgroundColor: '#1976d2' }}>
+                            <Box sx={{ p: 1, backgroundColor: '#253A7D' }}>
 
-                                <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ backgroundColor: '#1976d2' }}>
+                                <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ backgroundColor: '#253A7D' }}>
                                     <Typography gutterBottom variant="h6.5" component="div" color={'white'}>
                                         {selectedRecord.name}
                                     </Typography>
@@ -92,12 +92,12 @@ export default function Enumeration() {
                                 {selectedRecord.detail}
                             </CardContent>
                             <Grid >
-                                <Button sx={{ margin: 2 }} variant="contained">
-                                {<EditIcon sx={{ paddingRight: 1 }} />}
+                                <Button sx={{ margin: 2, backgroundColor: '#253A7D' }} variant="contained">
+                                    {<EditIcon sx={{ paddingRight: 1 }} />}
                                     Edit
                                 </Button>
-                                <Button sx={{ margin: 1 }} variant="contained">
-                                    {<DeleteIcon sx={{ paddingRight: 1 }}/>}
+                                <Button sx={{ margin: 1, backgroundColor: '#253A7D' }} variant="contained">
+                                    {<DeleteIcon sx={{ paddingRight: 1 }} />}
                                     Delete
                                 </Button>
                             </Grid>
@@ -113,12 +113,12 @@ export default function Enumeration() {
 
                 </Grid>
             )
-        } else 
+        } else
             return null;
-        
+
     };
 
-    
+
     const [selectedOption, setSelectedOption] = useState('');
     const [highlightedRow, setHighlightedRow] = useState(null);
 
@@ -144,11 +144,11 @@ export default function Enumeration() {
                                             <TableCell
                                                 key={column.id}
                                                 style={{
-                                                    backgroundColor: '#1976d2',
+                                                    backgroundColor: '#253A7D',
                                                     color: 'white',
                                                     textAlign: 'left',
-                                                    height:'2px',
-                                                    
+                                                    height: '2px',
+
                                                 }}
                                             >
                                                 <Typography fontFamily={'Sans-serif'} fontSize={14}>{column.name}</Typography>
@@ -186,6 +186,7 @@ export default function Enumeration() {
                             </Table>
                         </TableContainer>
                         <TablePagination
+                        sx={{color:'#253A7D'}}
                             rowsPerPageOptions={[5, 10, 25]}
                             rowsPerPage={rowperpage}
                             page={page}
@@ -200,14 +201,14 @@ export default function Enumeration() {
 
                 </Box>
                 <Grid >
-                                <Button sx={{ margin: 2 }} variant="contained"
-                                onClick={addEnumeartion}
-                                >
-                                {<Add sx={{ paddingRight: 1 }} />}
-                                   Add New 
-                                </Button>
-                                
-                            </Grid>
+                    <Button sx={{ margin: 2 ,backgroundColor:'#253A7D'}} variant="contained"
+                        onClick={addEnumeartion}
+                    >
+                        {<Add sx={{ paddingRight: 1 }} />}
+                        Add New
+                    </Button>
+
+                </Grid>
 
             </Box>
             <Box sx={{ paddingTop: 2 }} >

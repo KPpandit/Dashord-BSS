@@ -42,14 +42,14 @@ export default function Collections() {
             <form onSubmit={handleSubmit}>
                 <Grid container spacing={2} padding={2} textAlign='center' justifyContent="center" sx={{ marginX: 'auto', maxWidth: '100%' }}>
                     <Paper elevation={5} container>
-                        <Grid item lg={12} paddingBottom={1} sx={{ backgroundColor: '#1976D2', height: 28 }}>
+                        <Grid item lg={12} paddingBottom={1} sx={{ backgroundColor: '#253A7D', height: 28 }}>
                             <Typography variant='h6' color={'grey'} sx={{ textAlign: 'left', color: 'white', paddingLeft: 2 }}>COLLECTIONS</Typography>
                         </Grid>
                         
                         <Grid container lg={12} md={12} sm={12} alignItems="center" sx={{ padding: 3 }}>
                             <TableContainer component={Paper} sx={{ padding: 1,marginBottom:-2 }}>
                                 <Table>
-                                    <TableHead sx={{ backgroundColor: '#1976D2' }}>
+                                    <TableHead sx={{ backgroundColor: '#253A7D' }}>
                                         <TableRow >
                                             <TableCell sx={{color:'white'}}>ID</TableCell>
                                             <TableCell sx={{color:'white'}}>STEPS</TableCell>
@@ -99,7 +99,7 @@ export default function Collections() {
                        <Grid item xs={6} textAlign={'right'}>
                                 <Button
                                     type="submit"
-                                    style={{ backgroundColor: '#1976D2', color: 'white' }}
+                                    style={{ backgroundColor: '#253A7D', color: 'white' }}
                                   
                                 >
                                     <SaveAltIcon sx={{ paddingRight: 1 }} />
@@ -109,7 +109,7 @@ export default function Collections() {
                             <Grid item xs={4} textAlign={'left'}>
                                 <Button
                                     type="submit"
-                                    style={{ backgroundColor: '#1976D2', color: 'white'}}
+                                    style={{ backgroundColor: '#253A7D', color: 'white'}}
                                 >
                                     <CancelIcon sx={{ paddingRight: 1 }} />
                                    Cancle

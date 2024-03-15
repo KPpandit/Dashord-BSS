@@ -68,7 +68,7 @@ export default function BillingProcess() {
                 <Grid container spacing={1} padding={2} textAlign='center' justifyContent="center" sx={{ marginX: 'auto', maxWidth: '80vw' }}>
                     
                     <Paper elevation={5} container >
-                    <Grid item lg={12} paddingBottom={1} sx={{backgroundColor:'#1976D2',height:30}}>
+                    <Grid item lg={12} paddingBottom={1} sx={{backgroundColor:'#253A7D',height:30}}>
                         <Typography variant='h6'  color={'grey'} sx={{ textAlign: 'left', width: '100%' ,color:'white', paddingLeft:2}}>BILLING PROCESS</Typography>
                        
                     </Grid>
@@ -284,7 +284,7 @@ export default function BillingProcess() {
                             <Grid item xs={4}>
                                 <Button
                                     type="submit"
-                                    style={{ backgroundColor: '#1976D2', color: 'white', marginTop: '16px' }}
+                                    style={{ backgroundColor: '#253A7D', color: 'white', marginTop: '16px' }}
                                 >
                                     <SaveAltIcon sx={{ paddingRight: 1 }} />
                                     Submit
@@ -293,7 +293,7 @@ export default function BillingProcess() {
                             <Grid item xs={4}>
                                 <Button
                                     type="submit"
-                                    style={{ backgroundColor: '#1976D2', color: 'white', marginTop: '16px' }}
+                                    style={{ backgroundColor: '#253A7D', color: 'white', marginTop: '16px' }}
                                     onClick={back}
                                 >
                                     <CancelIcon sx={{ paddingRight: 1 }} />
@@ -303,7 +303,7 @@ export default function BillingProcess() {
                             <Grid item xs={4}>
                                 <Button
                                     type="submit"
-                                    style={{ backgroundColor: '#1976D2', color: 'white', marginTop: '16px' }}
+                                    style={{ backgroundColor: '#253A7D', color: 'white', marginTop: '16px' }}
                                 >
                                     <DoneIcon sx={{ paddingRight: 1 }} />
                                     Run Billing

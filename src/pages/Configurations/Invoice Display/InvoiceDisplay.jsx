@@ -75,7 +75,7 @@ export default function InvoiceDisplay() {
                 <Grid container spacing={1} padding={2} textAlign='center' justifyContent="center" sx={{ marginX: 'auto', maxWidth: '80vw' }}>
 
                     <Paper elevation={5} container sx={{ width: 500 }} >
-                        <Paper elevation={5} item lg={12} paddingBottom={1} sx={{ backgroundColor: '#1976D2', height: 30 }}>
+                        <Paper elevation={5} item lg={12} paddingBottom={1} sx={{ backgroundColor: '#253A7D', height: 30 }}>
                             <Typography variant='h6' color={'grey'} sx={{ textAlign: 'left', width: '100%', color: 'white', paddingLeft: 2 }}>INVOICE DISPLAY</Typography>
 
                         </Paper>
@@ -149,7 +149,7 @@ export default function InvoiceDisplay() {
                                 <Grid item xs={5}>
                                     <Button
                                         type="submit"
-                                        style={{ backgroundColor: '#1976D2', color: 'white', marginTop: '16px' }}
+                                        style={{ backgroundColor: '#253A7D', color: 'white', marginTop: '16px' }}
                                     >
                                         <SaveAltIcon sx={{ paddingRight: 1 }} />
                                         Save Changes
@@ -158,7 +158,7 @@ export default function InvoiceDisplay() {
                                 <Grid item xs={5}>
                                     <Button
                                         type="submit"
-                                        style={{ backgroundColor: '#1976D2', color: 'white', marginTop: '16px' }}
+                                        style={{ backgroundColor: '#253A7D', color: 'white', marginTop: '16px' }}
                                         onClick={back}
                                     >
                                         <CancelIcon sx={{ paddingRight: 1 }} />

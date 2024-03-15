@@ -85,11 +85,11 @@ export default function Currencies() {
                     <TableHead>
                         <TableRow>
                             {columns.map((column) => (
-                                <TableCell key={column.id}>
+                                <TableCell key={column.id} sx={{backgroundColor:'#253A7D',color:'white'}}>
                                     {column.name}
                                 </TableCell>
                             ))}
-                            <TableCell>Action</TableCell>
+                            <TableCell sx={{backgroundColor:'#253A7D',color:'white' , fontFamily:'Roboto'}}>Action</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>

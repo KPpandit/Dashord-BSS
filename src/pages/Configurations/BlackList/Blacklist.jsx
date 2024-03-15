@@ -121,7 +121,7 @@ export default function Blacklist() {
             <form onSubmit={handleSubmit}>
                 <Grid container spacing={1} padding={2} textAlign='center' justifyContent="center" sx={{ marginX: 'auto', maxWidth: '100%' }}>
                     <Paper elevation={5} container>
-                        <Grid item lg={12} paddingBottom={1} sx={{ backgroundColor: '#1976D2', height: 30 }}>
+                        <Grid item lg={12} paddingBottom={1} sx={{ backgroundColor: '#253A7D', height: 30 }}>
                             <Typography variant='h6' color={'grey'} sx={{ textAlign: 'left', color: 'white', paddingLeft: 2 }}>BLACKLIST</Typography>
                         </Grid>
 
@@ -164,7 +164,7 @@ export default function Blacklist() {
                             <Grid paddingBottom={4}>
                                 <Button
                                     type="submit"
-                                    style={{ backgroundColor: '#1976D2', color: 'white', marginTop: '16px' }}
+                                    style={{ backgroundColor: '#253A7D', color: 'white', marginTop: '16px' }}
                                 >
                                     <SaveAltIcon sx={{ paddingRight: 1 }} />
                                     Update
@@ -210,7 +210,7 @@ export default function Blacklist() {
                                                     <TableCell
                                                         key={column.id}
                                                         style={{
-                                                            backgroundColor: '#1976d2',
+                                                            backgroundColor: '#253A7D',
                                                             color: 'white',
                                                             textAlign: 'center',
                                                             height: '-12px',

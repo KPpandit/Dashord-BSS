@@ -45,9 +45,9 @@ export default function OrderChangeStatus() {
     return (
         <Box sx={{ marginTop: 2, display: 'flex', flexDirection: 'column', alignItems: 'left' ,paddingLeft:2 }}>
             <Paper elevation={5} sx={{ maxWidth: '80%', overflowX: 'auto' }}>
-                <Grid sx={{ backgroundColor: '#1976D2' }}>
+                <Grid sx={{ backgroundColor: '#253A7D' }}>
                     <Paper elevation={3}>
-                        <Grid backgroundColor={'#1976D2'} color={'white'}>
+                        <Grid backgroundColor={'#253A7D'} color={'white'}>
                             <Typography>
                                 ORDER CHANGE STATUSES
                             </Typography>
@@ -75,12 +75,12 @@ export default function OrderChangeStatus() {
                 </Box>
                 <TableContainer sx={{ pl:1,paddingRight:2 }}>
                     <Table>
-                        <TableHead sx={{ backgroundColor: '#1976D2', color: 'white' }}>
+                        <TableHead sx={{ backgroundColor: '#253A7D', color: 'white' }}>
                             <TableRow>
-                                <TableCell sx={{ backgroundColor: '#1976D2', color: 'white' }}>NAME</TableCell>
-                                <TableCell sx={{ backgroundColor: '#1976D2', color: 'white' }}>ORDER</TableCell>
-                                <TableCell sx={{ backgroundColor: '#1976D2', color: 'white' }}>APPLIED</TableCell>
-                                <TableCell sx={{ backgroundColor: '#1976D2', color: 'white' }}>ACTION</TableCell>
+                                <TableCell sx={{ backgroundColor: '#253A7D', color: 'white' }}>NAME</TableCell>
+                                <TableCell sx={{ backgroundColor: '#253A7D', color: 'white' }}>ORDER</TableCell>
+                                <TableCell sx={{ backgroundColor: '#253A7D', color: 'white' }}>APPLIED</TableCell>
+                                <TableCell sx={{ backgroundColor: '#253A7D', color: 'white' }}>ACTION</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>

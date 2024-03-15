@@ -62,10 +62,10 @@ const EditModal = ({ isOpen, onClose, data, onSave }) => {
                     fullWidth
                     sx={{ mt: 2 }}
                 />
-                <Button variant="contained" onClick={handleSave} sx={{ mt: 2 }}>
+                <Button variant="contained" onClick={handleSave} sx={{ mt: 2 ,backgroundColor:'#253A7D'}}>
                     {<SaveAltIcon sx={{ paddingRight: 1 }} />}  Save Changes
                 </Button>
-                <Button variant="contained" onClick={onClose} sx={{ mt: 2, ml: 2 }}>
+                <Button variant="contained" onClick={onClose} sx={{ mt: 2, ml: 2,backgroundColor:'#253A7D' }}>
                     {<CloseIcon sx={{ paddingRight: 1 }} />}
                     Close
                 </Button>
@@ -189,14 +189,14 @@ export default function PaymentMethod() {
         if (selectedRecord) {
             return (
                 <Grid>
-                    <Grid sx={{ marginBottom: 2 }}>
+                    <Grid sx={{ marginBottom: 2 ,boxShadow:24}}>
 
 
                         <Card variant="outlined" sx={{ maxWidth: 350 }}>
 
-                            <Paper sx={{ p: 1, backgroundColor: '#1976d2' }}>
+                            <Paper sx={{ p: 1, backgroundColor: '#253A7D' }}>
 
-                                <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ backgroundColor: '#1976d2' }}>
+                                <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ backgroundColor: '#253A7D' }}>
                                     <Typography gutterBottom variant="h6.5" component="div" color={'white'}>
                                         {selectedRecord.name}
                                     </Typography>
@@ -239,7 +239,7 @@ export default function PaymentMethod() {
                                 </TableContainer>
                             </CardContent>
                             <Grid >
-                                <Button sx={{ margin: 2 }} variant="contained" onClick={handleEditModalOpen}>
+                                <Button sx={{ margin: 2,backgroundColor:'#253A7D' }} variant="contained" onClick={handleEditModalOpen}>
                                     Edit
                                 </Button>
                             </Grid>
@@ -282,7 +282,7 @@ export default function PaymentMethod() {
             <Box sx={{ width: '68%', padding: '16px' }}>
                 <Box component="main" sx={{ flexGrow: 1, width: '100%' }} >
 
-                    <Paper>
+                    <Paper elevation={24}>
 
                         <TableContainer sx={{ maxHeight: 600 }}>
                             <Table stickyHeader size='medium' padding="normal">
@@ -292,7 +292,7 @@ export default function PaymentMethod() {
                                             <TableCell
                                                 key={column.id}
                                                 style={{
-                                                    backgroundColor: '#1976d2',
+                                                    backgroundColor: '#253A7D',
                                                     color: 'white',
                                                     textAlign: 'left',
                                                     height: '2px',
@@ -334,6 +334,7 @@ export default function PaymentMethod() {
                             </Table>
                         </TableContainer>
                         <TablePagination
+                        sx={{color:'#253A7D'}}
                             rowsPerPageOptions={[5, 10, 25]}
                             rowsPerPage={rowperpage}
                             page={page}
@@ -346,7 +347,7 @@ export default function PaymentMethod() {
                     </Paper>
 
                     <Grid >
-                        <Button sx={{ margin: 2 }} variant="contained" onClick={handleAddModalOpen}>
+                        <Button sx={{ margin: 2 ,backgroundColor:'#253A7D'}} variant="contained" onClick={handleAddModalOpen}>
                             Add New
                         </Button>
 

@@ -182,9 +182,9 @@ export default function Mediation() {
 
                         <Card variant="outlined" sx={{ maxWidth: 350 ,width:300}}>
 
-                            <Paper sx={{ p: 1, backgroundColor: '#1976d2' }}>
+                            <Paper sx={{ p: 1, backgroundColor: '#253A7D' }}>
 
-                                <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ backgroundColor: '#1976d2' }}>
+                                <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ backgroundColor: '#253A7D' }}>
                                     <Typography gutterBottom variant="h6.5" component="div" color={'white'}>
                                         {selectedRecord.name}
                                     </Typography>
@@ -221,7 +221,7 @@ export default function Mediation() {
                                 </TableContainer>
                             </CardContent>
                             <Grid >
-                                <Button sx={{ margin: 2 }} variant="contained" onClick={handleEditModalOpen}>
+                                <Button sx={{ margin: 2 ,backgroundColor:'#253A7D'}} variant="contained" onClick={handleEditModalOpen}>
                                     Edit
                                 </Button>
                             </Grid>
@@ -274,7 +274,7 @@ export default function Mediation() {
                                             <TableCell
                                                 key={column.id}
                                                 style={{
-                                                    backgroundColor: '#1976d2',
+                                                    backgroundColor: '#253A7D',
                                                     color: 'white',
                                                     textAlign: 'center',
                                                     height: '2px',
@@ -316,6 +316,7 @@ export default function Mediation() {
                             </Table>
                         </TableContainer>
                         <TablePagination
+                        sx={{color:'#253A7D'}}
                             rowsPerPageOptions={[5, 10, 25]}
                             rowsPerPage={rowperpage}
                             page={page}
@@ -328,7 +329,7 @@ export default function Mediation() {
                     </Paper>
 
                     <Grid >
-                        <Button sx={{ margin: 2 }} variant="contained" onClick={handleAddModalOpen}>
+                        <Button sx={{ margin: 2 ,backgroundColor:'#253A7D'}} variant="contained" onClick={handleAddModalOpen}>
                             Add New
                         </Button>
 
