@@ -84,22 +84,44 @@ export default function AddCustomerDetails() {
     const [partner, setpartner] = useState('');
     const [device, setDevice] = useState('');
 
-    const [userId, setuserId] = useState('');
-    const [customerId, setCustomerID] = useState('');
+    // const [userId, setuserId] = useState(null);
+    // const [customerId, setCustomerID] = useState(null);
     const isFirstRender = useRef(true);
-    useEffect(() => {
-        console.log("Inside useEffect");
-        console.log("customerId:", customerId);
-        console.log("userId:", userId);
-
-        if (!isFirstRender.current) {
-            console.log("Calling submitMainForm2");
-            submitMainForm2();
-        } else {
-            console.log("Initial render, skipping effect");
-            isFirstRender.current = false;
-        }
-    }, [customerId, userId]);
+ 
+    
+    useEffect(()=>{
+        axios.get('http://172.5.10.2:9090/api/alllanguage', {
+            headers: {
+                Authorization: `Bearer ${tokenValue}`,
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            }
+        })
+            .then(response => {
+                // Store language options (id and code) in state
+                setLanguageOptions(response.data);
+            })
+            .catch(error => {
+                console.error('Error fetching language options:', error);
+                // Handle error as needed
+            });
+        // For All Currency
+        axios.get('http://172.5.10.2:9090/api/allcurrency', {
+            headers: {
+                Authorization: `Bearer ${tokenValue}`,
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            }
+        })
+            .then(response => {
+                // Store language options (id and code) in state
+                setcurrencyOption(response.data);
+            })
+            .catch(error => {
+                console.error('Error fetching language options:', error);
+                // Handle error as needed
+            });
+    },[])
     const { handleChange, handleSubmit, handleBlur, values, submitForm: submitMainForm1, resetForm: resetForm1 } = useFormik({
         initialValues: {
 
@@ -158,7 +180,7 @@ export default function AddCustomerDetails() {
 
         onSubmit: async (values) => {
 
-            console.log(partner+"partner ID")
+            console.log(partner + "partner ID")
 
             console.log(values);
             console.log(msisdn + " Msisdn " + partner + " partner " + device)
@@ -180,7 +202,7 @@ export default function AddCustomerDetails() {
                 baseUrl += `&device=${device}`;
                 console.log("Device WORK")
             }
-console.log(device+" device ID"+partner+" partner ID"+ msisdn +" Msisdn")
+            console.log(device + " device ID" + partner + " partner ID" + msisdn + " Msisdn")
             const res1 = await axios.post(
                 baseUrl,
                 { ...values },
@@ -207,13 +229,12 @@ console.log(device+" device ID"+partner+" partner ID"+ msisdn +" Msisdn")
                     //     severity: 'success',
                     // });
 
-                    //  submitMainForm2();
-                    // resetForm1();
+                   
                 }
             }).catch(e => {
                 setNotification({
-                    open:true,
-                    message:e.message,
+                    open: true,
+                    message: e.message,
                     severity: 'error',
                 })
 
@@ -284,7 +305,7 @@ console.log(device+" device ID"+partner+" partner ID"+ msisdn +" Msisdn")
 
 
 
-            const res2 = await axios.post('http://172.5.10.2:9090/api/savepayment/currency/1/paymentrsult/1/paymentmethod/1?creditCard=1',
+            const res2 = await axios.post('http://172.5.10.2:9090/api/savepayment/currency/'+seleectedCurrenyId+'/paymentrsult/1/paymentmethod/1?creditCard=1',
                 { ...values2 }, {
 
                 headers: {
@@ -320,8 +341,33 @@ console.log(device+" device ID"+partner+" partner ID"+ msisdn +" Msisdn")
 
         },
     });
+    const [userId, setuserId] = useState(null);
+const [customerId, setCustomerID] = useState(null);
 
+useEffect(() => {
+    console.log("submit form useEffect working ")
+    console.log("Inside useEffect");
+    console.log("customerId:", customerId);
+    console.log("userId:", userId);
 
+    if (!isFirstRender.current && customerId !== null && userId !== null) {
+        console.log("Calling submitMainForm2");
+        submitMainForm2();
+    } else {
+        console.log("Initial render or customerId/userId is null, skipping effect");
+        isFirstRender.current = false;
+    }
+}, [customerId, userId, submitMainForm2]);
+    const [seleectedCurrenyId, setSelectedCurrencyId] = useState('');
+    const [currencyOption, setcurrencyOption] = useState([]);
+    const [languageOptions, setLanguageOptions] = useState([]);
+    const [selectedLanguageId, setSelectedLanguageId] = useState('');
+    const handleChangeLanguage = (event) => {
+        setSelectedLanguageId(event.target.value);
+    };
+    const handleChangeCurrency = (event) => {
+        setSelectedCurrencyId(event.target.value);
+    };
     const commonInputLabelProps = { shrink: true, style: { fontFamily: 'Roboto', } };
     return (
         <Box component="form" onSubmit={handleSubmit} >
@@ -459,35 +505,44 @@ console.log(device+" device ID"+partner+" partner ID"+ msisdn +" Msisdn")
                                         </FormControl>
                                     </Grid>
                                     <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
-                                        <FormControl fullWidth >
-                                            <InputLabel id="demo-simple-select-label">Language</InputLabel>
+                                        <FormControl fullWidth>
+                                            <InputLabel id="demo-simple-select-label" required>Language</InputLabel>
                                             <Select
+                                                required
                                                 labelId="demo-simple-select-label"
                                                 id="demo-simple-select"
-                                                // value={values.autoPaymentType}
-                                                label="Language"
-                                            // onChange={handleChange}
-                                            // onBlur={handleBlur}
-                                            // name="autoPaymentType"
+                                                value={selectedLanguageId}
+                                                name='selectedLanguageId'
+                                                onChange={handleChangeLanguage}
+                                                label="Language "
                                             >
-                                                <MenuItem value={"English"}>English</MenuItem>
-
+                                                {languageOptions.map(option => (
+                                                    <MenuItem key={option.id} value={option.id}>
+                                                        {option.code}
+                                                    </MenuItem>
+                                                ))}
+                                                {console.log(selectedLanguageId + " selected language ID")}
                                             </Select>
                                         </FormControl>
                                     </Grid>
                                     <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
-                                        <FormControl fullWidth >
-                                            <InputLabel id="demo-simple-select-label">Currency</InputLabel>
+                                        <FormControl fullWidth>
+                                            <InputLabel id="demo-simple-select-label" required>Currency</InputLabel>
                                             <Select
+                                                required
                                                 labelId="demo-simple-select-label"
                                                 id="demo-simple-select"
-                                                // value={values.currency}
-                                                label="Currency"
-                                            // onChange={handleChange}
-                                            // onBlur={handleBlur}
-                                            // name="currency"
+                                                value={seleectedCurrenyId}
+                                                name='currenyId'
+                                                onChange={handleChangeCurrency}
+                                                label="Language "
                                             >
-                                                <MenuItem value={"Australian Dollar"}>Australian Dollar</MenuItem>
+                                                {currencyOption.map(option => (
+                                                    <MenuItem key={option.id} value={option.id}>
+                                                        {option.symbol}
+                                                    </MenuItem>
+                                                ))}
+                                                {console.log(seleectedCurrenyId + "------selected Currency ID ID")}
                                             </Select>
                                         </FormControl>
                                     </Grid>
@@ -541,7 +596,7 @@ console.log(device+" device ID"+partner+" partner ID"+ msisdn +" Msisdn")
                                         <Divider />
                                     </Grid >
 
-                                   
+
 
 
                                 </Grid>
@@ -956,11 +1011,11 @@ console.log(device+" device ID"+partner+" partner ID"+ msisdn +" Msisdn")
                                             onChange={e => setpartner(e.target.value)}
 
                                             fullWidth
-                                      
+
                                         />
                                     </Grid>
                                     <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
-                                    <TextField
+                                        <TextField
                                             label="MSISDN"
                                             type="number"
                                             fullWidth
@@ -971,7 +1026,7 @@ console.log(device+" device ID"+partner+" partner ID"+ msisdn +" Msisdn")
 
                                         />
                                     </Grid>
-                                   
+
                                     <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
                                         <TextField
 
