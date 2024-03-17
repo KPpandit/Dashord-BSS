@@ -398,26 +398,27 @@ export default function Sidenavbar() {
             route:'/vendormanagement'
           }
         ]
-      },{
-        label: "Test",
-        // route: '/inventory',
-        icon: <Inventory2Icon />,
-        subRoute: [
-          {
-            label:'Invoice Sample Design',
-            route:'/invoiceDesign'
-          },{
-            label:'Invoice Sample Design',
-            route:'/test'
-          }
-        ]
       }
+      // ,{
+      //   label: "Test",
+      //   // route: '/inventory',
+      //   icon: <Inventory2Icon />,
+      //   subRoute: [
+      //     {
+      //       label:'Invoice Sample Design',
+      //       route:'/invoiceDesign'
+      //     },{
+      //       label:'Invoice Sample Design',
+      //       route:'/test'
+      //     }
+      //   ]
+      // }
     ],
   }
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
-      <AppBar position="fixed" open={open} style={{ backgroundColor: '#253A7D', color: 'black' }}>
+      <AppBar position="fixed" open={open} style={{ backgroundColor: '#253A7D', color: 'white' }}>
         <Toolbar>
           <IconButton
             color="inherit"
