@@ -76,7 +76,7 @@ export default function InvoiceDisplay() {
 
                     <Paper elevation={5} container sx={{ width: 500 }} >
                         <Paper elevation={5} item lg={12} paddingBottom={1} sx={{ backgroundColor: '#253A7D', height: 30 }}>
-                            <Typography variant='h6' color={'grey'} sx={{ textAlign: 'left', width: '100%', color: 'white', paddingLeft: 2 }}>INVOICE DISPLAY</Typography>
+                            <Typography  color={'grey'} sx={{ textAlign: 'left', width: '100%', color: 'white', paddingLeft: 1,fontSize:'19px' }}>INVOICE DISPLAY</Typography>
 
                         </Paper>
 

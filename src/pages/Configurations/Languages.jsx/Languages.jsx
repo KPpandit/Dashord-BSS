@@ -338,7 +338,7 @@ export default function Languages() {
                                                 style={{
                                                     backgroundColor: '#253A7D',
                                                     color: 'white',
-                                                    textAlign: 'center',
+                                                    textAlign: 'left',
                                                     height: '2px',
 
                                                 }}
@@ -367,7 +367,7 @@ export default function Languages() {
                                                         }
                                                     >
                                                         {columns.map((column) => (
-                                                            <TableCell key={column.id} sx={{ textAlign: 'center' }}>
+                                                            <TableCell key={column.id} sx={{ textAlign: 'left' }}>
                                                                 {row[column.id]}
                                                             </TableCell>
                                                         ))}

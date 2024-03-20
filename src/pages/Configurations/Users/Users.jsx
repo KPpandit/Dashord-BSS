@@ -202,7 +202,7 @@ export default function Users() {
                                                         onMouseLeave={handleRowMouseLeave}
                                                         sx={
                                                             highlightedRow === row
-                                                                ? { backgroundColor: 'lightblue' }
+                                                                ? { backgroundColor: '#FAC22E' }
                                                                 : {}
                                                         }
                                                     >

@@ -117,7 +117,7 @@ export default function All() {
             <Box sx={{ width: '68%', padding: '16px' }}>
                 <Box component="main" sx={{ flexGrow: 1, width: '100%' }} >
 
-                    <Paper>
+                    <Paper elevation={24}>
 
                         <TableContainer sx={{ maxHeight: 600 }}>
                             <Table stickyHeader size='medium' padding="normal">
@@ -129,7 +129,7 @@ export default function All() {
                                                 style={{
                                                     backgroundColor: '#253A7D',
                                                     color: 'white',
-                                                    textAlign: 'center',
+                                                  
                                                     height:'2px',
                                                     
                                                 }}
@@ -153,12 +153,12 @@ export default function All() {
                                                         onMouseLeave={handleRowMouseLeave}
                                                         sx={
                                                             highlightedRow === row
-                                                                ? { backgroundColor: 'lightblue' }
+                                                                ? { backgroundColor: '#FAC22E' }
                                                                 : {}
                                                         }
                                                     >
                                                         {columns.map((column) => (
-                                                            <TableCell key={column.id} sx={{ textAlign: 'center' }}>
+                                                            <TableCell key={column.id} >
                                                                 {row[column.id]}
                                                             </TableCell>
                                                         ))}

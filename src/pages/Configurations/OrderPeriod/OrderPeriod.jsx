@@ -213,11 +213,11 @@ export default function OrderPeriod() {
     const SelectedRecordDetails = () => {
         if (selectedRecord) {
             return (
-                <Grid>
+                <Paper elevation={24}>
                     <Grid sx={{ marginBottom: 2 }}>
 
 
-                        <Card elevation={24} variant="outlined" sx={{ maxWidth: 400, width: 320 }}>
+                        <Paper elevation={24} variant="outlined" sx={{ maxWidth: 400, width: 320 }}>
 
                             <Paper sx={{ p: 1, backgroundColor: '#253A7D' }}>
 
@@ -272,7 +272,7 @@ export default function OrderPeriod() {
                                 onSave={handleEditSave}
                             />
 
-                        </Card>
+                        </Paper>
 
                     </Grid>
 
@@ -281,7 +281,7 @@ export default function OrderPeriod() {
 
 
 
-                </Grid>
+                </Paper>
             )
         } else
             return null
@@ -304,7 +304,7 @@ export default function OrderPeriod() {
             <Box sx={{ width: '68%', padding: '16px' }}>
                 <Box component="main" sx={{ flexGrow: 1, width: '100%' }} >
 
-                    <Paper>
+                    <Paper elevation={24}>
 
                         <TableContainer sx={{ maxHeight: 600 }}>
                             <Table stickyHeader size='medium' padding="normal">
@@ -316,7 +316,7 @@ export default function OrderPeriod() {
                                                 style={{
                                                     backgroundColor: '#253A7D',
                                                     color: 'white',
-                                                    textAlign: 'center',
+                                                    textAlign: 'left',
                                                     height: '2px',
 
                                                 }}
@@ -340,12 +340,12 @@ export default function OrderPeriod() {
                                                         onMouseLeave={handleRowMouseLeave}
                                                         sx={
                                                             highlightedRow === row
-                                                                ? { backgroundColor: 'lightblue' }
+                                                                ? { backgroundColor: '#FAC22E' }
                                                                 : {}
                                                         }
                                                     >
                                                         {columns.map((column) => (
-                                                            <TableCell key={column.id} sx={{ textAlign: 'center' }}>
+                                                            <TableCell key={column.id} sx={{ textAlign: 'left' }}>
                                                                 {row[column.id]}
                                                             </TableCell>
                                                         ))}

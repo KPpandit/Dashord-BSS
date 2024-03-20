@@ -87,9 +87,9 @@ export default function AddCustomerDetails() {
     // const [userId, setuserId] = useState(null);
     // const [customerId, setCustomerID] = useState(null);
     const isFirstRender = useRef(true);
- 
-    
-    useEffect(()=>{
+
+
+    useEffect(() => {
         axios.get('http://172.5.10.2:9090/api/alllanguage', {
             headers: {
                 Authorization: `Bearer ${tokenValue}`,
@@ -121,7 +121,7 @@ export default function AddCustomerDetails() {
                 console.error('Error fetching language options:', error);
                 // Handle error as needed
             });
-    },[])
+    }, [])
     const { handleChange, handleSubmit, handleBlur, values, submitForm: submitMainForm1, resetForm: resetForm1 } = useFormik({
         initialValues: {
 
@@ -229,7 +229,7 @@ export default function AddCustomerDetails() {
                     //     severity: 'success',
                     // });
 
-                   
+
                 }
             }).catch(e => {
                 setNotification({
@@ -305,7 +305,7 @@ export default function AddCustomerDetails() {
 
 
 
-            const res2 = await axios.post('http://172.5.10.2:9090/api/savepayment/currency/'+seleectedCurrenyId+'/paymentrsult/1/paymentmethod/1?creditCard=1',
+            const res2 = await axios.post('http://172.5.10.2:9090/api/savepayment/currency/' + seleectedCurrenyId + '/paymentrsult/1/paymentmethod/1?creditCard=1',
                 { ...values2 }, {
 
                 headers: {
@@ -342,22 +342,22 @@ export default function AddCustomerDetails() {
         },
     });
     const [userId, setuserId] = useState(null);
-const [customerId, setCustomerID] = useState(null);
+    const [customerId, setCustomerID] = useState(null);
 
-useEffect(() => {
-    console.log("submit form useEffect working ")
-    console.log("Inside useEffect");
-    console.log("customerId:", customerId);
-    console.log("userId:", userId);
+    useEffect(() => {
+        console.log("submit form useEffect working ")
+        console.log("Inside useEffect");
+        console.log("customerId:", customerId);
+        console.log("userId:", userId);
 
-    if (!isFirstRender.current && customerId !== null && userId !== null) {
-        console.log("Calling submitMainForm2");
-        submitMainForm2();
-    } else {
-        console.log("Initial render or customerId/userId is null, skipping effect");
-        isFirstRender.current = false;
-    }
-}, [customerId, userId, submitMainForm2]);
+        if (!isFirstRender.current && customerId !== null && userId !== null) {
+            console.log("Calling submitMainForm2");
+            submitMainForm2();
+        } else {
+            console.log("Initial render or customerId/userId is null, skipping effect");
+            isFirstRender.current = false;
+        }
+    }, [customerId, userId, submitMainForm2]);
     const [seleectedCurrenyId, setSelectedCurrencyId] = useState('');
     const [currencyOption, setcurrencyOption] = useState([]);
     const [languageOptions, setLanguageOptions] = useState([]);
@@ -630,6 +630,27 @@ useEffect(() => {
                                                 <MenuItem value={"Email"}>Email</MenuItem>
                                                 <MenuItem value={"Paper"}>Paper</MenuItem>
                                                 <MenuItem value={"Email & Paper"}>Email & Paper</MenuItem>
+
+
+                                            </Select>
+                                        </FormControl>
+                                    </Grid>
+                                    <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
+                                        <FormControl fullWidth >
+                                            <InputLabel id="demo-simple-select-label">useParentPricing</InputLabel>
+                                            <Select
+
+                                                id="demo-simple-select"
+                                                value={values.useParentPricing}
+                                                label="useParentPricing"
+                                                onChange={handleChange}
+                                                onBlur={handleBlur}
+                                                name="useParentPricing"
+                                                required
+                                            >
+                                                <MenuItem value={true}>True</MenuItem>
+                                                <MenuItem value={false}>False</MenuItem>
+
 
 
                                             </Select>
@@ -916,27 +937,7 @@ useEffect(() => {
 
 
 
-                                                <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
-                                                    <FormControl fullWidth >
-                                                        <InputLabel id="demo-simple-select-label">useParentPricing</InputLabel>
-                                                        <Select
 
-                                                            id="demo-simple-select"
-                                                            value={values.useParentPricing}
-                                                            label="useParentPricing"
-                                                            onChange={handleChange}
-                                                            onBlur={handleBlur}
-                                                            name="useParentPricing"
-                                                            required
-                                                        >
-                                                            <MenuItem value={true}>True</MenuItem>
-                                                            <MenuItem value={false}>False</MenuItem>
-
-
-
-                                                        </Select>
-                                                    </FormControl>
-                                                </Grid>
 
 
                                             </Grid>

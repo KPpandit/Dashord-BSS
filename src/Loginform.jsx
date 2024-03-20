@@ -18,7 +18,9 @@ import { useState } from 'react';
 import { useFormik } from 'formik';
 import { useEffect } from 'react';
 import axios from 'axios'
-import Logo from '../assets/logo.png'
+import Logo from './assets/Logo.png'
+import { TokenContext } from './TokenContext';
+
 function Copyright(props) {
   return (
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
@@ -38,9 +40,11 @@ function Copyright(props) {
 
 
 
-export default function Loginform() {
+
+export default function Loginform({children}) {
   const navigate = useNavigate();
   
+ 
   const [notify, setNotify] = useState({ isOpen: false, message: '', type: '' });
   const defaultTheme = createTheme();
   const [open, setOpen] = React.useState(false);
@@ -51,6 +55,7 @@ export default function Loginform() {
       type: type,
     });
   };
+  const { setToken } = React.useContext(TokenContext);
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -89,7 +94,8 @@ export default function Loginform() {
         const username=responseData.user;
         console.log("username  ----------->"+username.email)
         console.log('JWT Token:', jwtToken);
-
+        setToken(jwtToken);
+        // console.log(setToken+"---set JWT Token")
         // Save the authentication token or user data as needed
         localStorage.setItem('token', jwtToken);
         localStorage.setItem('auth', 'super');

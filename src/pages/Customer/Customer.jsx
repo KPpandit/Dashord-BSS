@@ -1,11 +1,13 @@
 import { Box, Button, Card, Checkbox, Chip, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, FormControl, Grid, IconButton, InputAdornment, InputLabel, ListItemText, Menu, MenuItem, OutlinedInput, Paper, Select, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TextField, Typography, colors } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import SearchIcon from '@mui/icons-material/Search';
 import axios from "axios";
 import blanPhoto from '../../assets/blanPhoto.png'
-
+import { TokenContext } from '../../TokenContext';
 const Customer = (props) => {
+    const { token } = useContext(TokenContext);
+    console.log(token + "token value from Context API")
     const columns = [
         { id: 'firstName', name: 'Name' },
         { id: 'ekycStatus', name: 'Ekyc Status' },
@@ -19,9 +21,9 @@ const Customer = (props) => {
     const [rows, setRows] = useState([]);
     const tokenValue = localStorage.getItem('token');
     // Generate sample data
-    const[abc,setAbc]=useState(false)
-    const [delete1,SetDelete]=useState([])
-    
+    const [abc, setAbc] = useState(false)
+    const [delete1, SetDelete] = useState([])
+
     const handleConfirmDelete = () => {
         // Perform the delete operation here using the recordIdToDelete
         // After successful deletion, you can update the UI accordingly
@@ -30,7 +32,7 @@ const Customer = (props) => {
         // Make an API call to delete the record
         axios.delete(`http://172.5.10.2:9090/api/deletecustomer/${recordIdToDelete}`, {
             headers: {
-                Authorization: `Bearer ${tokenValue}`,
+                Authorization: `Bearer ${token}`,
                 "Accept": "application/json",
                 "Content-Type": "application/json"
             }
@@ -40,10 +42,10 @@ const Customer = (props) => {
                 SetDelete(prevState => prevState === 'deleted' ? 'not-deleted' : 'deleted');
                 fetchData();
                 console.log(`Record with ID ${recordIdToDelete} deleted successfully.`);
-               setAbc(true);
+                setAbc(true);
 
                 // Fetch updated data after successful deletion
-                
+
             })
             .catch(error => {
                 // Handle error, you can display an error message or take other actions
@@ -84,13 +86,13 @@ const Customer = (props) => {
     };
     const [selectedPhoto, setSelectedPhoto] = useState(null);
     const [selectedRecord, setSelectedRecord] = useState(null);
-    
+
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const response = await axios.get('http://172.5.10.2:9090/api/customers/pack/details', {
                     headers: {
-                        Authorization: `Bearer ${tokenValue}`,
+                        Authorization: `Bearer ${token}`,
                         "Accept": "application/json",
                         "Content-Type": "application/json"
                     }
@@ -114,7 +116,7 @@ const Customer = (props) => {
         };
 
         fetchData(); // Invoke the fetchData function when the component mounts
-    }, [tokenValue,delete1]);
+    }, [tokenValue, delete1]);
     const fetchData = async () => {
         try {
             const response = await axios.get('http://172.5.10.2:9090/api/customers/pack/details', {
@@ -183,7 +185,7 @@ const Customer = (props) => {
 
 
                         <Grid xs={12}>
-                            <Card variant="outlined" sx={{ maxWidth: 340, fontFamily: "Roboto" }}>
+                            <Card variant="outlined" sx={{ maxWidth: 400, fontFamily: "Roboto" }}>
 
                                 <Box sx={{ p: 1 }}>
 
@@ -217,7 +219,7 @@ const Customer = (props) => {
 
                                         <Grid item xs={12}>
                                             <Grid container>
-                                                <Grid item xs={8} >
+                                                <Grid item xs={7.3} >
                                                     <Grid container spacing={1.5} >
                                                         <Grid item xs={3} sx={{ fontWeight: '480', fontSize: '17px', textAlign: 'right' }}>
                                                             Title :
@@ -225,14 +227,14 @@ const Customer = (props) => {
                                                         <Grid item xs={8}>
                                                             {selectedRecord.personTitle}
                                                         </Grid>
-                                                        <Grid item xs={3.7} sx={{ fontWeight: '480', fontSize: '17px', textAlign: 'right' }}>
+                                                        <Grid item xs={3.6} sx={{ fontWeight: '480', fontSize: '17px', textAlign: 'right' }}>
                                                             Name :
                                                         </Grid>
                                                         <Grid item xs={8}>
                                                             {selectedRecord.firstName} {selectedRecord.lastName}
                                                         </Grid>
 
-                                                        <Grid item xs={4.2} sx={{ fontWeight: '480', fontSize: '17px', textAlign: 'right' }}>
+                                                        <Grid item xs={4.1} sx={{ fontWeight: '480', fontSize: '17px', textAlign: 'right' }}>
                                                             Gender :
                                                         </Grid>
                                                         <Grid item xs={7}>
@@ -241,7 +243,7 @@ const Customer = (props) => {
                                                             </Typography>
 
                                                         </Grid>
-                                                        <Grid item xs={6.4} sx={{ fontWeight: '480', fontSize: '17px', textAlign: 'right' }}>
+                                                        <Grid item xs={6.1} sx={{ fontWeight: '480', fontSize: '17px', textAlign: 'right' }}>
                                                             EKYC Status :
                                                         </Grid>
                                                         <Grid item xs={5} sx={{ textAlign: 'left' }}>
@@ -264,36 +266,39 @@ const Customer = (props) => {
                                                 </Grid>
                                                 <Grid item xs={4} sx={{ paddingRight: 1 }}>
                                                     {selectedPhoto ? (
-                                                        <>
-                                                            {/* <CancelIcon sx={{ position: 'absolute', top: 0, right: 0, cursor: 'pointer', color: '#1976D2' }} onClick={handleCancelPhoto} /> */}
-                                                            <img
-                                                                src={selectedPhoto}
-                                                                alt="Selected"
-                                                                style={{
-                                                                    maxWidth: '100%',
-                                                                    maxHeight: '200px',
-                                                                    paddingBottom: '0px',
-                                                                    border: '5px solid grey', // Set border style, adjust color and width as needed
-                                                                    borderRadius: '15px', // Optional: Add border-radius for rounded corners
-                                                                }}
-                                                            />
-                                                        </>
+                                                        <img
+                                                            src={selectedPhoto}
+                                                            alt="Selected"
+                                                            style={{
+                                                                maxWidth: '100%',
+                                                                maxHeight: '200px',
+                                                                paddingBottom: '0px',
+                                                                border: '5px solid grey', // Set border style, adjust color and width as needed
+                                                                borderRadius: '15px', // Optional: Add border-radius for rounded corners
+                                                                transition: 'transform 0.2s', // Animation
+                                                            }}
+                                                            className="zoom"
+                                                        />
                                                     ) : (
-                                                        <>
-                                                            {/* <CancelIcon sx={{ position: 'absolute', top: 0, right: 0, cursor: 'pointer', color: '#1976D2' }} onClick={handleCancelPhoto} /> */}
-                                                            <img
-                                                                src={blanPhoto}
-                                                                alt="Selected"
-                                                                style={{
-                                                                    maxWidth: '100%',
-                                                                    maxHeight: '250px',
-                                                                    paddingBottom: '0px',
-                                                                    border: '5px solid grey', // Set border style, adjust color and width as needed
-                                                                    borderRadius: '15px', // Optional: Add border-radius for rounded corners
-                                                                }}
-                                                            />
-                                                        </>
+                                                        <img
+                                                            src={blanPhoto}
+                                                            alt="Blank"
+                                                            style={{
+                                                                maxWidth: '100%',
+                                                                maxHeight: '250px',
+                                                                paddingBottom: '0px',
+                                                                border: '5px solid grey', // Set border style, adjust color and width as needed
+                                                                borderRadius: '15px', // Optional: Add border-radius for rounded corners
+                                                                transition: 'transform 0.2s', // Animation
+                                                            }}
+                                                            className="zoom"
+                                                        />
                                                     )}
+                                                    <style>{`
+                                                    .zoom:hover {
+                                                    transform: scale(1.5); /* (100% zoom) */
+                                                    }
+                                                `}</style>
                                                 </Grid>
 
 
@@ -319,7 +324,7 @@ const Customer = (props) => {
                                                     >
                                                         {/* {new Date(selectedRecord.createDateTime).toISOString().split('T')[0]} */}
                                                         {/* {selectedRecord.createDateTime} */}
-                                                        {selectedRecord.createDateTime }
+                                                        {selectedRecord.createDateTime}
                                                     </Typography>
                                                 </Grid>
                                             </Grid>
@@ -416,7 +421,7 @@ const Customer = (props) => {
                                             <Grid container>
                                                 <Grid item xs={6}>
                                                     <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
-                                                       Payment Status :
+                                                        Payment Status :
                                                     </Typography>
                                                 </Grid>
                                                 <Grid item xs={6} alignItems={'left'} sx={{ marginLeft: -2 }}>
@@ -464,16 +469,16 @@ const Customer = (props) => {
                                             sx={{ backgroundColor: '#253A7D' }}
                                             variant="contained">Delete</Button>
                                     </Grid>
-                                    {console.log(selectedRecord.customerType+"account type")}
-                                    {selectedRecord.customerType ==="Post-Paid" || selectedRecord.customerType ==="post-paid"?<Grid item sx={6}>
+                                    {console.log(selectedRecord.customerType + "account type")}
+                                    {selectedRecord.customerType === "Post-Paid" || selectedRecord.customerType === "post-paid" ? <Grid item sx={6}>
                                         <Button
                                             onClick={() => {
                                                 navigate('/custInvoice', { state: { id: selectedRecord.simInventory.msisdn, type: selectedRecord.customerType } })
                                             }}
                                             sx={{ backgroundColor: '#253A7D' }}
-                                            variant="contained">Invoice</Button>
-                                    </Grid>:<></>}
-                                    
+                                            variant="contained">Bill</Button>
+                                    </Grid> : <></>}
+
 
 
 
@@ -592,7 +597,7 @@ const Customer = (props) => {
                                                         key={i}
                                                         onClick={() => handleRowClick(row)}
                                                         onMouseEnter={() => handleRowMouseEnter(row)}
-                                                        
+
                                                         //   onMouseLeave={handleRowMouseLeave}
                                                         sx={
                                                             highlightedRow === row

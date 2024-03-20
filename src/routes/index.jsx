@@ -1,7 +1,7 @@
 import React from 'react'
 import { Navigate, Route, Routes } from "react-router-dom";
 import { ProtectedRoute, PublicRoute } from '../helper';
-import Loginform from '../pages/Loginform';
+import Loginform from '../Loginform';
 import Sidenavbar from '../SidenaveBar/Sidenavbar';
 
 import Agent from '../pages/Agent/Agent';

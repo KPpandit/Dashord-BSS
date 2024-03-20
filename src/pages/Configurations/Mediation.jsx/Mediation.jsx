@@ -264,7 +264,7 @@ export default function Mediation() {
             <Box sx={{ width: '68%', padding: '16px' }}>
                 <Box component="main" sx={{ flexGrow: 1, width: '100%' }} >
 
-                    <Paper>
+                    <Paper elevation={24}>
 
                         <TableContainer sx={{ maxHeight: 600 }}>
                             <Table stickyHeader size='medium' padding="normal">
@@ -300,7 +300,7 @@ export default function Mediation() {
                                                         onMouseLeave={handleRowMouseLeave}
                                                         sx={
                                                             highlightedRow === row
-                                                                ? { backgroundColor: 'lightblue' }
+                                                                ? { backgroundColor: '#FAC22E' }
                                                                 : {}
                                                         }
                                                     >
@@ -329,7 +329,7 @@ export default function Mediation() {
                     </Paper>
 
                     <Grid >
-                        <Button sx={{ margin: 2 ,backgroundColor:'#253A7D'}} variant="contained" onClick={handleAddModalOpen}>
+                        <Button sx={{ margin: 2 ,backgroundColor:'#253A7D',boxShadow:24}} variant="contained" onClick={handleAddModalOpen}>
                             Add New
                         </Button>
 

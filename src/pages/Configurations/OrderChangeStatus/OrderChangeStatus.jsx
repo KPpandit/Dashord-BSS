@@ -48,7 +48,7 @@ export default function OrderChangeStatus() {
                 <Grid sx={{ backgroundColor: '#253A7D' }}>
                     <Paper elevation={3}>
                         <Grid backgroundColor={'#253A7D'} color={'white'}>
-                            <Typography>
+                            <Typography sx={{fontSize:'19px',paddingLeft:1}}>
                                 ORDER CHANGE STATUSES
                             </Typography>
                         </Grid>

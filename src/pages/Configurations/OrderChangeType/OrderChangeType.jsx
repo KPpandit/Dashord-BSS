@@ -159,7 +159,7 @@ export default function OrderChangeType(props) {
                                                         onMouseLeave={handleRowMouseLeave}
                                                         sx={
                                                             highlightedRow === row
-                                                                ? { backgroundColor: 'lightblue' }
+                                                                ? { backgroundColor: '#FAC22E' }
                                                                 : {}
                                                         }
                                                     >

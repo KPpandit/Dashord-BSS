@@ -306,7 +306,7 @@ export default function OrderStatuses() {
                                                 style={{
                                                     backgroundColor: '#253A7D',
                                                     color: 'white',
-                                                    textAlign: 'center',
+                                                   
                                                     height: '2px',
 
                                                 }}
@@ -330,12 +330,12 @@ export default function OrderStatuses() {
                                                         onMouseLeave={handleRowMouseLeave}
                                                         sx={
                                                             highlightedRow === row
-                                                                ? { backgroundColor: 'lightblue' }
+                                                                ? { backgroundColor: '#FAC22E' }
                                                                 : {}
                                                         }
                                                     >
                                                         {columns.map((column) => (
-                                                            <TableCell key={column.id} sx={{ textAlign: 'center' }}>
+                                                            <TableCell key={column.id}>
                                                                 {row[column.id]}
                                                             </TableCell>
                                                         ))}

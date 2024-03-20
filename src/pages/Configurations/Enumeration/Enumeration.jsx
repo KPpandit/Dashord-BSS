@@ -134,7 +134,7 @@ export default function Enumeration() {
             <Box sx={{ width: '68%', padding: '16px' }}>
                 <Box component="main" sx={{ flexGrow: 1, width: '100%' }} >
 
-                    <Paper>
+                    <Paper elevation={24}>
 
                         <TableContainer sx={{ maxHeight: 600 }}>
                             <Table stickyHeader size='medium' padding="normal">
@@ -170,7 +170,7 @@ export default function Enumeration() {
                                                         onMouseLeave={handleRowMouseLeave}
                                                         sx={
                                                             highlightedRow === row
-                                                                ? { backgroundColor: 'lightblue' }
+                                                                ? { backgroundColor: '#FAC22E' }
                                                                 : {}
                                                         }
                                                     >
@@ -186,7 +186,7 @@ export default function Enumeration() {
                             </Table>
                         </TableContainer>
                         <TablePagination
-                        sx={{color:'#253A7D'}}
+                            sx={{ color: '#253A7D' }}
                             rowsPerPageOptions={[5, 10, 25]}
                             rowsPerPage={rowperpage}
                             page={page}
@@ -201,7 +201,7 @@ export default function Enumeration() {
 
                 </Box>
                 <Grid >
-                    <Button sx={{ margin: 2 ,backgroundColor:'#253A7D'}} variant="contained"
+                    <Button sx={{ margin: 2, backgroundColor: '#253A7D' ,boxShadow:24}} variant="contained"
                         onClick={addEnumeartion}
                     >
                         {<Add sx={{ paddingRight: 1 }} />}

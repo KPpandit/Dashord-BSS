@@ -122,7 +122,7 @@ export default function Company() {
                 <Grid container spacing={1} padding={2} textAlign='center' justifyContent="center" sx={{ marginX: 'auto', maxWidth: '100%' }}>
                     <Paper elevation={5} sx={{ width: 600 }}>
                         <Grid item lg={12} paddingBottom={1} sx={{ backgroundColor: '#253A7D', height: 30 }}>
-                            <Typography variant='h6' color={'grey'} sx={{ textAlign: 'left', color: 'white', paddingLeft: 2 }}>Company</Typography>
+                            <Typography color={'grey'} sx={{ textAlign: 'left', color: 'white', paddingLeft: 1,fontSize:'19px' }}>Company</Typography>
                         </Grid>
                         <Grid container spacing={2} padding={3}>
 

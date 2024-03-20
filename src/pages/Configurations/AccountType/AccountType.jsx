@@ -180,15 +180,16 @@ export default function AccountType(props) {
     return (
         <Box sx={{ display: 'container' }}>
              <Box sx={{ width: '68%', padding: '16px' }}>
-             <Box component="main" sx={{ flexGrow: 1, p: 1, width: '100%' }}>
+             <Box component="main" sx={{  width: '100%' }}>
                     <Paper elevation={10} sx={{ padding: 1, margin: 1, backgroundColor: 'white', color: '#253A7D', marginLeft: 0.2, marginRight: 0.2 }}>
                         <Grid>
                             <Typography
                                 style={{
                                     fontFamily: 'Roboto',
-                                    fontSize: '20px',
+                                    fontSize: '19px',
                                     paddingLeft: '15px',
                                     fontWeight: 'bold',
+                                    marginLeft:-15
 
                                 }}
                             > Account Type</Typography>
@@ -254,7 +255,7 @@ export default function AccountType(props) {
                                                         onMouseLeave={handleRowMouseLeave}
                                                         sx={
                                                             highlightedRow === row
-                                                                ? { backgroundColor: 'lightblue' }
+                                                                ? { backgroundColor: '#FAC22E' }
                                                                 : {}
                                                         }
                                                     >

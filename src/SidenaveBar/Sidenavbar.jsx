@@ -258,7 +258,7 @@ export default function Sidenavbar() {
         icon: <DashboardIcon />
       },
       {
-        label:'UDM',
+        label:'Provisning Gateway',
         route:'/hss',
         icon:<StorageIcon/>
       },

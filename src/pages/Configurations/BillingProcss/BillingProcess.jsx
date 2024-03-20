@@ -69,7 +69,7 @@ export default function BillingProcess() {
                     
                     <Paper elevation={5} container >
                     <Grid item lg={12} paddingBottom={1} sx={{backgroundColor:'#253A7D',height:30}}>
-                        <Typography variant='h6'  color={'grey'} sx={{ textAlign: 'left', width: '100%' ,color:'white', paddingLeft:2}}>BILLING PROCESS</Typography>
+                        <Typography   color={'grey'} sx={{ textAlign: 'left', width: '100%' ,color:'white',paddingLeft:1,fontSize:'19px'}}>BILLING PROCESS</Typography>
                        
                     </Grid>
                    

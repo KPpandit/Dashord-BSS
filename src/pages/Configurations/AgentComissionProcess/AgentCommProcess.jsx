@@ -60,7 +60,7 @@ export default function AgentCommProcess() {
             <form onSubmit={handleSubmit}>
                 <Grid container spacing={2} textAlign='center' justifyContent="center" sx={{ marginX: 'auto', maxWidth: '80vw' }}>
                     <Grid item lg={12} paddingBottom={3}>
-                        <Typography variant='h6' paddingBottom={2} color={'grey'} sx={{ textAlign: 'center', width: '100%' }}>AGENT COMMISSION PROCESS</Typography>
+                        <Typography  paddingBottom={2} color={'grey'} sx={{ textAlign: 'center', width: '100%' ,fontSize:'19px'}}>AGENT COMMISSION PROCESS</Typography>
                         <Divider />
                     </Grid>
                     <Grid item lg={12} md={12} sm={12} >

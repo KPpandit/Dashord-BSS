@@ -24,7 +24,7 @@ console.log(id+"   this is mSISDN" )
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get(`http://localhost:9090/bill/${id}`, {
+                const response = await axios.get(`http://localhost:9091/bill/${id}`, {
                     headers: {
                         Authorization: `Bearer ${tokenValue}`,
                         Accept: 'application/json',
@@ -67,8 +67,10 @@ console.log(id+"   this is mSISDN" )
         { id: 'charges', label: 'Charges', minWidth: 100 },
     ];
     const columns1 = [
-        { id: 'call_start_time', label: 'Time', minWidth: 170 },
         { id: 'called_number', label: 'Called Number', minWidth: 100 },
+        { id: 'call_start_time', label: 'Start Time', minWidth: 170 },
+        { id: 'call_end_time', label: 'End Time', minWidth: 170 },
+      
        
         { id: 'call_duration', label: 'Duration (sec.)', minWidth: 100 },
         { id: 'charges', label: 'Charges', minWidth: 100 },
@@ -1044,6 +1046,7 @@ console.log(id+"   this is mSISDN" )
                                                                                     ))}
                                                                                     <TableRow>
                                                                                         <TableCell sx={{ fontSize: '11px', fontWeight: 'bold' }}>Total</TableCell>
+                                                                                        <TableCell></TableCell>
                                                                                         <TableCell></TableCell>
                                                                                         <TableCell sx={{ fontSize: '11px', fontWeight: 'bold' }}>{getTotalCalls()}</TableCell>
                                                                                         <TableCell sx={{ fontSize: '11px', fontWeight: 'bold' }}>{getTotalCallCharges()}</TableCell>
