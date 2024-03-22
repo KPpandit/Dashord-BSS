@@ -353,7 +353,24 @@ export default function Sidenavbar() {
         icon: <AnalyticsIcon />,
         subRoute: [
           {
-            label: 'Call Session',
+            label: 'PCRF/PCF Session',
+            route: "/pcrf"
+          },
+          {
+            label:'LU Registrations',
+            route:'/lu'
+          },
+          {
+            label:'IMS Session',
+            route:'/lu'
+          },
+          {
+            label:'Audio Call Session',
+            route:'/lu'
+          },
+         
+          {
+            label: 'Video Call Session',
             route: "/callMangent"
           },
           {
@@ -364,11 +381,8 @@ export default function Sidenavbar() {
           {
             label: 'VoLTE Registrations',
             route: "/volte"
-          },{
-            label:'LU Registrations',
-            route:'/lu',
-           
-          }
+          },
+         
         ]
       },
       {

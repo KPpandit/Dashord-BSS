@@ -12,12 +12,12 @@ import Tab from '@mui/material/Tab';
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
-export default function Report(props) {
+export default function PCRF(props) {
   const columns = [
     { id: 'report_type', name: 'REPORT TYPE' },
     
   ];
-  const [value, setValue] = React.useState('customer');
+  const [value, setValue] = React.useState('pcrf');
   const [rows, rowchange] = useState([]);
 
   let data=[]
@@ -29,32 +29,25 @@ export default function Report(props) {
   useEffect(() => {
 
     const generateData = () => {
-      if(value=== 'customer'){
-           count++
-        console.log("Customer loop")
+      if(value=== 'pcrf'){
+         
          data = [
-          {report_type:"All Customer Report"},
-          {report_type:"Prepaid Customer Report"},
-          {report_type:"Postpaid Customer Report"},
-          {report_type:"Active Customer Report"},
-          {report_type:"Inactive Customer Report"},
+          {report_type:"Gx Interface"},
+          {report_type:"Rx Interface "},
+          {report_type:"Ro Interface"},
+          {report_type:"Gy Interface"},
         ];
-        rowchange(data)
-        console.log("Customer loop", rows)      
-      setcount(count++)
-      console.log(count)     
+        rowchange(data)  
   
       }
-      else if(value === 'agent'){
-        count++
-        console.log("Agent loop")
+      else if(value === 'pcf'){
+
          data = [
-          {report_type:"Agent Report"},
+          {report_type:"NCHF Interface"},
+          {report_type:"NPCF Interface"},
+
         ];
         rowchange(data)
-        console.log("Agent loop", rows)
-        setcount(count++)
-        console.log(count)
       }
       return data;
     };
@@ -85,25 +78,8 @@ export default function Report(props) {
   };
   const [selectedRecord, setSelectedRecord] = useState(null);
   const handleRowClick = (row) => {
-    sessionStorage.setItem('report_Type',row.report_type)
-    if(row.report_type=='All Customer Report'){
-      navigate('/allcustomerReport');
-    }
-    if(row.report_type=='Prepaid Customer Report'){
-      navigate('/prepaidcustomerReport');
-    }
-    if(row.report_type=='Postpaid Customer Report'){
-      navigate('/postpaidcustomerReport');
-    }
-    if(row.report_type=='Active Customer Report'){
-      navigate('/activecustomerReport');
-    }
-    if(row.report_type=='Inactive Customer Report'){
-      navigate('/inactivecustomerReport');
-    }
-    if(row.report_type=='Agent Report'){
-      navigate('/allagentreport');
-    }
+    sessionStorage.setItem('interface_type',row.report_type)
+    navigate('/individualinterfaceRecords');
   };
 
   const [open, setOpen] = React.useState(false);
@@ -157,23 +133,6 @@ export default function Report(props) {
 
   };
 
-
-
-
-
-
-
-  const handleSerch = async (e) => {
-    e.preventDefault();
-    return await axios
-      .get(`http://172.5.10.2:9696/api/vendor/mgmt/detail/search?keyword=${value}`)
-      .then((res) => {
-        setdata(res.data);
-        console.log(value + "----value sech datas")
-        rowchange(res.data);
-        // setValue(value);
-      })
-  }
   const [selectedOption, setSelectedOption] = useState('');
   const [highlightedRow, setHighlightedRow] = useState(null);
 
@@ -206,12 +165,12 @@ export default function Report(props) {
                                     fontWeight: 'bold',
 
                                 }}
-                            >Report List</Typography>
+                            >PCRF/PCF Session List</Typography>
                         </Grid>
                     </Paper>
                 </Box>
         <Box component="main" sx={{ flexGrow: 1, width: '100%',  }}>
-          <form onSubmit={handleSerch}>
+          <form >
             <Paper elevation={20} sx={{ marginBottom: 2, }}>
               <Grid lg={8}  >
               <TabContext value={value}>
@@ -220,13 +179,13 @@ export default function Report(props) {
           <TabList onChange={handleChange} 
           sx={{backgroundColor:'#253A7D',}}
           >
-            <Tab label="Customer" value="customer"sx={{
+            <Tab label="PCRF" value="pcrf"sx={{
                 color: rightTabValue === 1 ? 'yellow' : 'white',
                 '&.Mui-selected': {
                   color: 'yellow',
                 },
               }} />
-            <Tab label="Agent" value="agent"sx={{
+            <Tab label="PCF" value="pcf"sx={{
                 color: rightTabValue === 1 ? 'yellow' : 'white',
                 '&.Mui-selected': {
                   color: 'yellow',
@@ -242,7 +201,7 @@ export default function Report(props) {
         </Box>
         {/* Panel for Customer */}
 
-        <TabPanel value="customer">
+        <TabPanel value="pcrf">
         
               <Table stickyHeader size='medium' padding="normal">
                 <TableBody>
@@ -290,7 +249,7 @@ export default function Report(props) {
         </TabPanel>
         {/* Panel for Agent */}
 
-        <TabPanel value="agent">
+        <TabPanel value="pcf">
         <Table stickyHeader size='medium' padding="normal">
                 <TableBody>
                   {rows &&
@@ -342,32 +301,8 @@ export default function Report(props) {
               </Grid>
             </Paper>
           </form>
-
-          
-
-          {/* <Box sx={{ paddingLeft: '16px', paddingBottom: '16px', paddingTop: '14px', display: 'flex', gap: '16px' }}>
-            <Button variant="contained" backgroundColor="#6471B5"
-              sx={{ backgroundColor: '#253A7D' }}
-            //  onClick={handleButtonClick}
-            >
-              Downloade PDF
-            </Button>
-
-            <Button variant="contained" backgroundColor="#6471B5"
-              // onClick={handleButtonClick} 
-              sx={{ marginLeft: '16px', backgroundColor: '#253A7D' }}>
-              DOWNLOADE CSV
-            </Button>
-          </Box> */}
         </Box>
       </Box>
-      <Box sx={{ paddingLeft: 1, paddingTop: 2 }} >
-        <SelectedRecordDetails
-
-        />
-      </Box>
-
-
     </Box>
   )
 };

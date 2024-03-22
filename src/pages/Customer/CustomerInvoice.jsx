@@ -16,6 +16,7 @@ export default function CustomerInvoice() {
 
     const [dataUsage, setDataUsage] = useState([]);
     const [callUsage, setCallUsage] = useState([]);
+    const [smsUsage, setSmsUsage] = useState([]);
     const [rows, setRows] = useState([]);
    
 console.log(id+"   this is mSISDN" )
@@ -24,7 +25,7 @@ console.log(id+"   this is mSISDN" )
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get(`http://localhost:9091/bill/${id}`, {
+                const response = await axios.get(`http://localhost:9098/bill/${id}`, {
                     headers: {
                         Authorization: `Bearer ${tokenValue}`,
                         Accept: 'application/json',
@@ -34,6 +35,7 @@ console.log(id+"   this is mSISDN" )
                 setRows(response.data);
                 setDataUsage(response.data.dataUsageDetails);
                 setCallUsage(response.data.callUsageDetails);
+                setSmsUsage(response.data.smsUsageDetails);
                 console.log(response.data.callUsageDetails.call_start_time+" Call Usage Details")
             } catch (error) {
                 if (error.response && error.response.status === 401) {
@@ -75,6 +77,13 @@ console.log(id+"   this is mSISDN" )
         { id: 'call_duration', label: 'Duration (sec.)', minWidth: 100 },
         { id: 'charges', label: 'Charges', minWidth: 100 },
     ];
+    const columns2 = [
+        { id: 'send_sms_time', label: 'SMS Time', minWidth: 100 },
+        { id: 'recipient_number', label: 'Recipitent Number', minWidth: 170 },
+        { id: 'no_of_msgs', label: 'No of sms', minWidth: 170 }, 
+        { id: 'charges', label: 'Charges', minWidth: 100 },
+      
+    ];
     console.log(callUsage+"data int call variable")
     const getTotalDataInBytes = () => {
         // Calculate the total sum of 'data_in_bytes'
@@ -87,6 +96,14 @@ console.log(id+"   this is mSISDN" )
     const getTotalCallCharges = () => {
         // Calculate the total sum of 'data_in_bytes'
         return callUsage.reduce((total, row) => total + row.charges, 0);
+    };
+    const getTotalSMS = () => {
+        // Calculate the total sum of 'data_in_bytes'
+        return smsUsage.reduce((total, row) => total + row.no_of_msgs, 0);
+    };
+    const getTotalSMSCharges = () => {
+        // Calculate the total sum of 'data_in_bytes'
+        return smsUsage.reduce((total, row) => total + row.charges, 0);
     };
     return (
         <Box >
@@ -1144,146 +1161,34 @@ console.log(id+"   this is mSISDN" )
                                                         <Grid item xs={12}>
                                                             <Grid container spacing={1}>
                                                                 <Grid item xs={12} md={12}>
-                                                                    <TableContainer >
-                                                                        <Table>
-                                                                            <TableHead sx={{ backgroundColor: '#FFC34A' }}>
-                                                                                <TableRow >
-                                                                                    <TableCell sx={{ fontSize: '10px', color: 'black' }}><Typography sx={{ fontSize: '11px', fontWeight: 'bold' }}>Date</Typography></TableCell>
-                                                                                    <TableCell sx={{ fontSize: '11px', color: 'black' }}></TableCell>
-                                                                                    <TableCell sx={{ fontSize: '11px', color: 'black' }}>Number</TableCell>
+                                                                <TableContainer >
+                                                                            <Table>
+                                                                                <TableHead sx={{ backgroundColor: '#FFC34A' }}>
+                                                                                    <TableRow>
+                                                                                        {columns2.map((column) => (
+                                                                                            <TableCell key={column.id} sx={{ fontSize: '11px' }}>{column.label}</TableCell>
+                                                                                        ))}
+                                                                                    </TableRow>
+                                                                                </TableHead>
+                                                                                <TableBody>
+                                                                                    {smsUsage.map((row) => (
+                                                                                        <TableRow key={row.date}>
+                                                                                            {columns2.map((column) => (
+                                                                                                <TableCell key={column.id} sx={{ fontSize: '9px' }}>{row[column.id]}</TableCell>
+                                                                                            ))}
+                                                                                        </TableRow>
 
-                                                                                    <TableCell sx={{ fontSize: '11px', color: 'black' }}><Typography sx={{ fontSize: '11px', fontWeight: 'bold' }}>Usage<Typography sx={{ fontSize: '13px' }}>
-
-                                                                                    </Typography></Typography></TableCell>
-                                                                                    <TableCell sx={{ padding: 2, color: 'black' }}><Typography sx={{ fontSize: '11px', fontWeight: 'bold' }}>Charges<Typography sx={{ fontSize: '9px' }}>
-                                                                                        (AUD $)
-                                                                                    </Typography></Typography></TableCell>
-
-
-                                                                                </TableRow>
-                                                                            </TableHead>
-                                                                            <TableBody>
-
-                                                                                <TableRow >
-                                                                                    <TableCell sx={{ fontSize: '9px' }}>15/01/2024</TableCell>
-                                                                                    <TableCell sx={{ fontSize: '9px' }}>Local</TableCell>
-                                                                                    <TableCell sx={{ fontSize: '9px' }}>789456612</TableCell>
-
-                                                                                    <TableCell sx={{ fontSize: '9px' }}>1</TableCell>
-                                                                                    <TableCell sx={{ fontSize: '9px' }}>0.5</TableCell>
-
-                                                                                </TableRow>
-                                                                                <TableRow >
-                                                                                    <TableCell sx={{ fontSize: '9px' }}>16/01/2024</TableCell>
-                                                                                    <TableCell sx={{ fontSize: '9px' }}>STD</TableCell>
-                                                                                    <TableCell sx={{ fontSize: '9px' }}>789456612</TableCell>
-
-                                                                                    <TableCell sx={{ fontSize: '9px' }}>2</TableCell>
-                                                                                    <TableCell sx={{ fontSize: '9px' }}>2</TableCell>
-
-                                                                                </TableRow>
-
-
-
-                                                                                <TableRow >
-                                                                                    <TableCell sx={{ fontSize: '9px' }}>17/01/2024</TableCell>
-                                                                                    <TableCell sx={{ fontSize: '9px' }}>Local</TableCell>
-                                                                                    <TableCell sx={{ fontSize: '9px' }}>789456612</TableCell>
-
-                                                                                    <TableCell sx={{ fontSize: '9px' }}>3</TableCell>
-                                                                                    <TableCell sx={{ fontSize: '9px' }}>1.5</TableCell>
-
-                                                                                </TableRow>
-                                                                                <TableRow >
-                                                                                    <TableCell sx={{ fontSize: '9px' }}>17/01/2024</TableCell>
-                                                                                    <TableCell sx={{ fontSize: '9px' }}>Local</TableCell>
-                                                                                    <TableCell sx={{ fontSize: '9px' }}>789456612</TableCell>
-
-                                                                                    <TableCell sx={{ fontSize: '9px' }}>6</TableCell>
-                                                                                    <TableCell sx={{ fontSize: '9px' }}>3</TableCell>
-
-                                                                                </TableRow>
-                                                                                <TableRow >
-                                                                                    <TableCell sx={{ fontSize: '9px' }}>17/01/2024</TableCell>
-                                                                                    <TableCell sx={{ fontSize: '9px' }}>Local</TableCell>
-                                                                                    <TableCell sx={{ fontSize: '9px' }}>789456612</TableCell>
-
-                                                                                    <TableCell sx={{ fontSize: '9px' }}>3</TableCell>
-                                                                                    <TableCell sx={{ fontSize: '9px' }}>1.5</TableCell>
-
-                                                                                </TableRow>
-                                                                                <TableRow >
-                                                                                    <TableCell sx={{ fontSize: '9px' }}>17/01/2024</TableCell>
-                                                                                    <TableCell sx={{ fontSize: '9px' }}>Local</TableCell>
-                                                                                    <TableCell sx={{ fontSize: '9px' }}>789456612</TableCell>
-
-                                                                                    <TableCell sx={{ fontSize: '9px' }}>4</TableCell>
-                                                                                    <TableCell sx={{ fontSize: '9px' }}>2</TableCell>
-
-                                                                                </TableRow>
-                                                                                <TableRow >
-                                                                                    <TableCell sx={{ fontSize: '9px' }}>17/01/2024</TableCell>
-                                                                                    <TableCell sx={{ fontSize: '9px' }}>STD</TableCell>
-                                                                                    <TableCell sx={{ fontSize: '9px' }}>789456612</TableCell>
-
-                                                                                    <TableCell sx={{ fontSize: '9px' }}>3</TableCell>
-                                                                                    <TableCell sx={{ fontSize: '9px' }}>3</TableCell>
-
-                                                                                </TableRow>
-                                                                                <TableRow >
-                                                                                    <TableCell sx={{ fontSize: '9px' }}>17/01/2024</TableCell>
-                                                                                    <TableCell sx={{ fontSize: '9px' }}>Local</TableCell>
-                                                                                    <TableCell sx={{ fontSize: '9px' }}>789456612</TableCell>
-
-                                                                                    <TableCell sx={{ fontSize: '9px' }}>1</TableCell>
-                                                                                    <TableCell sx={{ fontSize: '9px' }}>0.5</TableCell>
-
-                                                                                </TableRow>
-                                                                                <TableRow >
-                                                                                    <TableCell sx={{ fontSize: '9px' }}>17/01/2024</TableCell>
-                                                                                    <TableCell sx={{ fontSize: '9px' }}>Local</TableCell>
-                                                                                    <TableCell sx={{ fontSize: '9px' }}>789456612</TableCell>
-
-                                                                                    <TableCell sx={{ fontSize: '9px' }}>4</TableCell>
-                                                                                    <TableCell sx={{ fontSize: '9px' }}>2</TableCell>
-
-                                                                                </TableRow>
-                                                                                <TableRow >
-                                                                                    <TableCell sx={{ fontSize: '9px' }}>17/01/2024</TableCell>
-                                                                                    <TableCell sx={{ fontSize: '9px' }}>Local</TableCell>
-                                                                                    <TableCell sx={{ fontSize: '9px' }}>789456612</TableCell>
-
-                                                                                    <TableCell sx={{ fontSize: '9px' }}>2</TableCell>
-                                                                                    <TableCell sx={{ fontSize: '9px' }}>1</TableCell>
-
-                                                                                </TableRow>
-                                                                                <TableRow >
-                                                                                    <TableCell sx={{ fontSize: '9px' }}>17/01/2024</TableCell>
-                                                                                    <TableCell sx={{ fontSize: '9px' }}>Local</TableCell>
-                                                                                    <TableCell sx={{ fontSize: '9px' }}>789456612</TableCell>
-
-                                                                                    <TableCell sx={{ fontSize: '9px' }}>3</TableCell>
-                                                                                    <TableCell sx={{ fontSize: '9px' }}>1.5</TableCell>
-
-                                                                                </TableRow>
-                                                                                <TableRow >
-                                                                                    <TableCell sx={{ fontSize: '11px', fontWeight: 'Bold' }}>Total</TableCell>
-                                                                                    <TableCell ></TableCell>
-                                                                                    <TableCell ></TableCell>
-
-                                                                                    <TableCell sx={{ fontSize: '11px', fontWeight: 'Bold' }}>32</TableCell>
-                                                                                    <TableCell sx={{ fontSize: '11px', fontWeight: 'Bold' }}>18.5</TableCell>
-
-                                                                                </TableRow>
-
-
-
-
-
-                                                                                {/* Add more rows as needed */}
-                                                                            </TableBody>
-                                                                        </Table>
-                                                                    </TableContainer>
+                                                                                    ))}
+                                                                                    <TableRow>
+                                                                                        <TableCell sx={{ fontSize: '11px', fontWeight: 'bold' }}>Total</TableCell>
+                                                                                        <TableCell></TableCell>
+                                                                                       
+                                                                                        <TableCell sx={{ fontSize: '11px', fontWeight: 'bold' }}>{getTotalSMS()}</TableCell>
+                                                                                        <TableCell sx={{ fontSize: '11px', fontWeight: 'bold' }}>{getTotalSMSCharges()}</TableCell>
+                                                                                    </TableRow>
+                                                                                </TableBody>
+                                                                            </Table>
+                                                                        </TableContainer>
                                                                 </Grid>
                                                             </Grid>
                                                         </Grid>

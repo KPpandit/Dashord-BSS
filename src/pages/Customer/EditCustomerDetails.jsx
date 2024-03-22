@@ -218,6 +218,14 @@ export default function EditCustomerDetails() {
     const [msisdn, setMsisdn] = useState('');
     const [paymentId, setPaymentID] = useState('');
     const [partner, setpartner] = useState('');
+    const [currencyOption, setcurrencyOption] = useState([]);
+    const [seleectedCurrenyId, setSelectedCurrencyId] = useState('');
+    const handleChangeLanguage = (event) => {
+        setSelectedLanguageId(event.target.value);
+    };
+    const handleChangeCurrency = (event) => {
+        setSelectedCurrencyId(event.target.value);
+    };
     useEffect(() => {
         const fetchCustomerDetails = async () => {
             console.log('Before fetchCustomerDetails - values:', values);
@@ -303,6 +311,7 @@ export default function EditCustomerDetails() {
                     // console.log('device:', customerDetails.deviceInventory.id);
                     // console.log('msisdn:', customerDetails.msisdnInventory.msisdn);
                     setpartner(customerDetails.partner)
+                    
 
                     console.log('After setting values1 - values:', customerDetails.simInventory.msisdn);
                     if (customerDetails.simInventory.msisdn !== null) {
@@ -357,6 +366,8 @@ export default function EditCustomerDetails() {
                         paymentNotes: paymentDetails.paymentNotes,
                         paymentStatus: paymentDetails.paymentStatus
                     });
+                    setSelectedCurrencyId(paymentDetails.currency.id)
+                    console.log("Currency id  :" , paymentDetails.currency.id)
                 } else {
                     console.error('Failed to fetch payment details.');
                 }
@@ -389,6 +400,21 @@ export default function EditCustomerDetails() {
 
         // Call the function to fetch details when the component mounts or dependencies change
         fetchCustomerDetails();
+        axios.get('http://172.5.10.2:9090/api/allcurrency', {
+            headers: {
+                Authorization: `Bearer ${tokenValue}`,
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            }
+        })
+            .then(response => {
+                // Store language options (id and code) in state
+                setcurrencyOption(response.data);
+            })
+            .catch(error => {
+                console.error('Error fetching language options:', error);
+                // Handle error as needed
+            });
     }, [paymentId]);
 
 
@@ -571,18 +597,25 @@ export default function EditCustomerDetails() {
                                         </FormControl>
                                     </Grid>
                                     <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
-                                        <FormControl fullWidth >
-                                            <InputLabel id="demo-simple-select-label">Currency</InputLabel>
+                                    <FormControl fullWidth>
+                                            <InputLabel id="demo-simple-select-label" required>Currency</InputLabel>
                                             <Select
+                                                required
                                                 labelId="demo-simple-select-label"
                                                 id="demo-simple-select"
-                                                // value={values.currency}
-                                                label="Currency"
-                                            // onChange={handleChange}
-                                            // onBlur={handleBlur}
-                                            // name="currency"
+                                                value={seleectedCurrenyId}
+                                                name='currenyId'
+                                                onChange={handleChangeCurrency}
+                                                label="Language "
+                                                disabled
+                                            
                                             >
-                                                <MenuItem value={"Australian Dollar"}>Australian Dollar</MenuItem>
+                                                {currencyOption.map(option => (
+                                                    <MenuItem key={option.id} value={option.id}>
+                                                        {option.symbol}
+                                                    </MenuItem>
+                                                ))}
+                                                {/* {console.log(seleectedCurrenyId + "------selected Currency ID ID")} */}
                                             </Select>
                                         </FormControl>
                                     </Grid>
