@@ -9,7 +9,7 @@ import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import * as XLSX from 'xlsx';
 
-const InactiveCustomerReport = (props) => {
+export default function CustomerSignUp(props) {
     const columns = [
         { id: 'firstName', name: 'Name' },
         { id: 'ekycStatus', name: 'Ekyc Status' },
@@ -26,8 +26,8 @@ const InactiveCustomerReport = (props) => {
     const [selectedRecord, setSelectedRecord] = useState(null);
     const [open, setOpen] = React.useState(false);
     // Generate sample data
-    
-  const [openDialog, setOpenDialog] = useState(false);
+
+    const [openDialog, setOpenDialog] = useState(false);
 
     useEffect(() => {
         // console.log("record==>",selectedRecord)
@@ -59,23 +59,22 @@ const InactiveCustomerReport = (props) => {
         };
 
         fetchData(); // Invoke the fetchData function when the component mounts
-    }, [tokenValue]);
+    }, [tokenValue, selectedPhoto]);
 
-   
+
     const handleClickOpen = (row) => {
         setSelectedRecord(row)
         // setOpen(true);
-        
     };
     const handleClose = () => {
         setOpen(false);
     };
-    
-    
-      const handleCloseDialog = () => {
+
+
+    const handleCloseDialog = () => {
         setOpenDialog(false);
-      };
-    
+    };
+
     const [confirmationDialogOpen, setConfirmationDialogOpen] = useState(false);
     const [recordIdToDelete, setRecordIdToDelete] = useState(null);
     const handleOpenConfirmationDialog = (id) => {
@@ -83,7 +82,7 @@ const InactiveCustomerReport = (props) => {
         setConfirmationDialogOpen(true);
     };
 
-  
+
     const navigate = useNavigate();
     const handleButtonClick = () => {
         navigate('/newCustomer');
@@ -93,8 +92,8 @@ const InactiveCustomerReport = (props) => {
         setSelectedRecord(row);
         setOpenDialog(true);
         fetchPhoto1(row)
-      };
-      const fetchPhoto1 = async (row) => {
+    };
+    const fetchPhoto1 = async (row) => {
 
         try {
             const photoResponse = await axios.get(`http://172.5.10.2:9090/api/image/${row.id}`, {
@@ -110,7 +109,7 @@ const InactiveCustomerReport = (props) => {
                 const imageBlob = new Blob([photoResponse.data], { type: 'image/jpeg' });
                 const imageUrl = URL.createObjectURL(imageBlob);
                 setSelectedPhoto(imageUrl);
-                sessionStorage.setItem('selectedPhoto',imageUrl)
+                sessionStorage.setItem('selectedPhoto', imageUrl)
             } else {
                 console.error('Failed to fetch photo details.');
                 sessionStorage.removeItem('selectedPhoto')
@@ -118,13 +117,13 @@ const InactiveCustomerReport = (props) => {
         } catch (error) {
             setSelectedPhoto(null);
             console.log('Failed to load the Photo', error);
-                sessionStorage.removeItem('selectedPhoto')
+            sessionStorage.removeItem('selectedPhoto')
 
         }
-        navigate('/individualReport',{state:{selectedRecord:row}})
+        navigate('/individualReport', { state: { selectedRecord: row } })
 
     };
-   
+
 
     const handleSerch = async (e) => {
         e.preventDefault();
@@ -137,21 +136,21 @@ const InactiveCustomerReport = (props) => {
                 setValue(value);
             })
     }
-    const [selectedOption, setSelectedOption] = useState('');
+
     const [highlightedRow, setHighlightedRow] = useState(null);
 
     const handleRowMouseEnter = (row) => {
         setHighlightedRow(row)
     };
 
-    function DownloadPDF(){
+    function DownloadPDF() {
         const capture = document.getElementById('container');
-        html2canvas(capture).then((canvas)=>{
+        html2canvas(capture).then((canvas) => {
             const imgdata = canvas.toDataURL('img/png')
-            const doc = new jsPDF('p','pt','a4');
-            const pageHeight= doc.internal.pageSize.height;
-            const pageWidth= doc.internal.pageSize.width;
-            doc.addImage(imgdata,'PNG',0.5,0.5,pageWidth,pageHeight);
+            const doc = new jsPDF('p', 'pt', 'a4');
+            const pageHeight = doc.internal.pageSize.height;
+            const pageWidth = doc.internal.pageSize.width;
+            doc.addImage(imgdata, 'PNG', 0.5, 0.5, pageWidth, pageHeight);
             doc.save('customerProfile.pdf')
         })
 
@@ -162,10 +161,10 @@ const InactiveCustomerReport = (props) => {
         //         pdf.save('customer.pdf')
         //     })
         // })
-        
+
     }
 
-   
+    const [selectedOption, setSelectedOption] = useState(null);
     const handleDownload = () => {
         if (selectedOption === 'pdf') {
             const pdf = new jsPDF();
@@ -225,7 +224,7 @@ const InactiveCustomerReport = (props) => {
                                     fontWeight: 'bold',
 
                                 }}
-                            >Inactive Customer List</Typography>
+                            >All Customer Signups List</Typography>
                         </Grid>
                     </Paper>
                 </Box>
@@ -235,30 +234,68 @@ const InactiveCustomerReport = (props) => {
                         onSubmit={handleSerch}
                     >
 
-                        <Paper elevation={10} sx={{ marginBottom: 2 }}>
-                            <Grid lg={8} >
-                                <TextField
-                                    onClick={handleSerch}
-                                    label="Search"
-                                    type='text'
-                                    fullWidth
-                                    name='value'
-                                    // onChange={(e) => setValue(e.target.value)}
-                                    required
-                                    InputProps={{
-                                        endAdornment: (
-                                            <InputAdornment position='end'>
-                                                <IconButton
-                                                // onSubmit={handleSerch}
-                                                >
-                                                    <SearchIcon />
-                                                </IconButton>
-                                            </InputAdornment>
-                                        )
-                                    }}
-                                />
+                        <Paper elevation={10} sx={{ marginBottom: 2, paddingBottom: 0.1, paddingTop: 0.5 }}>
+                            <Grid container spacing={2} padding={1}>
+                                <Grid item xs={3}>
+                                    {/* First date field */}
+                                    <TextField
+                                        label="Start Date"
+                                        type="date"
+                                        fullWidth
+                                        InputLabelProps={{
+                                            shrink: true,
+                                        }}
+                                    />
+                                </Grid>
+                                <Grid item xs={3}>
+                                    {/* Second date field */}
+                                    <TextField
+                                        label="End Date"
+                                        type="date"
+                                        fullWidth
+                                        InputLabelProps={{
+                                            shrink: true,
+                                        }}
+                                    />
+                                </Grid>
 
+                                <Grid item xs={3}>
+                                    {/* Search button */}
+                                    <FormControl fullWidth>
+                                        <InputLabel id="demo-simple-select-label">Period Breakdown</InputLabel>
+                                        <Select
+
+                                            id="demo-simple-select"
+                                            label="Period Breakdown"
+                                            fullWidth
+                                            name="pack_type"
+                                            // value={pack_type}
+                                            // onChange={e => setPack_type(e.target.value)}
+                                        >
+                                            <MenuItem value={'day'}>Day</MenuItem>
+                                            <MenuItem value={'month'}>Month</MenuItem>
+                                            <MenuItem value={'year'}>Year</MenuItem>
+                                            
+
+                                        </Select>
+                                    </FormControl>
+
+
+                                </Grid>
+                                <Grid item xs={2}>
+                                    {/* Search button */}
+                                    <Button
+                                        variant="contained"
+                                        color="primary"
+                                        // onClick={handleSearch}
+                                        fullWidth
+                                        style={{ height: '100%' }}
+                                    >
+                                        Apply
+                                    </Button>
+                                </Grid>
                             </Grid>
+
                         </Paper>
                         {/* <Grid paddingBottom={1}>
                             <Button type='submit' backgroundColor={'blue'} onSubmit={handleSerch} padding={2}> <SearchIcon /> Search</Button>
@@ -282,7 +319,7 @@ const InactiveCustomerReport = (props) => {
 
                                             .map((row, i) => {
                                                 return (
-                                                            (row.ekycStatus=='InActive')?
+
                                                     <TableRow
                                                         key={i}
                                                         onClick={() => {
@@ -297,43 +334,32 @@ const InactiveCustomerReport = (props) => {
                                                                 : {}
                                                         }
                                                     >
-                                                        
+
                                                         {columns.map((column) => (
-
-
                                                             <TableCell key={column.id} sx={{ textAlign: 'left', fontSize: '17px' }}>
 
-                                                                {column.id === 'ekycDate' ? (
-                                                                    // Render this content if the condition is true
-                                                                    <>{
-                                                                        // new Date(row[column.id]).toISOString().split('T')[0]
-
-                                                                    }</>
-                                                                ) : (
-                                                                    // Render this content if the condition is false
-                                                                    <>{row[column.id]}</>
-                                                                )}
+                                                                {row[column.id]}
                                                             </TableCell>
                                                         ))}
                                                     </TableRow>
-                                                    :null
+
 
                                                 );
                                             })}
                                 </TableBody>
                             </Table>
                         </TableContainer>
-                        
+
 
                     </Paper>
                 </Box>
                 <Grid container paddingTop={2}>
                     <Grid item xs={1.2}>
-                        <Button variant="contained" sx={{backgroundColor:'#253A7D',boxShadow:24}} onClick={handleDownload}>Download</Button>
+                        <Button variant="contained" sx={{ backgroundColor: '#253A7D', boxShadow: 24 }} onClick={handleDownload}>Download</Button>
                     </Grid>
                     <Grid item xs={1}>
                         <FormControl fullWidth>
-                            <Select sx={{ boxShadow:24,width: 100, height: 20, paddingY: 2.3, textAlign: 'bottom' }}
+                            <Select sx={{ boxShadow: 24, width: 100, height: 20, paddingY: 2.3, textAlign: 'bottom' }}
 
                                 onChange={(e) => setSelectedOption(e.target.value)}
                                 required
@@ -350,11 +376,11 @@ const InactiveCustomerReport = (props) => {
                 </Grid>
             </Box>
 
-            
-        
-      
-       
-          
+
+
+
+
+
 
 
 
@@ -363,4 +389,4 @@ const InactiveCustomerReport = (props) => {
     )
 };
 
-export default InactiveCustomerReport;
+

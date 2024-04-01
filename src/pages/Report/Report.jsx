@@ -15,41 +15,57 @@ import TabPanel from '@mui/lab/TabPanel';
 export default function Report(props) {
   const columns = [
     { id: 'report_type', name: 'REPORT TYPE' },
-    
+
   ];
   const [value, setValue] = React.useState('customer');
   const [rows, rowchange] = useState([]);
 
-  let data=[]
-  let [count,setcount]= useState(0)
+  let data = []
+  let [count, setcount] = useState(0)
 
   // Generate sample data
-  
+
 
   useEffect(() => {
 
     const generateData = () => {
-      if(value=== 'customer'){
-           count++
+      if (value === 'customer') {
+        count++
         console.log("Customer loop")
-         data = [
-          {report_type:"All Customer Report"},
-          {report_type:"Prepaid Customer Report"},
-          {report_type:"Postpaid Customer Report"},
-          {report_type:"Active Customer Report"},
-          {report_type:"Inactive Customer Report"},
+        data = [
+          { report_type: "All Customer Report" },
+          { report_type: "Pre-Paid Customer Report" },
+          { report_type: "Post-Paid Customer Report" },
+          { report_type: "Active Customer Report" },
+          { report_type: "Inactive Customer Report" },
+          { report_type: "Customer signup Report" },
+          { report_type: "Top Customers Report" },
         ];
         rowchange(data)
-        console.log("Customer loop", rows)      
-      setcount(count++)
-      console.log(count)     
-  
+        console.log("Customer loop", rows)
+        setcount(count++)
+        console.log(count)
+
       }
-      else if(value === 'agent'){
+      else if (value === 'agent') {
         count++
         console.log("Agent loop")
-         data = [
-          {report_type:"Agent Report"},
+        data = [
+          { report_type: "Agent Report" },
+          { report_type: "Agent Comission" },
+        ];
+        rowchange(data)
+        console.log("Agent loop", rows)
+        setcount(count++)
+        console.log(count)
+      }
+      else if (value === 'billing') {
+        console.log("Biloing Condition is working")
+        count++
+        console.log("billing")
+        data = [
+          { report_type: "Pre-Paid Customer Report" },
+          { report_type: "Post-Paid Customer Report" },
         ];
         rowchange(data)
         console.log("Agent loop", rows)
@@ -61,7 +77,7 @@ export default function Report(props) {
     generateData()
 
 
-},[value]);
+  }, [value]);
 
   const [page, pagechange] = useState(0);
   const [rightTabValue, setRightTabValue] = useState(0);
@@ -85,61 +101,48 @@ export default function Report(props) {
   };
   const [selectedRecord, setSelectedRecord] = useState(null);
   const handleRowClick = (row) => {
-    sessionStorage.setItem('report_Type',row.report_type)
-    if(row.report_type=='All Customer Report'){
+    console.log("handle row click")
+    sessionStorage.setItem('report_Type', row.report_type)
+    if (row.report_type == 'All Customer Report') {
       navigate('/allcustomerReport');
     }
-    if(row.report_type=='Prepaid Customer Report'){
+    if (row.report_type == 'Pre-Paid Customer Report') {
       navigate('/prepaidcustomerReport');
     }
-    if(row.report_type=='Postpaid Customer Report'){
+    if (row.report_type == 'Post-Paid Customer Report') {
       navigate('/postpaidcustomerReport');
     }
-    if(row.report_type=='Active Customer Report'){
+    if (row.report_type == 'Active Customer Report') {
       navigate('/activecustomerReport');
     }
-    if(row.report_type=='Inactive Customer Report'){
+    if (row.report_type == 'Inactive Customer Report') {
       navigate('/inactivecustomerReport');
     }
-    if(row.report_type=='Agent Report'){
+    if (row.report_type == 'Agent Report') {
       navigate('/allagentreport');
+    }
+    if (row.report_type == 'Customer signup Report') {
+      navigate('/customerSignUp');
+    }
+    if (row.report_type == 'Top Customers Report') {
+      navigate('/topCustomerReport');
+    }
+    if (row.report_type == 'Top Customers Report') {
+      navigate('/topCustomerReport');
+    }
+    if (row.report_type == 'Agent Comission') {
+      navigate('/agentComission');
     }
   };
 
-  const [open, setOpen] = React.useState(false);
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
 
 
 
 
 
   const SelectedRecordDetails = () => {
-    const [page, setPage] = useState(0);
-    const [rowsPerPage, setRowsPerPage] = useState(5);
 
-    const handleChangePage1 = (event, newPage) => {
-      setPage(newPage);
-    };
-
-    const handleChangeRowsPerPage = (event) => {
-      setRowsPerPage(parseInt(event.target.value, 10));
-      setPage(0);
-    };
-
-    const handleNextPage = () => {
-      setPage((prevPage) => prevPage + 1);
-    };
-
-    const handlePrevPage = () => {
-      setPage((prevPage) => Math.max(0, prevPage - 1));
-    };
 
     if (selectedRecord) {
       const reportCount = parseInt(selectedRecord.reports) || 0;
@@ -188,162 +191,214 @@ export default function Report(props) {
   const handleChange = (event, newValue) => {
     setValue(newValue);
     console.log(newValue)
-  
+
 
   };
 
   return (
-    <Box sx={{ display: 'container', marginTop: '-15px',fontFamily:'Roboto' }}>
-            <Box sx={{ width: '100%' }}>
-      <Box component="main" sx={{ flexGrow: 1, p: 1, width: '100%' }}>
-                    <Paper elevation={20} sx={{ padding: 1, margin: 1, backgroundColor: 'white', color: '#253A7D', marginLeft: -0.8, marginRight: -1 }}>
-                        <Grid>
-                            <Typography
-                                style={{
+    <Box sx={{ display: 'container', marginTop: '-15px', fontFamily: 'Roboto' }}>
+      <Box sx={{ width: '100%' }}>
+        <Box component="main" sx={{ flexGrow: 1, p: 1, width: '100%' }}>
+          <Paper elevation={20} sx={{ padding: 1, margin: 1, backgroundColor: 'white', color: '#253A7D', marginLeft: -0.8, marginRight: -1 }}>
+            <Grid>
+              <Typography
+                style={{
 
-                                    fontSize: '20px',
-                                    paddingLeft: 10,
-                                    fontWeight: 'bold',
+                  fontSize: '20px',
+                  paddingLeft: 10,
+                  fontWeight: 'bold',
 
-                                }}
-                            >Report List</Typography>
-                        </Grid>
-                    </Paper>
-                </Box>
-        <Box component="main" sx={{ flexGrow: 1, width: '100%',  }}>
+                }}
+              >Report List</Typography>
+            </Grid>
+          </Paper>
+        </Box>
+        <Box component="main" sx={{ flexGrow: 1, width: '100%', }}>
           <form onSubmit={handleSerch}>
             <Paper elevation={20} sx={{ marginBottom: 2, }}>
               <Grid lg={8}  >
-              <TabContext value={value}>
-                {/* Navbar Code starts here */}
-        <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-          <TabList onChange={handleChange} 
-          sx={{backgroundColor:'#253A7D',}}
-          >
-            <Tab label="Customer" value="customer"sx={{
-                color: rightTabValue === 1 ? 'yellow' : 'white',
-                '&.Mui-selected': {
-                  color: 'yellow',
-                },
-              }} />
-            <Tab label="Agent" value="agent"sx={{
-                color: rightTabValue === 1 ? 'yellow' : 'white',
-                '&.Mui-selected': {
-                  color: 'yellow',
-                },
-              }} />
-            {/* <Tab label="Item Three" value="3"sx={{
+                <TabContext value={value}>
+                  {/* Navbar Code starts here */}
+                  <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                    <TabList onChange={handleChange}
+                      sx={{ backgroundColor: '#253A7D', }}
+                    >
+                      <Tab label="Customer" value="customer" sx={{
+                        color: rightTabValue === 1 ? 'yellow' : 'white',
+                        '&.Mui-selected': {
+                          color: 'yellow',
+                        },
+                      }} />
+                      <Tab label="Agent" value="agent" sx={{
+                        color: rightTabValue === 1 ? 'yellow' : 'white',
+                        '&.Mui-selected': {
+                          color: 'yellow',
+                        },
+                      }} />
+                      <Tab label="Billing" value="billing" sx={{
+                        color: rightTabValue === 2 ? 'yellow' : 'white',
+                        '&.Mui-selected': {
+                          color: 'yellow',
+                        },
+                      }} />
+                      {/* <Tab label="Item Three" value="3"sx={{
                 color: rightTabValue === 1 ? 'yellow' : 'white',
                 '&.Mui-selected': {
                   color: 'yellow',
                 },
               }} /> */}
-          </TabList>
-        </Box>
-        {/* Panel for Customer */}
+                    </TabList>
+                  </Box>
+                  {/* Panel for Customer */}
 
-        <TabPanel value="customer">
-        
-              <Table stickyHeader size='medium' padding="normal">
-                <TableBody>
-                  {rows &&
-                    rows
-                      .slice(page * rowperpage, page * rowperpage + rowperpage)
-                      .map((row, i) => {
-                        return (
-                          <TableRow
-                          
-                            key={i}
-                            onClick={() => handleRowClick(row)}
-                            onMouseEnter={() => handleRowMouseEnter(row)}
-                            onMouseLeave={handleRowMouseLeave}
-                            sx={
-                              highlightedRow === row
-                                ? { backgroundColor: '#FBB716' }
-                                : {}
-                            }
-                          >
-                            {columns.map((column) => (
-                              <TableCell key={column.id}
-                              sx={{fontSize: '17px'}}
-                              >
-                                {row[column.id]}
-                              </TableCell>
-                            ))}
-                          </TableRow>
-                        );
-                      })}
-                </TableBody>
-              </Table>
-            <TablePagination
-              sx={{ color: '#253A7D' }}
-              rowsPerPageOptions={[5, 10, 25]}
-              rowsPerPage={rowperpage}
-              page={page}
-              count={rows.length}
-              component="div"
-              onPageChange={handlechangepage}
-              onRowsPerPageChange={handleRowsPerPage}
-            />
+                  <TabPanel value="customer">
 
-         
-        </TabPanel>
-        {/* Panel for Agent */}
+                    <Table stickyHeader size='medium' padding="normal">
+                      <TableBody>
+                        {rows &&
+                          rows
+                            .slice(page * rowperpage, page * rowperpage + rowperpage)
+                            .map((row, i) => {
+                              return (
+                                <TableRow
 
-        <TabPanel value="agent">
-        <Table stickyHeader size='medium' padding="normal">
-                <TableBody>
-                  {rows &&
-                    rows
-                      .slice(page * rowperpage, page * rowperpage + rowperpage)
-                      .map((row, i) => {
-                        return (
-                          <TableRow
-                          
-                            key={i}
-                            onClick={() => handleRowClick(row)}
-                            onMouseEnter={() => handleRowMouseEnter(row)}
-                            onMouseLeave={handleRowMouseLeave}
-                            sx={
-                              highlightedRow === row
-                                ? { backgroundColor: '#FBB716' }
-                                : {}
-                            }
-                          >
-                            {columns.map((column) => (
-                              <TableCell key={column.id}
-                              sx={{fontSize: '17px'}}
-                              >
-                                {row[column.id]}
-                              </TableCell>
-                            ))}
-                          </TableRow>
-                        );
-                      })}
-                </TableBody>
-              </Table>
-            <TablePagination
-              sx={{ color: '#253A7D' }}
-              rowsPerPageOptions={[5, 10, 25]}
-              rowsPerPage={rowperpage}
-              page={page}
-              count={rows.length}
-              component="div"
-              onPageChange={handlechangepage}
-              onRowsPerPageChange={handleRowsPerPage}
-            />
+                                  key={i}
+                                  onClick={() => handleRowClick(row)}
+                                  onMouseEnter={() => handleRowMouseEnter(row)}
+                                  onMouseLeave={handleRowMouseLeave}
+                                  sx={
+                                    highlightedRow === row
+                                      ? { backgroundColor: '#FBB716' }
+                                      : {}
+                                  }
+                                >
+                                  {columns.map((column) => (
+                                    <TableCell key={column.id}
+                                      sx={{ fontSize: '17px' }}
+                                    >
+                                      {row[column.id]}
+                                    </TableCell>
+                                  ))}
+                                </TableRow>
+                              );
+                            })}
+                      </TableBody>
+                    </Table>
+                    <TablePagination
+                      sx={{ color: '#253A7D' }}
+                      rowsPerPageOptions={[5, 10, 25]}
+                      rowsPerPage={rowperpage}
+                      page={page}
+                      count={rows.length}
+                      component="div"
+                      onPageChange={handlechangepage}
+                      onRowsPerPageChange={handleRowsPerPage}
+                    />
 
-         
-        </TabPanel>
-        {/* <TabPanel value="3">Item Three</TabPanel> */}
-      </TabContext>
 
-            
+                  </TabPanel>
+                  {/* Panel for Agent */}
+
+                  <TabPanel value="agent">
+                    <Table stickyHeader size='medium' padding="normal">
+                      <TableBody>
+                        {rows &&
+                          rows
+                            .slice(page * rowperpage, page * rowperpage + rowperpage)
+                            .map((row, i) => {
+                              return (
+                                <TableRow
+
+                                  key={i}
+                                  onClick={() => handleRowClick(row)}
+                                  onMouseEnter={() => handleRowMouseEnter(row)}
+                                  onMouseLeave={handleRowMouseLeave}
+                                  sx={
+                                    highlightedRow === row
+                                      ? { backgroundColor: '#FBB716' }
+                                      : {}
+                                  }
+                                >
+                                  {columns.map((column) => (
+                                    <TableCell key={column.id}
+                                      sx={{ fontSize: '17px' }}
+                                    >
+                                      {row[column.id]}
+                                    </TableCell>
+                                  ))}
+                                </TableRow>
+                              );
+                            })}
+                      </TableBody>
+                    </Table>
+                    <TablePagination
+                      sx={{ color: '#253A7D' }}
+                      rowsPerPageOptions={[5, 10, 25]}
+                      rowsPerPage={rowperpage}
+                      page={page}
+                      count={rows.length}
+                      component="div"
+                      onPageChange={handlechangepage}
+                      onRowsPerPageChange={handleRowsPerPage}
+                    />
+
+
+                  </TabPanel>
+                  {/* <TabPanel value="3">Item Three</TabPanel> */}
+                  <TabPanel value="billing">
+
+                    <Table stickyHeader size='medium' padding="normal">
+                      <TableBody>
+                        {rows &&
+                          rows
+                            .slice(page * rowperpage, page * rowperpage + rowperpage)
+                            .map((row, i) => {
+                              return (
+                                <TableRow
+
+                                  key={i}
+                                  onClick={() => handleRowClick(row)}
+                                  onMouseEnter={() => handleRowMouseEnter(row)}
+                                  onMouseLeave={handleRowMouseLeave}
+                                  sx={
+                                    highlightedRow === row
+                                      ? { backgroundColor: '#FBB716' }
+                                      : {}
+                                  }
+                                >
+                                  {columns.map((column) => (
+                                    <TableCell key={column.id}
+                                      sx={{ fontSize: '17px' }}
+                                    >
+                                      {row[column.id]}
+                                    </TableCell>
+                                  ))}
+                                </TableRow>
+                              );
+                            })}
+                      </TableBody>
+                    </Table>
+                    <TablePagination
+                      sx={{ color: '#253A7D' }}
+                      rowsPerPageOptions={[5, 10, 25]}
+                      rowsPerPage={rowperpage}
+                      page={page}
+                      count={rows.length}
+                      component="div"
+                      onPageChange={handlechangepage}
+                      onRowsPerPageChange={handleRowsPerPage}
+                    />
+
+
+                  </TabPanel>
+                </TabContext>
+
+
               </Grid>
             </Paper>
           </form>
 
-          
+
 
           {/* <Box sx={{ paddingLeft: '16px', paddingBottom: '16px', paddingTop: '14px', display: 'flex', gap: '16px' }}>
             <Button variant="contained" backgroundColor="#6471B5"

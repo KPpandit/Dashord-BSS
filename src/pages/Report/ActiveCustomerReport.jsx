@@ -7,7 +7,7 @@ import { styled } from '@mui/material/styles';
 import { Download } from '@mui/icons-material';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
-
+import * as XLSX from 'xlsx';
 
 const ActiveCustomerReport = (props) => {
     const columns = [
@@ -164,9 +164,51 @@ const ActiveCustomerReport = (props) => {
         
     }
 
-    // const handleRowMouseLeave = () => {
-    //     setHighlightedRow(null);
-    // };
+ 
+    const handleDownload = () => {
+        if (selectedOption === 'pdf') {
+            const pdf = new jsPDF();
+            // Set column headers
+            const headers = Object.keys(rows[0]);
+            // Add data to PDF
+            pdf.autoTable({
+                head: [headers],
+                body: rows.map(row => Object.values(row)),
+            });
+            // Save the PDF
+            pdf.save(`${"newpdfway"}.pdf`);
+        } else if (selectedOption === 'csv') {
+            const headers = Object.keys(rows[0]);
+            const csvContent = "data:text/csv;charset=utf-8," + headers.join(',') + '\n' +
+                rows.map(row => Object.values(row).join(',')).join('\n');
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "example123.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            console.log(csvContent + "-----cvs content")
+        } else if (selectedOption === 'xls') {
+            // Handle XLS download logic
+            const worksheet = XLSX.utils.json_to_sheet(rows);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet 1');
+            const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+            const excelData = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+            const xlsURL = URL.createObjectURL(excelData);
+            window.open(xlsURL);
+        }
+        else if (selectedOption === null) {
+            setNotify({
+                isOpen: true,
+                message: 'Please Select The file Format ',
+                type: 'error'
+            })
+            setTimeout(() => { }, 1000)
+
+        }
+    };
     return (
         <Box sx={{ display: 'container', marginTop: -2.5 }}>
 
@@ -284,6 +326,27 @@ const ActiveCustomerReport = (props) => {
 
                     </Paper>
                 </Box>
+                <Grid container paddingTop={2}>
+                    <Grid item xs={1.2}>
+                        <Button variant="contained" sx={{backgroundColor:'#253A7D',boxShadow:24}} onClick={handleDownload}>Download</Button>
+                    </Grid>
+                    <Grid item xs={1}>
+                        <FormControl fullWidth>
+                            <Select sx={{ boxShadow:24,width: 100, height: 20, paddingY: 2.3, textAlign: 'bottom' }}
+
+                                onChange={(e) => setSelectedOption(e.target.value)}
+                                required
+                            >
+
+                                <MenuItem value="pdf">PDF</MenuItem>
+                                <MenuItem value="csv">CSV</MenuItem>
+                                <MenuItem value="xls">Excel</MenuItem>
+                            </Select>
+
+                        </FormControl>
+                    </Grid>
+
+                </Grid>
             </Box>
 
             

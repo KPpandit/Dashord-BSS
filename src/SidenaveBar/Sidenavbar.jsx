@@ -362,11 +362,11 @@ export default function Sidenavbar() {
           },
           {
             label:'IMS Session',
-            route:'/lu'
+            route:'/IMSSession'
           },
           {
             label:'Audio Call Session',
-            route:'/lu'
+            route:'/AudioCallSession'
           },
          
           {
@@ -413,20 +413,20 @@ export default function Sidenavbar() {
           }
         ]
       }
-      // ,{
-      //   label: "Test",
-      //   // route: '/inventory',
-      //   icon: <Inventory2Icon />,
-      //   subRoute: [
-      //     {
-      //       label:'Invoice Sample Design',
-      //       route:'/invoiceDesign'
-      //     },{
-      //       label:'Invoice Sample Design',
-      //       route:'/test'
-      //     }
-      //   ]
-      // }
+      ,{
+        label: "Test",
+        // route: '/inventory',
+        icon: <Inventory2Icon />,
+        subRoute: [
+          {
+            label:'Invoice Sample Design',
+            route:'/invoiceDesign'
+          },{
+            label:'Invoice Sample Design',
+            route:'/test'
+          }
+        ]
+      }
     ],
   }
   return (

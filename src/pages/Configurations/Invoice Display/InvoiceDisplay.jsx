@@ -1,6 +1,6 @@
 import { Box, Button, Checkbox, Divider, FormControl, FormControlLabel, Grid, IconButton, InputAdornment, InputLabel, MenuItem, Paper, Select, TextField, Typography } from '@mui/material';
 import { useFormik } from 'formik';
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import axios from 'axios';
 import SaveAltIcon from '@mui/icons-material/SaveAlt';
 import CancelIcon from '@mui/icons-material/Cancel';
@@ -10,6 +10,7 @@ import { Add } from '@mui/icons-material';
 import AddIcon from '@mui/icons-material/Add';
 import ClearIcon from '@mui/icons-material/Clear';
 import Logo from '../../../../src/assets/logo.png'
+import { TokenContext } from '../../../TokenContext';
 export default function InvoiceDisplay() {
     const [showCheckbox, setShowCheckbox] = useState(false);
     const navigate = useNavigate();
@@ -53,16 +54,18 @@ export default function InvoiceDisplay() {
     const back = () => {
         // navigate("/invoiceDisplay")
     };
-
+    const { image,setImage } = useContext(TokenContext);
     const [selectedFile, setSelectedFile] = useState(null);
 
     const handleFileChange = (event) => {
         const file = event.target.files[0];
         setSelectedFile(file);
+        setImage(file);
+        
     };
 
 
-
+console.log(image)
 
     return (
         <Box sx={{
@@ -107,6 +110,7 @@ export default function InvoiceDisplay() {
                             {/* Replace the TextField with an image element (img) */}
                             {selectedFile ? (
                                 <img src={URL.createObjectURL(selectedFile)} alt='Selected File' style={{ maxWidth: '100%', maxHeight: 300 }} />
+                                
                             ) : (
                                 <img src={Logo} alt='Default Logo' style={{ maxWidth: '100%', maxHeight: 200 }} />
                             )}
@@ -114,10 +118,15 @@ export default function InvoiceDisplay() {
 
                         </Grid>
 
-                        <Grid item lg={12} md={12} sm={12} paddingTop={5} padding={2} >
+                        {/* <Grid item lg={12} md={12} sm={12} paddingTop={5} padding={2} >
+                        {image ? (
+                                <img src={URL.createObjectURL(image)} alt='Selected File' style={{ maxWidth: '100%', maxHeight: 300 }} />
+                                
+                            ) : (
+                                <img src={Logo} alt='Default Logo' style={{ maxWidth: '100%', maxHeight: 200 }} />
+                            )}
 
-
-                        </Grid>
+                        </Grid> */}
 
                         <Grid item lg={12} md={12} sm={12} paddingTop={5} padding={2}>
                             <input

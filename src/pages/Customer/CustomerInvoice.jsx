@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import { useLocation } from 'react-router-dom';
 import billingDefault from '../../assets/billingDefault.png';
 import { PDFViewer, Document, Page, Text } from '@react-pdf/renderer';
@@ -6,11 +6,14 @@ import axios from "axios";
 import { PDFExport, savePDF } from '@progress/kendo-react-pdf';
 import { saveAs } from 'file-saver';
 import { Box, Button, CardContent, Divider, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, Typography } from '@mui/material';
-import White_logo from '../../assets/White_logo.jpg';
+import Logo from '../../assets/Logo.png'
+import White_logo from '../../assets/White_logo.jpg'
+import { TokenContext } from '../../TokenContext';
 export default function CustomerInvoice() {
     const location = useLocation();
     const { state } = location;
-
+    const { image } = useContext(TokenContext);
+    console.log(image)
     const id = state?.id;
     const tokenValue = localStorage.getItem('token');
 
@@ -18,14 +21,14 @@ export default function CustomerInvoice() {
     const [callUsage, setCallUsage] = useState([]);
     const [smsUsage, setSmsUsage] = useState([]);
     const [rows, setRows] = useState([]);
-   
-console.log(id+"   this is mSISDN" )
+
+    console.log(id + "   this is mSISDN")
     const pdfContainerRef = useRef(null);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get(`http://localhost:9098/bill/${id}`, {
+                const response = await axios.get(`http://172.5.10.2:9098/bill/${id}`, {
                     headers: {
                         Authorization: `Bearer ${tokenValue}`,
                         Accept: 'application/json',
@@ -36,7 +39,7 @@ console.log(id+"   this is mSISDN" )
                 setDataUsage(response.data.dataUsageDetails);
                 setCallUsage(response.data.callUsageDetails);
                 setSmsUsage(response.data.smsUsageDetails);
-                console.log(response.data.callUsageDetails.call_start_time+" Call Usage Details")
+                console.log(response.data.callUsageDetails.call_start_time + " Call Usage Details")
             } catch (error) {
                 if (error.response && error.response.status === 401) {
                     console.error('Unauthorized access');
@@ -72,19 +75,19 @@ console.log(id+"   this is mSISDN" )
         { id: 'called_number', label: 'Called Number', minWidth: 100 },
         { id: 'call_start_time', label: 'Start Time', minWidth: 170 },
         { id: 'call_end_time', label: 'End Time', minWidth: 170 },
-      
-       
+
+
         { id: 'call_duration', label: 'Duration (sec.)', minWidth: 100 },
         { id: 'charges', label: 'Charges', minWidth: 100 },
     ];
     const columns2 = [
         { id: 'send_sms_time', label: 'SMS Time', minWidth: 100 },
         { id: 'recipient_number', label: 'Recipitent Number', minWidth: 170 },
-        { id: 'no_of_msgs', label: 'No of sms', minWidth: 170 }, 
+        { id: 'no_of_msgs', label: 'No of sms', minWidth: 170 },
         { id: 'charges', label: 'Charges', minWidth: 100 },
-      
+
     ];
-    console.log(callUsage+"data int call variable")
+    console.log(callUsage + "data int call variable")
     const getTotalDataInBytes = () => {
         // Calculate the total sum of 'data_in_bytes'
         return dataUsage.reduce((total, row) => total + row.data_in_bytes, 0);
@@ -105,6 +108,7 @@ console.log(id+"   this is mSISDN" )
         // Calculate the total sum of 'data_in_bytes'
         return smsUsage.reduce((total, row) => total + row.charges, 0);
     };
+    console.log(image + " image")
     return (
         <Box >
 
@@ -136,10 +140,20 @@ console.log(id+"   this is mSISDN" )
                                 >
 
                                     <Grid item xs={12} md={12} paddingBottom={2} sx={{ display: 'flex', alignItems: 'center', width: '24px' }}>
-                                        <Grid container spacing={1}>
+                                        <Grid container spacing={1} >
                                             <Grid item xs={1} md={4} textAlign={'left'} sx={{ marginLeft: 2 }}>
-                                                <img src={White_logo} alt='_blank' />
+                                                {
+                                                    image ? (<img src={URL.createObjectURL(image)} 
+                                                    alt={White_logo} style={{ maxWidth: '100%', maxHeight: 130, padding: 1 }} />)
+                                                        : 
+                                                    (<img src={Logo} alt='Default Logo' 
+                                                    style={{ maxWidth: '100%', maxHeight: 130 }} />)
+
+
+                                                }
+
                                             </Grid>
+
 
                                             {/* Text */}
                                             <Grid item xs={8.5} md={3.5}>
@@ -282,7 +296,7 @@ console.log(id+"   this is mSISDN" )
                                                                     </Grid>
                                                                     <Grid item xs={6} textAlign={'left'}>
                                                                         <Typography sx={{ fontSize: '10px', fontWeight: 'bold' }}>
-                                                                           {rows.to_date}
+                                                                            {rows.to_date}
                                                                         </Typography>
                                                                     </Grid>
                                                                     <Grid item xs={6} textAlign={'left'}>
@@ -293,7 +307,7 @@ console.log(id+"   this is mSISDN" )
                                                                     </Grid>
                                                                     <Grid item xs={6} textAlign={'left'}>
                                                                         <Typography sx={{ fontSize: '10px' }}>
-                                                                        {rows.to_date}
+                                                                            {rows.to_date}
                                                                         </Typography>
                                                                     </Grid>
                                                                     <Grid item xs={6} textAlign={'left'}>
@@ -315,7 +329,7 @@ console.log(id+"   this is mSISDN" )
                                                                     </Grid>
                                                                     <Grid item xs={6} textAlign={'left'}>
                                                                         <Typography sx={{ fontSize: '10px' }}>
-                                                                           {rows.invoiceNumber}
+                                                                            {rows.invoiceNumber}
                                                                         </Typography>
                                                                     </Grid>
                                                                     {/* <Grid item xs={6} textAlign={'left'}>
@@ -1043,34 +1057,34 @@ console.log(id+"   this is mSISDN" )
                                                         <Grid item xs={12}>
                                                             <Grid container spacing={1}>
                                                                 <Grid item xs={12}>
-                                                                <TableContainer >
-                                                                            <Table>
-                                                                                <TableHead sx={{ backgroundColor: '#FFC34A' }}>
-                                                                                    <TableRow>
+                                                                    <TableContainer >
+                                                                        <Table>
+                                                                            <TableHead sx={{ backgroundColor: '#FFC34A' }}>
+                                                                                <TableRow>
+                                                                                    {columns1.map((column) => (
+                                                                                        <TableCell key={column.id} sx={{ fontSize: '11px' }}>{column.label}</TableCell>
+                                                                                    ))}
+                                                                                </TableRow>
+                                                                            </TableHead>
+                                                                            <TableBody>
+                                                                                {callUsage.map((row) => (
+                                                                                    <TableRow key={row.date}>
                                                                                         {columns1.map((column) => (
-                                                                                            <TableCell key={column.id} sx={{ fontSize: '11px' }}>{column.label}</TableCell>
+                                                                                            <TableCell key={column.id} sx={{ fontSize: '9px' }}>{row[column.id]}</TableCell>
                                                                                         ))}
                                                                                     </TableRow>
-                                                                                </TableHead>
-                                                                                <TableBody>
-                                                                                    {callUsage.map((row) => (
-                                                                                        <TableRow key={row.date}>
-                                                                                            {columns1.map((column) => (
-                                                                                                <TableCell key={column.id} sx={{ fontSize: '9px' }}>{row[column.id]}</TableCell>
-                                                                                            ))}
-                                                                                        </TableRow>
 
-                                                                                    ))}
-                                                                                    <TableRow>
-                                                                                        <TableCell sx={{ fontSize: '11px', fontWeight: 'bold' }}>Total</TableCell>
-                                                                                        <TableCell></TableCell>
-                                                                                        <TableCell></TableCell>
-                                                                                        <TableCell sx={{ fontSize: '11px', fontWeight: 'bold' }}>{getTotalCalls()}</TableCell>
-                                                                                        <TableCell sx={{ fontSize: '11px', fontWeight: 'bold' }}>{getTotalCallCharges()}</TableCell>
-                                                                                    </TableRow>
-                                                                                </TableBody>
-                                                                            </Table>
-                                                                        </TableContainer>
+                                                                                ))}
+                                                                                <TableRow>
+                                                                                    <TableCell sx={{ fontSize: '11px', fontWeight: 'bold' }}>Total</TableCell>
+                                                                                    <TableCell></TableCell>
+                                                                                    <TableCell></TableCell>
+                                                                                    <TableCell sx={{ fontSize: '11px', fontWeight: 'bold' }}>{getTotalCalls()}</TableCell>
+                                                                                    <TableCell sx={{ fontSize: '11px', fontWeight: 'bold' }}>{getTotalCallCharges()}</TableCell>
+                                                                                </TableRow>
+                                                                            </TableBody>
+                                                                        </Table>
+                                                                    </TableContainer>
                                                                 </Grid>
                                                             </Grid>
                                                         </Grid>
@@ -1161,34 +1175,34 @@ console.log(id+"   this is mSISDN" )
                                                         <Grid item xs={12}>
                                                             <Grid container spacing={1}>
                                                                 <Grid item xs={12} md={12}>
-                                                                <TableContainer >
-                                                                            <Table>
-                                                                                <TableHead sx={{ backgroundColor: '#FFC34A' }}>
-                                                                                    <TableRow>
+                                                                    <TableContainer >
+                                                                        <Table>
+                                                                            <TableHead sx={{ backgroundColor: '#FFC34A' }}>
+                                                                                <TableRow>
+                                                                                    {columns2.map((column) => (
+                                                                                        <TableCell key={column.id} sx={{ fontSize: '11px' }}>{column.label}</TableCell>
+                                                                                    ))}
+                                                                                </TableRow>
+                                                                            </TableHead>
+                                                                            <TableBody>
+                                                                                {smsUsage.map((row) => (
+                                                                                    <TableRow key={row.date}>
                                                                                         {columns2.map((column) => (
-                                                                                            <TableCell key={column.id} sx={{ fontSize: '11px' }}>{column.label}</TableCell>
+                                                                                            <TableCell key={column.id} sx={{ fontSize: '9px' }}>{row[column.id]}</TableCell>
                                                                                         ))}
                                                                                     </TableRow>
-                                                                                </TableHead>
-                                                                                <TableBody>
-                                                                                    {smsUsage.map((row) => (
-                                                                                        <TableRow key={row.date}>
-                                                                                            {columns2.map((column) => (
-                                                                                                <TableCell key={column.id} sx={{ fontSize: '9px' }}>{row[column.id]}</TableCell>
-                                                                                            ))}
-                                                                                        </TableRow>
 
-                                                                                    ))}
-                                                                                    <TableRow>
-                                                                                        <TableCell sx={{ fontSize: '11px', fontWeight: 'bold' }}>Total</TableCell>
-                                                                                        <TableCell></TableCell>
-                                                                                       
-                                                                                        <TableCell sx={{ fontSize: '11px', fontWeight: 'bold' }}>{getTotalSMS()}</TableCell>
-                                                                                        <TableCell sx={{ fontSize: '11px', fontWeight: 'bold' }}>{getTotalSMSCharges()}</TableCell>
-                                                                                    </TableRow>
-                                                                                </TableBody>
-                                                                            </Table>
-                                                                        </TableContainer>
+                                                                                ))}
+                                                                                <TableRow>
+                                                                                    <TableCell sx={{ fontSize: '11px', fontWeight: 'bold' }}>Total</TableCell>
+                                                                                    <TableCell></TableCell>
+
+                                                                                    <TableCell sx={{ fontSize: '11px', fontWeight: 'bold' }}>{getTotalSMS()}</TableCell>
+                                                                                    <TableCell sx={{ fontSize: '11px', fontWeight: 'bold' }}>{getTotalSMSCharges()}</TableCell>
+                                                                                </TableRow>
+                                                                            </TableBody>
+                                                                        </Table>
+                                                                    </TableContainer>
                                                                 </Grid>
                                                             </Grid>
                                                         </Grid>

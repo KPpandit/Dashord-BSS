@@ -90,6 +90,12 @@ import Individualreport from '../pages/Report/IndividualReports';
 import IndividualAgentReport from '../pages/Report/IndividualAgentReport';
 import PCRF from '../pages/Session/PCRFSession';
 import InterfaceRecords from '../pages/Session/IndividualInterfaceRecords';
+import IMSSession from '../pages/Session/IMSSession';
+import AudioCallSession from '../pages/Session/AudioCallSession';
+import Test from '../SidenaveBar/Test';
+import CustomerSignUp from '../pages/Report/CustomerSignup';
+import TopCustomerReport from '../pages/Report/TopCustomersReport';
+import AgentComission from '../pages/Report/AgentComission';
 
 
 
@@ -209,6 +215,8 @@ export const Routers = () => {
                         <Route path='/lu' element={<LU />} />
                         <Route path='/pcrf' element={<PCRF/>} />
                         <Route path='/individualinterfaceRecords' element={<InterfaceRecords/>} />
+                        <Route path='/IMSSession' element={<IMSSession/>} />
+                        <Route path='/AudioCallSession' element={<AudioCallSession/>} />
 
                         {/* HSS */}
                         <Route path='/hss' element={<Hss2 />} />
@@ -241,16 +249,20 @@ export const Routers = () => {
                         {/* Test */}
                            {/* <Route path='/test' element={<AllCustomerReport/>}/> */}
                            <Route path='/invoiceDesign' element={<InvoiceSample/>}/>
+                           <Route path='/test' element={<Test/>}/>
 
                            {/* Reports */}
                            <Route path='/allcustomerReport' element={<AllCustomerReport/>}/>
                            <Route path='/allagentreport' element={<AllAgentReport/>}/>
+                           <Route path='/agentComission' element={<AgentComission/>}/>
                            <Route path='/prepaidcustomerReport' element={<PrepaidCustomerReport/>}/>
                            <Route path='/postpaidcustomerReport' element={<PostpaidCustomerReport/>}/>
                            <Route path='/activecustomerReport' element={<ActiveCustomerReport/>}/>
                            <Route path='/inactivecustomerReport' element={<InactiveCustomerReport/>}/>
                            <Route path='/individualReport' element={<Individualreport/>}/>
                            <Route path='/individualagentreport' element={<IndividualAgentReport/>}/>
+                           <Route path='/customerSignUp' element={<CustomerSignUp/>}/>
+                           <Route path='/topCustomerReport' element={<TopCustomerReport/>}/>
                         {/* <Route path='/add-Noc-sub' element={<AddNoc />} />
                         <Route path='/all-Noc-sub' element={<AllNoc />} />
                         <Route path='/all-Noc-query' element={<NOCQuery />} />

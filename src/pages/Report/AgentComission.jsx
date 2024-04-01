@@ -7,17 +7,16 @@ import { styled } from '@mui/material/styles';
 import { Download } from '@mui/icons-material';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
-import * as XLSX from 'xlsx';
 
-const InactiveCustomerReport = (props) => {
+
+export default function AgentComission (props) {
     const columns = [
-        { id: 'firstName', name: 'Name' },
-        { id: 'ekycStatus', name: 'Ekyc Status' },
-        { id: 'ekycToken', name: 'Ekyc Token' },
-        { id: 'ekycDate', name: 'Ekyc Date' },
-        { id: 'phonePhoneNumber', name: 'Phone No' },
-        // { id: 'ekycStatus', name: 'Ekyc Status' },
-        { id: 'customerType', name: 'Customer Type' },
+        { id: 'id', name: 'ID' },
+        { id: 'amount', name: 'Amount' },
+        { id: 'type', name: 'Type' },
+        { id: 'partnerId', name: 'Partner Id' },
+        { id: 'commissionProcessRunId', name: 'Comission Id' },
+
 
     ];
     const [rows, setRows] = useState([]);
@@ -25,6 +24,7 @@ const InactiveCustomerReport = (props) => {
     const [selectedPhoto, setSelectedPhoto] = useState(null);
     const [selectedRecord, setSelectedRecord] = useState(null);
     const [open, setOpen] = React.useState(false);
+    const [search,setsearch] = useState()
     // Generate sample data
     
   const [openDialog, setOpenDialog] = useState(false);
@@ -33,7 +33,7 @@ const InactiveCustomerReport = (props) => {
         // console.log("record==>",selectedRecord)
         const fetchData = async () => {
             try {
-                const response = await axios.get('http://172.5.10.2:9090/api/customers', {
+                const response = await axios.get('http://172.5.10.2:9090/api/partnercommissions', {
                     headers: {
                         Authorization: `Bearer ${tokenValue}`,
                         "Accept": "application/json",
@@ -59,13 +59,12 @@ const InactiveCustomerReport = (props) => {
         };
 
         fetchData(); // Invoke the fetchData function when the component mounts
-    }, [tokenValue]);
+    }, [tokenValue,selectedPhoto]);
 
    
     const handleClickOpen = (row) => {
         setSelectedRecord(row)
         // setOpen(true);
-        
     };
     const handleClose = () => {
         setOpen(false);
@@ -92,9 +91,12 @@ const InactiveCustomerReport = (props) => {
     const handleRowClick = (row) => {
         setSelectedRecord(row);
         setOpenDialog(true);
-        fetchPhoto1(row)
+        // fetchPhoto1(row)
+        navigate('/individualagentreport',{state:{selectedRecord:row}})
+
+
       };
-      const fetchPhoto1 = async (row) => {
+    const fetchPhoto1 = async (row) => {
 
         try {
             const photoResponse = await axios.get(`http://172.5.10.2:9090/api/image/${row.id}`, {
@@ -165,50 +167,19 @@ const InactiveCustomerReport = (props) => {
         
     }
 
+    // const handleRowMouseLeave = () => {
+    //     setHighlightedRow(null);
+    // };
    
-    const handleDownload = () => {
-        if (selectedOption === 'pdf') {
-            const pdf = new jsPDF();
-            // Set column headers
-            const headers = Object.keys(rows[0]);
-            // Add data to PDF
-            pdf.autoTable({
-                head: [headers],
-                body: rows.map(row => Object.values(row)),
-            });
-            // Save the PDF
-            pdf.save(`${"newpdfway"}.pdf`);
-        } else if (selectedOption === 'csv') {
-            const headers = Object.keys(rows[0]);
-            const csvContent = "data:text/csv;charset=utf-8," + headers.join(',') + '\n' +
-                rows.map(row => Object.values(row).join(',')).join('\n');
-            const encodedUri = encodeURI(csvContent);
-            const link = document.createElement("a");
-            link.setAttribute("href", encodedUri);
-            link.setAttribute("download", "example123.csv");
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            console.log(csvContent + "-----cvs content")
-        } else if (selectedOption === 'xls') {
-            // Handle XLS download logic
-            const worksheet = XLSX.utils.json_to_sheet(rows);
-            const workbook = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet 1');
-            const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
-            const excelData = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-            const xlsURL = URL.createObjectURL(excelData);
-            window.open(xlsURL);
-        }
-        else if (selectedOption === null) {
-            setNotify({
-                isOpen: true,
-                message: 'Please Select The file Format ',
-                type: 'error'
-            })
-            setTimeout(() => { }, 1000)
+    const [page, pagechange] = useState(0);
+    const [rowperpage, rowperpagechange] = useState(5);
+    const handlechangepage = (event, newpage) => {
+        pagechange(newpage);
+    };
 
-        }
+    const handleRowsPerPage = (event) => {
+        rowperpagechange(+event.target.value);
+        pagechange(0);
     };
     return (
         <Box sx={{ display: 'container', marginTop: -2.5 }}>
@@ -225,7 +196,7 @@ const InactiveCustomerReport = (props) => {
                                     fontWeight: 'bold',
 
                                 }}
-                            >Inactive Customer List</Typography>
+                            >All Agent Commission</Typography>
                         </Grid>
                     </Paper>
                 </Box>
@@ -243,7 +214,7 @@ const InactiveCustomerReport = (props) => {
                                     type='text'
                                     fullWidth
                                     name='value'
-                                    // onChange={(e) => setValue(e.target.value)}
+                                    onChange={(e) => setsearch(e.target.value)}
                                     required
                                     InputProps={{
                                         endAdornment: (
@@ -277,12 +248,11 @@ const InactiveCustomerReport = (props) => {
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                    {rows &&
-                                        rows
-
-                                            .map((row, i) => {
+                                    {rows &&rows
+                                     .slice(page * rowperpage, page * rowperpage + rowperpage)
+                                    .map((row, i) => {
                                                 return (
-                                                            (row.ekycStatus=='InActive')?
+                                                           
                                                     <TableRow
                                                         key={i}
                                                         onClick={() => {
@@ -316,38 +286,26 @@ const InactiveCustomerReport = (props) => {
                                                             </TableCell>
                                                         ))}
                                                     </TableRow>
-                                                    :null
+                                                    
 
                                                 );
                                             })}
                                 </TableBody>
                             </Table>
                         </TableContainer>
+                        <TablePagination
+                            rowsPerPageOptions={[5, 10, 25]}
+                            rowsPerPage={rowperpage}
+                            page={page}
+                            count={rows.length}
+                            component="div"
+                            onPageChange={handlechangepage}
+                            onRowsPerPageChange={handleRowsPerPage}
+                        />
                         
 
                     </Paper>
                 </Box>
-                <Grid container paddingTop={2}>
-                    <Grid item xs={1.2}>
-                        <Button variant="contained" sx={{backgroundColor:'#253A7D',boxShadow:24}} onClick={handleDownload}>Download</Button>
-                    </Grid>
-                    <Grid item xs={1}>
-                        <FormControl fullWidth>
-                            <Select sx={{ boxShadow:24,width: 100, height: 20, paddingY: 2.3, textAlign: 'bottom' }}
-
-                                onChange={(e) => setSelectedOption(e.target.value)}
-                                required
-                            >
-
-                                <MenuItem value="pdf">PDF</MenuItem>
-                                <MenuItem value="csv">CSV</MenuItem>
-                                <MenuItem value="xls">Excel</MenuItem>
-                            </Select>
-
-                        </FormControl>
-                    </Grid>
-
-                </Grid>
             </Box>
 
             
@@ -363,4 +321,3 @@ const InactiveCustomerReport = (props) => {
     )
 };
 
-export default InactiveCustomerReport;

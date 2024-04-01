@@ -476,7 +476,7 @@ const Customer = (props) => {
                                                 navigate('/custInvoice', { state: { id: selectedRecord.simInventory.msisdn, type: selectedRecord.customerType } })
                                             }}
                                             sx={{ backgroundColor: '#253A7D' }}
-                                            variant="contained">Bill</Button>
+                                            variant="contained">Invoice</Button>
                                     </Grid> : <></>}
 
 

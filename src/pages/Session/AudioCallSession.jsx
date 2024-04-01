@@ -3,11 +3,18 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import SearchIcon from '@mui/icons-material/Search';
 import axios from "axios";
-export default function RatesOffer(){
+export default function AudioCallSession(){
     const columns = [
-        { id: 'price', name: 'Price' },
-        { id: 'price_type', name: 'Price Type' },
-        { id: 'period', name: 'Period' },
+        { id: 'peer_session_id', name: 'Session ID' },
+        { id: 'msisdn', name: 'Msisdn' },
+        // { id: 'called_msisdn', name: 'P' },
+        { id: 'location_info', name: 'Location' },
+        // { id: 'session_state', name: 'Sessio' },
+        // { id: 'call_start_ts', name: 'Call Start' },
+        { id: 'framed_ip', name: 'Framed IP' },
+        // { id: 'total_seconds', name: 'Period' },
+        // { id: 'call_status', name: 'Period' },
+       
         
 
     ];
@@ -17,7 +24,7 @@ export default function RatesOffer(){
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get('http://172.5.10.2:9696/api/rates/offer/get/all', {
+                const response = await axios.get('http://172.5.10.2:9696/api/data/session/usage/get/all', {
                     headers: {
                         Authorization: `Bearer ${tokenValue}`,
                         "Accept": "application/json",
@@ -45,13 +52,12 @@ export default function RatesOffer(){
         fetchData(); // Invoke the fetchData function when the component mounts
     }, [tokenValue]);
     const handleConfirmDelete = () => {
-        console.log("from Delete ")
         // Perform the delete operation here using the recordIdToDelete
         // After successful deletion, you can update the UI accordingly
         console.log(`Deleting record with ID: ${recordIdToDelete}`);
     
         // Make an API call to delete the record
-        axios.delete('http://172.5.10.2:9696/api/rates/offer/delete/'+recordIdToDelete, {
+        axios.delete(`http://172.5.10.2:9696/api/rates/detail/delete/${recordIdToDelete}`, {
             headers: {
                 Authorization: `Bearer ${tokenValue}`,
                 "Accept": "application/json",
@@ -74,7 +80,23 @@ export default function RatesOffer(){
         // Close the confirmation dialog
         setConfirmationDialogOpen(false);
     };
-   ;
+    const fetchData = async () => {
+        try {
+            const response = await axios.get('http://172.5.10.2:9090/api/customers', {
+                headers: {
+                    Authorization: `Bearer ${tokenValue}`,
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                },
+            });
+            setRows(response.data);
+        } catch (error) {
+            console.log("response from Error");
+
+            console.error('Error fetching data from API:', error);
+        }
+    };
+    // const [rows, rowchange] = useState(generateData());
     const [page, pagechange] = useState(0);
     const [rowperpage, rowperpagechange] = useState(5);
 
@@ -121,7 +143,7 @@ export default function RatesOffer(){
                     <Paper elevation={10}>
 
 
-                        <Card variant="outlined" sx={{ maxWidth: 340, fontFamily: "Roboto" }}>
+                        <Card variant="outlined" sx={{ maxWidth: 340,width:340, fontFamily: "Roboto" }}>
 
                             <Box sx={{ p: 1 }}>
 
@@ -143,7 +165,7 @@ export default function RatesOffer(){
 
                                             }}
                                             gutterBottom component="div">
-                                          {selectedRecord.price_type}  {selectedRecord.price}
+                                        MSISDN :  {selectedRecord.msisdn}  {selectedRecord.price}
                                         </Typography>
 
                                     </Stack>
@@ -153,18 +175,19 @@ export default function RatesOffer(){
                             <Grid container>
                                 <Grid item xs={12} paddingLeft={1}>
 
+                                    
                                     <Box sx={{ p: 1 }}>
                                         <Grid container>
                                             <Grid item xs={6}>
                                                 <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
-                                                    Price :
+                                                    IMSI :
                                                 </Typography>
                                             </Grid>
                                             <Grid item xs={6} alignItems={'left'} sx={{ marginLeft: -12 }}>
                                                 <Typography
                                                     sx={{ fontSize: '17px', textAlign: 'left' }}
                                                     gutterBottom variant="body2">
-                                                    {selectedRecord.price}
+                                                    {selectedRecord.imsi}
                                                 </Typography>
                                             </Grid>
                                         </Grid>
@@ -174,31 +197,14 @@ export default function RatesOffer(){
                                         <Grid container>
                                             <Grid item xs={6}>
                                                 <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
-                                                    Price Type :
+                                                    Sgsn Address:
                                                 </Typography>
                                             </Grid>
-                                            <Grid item xs={6} alignItems={'left'} sx={{ marginLeft: -7 }}>
+                                            <Grid item xs={6} alignItems={'left'} sx={{ marginLeft: -2 }}>
                                                 <Typography
                                                     sx={{ fontSize: '17px', textAlign: 'left' }}
                                                     gutterBottom variant="body2">
-                                                    {selectedRecord.price_type}
-                                                </Typography>
-                                            </Grid>
-                                        </Grid>
-                                    </Box>
-                                    <Divider light />
-                                    <Box sx={{ p: 1 }}>
-                                        <Grid container>
-                                            <Grid item xs={6}>
-                                                <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
-                                                    Period :
-                                                </Typography>
-                                            </Grid>
-                                            <Grid item xs={6} alignItems={'left'} sx={{ marginLeft: -6 }}>
-                                                <Typography
-                                                    sx={{ fontSize: '17px', textAlign: 'left' }}
-                                                    gutterBottom variant="body2">
-                                                    {selectedRecord.period}
+                                                    {String(selectedRecord.sgsn_address)}
                                                 </Typography>
                                             </Grid>
                                         </Grid>
@@ -209,14 +215,150 @@ export default function RatesOffer(){
                                         <Grid container>
                                             <Grid item xs={6}>
                                                 <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
-                                                    Description :
+                                                    Called Station ID :
                                                 </Typography>
                                             </Grid>
-                                            <Grid item xs={6} alignItems={'left'} sx={{ marginLeft: -6 }}>
+                                            <Grid item xs={6} alignItems={'left'} sx={{ marginLeft: -1 }}>
                                                 <Typography
                                                     sx={{ fontSize: '17px', textAlign: 'left' }}
                                                     gutterBottom variant="body2">
-                                                    {selectedRecord.description}
+                                                    {String(selectedRecord.called_station_id)}
+                                                </Typography>
+                                            </Grid>
+                                        </Grid>
+                                    </Box>
+                                    <Divider light />
+                                    <Box sx={{ p: 1 }}>
+                                        <Grid container>
+                                            <Grid item xs={6}>
+                                                <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
+                                                    Session State :
+                                                </Typography>
+                                            </Grid>
+                                            <Grid item xs={6} alignItems={'left'} sx={{ marginLeft: -3 }}>
+                                                <Typography
+                                                    sx={{ fontSize: '17px', textAlign: 'left' }}
+                                                    gutterBottom variant="body2">
+                                                    {String(selectedRecord.session_state)}
+                                                </Typography>
+                                            </Grid>
+                                        </Grid>
+                                    </Box>
+                                    <Divider light />
+                                    <Box sx={{ p: 1 }}>
+                                        <Grid container>
+                                            <Grid item xs={6}>
+                                                <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
+                                                    Session Start ts :
+                                                </Typography>
+                                            </Grid>
+                                            <Grid item xs={6} alignItems={'left'} sx={{ marginLeft: -1 }}>
+                                                <Typography
+                                                    sx={{ fontSize: '17px', textAlign: 'left' }}
+                                                    gutterBottom variant="body2">
+                                                    {String(selectedRecord.session_start_ts)}
+                                                </Typography>
+                                            </Grid>
+                                        </Grid>
+                                    </Box>
+                                    <Divider light />
+                                    <Box sx={{ p: 1 }}>
+                                        <Grid container>
+                                            <Grid item xs={6}>
+                                                <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
+                                                    Session End ts :
+                                                </Typography>
+                                            </Grid>
+                                            <Grid item xs={6} alignItems={'left'} sx={{ marginLeft: -1 }}>
+                                                <Typography
+                                                    sx={{ fontSize: '17px', textAlign: 'left' }}
+                                                    gutterBottom variant="body2">
+                                                    {String(selectedRecord.session_end_ts)}
+                                                </Typography>
+                                            </Grid>
+                                        </Grid>
+                                    </Box>
+                                    <Divider light />
+                                    <Box sx={{ p: 1 }}>
+                                        <Grid container>
+                                            <Grid item xs={6}>
+                                                <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
+                                                    Total Octates :
+                                                </Typography>
+                                            </Grid>
+                                            <Grid item xs={6} alignItems={'left'} sx={{ marginLeft: -4 }}>
+                                                <Typography
+                                                    sx={{ fontSize: '17px', textAlign: 'left' }}
+                                                    gutterBottom variant="body2">
+                                                    {String(selectedRecord.total_octates)}
+                                                </Typography>
+                                            </Grid>
+                                        </Grid>
+                                    </Box>
+                                    <Divider light />
+                                    <Box sx={{ p: 1 }}>
+                                        <Grid container>
+                                            <Grid item xs={6}>
+                                                <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
+                                                    Bitrate :
+                                                </Typography>
+                                            </Grid>
+                                            <Grid item xs={6} alignItems={'left'} sx={{ marginLeft: -10 }}>
+                                                <Typography
+                                                    sx={{ fontSize: '17px', textAlign: 'left' }}
+                                                    gutterBottom variant="body2">
+                                                    {String(selectedRecord.bitrate)}
+                                                </Typography>
+                                            </Grid>
+                                        </Grid>
+                                    </Box>
+                                    <Divider light />
+                                    <Box sx={{ p: 1 }}>
+                                        <Grid container>
+                                            <Grid item xs={6}>
+                                                <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
+                                                    input Octates :
+                                                </Typography>
+                                            </Grid>
+                                            <Grid item xs={6} alignItems={'left'} sx={{ marginLeft: -4 }}>
+                                                <Typography
+                                                    sx={{ fontSize: '17px', textAlign: 'left' }}
+                                                    gutterBottom variant="body2">
+                                                    {String(selectedRecord.total_input_octets)}
+                                                </Typography>
+                                            </Grid>
+                                        </Grid>
+                                    </Box>
+                                    <Divider light />
+                                    <Box sx={{ p: 1 }}>
+                                        <Grid container>
+                                            <Grid item xs={6}>
+                                                <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
+                                                    Output Octets :
+                                                </Typography>
+                                            </Grid>
+                                            <Grid item xs={6} alignItems={'left'} sx={{ marginLeft: -3.8 }}>
+                                                <Typography
+                                                    sx={{ fontSize: '17px', textAlign: 'left' }}
+                                                    gutterBottom variant="body2">
+                                                    {String(selectedRecord.total_output_octets)}
+                                                </Typography>
+                                            </Grid>
+                                        </Grid>
+                                    </Box>
+                                    <Divider light />
+                                    <Box sx={{ p: 1 }}>
+                                        <Grid container>
+                                            <Grid item xs={6}>
+                                                <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
+                                                    Session status :
+                                                </Typography>
+                                            </Grid>
+                                            <Grid item xs={6} alignItems={'left'} sx={{ marginLeft: -3 }}>
+                                                <Typography
+                                                    sx={{ fontSize: '17px', textAlign: 'left' }}
+                                                    gutterBottom variant="body2">
+                                                    {String(selectedRecord.session_status)}
                                                 </Typography>
                                             </Grid>
                                         </Grid>
@@ -227,32 +369,12 @@ export default function RatesOffer(){
 
                             </Grid>
 
-                            <Grid container spacing={1} padding={1} sx={{width:400}}>
-                               
-                               
-                                <Grid item>
-                                    <Button variant="contained"
-                                        sx={{ backgroundColor: '#253A7D' }}
-                                        onClick={() => {
-                                            navigate('/editRates', { state: { id: selectedRecord.rates_id } })
-                                           
-                                        }}
-                                    >Edit</Button>
-                                </Grid>
-                                <Grid item>
-                                    <Button
-                                        onClick={() => {
-                                            handleOpenConfirmationDialog(selectedRecord.rates_id)
-                                            console.log("From teh Customer De;eet Button")
-                                        }}
-                                        sx={{ backgroundColor: '#253A7D' }}
-                                        variant="contained">Delete</Button>
-                                </Grid>
+                           
 
 
 
 
-                            </Grid>
+                            
                         </Card>
 
                     </Paper>
@@ -288,8 +410,8 @@ export default function RatesOffer(){
     const handleRowMouseLeave = () => {
         setHighlightedRow(null);
     };
-    return (
-        <Box sx={{ display: 'container', marginTop: -2.5,width:'79vw' }}>
+    return(
+        <Box sx={{ display: 'container',marginLeft:-1, marginTop: -2.5,width:'79vw' }}>
 
             <Box sx={{ width: '70%', }}>
             <Box component="main" sx={{ flexGrow: 1, p: 1, width: '100%' }}>
@@ -303,7 +425,7 @@ export default function RatesOffer(){
                                         fontWeight: 'bold',
 
                                     }}
-                                >Rates Offer</Typography>
+                                >IMS Registartions</Typography>
                             </Grid>
                         </Paper>
                     </Box>
@@ -338,7 +460,7 @@ export default function RatesOffer(){
                                                         }
                                                     >
                                                         {columns.map((column) => (
-                                                            // console.log(column.id + "from customer row"),
+                                                            console.log(column.id + "from customer row"),
 
                                                             <TableCell key={column.id} sx={{ textAlign: 'left', fontSize: '17px' }}>
 
@@ -350,7 +472,7 @@ export default function RatesOffer(){
                                                                         }</>
                                                                 ) : (
                                                                     // Render this content if the condition is false
-                                                                    <>{row[column.id]}</>
+                                                                    <>{String(row[column.id])}</>
                                                                 )}
                                                             </TableCell>
                                                         ))}
@@ -378,11 +500,11 @@ export default function RatesOffer(){
                     paddingLeft: '16px', paddingBottom: '16px', paddingTop: '14px',
 
                 }}>
-                    <Button
+                    {/* <Button
                         sx={{ backgroundColor: '#253A7D', boxShadow: 24 }}
                         variant="contained" backgroundColor="#253A7D" onClick={handleButtonClick}>
                         Add New
-                    </Button>
+                    </Button> */}
                 </Box>
             </Box>
 

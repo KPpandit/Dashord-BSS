@@ -11,7 +11,7 @@ export default function AccountType(props) {
         { id: 'name', name: 'Name' },
         { id: 'surname', name: 'Surname' },
 
-       
+
     ];
 
     // Generate sample data
@@ -20,7 +20,7 @@ export default function AccountType(props) {
         for (let i = 0; i < 100; i++) {
             data.push({
                 name: `Name ${i}`,
-                surname:`Surname ${i}`
+                surname: `Surname ${i}`
 
             });
         }
@@ -95,7 +95,7 @@ export default function AccountType(props) {
 
                     </Paper>
 
-                   
+
 
                     <Paper sx={{ marginTop: 2 }}>
                         <Grid sx={{ backgroundColor: '#253A7D' }}>
@@ -138,13 +138,26 @@ export default function AccountType(props) {
                             </Card>
                         </Box>
                     </Paper>
-                    <Grid padding={2} sx={{ width: 360 }}>
-                    <Button variant="contained" style={{ marginRight: '10px', marginBottom: '10px',backgroundColor:'#253A7D' }}>{<EditIcon sx={{ paddingRight: 1 }} />}EDIT</Button>
-                        <Button variant="contained" style={{ marginBottom: '10px',backgroundColor:"#253A7D" }}>{<DeleteIcon sx={{ paddingRight: 1 }} />}DELETE</Button>
+                    <Grid container padding={2} sx={{ width: 360 }}>
+                        <Grid item xs={6}>
+                        <Button variant="contained" sx={{boxShadow:24}} style={{  marginBottom: '10px', backgroundColor: '#253A7D' }}>{<EditIcon sx={{ paddingRight: 1 }} />}EDIT</Button>
+                        </Grid>
+                        <Grid item xs={6}>
+                        <Button variant="contained" sx={{boxShadow:24}} style={{ marginBottom: '10px', backgroundColor: "#253A7D" }}>{<DeleteIcon sx={{ paddingRight: 1 }} />}DELETE</Button>
+                        </Grid>
+                        <Grid item xs={6} >
 
-                        <Button variant="contained" style={{ marginRight: '10px', marginBottom: '10px',backgroundColor:"#253A7D" }} onClick={toPayment} >{<DoneOutlineSharpIcon sx={{ paddingRight: 1 }} />}Clone</Button>
-                        <Button variant="contained" style={{ marginBottom: '10px',backgroundColor:"#253A7D" }}>{<DoneOutlineSharpIcon sx={{ paddingRight: 1 }} />}ADD INfo Type</Button>
-                        
+                        <Button variant="contained" sx={{boxShadow:24}} style={{ marginBottom: '10px', backgroundColor: "#253A7D" }} onClick={toPayment} >{<DoneOutlineSharpIcon sx={{ paddingRight: 1 }} />}Clone</Button>
+                        </Grid>
+                        <Grid item xs={6}>
+                        <Button variant="contained" sx={{boxShadow:24}} style={{ marginBottom: '10px', backgroundColor: "#253A7D" }}>{<DoneOutlineSharpIcon sx={{ paddingRight: 1 }} />}ADD INfo Type</Button>
+
+                        </Grid>
+
+                      
+                       
+
+                     
                     </Grid>
                     <Grid sx={{ padding: 2 }}>
 
@@ -179,8 +192,8 @@ export default function AccountType(props) {
     };
     return (
         <Box sx={{ display: 'container' }}>
-             <Box sx={{ width: '68%', padding: '16px' }}>
-             <Box component="main" sx={{  width: '100%' }}>
+            <Box sx={{ width: '68%', padding: '16px' }}>
+                <Box component="main" sx={{ width: '100%' }}>
                     <Paper elevation={10} sx={{ padding: 1, margin: 1, backgroundColor: 'white', color: '#253A7D', marginLeft: 0.2, marginRight: 0.2 }}>
                         <Grid>
                             <Typography
@@ -189,7 +202,7 @@ export default function AccountType(props) {
                                     fontSize: '19px',
                                     paddingLeft: '15px',
                                     fontWeight: 'bold',
-                                    marginLeft:-15
+                                    marginLeft: -15
 
                                 }}
                             > Account Type</Typography>
@@ -198,39 +211,39 @@ export default function AccountType(props) {
                 </Box>
                 <Box component="main" sx={{ flexGrow: 1 }} >
                     <Paper elevation={24}>
-                    <Grid lg={12} md={12} sm={12} sx={{ textAlign: 'right', marginY: -0.1 }}>
-                        <form
-                            onSubmit={handleSerch}
-                        >
+                        <Grid lg={12} md={12} sm={12} sx={{ textAlign: 'right', marginY: -0.1 }}>
+                            <form
+                                onSubmit={handleSerch}
+                            >
 
-                            <Grid lg={12} paddingBottom={1} >
-                                <TextField
-                                    onClick={handleSerch}
-                                    label="Search"
-                                    type='text'
-                                    fullWidth
-                                    name='value'
-                                    // onChange={(e) => setValue(e.target.value)}
-                                    required
-                                    InputProps={{
-                                        endAdornment: (
-                                            <InputAdornment position='end'>
-                                                <IconButton
-                                                // onSubmit={handleSerch}
-                                                >
-                                                    <SearchIcon />
-                                                </IconButton>
-                                            </InputAdornment>
-                                        )
-                                    }}
-                                />
+                                <Grid lg={12} paddingBottom={1} >
+                                    <TextField
+                                        onClick={handleSerch}
+                                        label="Search"
+                                        type='text'
+                                        fullWidth
+                                        name='value'
+                                        // onChange={(e) => setValue(e.target.value)}
+                                        required
+                                        InputProps={{
+                                            endAdornment: (
+                                                <InputAdornment position='end'>
+                                                    <IconButton
+                                                    // onSubmit={handleSerch}
+                                                    >
+                                                        <SearchIcon />
+                                                    </IconButton>
+                                                </InputAdornment>
+                                            )
+                                        }}
+                                    />
 
-                            </Grid>
-                            {/* <Grid paddingBottom={1}>
+                                </Grid>
+                                {/* <Grid paddingBottom={1}>
                             <Button type='submit' backgroundColor={'blue'} onSubmit={handleSerch} padding={2}> <SearchIcon /> Search</Button>
                             </Grid> */}
-                        </form>
-                    </Grid>
+                            </form>
+                        </Grid>
                     </Paper>
                     <Paper elevation={24}>
                         <TableContainer sx={{ maxHeight: 600 }}>
@@ -282,14 +295,14 @@ export default function AccountType(props) {
 
                     </Paper>
 
-                    <Box sx={{  paddingBottom: '16px', paddingTop: '14px', display: 'flex', gap: '16px' }}>
-                        <Button variant="contained" sx={{backgroundColor:'#253A7D',boxShadow:24}}
-                         onClick={addAccountType}
+                    <Box sx={{ paddingBottom: '16px', paddingTop: '14px', display: 'flex', gap: '16px' }}>
+                        <Button variant="contained" sx={{ backgroundColor: '#253A7D', boxShadow: 24 }}
+                            onClick={addAccountType}
                         >
                             Add New
                         </Button>
 
-                       
+
                     </Box>
                 </Box>
             </Box>

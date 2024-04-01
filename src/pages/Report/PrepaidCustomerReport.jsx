@@ -7,7 +7,7 @@ import { styled } from '@mui/material/styles';
 import { Download } from '@mui/icons-material';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
-
+import * as XLSX from 'xlsx';
 
 const PrepaidCustomerReport = (props) => {
     const columns = [
@@ -22,60 +22,54 @@ const PrepaidCustomerReport = (props) => {
     ];
     const [rows, setRows] = useState([]);
     const tokenValue = localStorage.getItem('token');
+    const [filteredRows, setFilteredRows] = useState([]);
+    const [searchKeyword, setSearchKeyword] = useState('');
     const [selectedPhoto, setSelectedPhoto] = useState(null);
     const [selectedRecord, setSelectedRecord] = useState(null);
     const [open, setOpen] = React.useState(false);
     // Generate sample data
-    
-  const [openDialog, setOpenDialog] = useState(false);
+
+    const [openDialog, setOpenDialog] = useState(false);
 
     useEffect(() => {
-        // console.log("record==>",selectedRecord)
         const fetchData = async () => {
             try {
-                const response = await axios.get('http://172.5.10.2:9090/api/customers', {
+                let url = 'http://172.5.10.2:9090/api/customers';
+                if (searchKeyword.trim() !== '') {
+                    url += `?keyword=${searchKeyword}`;
+                }
+                const response = await axios.get(url, {
                     headers: {
                         Authorization: `Bearer ${tokenValue}`,
                         "Accept": "application/json",
                         "Content-Type": "application/json"
                     }
                 });
-                // Assuming your API response is an array of objects similar to the data structure in your generateData function
-                const apiData = response.data;
-
-                // Update the state with the API data
-                setRows(apiData);
+                setRows(response.data);
             } catch (error) {
-
-                if (error.response && error.response.status === 401) {
-                    // console.log("From inside if condition");
-                    // localStorage.removeItem('token');
-                    // navigate("/");
-                }
-
                 console.error('Error fetching data from API:', error);
-                // Handle error as needed
             }
         };
 
-        fetchData(); // Invoke the fetchData function when the component mounts
-    }, [tokenValue]);
+        fetchData();
+    }, [tokenValue, openDialog]);
 
-   
+
     const handleClickOpen = (row) => {
         setSelectedRecord(row)
         // setOpen(true);
-      
+
     };
+
     const handleClose = () => {
         setOpen(false);
     };
-    
-    
-      const handleCloseDialog = () => {
+
+
+    const handleCloseDialog = () => {
         setOpenDialog(false);
-      };
-    
+    };
+
     const [confirmationDialogOpen, setConfirmationDialogOpen] = useState(false);
     const [recordIdToDelete, setRecordIdToDelete] = useState(null);
     const handleOpenConfirmationDialog = (id) => {
@@ -83,7 +77,7 @@ const PrepaidCustomerReport = (props) => {
         setConfirmationDialogOpen(true);
     };
 
-  
+
     const navigate = useNavigate();
     const handleButtonClick = () => {
         navigate('/newCustomer');
@@ -93,8 +87,8 @@ const PrepaidCustomerReport = (props) => {
         setSelectedRecord(row);
         setOpenDialog(true);
         fetchPhoto1(row)
-      };
-      const fetchPhoto1 = async (row) => {
+    };
+    const fetchPhoto1 = async (row) => {
 
         try {
             const photoResponse = await axios.get(`http://172.5.10.2:9090/api/image/${row.id}`, {
@@ -110,7 +104,7 @@ const PrepaidCustomerReport = (props) => {
                 const imageBlob = new Blob([photoResponse.data], { type: 'image/jpeg' });
                 const imageUrl = URL.createObjectURL(imageBlob);
                 setSelectedPhoto(imageUrl);
-                sessionStorage.setItem('selectedPhoto',imageUrl)
+                sessionStorage.setItem('selectedPhoto', imageUrl)
             } else {
                 console.error('Failed to fetch photo details.');
                 sessionStorage.removeItem('selectedPhoto')
@@ -118,15 +112,16 @@ const PrepaidCustomerReport = (props) => {
         } catch (error) {
             setSelectedPhoto(null);
             console.log('Failed to load the Photo', error);
-                sessionStorage.removeItem('selectedPhoto')
+            sessionStorage.removeItem('selectedPhoto')
 
         }
-        navigate('/individualReport',{state:{selectedRecord:row}})
+        navigate('/individualReport', { state: { selectedRecord: row } })
 
     };
-   
+
 
     const handleSerch = async (e) => {
+        console.log("from serch")
         e.preventDefault();
         return await axios
             .get(`http://172.5.10.2:9696/api/vendor/mgmt/detail/search?keyword=${value}`)
@@ -137,37 +132,65 @@ const PrepaidCustomerReport = (props) => {
                 setValue(value);
             })
     }
-    const [selectedOption, setSelectedOption] = useState('');
+
     const [highlightedRow, setHighlightedRow] = useState(null);
 
     const handleRowMouseEnter = (row) => {
         setHighlightedRow(row)
     };
 
-    function DownloadPDF(){
-        const capture = document.getElementById('container');
-        html2canvas(capture).then((canvas)=>{
-            const imgdata = canvas.toDataURL('img/png')
-            const doc = new jsPDF('p','pt','a4');
-            const pageHeight= doc.internal.pageSize.height;
-            const pageWidth= doc.internal.pageSize.width;
-            doc.addImage(imgdata,'PNG',0.5,0.5,pageWidth,pageHeight);
-            doc.save('customerProfile.pdf')
-        })
 
-        // let pdf = new jsPDF('p','pt','a4');
-        // let capture = document.getElementById('container')
-        // pdf.html(capture,{
-        //     callback:(pdf=>{
-        //         pdf.save('customer.pdf')
-        //     })
-        // })
-        
-    }
 
     // const handleRowMouseLeave = () => {
     //     setHighlightedRow(null);
     // };
+
+
+    const [selectedOption, setSelectedOption] = useState(null);
+    const handleDownload = () => {
+        if (selectedOption === 'pdf') {
+            const pdf = new jsPDF();
+            // Set column headers
+            const headers = Object.keys(rows[0]);
+            // Add data to PDF
+            pdf.autoTable({
+                head: [headers],
+                body: rows.map(row => Object.values(row)),
+            });
+            // Save the PDF
+            pdf.save(`${"newpdfway"}.pdf`);
+        } else if (selectedOption === 'csv') {
+            const headers = Object.keys(rows[0]);
+            const csvContent = "data:text/csv;charset=utf-8," + headers.join(',') + '\n' +
+                rows.map(row => Object.values(row).join(',')).join('\n');
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "example123.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            console.log(csvContent + "-----cvs content")
+        } else if (selectedOption === 'xls') {
+            // Handle XLS download logic
+            const worksheet = XLSX.utils.json_to_sheet(rows);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet 1');
+            const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+            const excelData = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+            const xlsURL = URL.createObjectURL(excelData);
+            window.open(xlsURL);
+        }
+        else if (selectedOption === null) {
+            setNotify({
+                isOpen: true,
+                message: 'Please Select The file Format ',
+                type: 'error'
+            })
+            setTimeout(() => { }, 1000)
+
+        }
+    };
     return (
         <Box sx={{ display: 'container', marginTop: -2.5 }}>
 
@@ -183,19 +206,43 @@ const PrepaidCustomerReport = (props) => {
                                     fontWeight: 'bold',
 
                                 }}
-                            >Prepaid Customer List</Typography>
+                            >Pre-Paid Customer List</Typography>
                         </Grid>
                     </Paper>
                 </Box>
-
-                <Grid lg={6} sx={{ textAlign: 'right', marginY: -0.5 }}>
+                <Grid lg={4} >
                     <form
                         onSubmit={handleSerch}
                     >
 
-                        <Paper elevation={10} sx={{ marginBottom: 2 }}>
-                            <Grid lg={8} >
-                                <TextField
+                        <Paper elevation={10} sx={{ marginBottom: 2,paddingBottom:0.1,paddingTop:0.5 }}>
+                            <Grid container spacing={2} padding={1}>
+                                <Grid item xs={2}>
+                                    {/* First date field */}
+                                    <TextField
+                                        label="Start Date"
+                                        type="date"
+                                        fullWidth
+                                        InputLabelProps={{
+                                            shrink: true,
+                                        }}
+                                    />
+                                </Grid>
+                                <Grid item xs={2}>
+                                    {/* Second date field */}
+                                    <TextField
+                                        label="End Date"
+                                        type="date"
+                                        fullWidth
+                                        InputLabelProps={{
+                                            shrink: true,
+                                        }}
+                                    />
+                                </Grid>
+                                
+                                <Grid item xs={5.9}>
+                                    {/* Search button */}
+                                    <TextField
                                     onClick={handleSerch}
                                     label="Search"
                                     type='text'
@@ -215,14 +262,28 @@ const PrepaidCustomerReport = (props) => {
                                         )
                                     }}
                                 />
-
+                                </Grid>
+                                <Grid item xs={2}>
+                                    {/* Search button */}
+                                    <Button
+                                        variant="contained"
+                                        
+                                        // onClick={handleSearch}
+                                        fullWidth
+                                        style={{ height: '100%' ,backgroundColor:'#F6B625',color:'black'}}
+                                    >
+                                        Apply
+                                    </Button>
+                                </Grid>
                             </Grid>
+
                         </Paper>
                         {/* <Grid paddingBottom={1}>
                             <Button type='submit' backgroundColor={'blue'} onSubmit={handleSerch} padding={2}> <SearchIcon /> Search</Button>
                             </Grid> */}
                     </form>
                 </Grid>
+              
                 <Box component="main" sx={{ flexGrow: 1, width: '100%' }}>
                     <Paper elevation={10}>
                         <TableContainer sx={{ maxHeight: 600 }}>
@@ -240,58 +301,79 @@ const PrepaidCustomerReport = (props) => {
 
                                             .map((row, i) => {
                                                 return (
-                                                            (row.customerType=='prepaid') || (row.customerType=='Pre-Paid')?
-                                                    <TableRow
-                                                        key={i}
-                                                        onClick={() => {
-                                                            handleRowClick(row)
-                                                            handleClickOpen(row)
-                                                        }}
-                                                        onMouseEnter={() => handleRowMouseEnter(row)}
-                                                        //   onMouseLeave={handleRowMouseLeave}
-                                                        sx={
-                                                            highlightedRow === row
-                                                                ? { backgroundColor: '#F6B625' }
-                                                                : {}
-                                                        }
-                                                    >
-                                                        
-                                                        {columns.map((column) => (
+                                                    (row.customerType == 'prepaid') || (row.customerType == 'Pre-Paid') ?
+                                                        <TableRow
+                                                            key={i}
+                                                            onClick={() => {
+                                                                handleRowClick(row)
+                                                                handleClickOpen(row)
+                                                            }}
+                                                            onMouseEnter={() => handleRowMouseEnter(row)}
+                                                            //   onMouseLeave={handleRowMouseLeave}
+                                                            sx={
+                                                                highlightedRow === row
+                                                                    ? { backgroundColor: '#F6B625' }
+                                                                    : {}
+                                                            }
+                                                        >
+
+                                                            {columns.map((column) => (
 
 
-                                                            <TableCell key={column.id} sx={{ textAlign: 'left', fontSize: '17px' }}>
+                                                                <TableCell key={column.id} sx={{ textAlign: 'left', fontSize: '17px' }}>
 
-                                                                {column.id === 'ekycDate' ? (
-                                                                    // Render this content if the condition is true
-                                                                    <>{
-                                                                        // new Date(row[column.id]).toISOString().split('T')[0]
+                                                                    {column.id === 'ekycDate' ? (
+                                                                        // Render this content if the condition is true
+                                                                        <>{
+                                                                            // new Date(row[column.id]).toISOString().split('T')[0]
 
-                                                                    }</>
-                                                                ) : (
-                                                                    // Render this content if the condition is false
-                                                                    <>{row[column.id]}</>
-                                                                )}
-                                                            </TableCell>
-                                                        ))}
-                                                    </TableRow>
-                                                    :null
+                                                                        }</>
+                                                                    ) : (
+                                                                        // Render this content if the condition is false
+                                                                        <>{row[column.id]}</>
+                                                                    )}
+                                                                </TableCell>
+                                                            ))}
+                                                        </TableRow>
+                                                        : null
 
                                                 );
                                             })}
                                 </TableBody>
                             </Table>
                         </TableContainer>
-                        
+
 
                     </Paper>
                 </Box>
+                <Grid container paddingTop={2}>
+                    <Grid item xs={1.2}>
+                        <Button variant="contained" sx={{ backgroundColor: '#253A7D', boxShadow: 24 }} onClick={handleDownload}>Download</Button>
+                    </Grid>
+                    <Grid item xs={1}>
+                        <FormControl fullWidth>
+                            <Select sx={{ boxShadow: 24, width: 100, height: 20, paddingY: 2.3, textAlign: 'bottom' }}
+
+                                onChange={(e) => setSelectedOption(e.target.value)}
+                                required
+                            >
+
+                                <MenuItem value="pdf">PDF</MenuItem>
+                                <MenuItem value="csv">CSV</MenuItem>
+                                <MenuItem value="xls">Excel</MenuItem>
+                            </Select>
+
+                        </FormControl>
+                    </Grid>
+
+                </Grid>
             </Box>
 
-            
-        
-      
-       
-          
+
+
+
+
+
 
 
 

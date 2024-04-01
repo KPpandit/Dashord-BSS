@@ -7,7 +7,10 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import SaveAltIcon from '@mui/icons-material/SaveAlt';
 import { Cancel, Save } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
-
+import axios from 'axios';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from 'react-toastify';
 const EditModal = ({ isOpen, onClose, data, onSave }) => {
     const [editedData, setEditedData] = useState(data);
 
@@ -68,23 +71,15 @@ const EditModal = ({ isOpen, onClose, data, onSave }) => {
 };
 export default function Roles() {
     const columns = [
-        { id: 'role', name: 'ROLE NAME' },
+        { id: 'name', name: 'Name' },
+       
+
+
     ];
-
     // Generate sample data
-    const generateData = () => {
-        const data = [];
-        for (let i = 0; i < 100; i++) {
-            data.push({
-                Id: ` ${i}`,
-                role: `ROLE NAME ${i}`,
-                desc: `DESCRIPTION ${i}`,
-            });
-        }
-        return data;
-    };
+   
 
-    const [rows, rowchange] = useState(generateData());
+    const [rows, setRows] = useState('');
     const [page, pagechange] = useState(0);
     const [rowperpage, rowperpagechange] = useState(5);
 
@@ -102,19 +97,54 @@ export default function Roles() {
     const handleRowClick = (row) => {
         setSelectedRecord(row);
     };
+    const tokenValue = localStorage.getItem('token');
     useEffect(() => {
-        fetch("http://172.5.10.2:9696/api/rates/offer/get/all")
-            .then(resp => {
-                setdata(resp.data);
-                return resp.json();
-            }).then(resp => {
-                rowchange(resp);
-            }).catch(e => {
-                console.log(e.message)
-            })
-        console.log("this is from rates");
-    }, [selectedRecord])
+        const fetchData = async () => {
+            try {
+                const response = await axios.get('http://172.5.10.2:9090/api/roles', {
+                    headers: {
+                        Authorization: `Bearer ${tokenValue}`,
+                        "Accept": "application/json",
+                        "Content-Type": "application/json"
+                    }
+                });
+                setRows(response.data);
+            } catch (error) {
+                if (error.response && error.response.status === 401) {
+                    console.log("From inside if condition");
+                    localStorage.removeItem('token');
+                    navigate("/");
+                }
 
+                console.error('Error fetching data from API:', error);
+
+            }
+        };
+
+        fetchData();
+    
+    }, [selectedRecord])
+    const fetchData = async () => {
+        try {
+            const response = await axios.get('http://172.5.10.2:9090/api/roles', {
+                headers: {
+                    Authorization: `Bearer ${tokenValue}`,
+                    "Accept": "application/json",
+                    "Content-Type": "application/json"
+                }
+            });
+            setRows(response.data);
+        } catch (error) {
+            if (error.response && error.response.status === 401) {
+                console.log("From inside if condition");
+                localStorage.removeItem('token');
+                navigate("/");
+            }
+
+            console.error('Error fetching data from API:', error);
+
+        }
+    };
 
     const [isEditModalOpen, setEditModalOpen] = useState(false);
 
@@ -179,11 +209,27 @@ export default function Roles() {
     };
 
     const handleAddSave = (newData) => {
+        console.log(newData.name+" role Name");
         // Update the rows array with the new data
-        const updatedRows = [...rows, newData];
+        const res = axios.post('http://172.5.10.2:9090/api/saverole',
+        {...newData}, {
 
-        // Update the state with the modified rows
-        rowchange(updatedRows);
+        headers: {
+            Authorization: `Bearer ${tokenValue}`,
+            "Accept": "application/json",
+            "Content-Type": "application/json"
+        }
+    }
+
+    ).then(res => {
+        if (res.status === 201) {
+            toast.success('Role Added Successfully', { autoClose: 2000 });
+            fetchData();
+            props.onClose();
+        }
+    })
+
+        
     };
     const SelectedRecordDetails = () => {
         if (selectedRecord) {
@@ -276,32 +322,20 @@ export default function Roles() {
     };
     return (
         <Box sx={{ display: 'container' }}>
+             <ToastContainer position="bottom-left" />
             <Box sx={{ width: '68%', padding: '16px' }}>
                 <Box component="main" sx={{ flexGrow: 1, width: '100%' }} >
 
-                    <Paper elevation={24}>
-
+                <Paper elevation={10}>
                         <TableContainer sx={{ maxHeight: 600 }}>
                             <Table stickyHeader size='medium' padding="normal">
-                                <TableHead >
-                                    <TableRow dense >
+                                <TableHead>
+                                    <TableRow>
                                         {columns.map((column) => (
-                                            <TableCell
-                                                key={column.id}
-                                                style={{
-                                                    backgroundColor: '#253A7D',
-                                                    color: 'white',
-                                                    textAlign: 'left',
-                                                    height: '2px',
-
-                                                }}
-                                            >
-                                                <Typography fontFamily={'Sans-serif'} fontSize={14}>{column.name}</Typography>
-                                            </TableCell>
+                                            <TableCell style={{ backgroundColor: '#253A7D', color: 'white' }} key={column.id} sx={{ textAlign: 'left' }}><Typography fontFamily={'Sans-serif'}>{column.name}</Typography></TableCell>
                                         ))}
                                     </TableRow>
                                 </TableHead>
-
                                 <TableBody>
                                     {rows &&
                                         rows
@@ -310,17 +344,17 @@ export default function Roles() {
                                                 return (
                                                     <TableRow
                                                         key={i}
-                                                        onClick={() => handleRowClick(row)}
+                                                        // onClick={() => handleRowClick(row)}
                                                         onMouseEnter={() => handleRowMouseEnter(row)}
                                                         onMouseLeave={handleRowMouseLeave}
                                                         sx={
                                                             highlightedRow === row
-                                                                ? { backgroundColor: '#FAC22E' }
+                                                                ? { backgroundColor: '#FBB716' }
                                                                 : {}
                                                         }
                                                     >
                                                         {columns.map((column) => (
-                                                            <TableCell key={column.id} sx={{ textAlign: 'left' }}>
+                                                            <TableCell key={column.id} sx={{ textAlign: 'left', fontSize: '17px' }}>
                                                                 {row[column.id]}
                                                             </TableCell>
                                                         ))}
@@ -331,7 +365,7 @@ export default function Roles() {
                             </Table>
                         </TableContainer>
                         <TablePagination
-                        sx={{color:'#253A7D'}}
+                            sx={{ color: '#253A7D' }}
                             rowsPerPageOptions={[5, 10, 25]}
                             rowsPerPage={rowperpage}
                             page={page}
@@ -342,6 +376,7 @@ export default function Roles() {
                         />
 
                     </Paper>
+
 
                     <Grid >
                         <Button sx={{ margin: 2 ,backgroundColor:'#253A7D',boxShadow:24}} variant="contained" onClick={handleAddModalOpen}>
@@ -364,8 +399,8 @@ export default function Roles() {
 const AddModal = ({ isOpen, onClose, onSave }) => {
     const [newData, setNewData] = useState({
         
-        role: '',
-        desc: '',
+        name: '',
+     
     });
 
     const handleInputChange = (e) => {
@@ -400,20 +435,13 @@ const handleClose=()=>{
                 
                 <TextField
                     label="Role Name"
-                    name="role"
-                    value={newData.role}
+                    name="name"
+                    value={newData.name}
                     onChange={handleInputChange}
                     fullWidth
                     sx={{ mt: 2 }}
                 />
-                <TextField
-                    label="Description"
-                    name="desc"
-                    value={newData.desc}
-                    onChange={handleInputChange}
-                    fullWidth
-                    sx={{ mt: 2 }}
-                />
+               
                
                 <Grid container spacing={1}>
                     <Grid item>
