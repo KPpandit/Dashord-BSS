@@ -33,7 +33,7 @@ const PostpaidCustomerReport = (props) => {
         // console.log("record==>",selectedRecord)
         const fetchData = async () => {
             try {
-                const response = await axios.get('http://localhost:9098/customer/post-paid', {
+                const response = await axios.get('http://172.5.10.2:9098/customer/post-paid', {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem('token')}`,
                         "Accept": "application/json",
@@ -220,7 +220,7 @@ const PostpaidCustomerReport = (props) => {
         const type = 'post-paid';
     
         // Construct the API URL
-        const apiUrl = `http://localhost:9098/customer/bydatefilter/${type}?startDate=${startdate}&endDate=${enddate}`;
+        const apiUrl = `http://172.5.10.2:9098/customer/bydatefilter/${type}?startDate=${startdate}&endDate=${enddate}`;
     
         // Make the API call
         fetch(apiUrl,{

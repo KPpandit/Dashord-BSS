@@ -33,7 +33,7 @@ const ActiveCustomerReport = (props) => {
         // console.log("record==>",selectedRecord)
         const fetchData = async () => {
             try {
-                const response = await axios.get('http://localhost:9098/customer/status/Active', {
+                const response = await axios.get('http://172.5.10.2:9098/customer/status/Active', {
                     headers: {
                         Authorization: `Bearer ${tokenValue}`,
                         "Accept": "application/json",

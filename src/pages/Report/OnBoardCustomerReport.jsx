@@ -34,7 +34,7 @@ export default function OnBoardCustomerReports() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get("http://localhost:9098/customer/graph", {
+                const response = await axios.get("http://172.5.10.2:9098/customer/graph", {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem('token')}`,
                         "Accept": "application/json",
@@ -66,7 +66,7 @@ export default function OnBoardCustomerReports() {
                 console.error("Error fetching data:", error);
             }
             try {
-                const response = await axios.get("http://localhost:9098/customer/chart", {
+                const response = await axios.get("http://172.5.10.2:9098/customer/chart", {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem('token')}`,
                         "Accept": "application/json",
@@ -108,7 +108,7 @@ export default function OnBoardCustomerReports() {
         const type = 'pre-paid';
 
         // Construct the API URL
-        const apiUrl = `http://localhost:9098/customer/bydatefilter/${type}?startDate=${startdate}&endDate=${enddate}`;
+        const apiUrl = `http://172.5.10.2:9098/customer/bydatefilter/${type}?startDate=${startdate}&endDate=${enddate}`;
 
         // Make the API call
         fetch(apiUrl, {
@@ -140,7 +140,7 @@ export default function OnBoardCustomerReports() {
     };
     const handleCategory = async (categoryType) => {
         try {
-            const response = await axios.get(`http://localhost:9098/customer/graph/Data?startDate=${startdate}&endDate=${enddate}`, {
+            const response = await axios.get(`http://172.5.10.2:9098/customer/graph/Data?startDate=${startdate}&endDate=${enddate}`, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem('token')}`,
                     "Accept": "application/json",

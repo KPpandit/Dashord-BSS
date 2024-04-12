@@ -36,7 +36,7 @@ export default function TopPostPaidCallUsageReport(props) {
         // console.log("record==>",selectedRecord)
         const fetchData = async () => {
             try {
-                const response = await axios.get('http://localhost:9098/customer/call/usage', {
+                const response = await axios.get('http://172.5.10.2:9098/customer/call/usage', {
                     headers: {
                         Authorization: `Bearer ${tokenValue}`,
                         "Accept": "application/json",
@@ -219,7 +219,7 @@ export default function TopPostPaidCallUsageReport(props) {
         const type = 'post-paid';
     
         // Construct the API URL
-        const apiUrl = `http://localhost:9098/customer/call/usage/bydate/range?startDate=${startdate}&endDate=${enddate}`;
+        const apiUrl = `http://172.5.10.2:9098/customer/call/usage/bydate/range?startDate=${startdate}&endDate=${enddate}`;
     
         // Make the API call
         fetch(apiUrl,{
