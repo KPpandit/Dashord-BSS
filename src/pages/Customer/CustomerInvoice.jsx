@@ -5,7 +5,7 @@ import { PDFViewer, Document, Page, Text } from '@react-pdf/renderer';
 import axios from "axios";
 import { PDFExport, savePDF } from '@progress/kendo-react-pdf';
 import { saveAs } from 'file-saver';
-import { Box, Button, CardContent, Divider, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, Typography } from '@mui/material';
+import { Box, Button, CardContent, CircularProgress, Divider, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, Typography } from '@mui/material';
 import Logo from '../../assets/Logo.png'
 import White_logo from '../../assets/White_logo.jpg'
 import { TokenContext } from '../../TokenContext';
@@ -111,11 +111,7 @@ export default function CustomerInvoice() {
     console.log(image + " image")
     return (
         <Box >
-
-
-
-
-            <form  >
+            {rows ? <form  >
 
                 <PDFExport ref={pdfContainerRef} paperSize={"A4"} fileName='billing_invoice'>
                     <> {/* Adjust the padding as needed */}
@@ -143,11 +139,11 @@ export default function CustomerInvoice() {
                                         <Grid container spacing={1} >
                                             <Grid item xs={1} md={4} textAlign={'left'} sx={{ marginLeft: 2 }}>
                                                 {
-                                                    image ? (<img src={URL.createObjectURL(image)} 
-                                                    alt={White_logo} style={{ maxWidth: '100%', maxHeight: 130, padding: 1 }} />)
-                                                        : 
-                                                    (<img src={Logo} alt='Default Logo' 
-                                                    style={{ maxWidth: '100%', maxHeight: 130 }} />)
+                                                    image ? (<img src={URL.createObjectURL(image)}
+                                                        alt={White_logo} style={{ maxWidth: '100%', maxHeight: 130, padding: 1 }} />)
+                                                        :
+                                                        (<img src={Logo} alt='Default Logo'
+                                                            style={{ maxWidth: '100%', maxHeight: 130 }} />)
 
 
                                                 }
@@ -333,16 +329,16 @@ export default function CustomerInvoice() {
                                                                         </Typography>
                                                                     </Grid>
                                                                     {/* <Grid item xs={6} textAlign={'left'}>
-                                                                        <Typography sx={{ fontSize: '10px' }}>
-                                                                            Description of Service :
-                                                                        </Typography>
+                                                        <Typography sx={{ fontSize: '10px' }}>
+                                                            Description of Service :
+                                                        </Typography>
 
-                                                                    </Grid>
-                                                                    <Grid item xs={6} textAlign={'left'}>
-                                                                        <Typography sx={{ fontSize: '10px' }}>
-                                                                            Telecommunications
-                                                                        </Typography>
-                                                                    </Grid> */}
+                                                    </Grid>
+                                                    <Grid item xs={6} textAlign={'left'}>
+                                                        <Typography sx={{ fontSize: '10px' }}>
+                                                            Telecommunications
+                                                        </Typography>
+                                                    </Grid> */}
 
 
 
@@ -1243,11 +1239,17 @@ export default function CustomerInvoice() {
                     </Button>
                 </Grid>
                 {/* <Notification
-                    notify={notify}
-                    setNotify={setNotify}
+    notify={notify}
+    setNotify={setNotify}
 
-                /> */}
-            </form>
+/> */}
+            </form> : <Grid>
+                <CircularProgress />
+            </Grid>}
+
+
+
+
         </Box>
     )
 }

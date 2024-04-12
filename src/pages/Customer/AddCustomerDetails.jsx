@@ -659,7 +659,7 @@ export default function AddCustomerDetails() {
 
 
                                     <Grid item lg={12} md={4} sm={6} xs={12} >
-                                        {accountType === 'Post-Paid' && (
+                                        {accountType === 'postpaid' && (
                                             <Grid container spacing={2}>
                                                 <Grid item lg={6} md={4} sm={6} xs={12} fullWidth paddingBottom={2}>
                                                     <TextField

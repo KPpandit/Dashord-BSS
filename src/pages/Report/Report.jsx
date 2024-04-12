@@ -39,7 +39,11 @@ export default function Report(props) {
           { report_type: "Active Customer Report" },
           { report_type: "Inactive Customer Report" },
           { report_type: "Customer signup Report" },
-          { report_type: "Top Customers Report" },
+          { report_type: "Top Customers Post-Paid Data Usage Report" },
+          {report_type:"Top Customers Post-Paid Call Usage Report"},
+          {report_type:"Top Customers Post-Paid SMS Usage Report"},
+          { report_type: "Customers Data Available Pre-Paid" },
+          { report_type: "On Board Customer Reports" },
         ];
         rowchange(data)
         console.log("Customer loop", rows)
@@ -127,8 +131,20 @@ export default function Report(props) {
     if (row.report_type == 'Top Customers Report') {
       navigate('/topCustomerReport');
     }
-    if (row.report_type == 'Top Customers Report') {
+    if (row.report_type == 'Top Customers Post-Paid Data Usage Report') {
       navigate('/topCustomerReport');
+    }
+    if (row.report_type == 'Top Customers Post-Paid Call Usage Report') {
+      navigate('/topPostPaidCallUsage');
+    }
+    if (row.report_type == 'Top Customers Post-Paid SMS Usage Report') {
+      navigate('/topPostPaidSMSUsage');
+    }
+    if (row.report_type == 'Customers Data Available Pre-Paid') {
+      navigate('/prepaidDataUsage');
+    }
+    if (row.report_type == 'On Board Customer Reports') {
+      navigate('/onBoardCustomers');
     }
     if (row.report_type == 'Agent Comission') {
       navigate('/agentComission');

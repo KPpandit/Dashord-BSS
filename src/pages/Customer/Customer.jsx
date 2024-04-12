@@ -470,7 +470,7 @@ const Customer = (props) => {
                                             variant="contained">Delete</Button>
                                     </Grid>
                                     {console.log(selectedRecord.customerType + "account type")}
-                                    {selectedRecord.customerType === "Post-Paid" || selectedRecord.customerType === "post-paid" ? <Grid item sx={6}>
+                                    {selectedRecord.customerType === "Post-Paid" || selectedRecord.customerType === "postpaid" ? <Grid item sx={6}>
                                         <Button
                                             onClick={() => {
                                                 navigate('/custInvoice', { state: { id: selectedRecord.simInventory.msisdn, type: selectedRecord.customerType } })

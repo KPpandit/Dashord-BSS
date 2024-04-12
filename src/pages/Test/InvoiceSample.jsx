@@ -10,7 +10,7 @@ import jsPDF from 'jspdf';
 import SpaIcon from '@mui/icons-material/Spa';
 import billingDefault from '../../assets/billingDefault.png';
 import { PDFViewer, Document, Page, Text } from '@react-pdf/renderer';
-import { Svg, G } from './patches';
+
 import { PDFExport, savePDF } from '@progress/kendo-react-pdf';
 import { saveAs } from 'file-saver';
 // CommonJS format

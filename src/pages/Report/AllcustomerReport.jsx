@@ -209,6 +209,45 @@ const AllCustomerReport = (props) => {
 
         }
     };
+    const [startdate,setStartDate]=useState('');
+    const [enddate,setEndDate]=useState('');
+    console.log("start date value and end date value ",startdate,"------>end date ",enddate)
+  
+  const handleDateRange = () => {
+   
+    const type = 'pre-paid';
+
+    // Construct the API URL
+    const apiUrl = `http://localhost:9098/customer/byDate/range?startDate=${startdate}&endDate=${enddate}`;
+
+    // Make the API call
+    fetch(apiUrl,{
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+            "Accept": "application/json",
+            "Content-Type": "application/json"
+        }
+
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Handle the response data
+            console.log('API response:', data);
+            // setdata(data);
+            console.log(data + "----value sech datas")
+            // rowchange(data);
+            setRows(data);
+        })
+        .catch(error => {
+            // Handle errors
+            console.error('Error fetching data:', error);
+        });
+};
     return (
         <Box sx={{ display: 'container', marginTop: -2.5 }}>
 
@@ -229,35 +268,55 @@ const AllCustomerReport = (props) => {
                     </Paper>
                 </Box>
 
-                <Grid lg={6} sx={{ textAlign: 'right', marginY: -0.5 }}>
+                <Grid lg={4} >
                     <form
                         onSubmit={handleSerch}
                     >
 
-                        <Paper elevation={10} sx={{ marginBottom: 2 }}>
-                            <Grid lg={8} >
-                                <TextField
-                                    onClick={handleSerch}
-                                    label="Search"
-                                    type='text'
-                                    fullWidth
-                                    name='value'
-                                    // onChange={(e) => setValue(e.target.value)}
-                                    required
-                                    InputProps={{
-                                        endAdornment: (
-                                            <InputAdornment position='end'>
-                                                <IconButton
-                                                // onSubmit={handleSerch}
-                                                >
-                                                    <SearchIcon />
-                                                </IconButton>
-                                            </InputAdornment>
-                                        )
-                                    }}
-                                />
-
+                        <Paper elevation={10} sx={{ marginBottom: 2,paddingBottom:0.1,paddingTop:0.5 }}>
+                            <Grid container spacing={2} padding={1}>
+                                <Grid item xs={4}>
+                                    {/* First date field */}
+                                    <TextField
+                                        label="Start Date"
+                                        type="date"
+                                        fullWidth
+                                        InputLabelProps={{
+                                            shrink: true,
+                                        }}
+                                        onChange={(e)=>setStartDate(e.target.value)}
+                                        value={startdate}
+                                    />
+                                </Grid>
+                                <Grid item xs={4}>
+                                    {/* Second date field */}
+                                    <TextField
+                                        label="End Date"
+                                        type="date"
+                                        fullWidth
+                                        InputLabelProps={{
+                                            shrink: true,
+                                        }}
+                                        value={enddate}
+                                        onChange={(e)=>setEndDate(e.target.value)}
+                                    />
+                                </Grid>
+                                
+                                <Grid item xs={4}>
+                                    {/* Search button */}
+                                    <Button
+                                        variant="contained"
+                                        
+                                        // onClick={handleSearch}
+                                        fullWidth
+                                        style={{ height: '100%' ,backgroundColor:'#F6B625',color:'black'}}
+                                        onClick={handleDateRange}
+                                    >
+                                        Apply
+                                    </Button>
+                                </Grid>
                             </Grid>
+
                         </Paper>
                         {/* <Grid paddingBottom={1}>
                             <Button type='submit' backgroundColor={'blue'} onSubmit={handleSerch} padding={2}> <SearchIcon /> Search</Button>
@@ -300,16 +359,7 @@ const AllCustomerReport = (props) => {
                                                         {columns.map((column) => (
                                                             <TableCell key={column.id} sx={{ textAlign: 'left', fontSize: '17px' }}>
 
-                                                                {column.id === 'ekycDate' ? (
-                                                                    // Render this content if the condition is true
-                                                                    <>{
-                                                                        // new Date(row[column.id]).toISOString().split('T')[0]
-                                                                        // row[column.id].join('-').toString().substring(0,9)
-                                                                    }</>
-                                                                ) : (
-                                                                    // Render this content if the condition is false
-                                                                    <>{row[column.id]}</>
-                                                                )}
+                                                                {row[column.id]}
                                                             </TableCell>
                                                         ))}
                                                     </TableRow>

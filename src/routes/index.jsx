@@ -96,6 +96,10 @@ import Test from '../SidenaveBar/Test';
 import CustomerSignUp from '../pages/Report/CustomerSignup';
 import TopCustomerReport from '../pages/Report/TopCustomersReport';
 import AgentComission from '../pages/Report/AgentComission';
+import PrePaidCustomerDataAvailable from '../pages/Report/PrePaidCustomerDataAvailable';
+import OnBoardCustomerReports from '../pages/Report/OnBoardCustomerReport';
+import TopPostPaidCallUsageReport from '../pages/Report/TopPostPaidCallUsageReport';
+import TopPostpaidSMSUsageReport from '../pages/Report/TopPostpaidSMSUsageReport';
 
 
 
@@ -263,6 +267,10 @@ export const Routers = () => {
                            <Route path='/individualagentreport' element={<IndividualAgentReport/>}/>
                            <Route path='/customerSignUp' element={<CustomerSignUp/>}/>
                            <Route path='/topCustomerReport' element={<TopCustomerReport/>}/>
+                           <Route path='/prepaidDataUsage' element={<PrePaidCustomerDataAvailable/>}/>
+                           <Route path='/onBoardCustomers' element={<OnBoardCustomerReports/>}/>
+                           <Route path='/topPostPaidCallUsage' element={<TopPostPaidCallUsageReport/>}/>
+                           <Route path='/topPostPaidSMSUsage' element={<TopPostpaidSMSUsageReport/>}/>
                         {/* <Route path='/add-Noc-sub' element={<AddNoc />} />
                         <Route path='/all-Noc-sub' element={<AllNoc />} />
                         <Route path='/all-Noc-query' element={<NOCQuery />} />

@@ -9,15 +9,18 @@ import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import * as XLSX from 'xlsx';
 
-const PostpaidCustomerReport = (props) => {
+export default function TopPostPaidCallUsageReport(props) {
     const columns = [
         { id: 'firstName', name: 'Name' },
         { id: 'ekycStatus', name: 'Ekyc Status' },
         { id: 'ekycToken', name: 'Ekyc Token' },
+        { id: 'msisdn', name: 'MSISDN' },
         { id: 'ekycDate', name: 'Ekyc Date' },
         { id: 'phonePhoneNumber', name: 'Phone No' },
-        // { id: 'ekycStatus', name: 'Ekyc Status' },
+         { id: 'totalCallused', name: 'Call Consumed' },
+         { id: 'days_data_used', name: 'Days' },
         { id: 'customerType', name: 'Customer Type' },
+       
 
     ];
     const [rows, setRows] = useState([]);
@@ -26,16 +29,16 @@ const PostpaidCustomerReport = (props) => {
     const [selectedRecord, setSelectedRecord] = useState(null);
     const [open, setOpen] = React.useState(false);
     // Generate sample data
-    
-  const [openDialog, setOpenDialog] = useState(false);
+
+    const [openDialog, setOpenDialog] = useState(false);
 
     useEffect(() => {
         // console.log("record==>",selectedRecord)
         const fetchData = async () => {
             try {
-                const response = await axios.get('http://localhost:9098/customer/post-paid', {
+                const response = await axios.get('http://localhost:9098/customer/call/usage', {
                     headers: {
-                        Authorization: `Bearer ${localStorage.getItem('token')}`,
+                        Authorization: `Bearer ${tokenValue}`,
                         "Accept": "application/json",
                         "Content-Type": "application/json"
                     }
@@ -59,23 +62,22 @@ const PostpaidCustomerReport = (props) => {
         };
 
         fetchData(); // Invoke the fetchData function when the component mounts
-    }, [tokenValue,openDialog]);
+    }, [tokenValue, selectedPhoto]);
 
-   
+
     const handleClickOpen = (row) => {
         setSelectedRecord(row)
         // setOpen(true);
-       
     };
     const handleClose = () => {
         setOpen(false);
     };
-    
-    
-      const handleCloseDialog = () => {
+
+
+    const handleCloseDialog = () => {
         setOpenDialog(false);
-      };
-    
+    };
+
     const [confirmationDialogOpen, setConfirmationDialogOpen] = useState(false);
     const [recordIdToDelete, setRecordIdToDelete] = useState(null);
     const handleOpenConfirmationDialog = (id) => {
@@ -83,7 +85,7 @@ const PostpaidCustomerReport = (props) => {
         setConfirmationDialogOpen(true);
     };
 
-  
+
     const navigate = useNavigate();
     const handleButtonClick = () => {
         navigate('/newCustomer');
@@ -93,8 +95,8 @@ const PostpaidCustomerReport = (props) => {
         setSelectedRecord(row);
         setOpenDialog(true);
         fetchPhoto1(row)
-      };
-      const fetchPhoto1 = async (row) => {
+    };
+    const fetchPhoto1 = async (row) => {
 
         try {
             const photoResponse = await axios.get(`http://172.5.10.2:9090/api/image/${row.id}`, {
@@ -110,7 +112,7 @@ const PostpaidCustomerReport = (props) => {
                 const imageBlob = new Blob([photoResponse.data], { type: 'image/jpeg' });
                 const imageUrl = URL.createObjectURL(imageBlob);
                 setSelectedPhoto(imageUrl);
-                sessionStorage.setItem('selectedPhoto',imageUrl)
+                sessionStorage.setItem('selectedPhoto', imageUrl)
             } else {
                 console.error('Failed to fetch photo details.');
                 sessionStorage.removeItem('selectedPhoto')
@@ -118,13 +120,13 @@ const PostpaidCustomerReport = (props) => {
         } catch (error) {
             setSelectedPhoto(null);
             console.log('Failed to load the Photo', error);
-                sessionStorage.removeItem('selectedPhoto')
+            sessionStorage.removeItem('selectedPhoto')
 
         }
-        navigate('/individualReport',{state:{selectedRecord:row}})
+        navigate('/individualReport', { state: { selectedRecord: row } })
 
     };
-   
+
 
     const handleSerch = async (e) => {
         e.preventDefault();
@@ -137,21 +139,21 @@ const PostpaidCustomerReport = (props) => {
                 setValue(value);
             })
     }
-  
+
     const [highlightedRow, setHighlightedRow] = useState(null);
 
     const handleRowMouseEnter = (row) => {
         setHighlightedRow(row)
     };
 
-    function DownloadPDF(){
+    function DownloadPDF() {
         const capture = document.getElementById('container');
-        html2canvas(capture).then((canvas)=>{
+        html2canvas(capture).then((canvas) => {
             const imgdata = canvas.toDataURL('img/png')
-            const doc = new jsPDF('p','pt','a4');
-            const pageHeight= doc.internal.pageSize.height;
-            const pageWidth= doc.internal.pageSize.width;
-            doc.addImage(imgdata,'PNG',0.5,0.5,pageWidth,pageHeight);
+            const doc = new jsPDF('p', 'pt', 'a4');
+            const pageHeight = doc.internal.pageSize.height;
+            const pageWidth = doc.internal.pageSize.width;
+            doc.addImage(imgdata, 'PNG', 0.5, 0.5, pageWidth, pageHeight);
             doc.save('customerProfile.pdf')
         })
 
@@ -162,12 +164,9 @@ const PostpaidCustomerReport = (props) => {
         //         pdf.save('customer.pdf')
         //     })
         // })
-        
+
     }
 
-    // const handleRowMouseLeave = () => {
-    //     setHighlightedRow(null);
-    // };
     const [selectedOption, setSelectedOption] = useState(null);
     const handleDownload = () => {
         if (selectedOption === 'pdf') {
@@ -220,7 +219,7 @@ const PostpaidCustomerReport = (props) => {
         const type = 'post-paid';
     
         // Construct the API URL
-        const apiUrl = `http://localhost:9098/customer/bydatefilter/${type}?startDate=${startdate}&endDate=${enddate}`;
+        const apiUrl = `http://localhost:9098/customer/call/usage/bydate/range?startDate=${startdate}&endDate=${enddate}`;
     
         // Make the API call
         fetch(apiUrl,{
@@ -265,7 +264,7 @@ const PostpaidCustomerReport = (props) => {
                                     fontWeight: 'bold',
 
                                 }}
-                            >Postpaid Customer List</Typography>
+                            >Top Post-Paid Customers Call Usage Report</Typography>
                         </Grid>
                     </Paper>
                 </Box>
@@ -342,7 +341,7 @@ const PostpaidCustomerReport = (props) => {
 
                                             .map((row, i) => {
                                                 return (
-                                                           
+
                                                     <TableRow
                                                         key={i}
                                                         onClick={() => {
@@ -357,35 +356,32 @@ const PostpaidCustomerReport = (props) => {
                                                                 : {}
                                                         }
                                                     >
-                                                        
+
                                                         {columns.map((column) => (
-
-
                                                             <TableCell key={column.id} sx={{ textAlign: 'left', fontSize: '17px' }}>
-                                                                {
-                                                                row[column.id]
-                                                                }
+
+                                                               {row[column.id]}
                                                             </TableCell>
                                                         ))}
                                                     </TableRow>
-                                                   
+
 
                                                 );
                                             })}
                                 </TableBody>
                             </Table>
                         </TableContainer>
-                        
+
 
                     </Paper>
                 </Box>
                 <Grid container paddingTop={2}>
                     <Grid item xs={1.2}>
-                        <Button variant="contained" sx={{backgroundColor:'#253A7D',boxShadow:24}} onClick={handleDownload}>Download</Button>
+                        <Button variant="contained" sx={{ backgroundColor: '#253A7D', boxShadow: 24 }} onClick={handleDownload}>Download</Button>
                     </Grid>
                     <Grid item xs={1}>
                         <FormControl fullWidth>
-                            <Select sx={{ boxShadow:24,width: 100, height: 20, paddingY: 2.3, textAlign: 'bottom' }}
+                            <Select sx={{ boxShadow: 24, width: 100, height: 20, paddingY: 2.3, textAlign: 'bottom' }}
 
                                 onChange={(e) => setSelectedOption(e.target.value)}
                                 required
@@ -402,11 +398,11 @@ const PostpaidCustomerReport = (props) => {
                 </Grid>
             </Box>
 
-            
-        
-      
-       
-          
+
+
+
+
+
 
 
 
@@ -415,4 +411,4 @@ const PostpaidCustomerReport = (props) => {
     )
 };
 
-export default PostpaidCustomerReport;
+

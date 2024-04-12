@@ -1,103 +1,81 @@
-import { Grid } from "@mui/material";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Chart from "react-apexcharts";
-
+import { Grid } from "@mui/material";
+import axios from "axios";
 
 export default function Test() {
-  const [state, setState] = useState({
+  const [chartData, setChartData] = useState({
     options: {
-      colors: ["#253A7D", "#FF9800"],
+      colors: ["#FAC22E"],
       chart: {
         id: "basic-bar",
       },
       xaxis: {
-        categories: [1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999],
+        categories: [],
       },
     },
     series: [
       {
-        name: "Active Accounts",
-        data: [30, 40, 45, 50, 49, 60, 70, 91],
-      },
-      {
-        name: "In-Active Accunts",
-        data: [3, 60, 35, 80, 49, 70, 20, 81],
+        name: "Customer Count",
+        data: [],
       },
     ],
   });
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get("http://localhost:9098/customer/graph",{
+          headers: {
+              Authorization: `Bearer ${localStorage.getItem('token')}`,
+              "Accept": "application/json",
+              "Content-Type": "application/json"
+          }
+      });
+        const data = response.data;
+
+        // Extract dates and counts from the API response
+        const categories = Object.keys(data);
+        const counts = Object.values(data);
+
+        // Update chartData state with fetched data
+        setChartData({
+          options: {
+            ...chartData.options,
+            xaxis: {
+              categories: categories,
+            },
+          },
+          series: [
+            {
+              ...chartData.series[0],
+              data: counts,
+            },
+          ],
+        });
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, []); // Empty dependency array ensures useEffect runs only once on component mount
+
   return (
     <div className="App">
-      <h1>
-        React Charts Demo <i class="fas fa-user"></i>{" "}
-      </h1>
+      <Grid>
+         <i className="fas fa-user"></i>{" "}
+      </Grid>
       <Grid container spacing={2}>
-        <Grid item className="col-12" xs={12}>
+        <Grid item xs={12}>
           <Chart
-            options={state.options}
-            series={state.series}
+            options={chartData.options}
+            series={chartData.series}
             type="bar"
-            width="800" // Increase the width here
-          />
-        </Grid>
-        <div className="col-4">
-          <Chart
-            options={state.options}
-            series={state.series}
-            type="line"
             width="800"
           />
-        </div>
-        {/* <div className="col-4">
-          <Chart
-            options={state.options}
-            series={state.series}
-            type="area"
-            width="450"
-          />
-        </div> */}
-        {/* <div className="col-4">
-          <Chart
-            options={state.options}
-            series={state.series}
-            type="radar"
-            width="450"
-          />
-        </div>
-        <div className="col-4">
-          <Chart
-            options={state.options}
-            series={state.series}
-            type="histogram"
-            width="450"
-          />
-        </div> */}
-        {/* <div className="col-4">
-          <Chart
-            options={state.options}
-            series={state.series}
-            type="scatter"
-            width="450"
-          />
-        </div> */}
-        {/* <div className="col-4">
-          <Chart
-            options={state.options}
-            series={state.series}
-            type="heatmap"
-            width="450"
-          />
-        </div> */}
+        </Grid>
       </Grid>
     </div>
   );
 }
-
-
-
-// bar
-// line
-// area
-// radar
-// histogram
-// scatter
-// heatmap

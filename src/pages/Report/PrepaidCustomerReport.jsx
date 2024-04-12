@@ -34,13 +34,13 @@ const PrepaidCustomerReport = (props) => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                let url = 'http://172.5.10.2:9090/api/customers';
+                let url = 'http://localhost:9098/customer/prepaid';
                 if (searchKeyword.trim() !== '') {
                     url += `?keyword=${searchKeyword}`;
                 }
                 const response = await axios.get(url, {
                     headers: {
-                        Authorization: `Bearer ${tokenValue}`,
+                        Authorization: `Bearer ${localStorage.getItem('token')}`,
                         "Accept": "application/json",
                         "Content-Type": "application/json"
                     }
@@ -191,6 +191,46 @@ const PrepaidCustomerReport = (props) => {
 
         }
     };
+    const [startdate,setStartDate]=useState('');
+    const [enddate,setEndDate]=useState('');
+    console.log("start date value and end date value ",startdate,"------>end date ",enddate)
+  
+  const handleDateRange = () => {
+   
+    const type = 'pre-paid';
+
+    // Construct the API URL
+    const apiUrl = `http://localhost:9098/customer/bydatefilter/${type}?startDate=${startdate}&endDate=${enddate}`;
+
+    // Make the API call
+    fetch(apiUrl,{
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+            "Accept": "application/json",
+            "Content-Type": "application/json"
+        }
+
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Handle the response data
+            console.log('API response:', data);
+            // setdata(data);
+            console.log(data + "----value sech datas")
+            // rowchange(data);
+            setRows(data);
+        })
+        .catch(error => {
+            // Handle errors
+            console.error('Error fetching data:', error);
+        });
+};
+console.log("value of roes ",rows)
     return (
         <Box sx={{ display: 'container', marginTop: -2.5 }}>
 
@@ -217,7 +257,7 @@ const PrepaidCustomerReport = (props) => {
 
                         <Paper elevation={10} sx={{ marginBottom: 2,paddingBottom:0.1,paddingTop:0.5 }}>
                             <Grid container spacing={2} padding={1}>
-                                <Grid item xs={2}>
+                                <Grid item xs={4}>
                                     {/* First date field */}
                                     <TextField
                                         label="Start Date"
@@ -226,9 +266,11 @@ const PrepaidCustomerReport = (props) => {
                                         InputLabelProps={{
                                             shrink: true,
                                         }}
+                                        onChange={(e)=>setStartDate(e.target.value)}
+                                        value={startdate}
                                     />
                                 </Grid>
-                                <Grid item xs={2}>
+                                <Grid item xs={4}>
                                     {/* Second date field */}
                                     <TextField
                                         label="End Date"
@@ -237,33 +279,12 @@ const PrepaidCustomerReport = (props) => {
                                         InputLabelProps={{
                                             shrink: true,
                                         }}
+                                        value={enddate}
+                                        onChange={(e)=>setEndDate(e.target.value)}
                                     />
                                 </Grid>
                                 
-                                <Grid item xs={5.9}>
-                                    {/* Search button */}
-                                    <TextField
-                                    onClick={handleSerch}
-                                    label="Search"
-                                    type='text'
-                                    fullWidth
-                                    name='value'
-                                    // onChange={(e) => setValue(e.target.value)}
-                                    required
-                                    InputProps={{
-                                        endAdornment: (
-                                            <InputAdornment position='end'>
-                                                <IconButton
-                                                // onSubmit={handleSerch}
-                                                >
-                                                    <SearchIcon />
-                                                </IconButton>
-                                            </InputAdornment>
-                                        )
-                                    }}
-                                />
-                                </Grid>
-                                <Grid item xs={2}>
+                                <Grid item xs={4}>
                                     {/* Search button */}
                                     <Button
                                         variant="contained"
@@ -271,6 +292,7 @@ const PrepaidCustomerReport = (props) => {
                                         // onClick={handleSearch}
                                         fullWidth
                                         style={{ height: '100%' ,backgroundColor:'#F6B625',color:'black'}}
+                                        onClick={handleDateRange}
                                     >
                                         Apply
                                     </Button>
@@ -322,16 +344,8 @@ const PrepaidCustomerReport = (props) => {
 
                                                                 <TableCell key={column.id} sx={{ textAlign: 'left', fontSize: '17px' }}>
 
-                                                                    {column.id === 'ekycDate' ? (
-                                                                        // Render this content if the condition is true
-                                                                        <>{
-                                                                            // new Date(row[column.id]).toISOString().split('T')[0]
-
-                                                                        }</>
-                                                                    ) : (
-                                                                        // Render this content if the condition is false
-                                                                        <>{row[column.id]}</>
-                                                                    )}
+                                                                    {row[column.id]}
+                                                                    
                                                                 </TableCell>
                                                             ))}
                                                         </TableRow>

@@ -33,7 +33,7 @@ export default function CustomerSignUp(props) {
         // console.log("record==>",selectedRecord)
         const fetchData = async () => {
             try {
-                const response = await axios.get('http://172.5.10.2:9090/api/customers', {
+                const response = await axios.get('http://localhost:9098/customer/signup', {
                     headers: {
                         Authorization: `Bearer ${tokenValue}`,
                         "Accept": "application/json",
@@ -209,6 +209,45 @@ export default function CustomerSignUp(props) {
 
         }
     };
+    const [startdate,setStartDate]=useState('');
+    const [enddate,setEndDate]=useState('');
+    console.log("start date value and end date value ",startdate,"------>end date ",enddate)
+  
+  const handleDateRange = () => {
+   
+    const type = 'pre-paid';
+
+    // Construct the API URL
+    const apiUrl = `http://localhost:9098/customer/byDate/range?startDate=${startdate}&endDate=${enddate}`;
+
+    // Make the API call
+    fetch(apiUrl,{
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+            "Accept": "application/json",
+            "Content-Type": "application/json"
+        }
+
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Handle the response data
+            console.log('API response:', data);
+            // setdata(data);
+            console.log(data + "----value sech datas")
+            // rowchange(data);
+            setRows(data);
+        })
+        .catch(error => {
+            // Handle errors
+            console.error('Error fetching data:', error);
+        });
+};
     return (
         <Box sx={{ display: 'container', marginTop: -2.5 }}>
 
@@ -229,14 +268,14 @@ export default function CustomerSignUp(props) {
                     </Paper>
                 </Box>
 
-                <Grid lg={6} sx={{ textAlign: 'right', marginY: -0.5 }}>
+                <Grid lg={4} >
                     <form
                         onSubmit={handleSerch}
                     >
 
-                        <Paper elevation={10} sx={{ marginBottom: 2, paddingBottom: 0.1, paddingTop: 0.5 }}>
+                        <Paper elevation={10} sx={{ marginBottom: 2,paddingBottom:0.1,paddingTop:0.5 }}>
                             <Grid container spacing={2} padding={1}>
-                                <Grid item xs={3}>
+                                <Grid item xs={4}>
                                     {/* First date field */}
                                     <TextField
                                         label="Start Date"
@@ -245,9 +284,11 @@ export default function CustomerSignUp(props) {
                                         InputLabelProps={{
                                             shrink: true,
                                         }}
+                                        onChange={(e)=>setStartDate(e.target.value)}
+                                        value={startdate}
                                     />
                                 </Grid>
-                                <Grid item xs={3}>
+                                <Grid item xs={4}>
                                     {/* Second date field */}
                                     <TextField
                                         label="End Date"
@@ -256,40 +297,20 @@ export default function CustomerSignUp(props) {
                                         InputLabelProps={{
                                             shrink: true,
                                         }}
+                                        value={enddate}
+                                        onChange={(e)=>setEndDate(e.target.value)}
                                     />
                                 </Grid>
-
-                                <Grid item xs={3}>
-                                    {/* Search button */}
-                                    <FormControl fullWidth>
-                                        <InputLabel id="demo-simple-select-label">Period Breakdown</InputLabel>
-                                        <Select
-
-                                            id="demo-simple-select"
-                                            label="Period Breakdown"
-                                            fullWidth
-                                            name="pack_type"
-                                            // value={pack_type}
-                                            // onChange={e => setPack_type(e.target.value)}
-                                        >
-                                            <MenuItem value={'day'}>Day</MenuItem>
-                                            <MenuItem value={'month'}>Month</MenuItem>
-                                            <MenuItem value={'year'}>Year</MenuItem>
-                                            
-
-                                        </Select>
-                                    </FormControl>
-
-
-                                </Grid>
-                                <Grid item xs={2}>
+                                
+                                <Grid item xs={4}>
                                     {/* Search button */}
                                     <Button
                                         variant="contained"
-                                        color="primary"
+                                        
                                         // onClick={handleSearch}
                                         fullWidth
-                                        style={{ height: '100%' }}
+                                        style={{ height: '100%' ,backgroundColor:'#F6B625',color:'black'}}
+                                        onClick={handleDateRange}
                                     >
                                         Apply
                                     </Button>
