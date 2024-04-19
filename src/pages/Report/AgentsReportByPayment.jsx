@@ -9,15 +9,19 @@ import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import * as XLSX from 'xlsx';
 
-const ActiveCustomerReport = (props) => {
+export default function AgentReportByPayment(props) {
     const columns = [
-        { id: 'firstName', name: 'Name' },
-        { id: 'ekycStatus', name: 'Ekyc Status' },
-        { id: 'ekycToken', name: 'Ekyc Token' },
-        { id: 'ekycDate', name: 'Ekyc Date' },
-        { id: 'phonePhoneNumber', name: 'Phone No' },
-        // { id: 'ekycStatus', name: 'Ekyc Status' },
-        { id: 'customerType', name: 'Customer Type' },
+      
+        { id: 'fristName', name: 'First Name' },
+        { id: 'lastName', name: 'Last Name' },
+        { id: 'email', name: 'Email' },
+        { id: 'businessAddress', name: 'Address' },
+        { id: 'contact', name: 'Contact' },
+         { id: 'token', name: 'Token' },
+         { id: 'totalPayments', name: 'Total Payments' },
+         {id:'creationDate',name:'Creation Date'}
+         
+       
 
     ];
     const [rows, setRows] = useState([]);
@@ -26,14 +30,14 @@ const ActiveCustomerReport = (props) => {
     const [selectedRecord, setSelectedRecord] = useState(null);
     const [open, setOpen] = React.useState(false);
     // Generate sample data
-    
-  const [openDialog, setOpenDialog] = useState(false);
+
+    const [openDialog, setOpenDialog] = useState(false);
 
     useEffect(() => {
         // console.log("record==>",selectedRecord)
         const fetchData = async () => {
             try {
-                const response = await axios.get('http://172.5.10.2:9098/customer/status/Active', {
+                const response = await axios.get('http://localhost:9098/agent/partners', {
                     headers: {
                         Authorization: `Bearer ${tokenValue}`,
                         "Accept": "application/json",
@@ -59,22 +63,22 @@ const ActiveCustomerReport = (props) => {
         };
 
         fetchData(); // Invoke the fetchData function when the component mounts
-    }, [tokenValue,openDialog]);
+    }, [tokenValue, selectedPhoto]);
 
-   
+
     const handleClickOpen = (row) => {
         setSelectedRecord(row)
-        
+        // setOpen(true);
     };
     const handleClose = () => {
         setOpen(false);
     };
-    
-    
-      const handleCloseDialog = () => {
+
+
+    const handleCloseDialog = () => {
         setOpenDialog(false);
-      };
-    
+    };
+
     const [confirmationDialogOpen, setConfirmationDialogOpen] = useState(false);
     const [recordIdToDelete, setRecordIdToDelete] = useState(null);
     const handleOpenConfirmationDialog = (id) => {
@@ -82,7 +86,7 @@ const ActiveCustomerReport = (props) => {
         setConfirmationDialogOpen(true);
     };
 
-  
+
     const navigate = useNavigate();
     const handleButtonClick = () => {
         navigate('/newCustomer');
@@ -92,8 +96,8 @@ const ActiveCustomerReport = (props) => {
         setSelectedRecord(row);
         setOpenDialog(true);
         fetchPhoto1(row)
-      };
-      const fetchPhoto1 = async (row) => {
+    };
+    const fetchPhoto1 = async (row) => {
 
         try {
             const photoResponse = await axios.get(`http://172.5.10.2:9090/api/image/${row.id}`, {
@@ -109,7 +113,7 @@ const ActiveCustomerReport = (props) => {
                 const imageBlob = new Blob([photoResponse.data], { type: 'image/jpeg' });
                 const imageUrl = URL.createObjectURL(imageBlob);
                 setSelectedPhoto(imageUrl);
-                sessionStorage.setItem('selectedPhoto',imageUrl)
+                sessionStorage.setItem('selectedPhoto', imageUrl)
             } else {
                 console.error('Failed to fetch photo details.');
                 sessionStorage.removeItem('selectedPhoto')
@@ -117,13 +121,13 @@ const ActiveCustomerReport = (props) => {
         } catch (error) {
             setSelectedPhoto(null);
             console.log('Failed to load the Photo', error);
-                sessionStorage.removeItem('selectedPhoto')
+            sessionStorage.removeItem('selectedPhoto')
 
         }
-        navigate('/individualReport',{state:{selectedRecord:row}})
+        navigate('/individualReport', { state: { selectedRecord: row } })
 
     };
-   
+
 
     const handleSerch = async (e) => {
         e.preventDefault();
@@ -136,21 +140,21 @@ const ActiveCustomerReport = (props) => {
                 setValue(value);
             })
     }
-    const [selectedOption, setSelectedOption] = useState('');
+
     const [highlightedRow, setHighlightedRow] = useState(null);
 
     const handleRowMouseEnter = (row) => {
         setHighlightedRow(row)
     };
 
-    function DownloadPDF(){
+    function DownloadPDF() {
         const capture = document.getElementById('container');
-        html2canvas(capture).then((canvas)=>{
+        html2canvas(capture).then((canvas) => {
             const imgdata = canvas.toDataURL('img/png')
-            const doc = new jsPDF('p','pt','a4');
-            const pageHeight= doc.internal.pageSize.height;
-            const pageWidth= doc.internal.pageSize.width;
-            doc.addImage(imgdata,'PNG',0.5,0.5,pageWidth,pageHeight);
+            const doc = new jsPDF('p', 'pt', 'a4');
+            const pageHeight = doc.internal.pageSize.height;
+            const pageWidth = doc.internal.pageSize.width;
+            doc.addImage(imgdata, 'PNG', 0.5, 0.5, pageWidth, pageHeight);
             doc.save('customerProfile.pdf')
         })
 
@@ -161,19 +165,10 @@ const ActiveCustomerReport = (props) => {
         //         pdf.save('customer.pdf')
         //     })
         // })
-        
+
     }
-    const [page, pagechange] = useState(0);
-    const [rowperpage, rowperpagechange] = useState(5);
-    
-    const handlechangepage = (event, newpage) => {
-        pagechange(newpage);
-    };
-    const handleRowsPerPage = (event) => {
-        rowperpagechange(+event.target.value);
-        pagechange(0);
-    };
- 
+
+    const [selectedOption, setSelectedOption] = useState(null);
     const handleDownload = () => {
         if (selectedOption === 'pdf') {
             const pdf = new jsPDF();
@@ -218,6 +213,43 @@ const ActiveCustomerReport = (props) => {
 
         }
     };
+    const [startdate,setStartDate]=useState('');
+    const [enddate,setEndDate]=useState('');
+    const handleDateRange = () => {
+   
+        const type = 'post-paid';
+    
+        // Construct the API URL
+        const apiUrl = `http://localhost:9098/agent/partners/bydate/range?startDate=${startdate}&endDate=${enddate}`;
+    
+        // Make the API call
+        fetch(apiUrl,{
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`,
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            }
+    
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Handle the response data
+                console.log('API response:', data);
+                // setdata(data);
+                console.log(data + "----value sech datas")
+                // rowchange(data);
+                setRows(data);
+            })
+            .catch(error => {
+                // Handle errors
+                console.error('Error fetching data:', error);
+            });
+    };
     return (
         <Box sx={{ display: 'container', marginTop: -2.5 }}>
 
@@ -233,40 +265,60 @@ const ActiveCustomerReport = (props) => {
                                     fontWeight: 'bold',
 
                                 }}
-                            >Active Customer List</Typography>
+                            >Agent Report By Payment</Typography>
                         </Grid>
                     </Paper>
                 </Box>
 
-                <Grid lg={6} sx={{ textAlign: 'right', marginY: -0.5 }}>
+                <Grid lg={4} >
                     <form
                         onSubmit={handleSerch}
                     >
 
-                        <Paper elevation={10} sx={{ marginBottom: 2 }}>
-                            <Grid lg={8} >
-                                <TextField
-                                    onClick={handleSerch}
-                                    label="Search"
-                                    type='text'
-                                    fullWidth
-                                    name='value'
-                                    // onChange={(e) => setValue(e.target.value)}
-                                    required
-                                    InputProps={{
-                                        endAdornment: (
-                                            <InputAdornment position='end'>
-                                                <IconButton
-                                                // onSubmit={handleSerch}
-                                                >
-                                                    <SearchIcon />
-                                                </IconButton>
-                                            </InputAdornment>
-                                        )
-                                    }}
-                                />
-
+                        <Paper elevation={10} sx={{ marginBottom: 2,paddingBottom:0.1,paddingTop:0.5 }}>
+                            <Grid container spacing={2} padding={1}>
+                                <Grid item xs={4}>
+                                    {/* First date field */}
+                                    <TextField
+                                        label="Start Date"
+                                        type="date"
+                                        fullWidth
+                                        InputLabelProps={{
+                                            shrink: true,
+                                        }}
+                                        onChange={(e)=>setStartDate(e.target.value)}
+                                        value={startdate}
+                                    />
+                                </Grid>
+                                <Grid item xs={4}>
+                                    {/* Second date field */}
+                                    <TextField
+                                        label="End Date"
+                                        type="date"
+                                        fullWidth
+                                        InputLabelProps={{
+                                            shrink: true,
+                                        }}
+                                        value={enddate}
+                                        onChange={(e)=>setEndDate(e.target.value)}
+                                    />
+                                </Grid>
+                                
+                                <Grid item xs={4}>
+                                    {/* Search button */}
+                                    <Button
+                                        variant="contained"
+                                        
+                                        // onClick={handleSearch}
+                                        fullWidth
+                                        style={{ height: '100%' ,backgroundColor:'#F6B625',color:'black'}}
+                                        onClick={handleDateRange}
+                                    >
+                                        Apply
+                                    </Button>
+                                </Grid>
                             </Grid>
+
                         </Paper>
                         {/* <Grid paddingBottom={1}>
                             <Button type='submit' backgroundColor={'blue'} onSubmit={handleSerch} padding={2}> <SearchIcon /> Search</Button>
@@ -287,10 +339,10 @@ const ActiveCustomerReport = (props) => {
                                 <TableBody>
                                     {rows &&
                                         rows
-                                        .slice(page * rowperpage, page * rowperpage + rowperpage)
+
                                             .map((row, i) => {
                                                 return (
-                                                            (row.ekycStatus=='Active')?
+
                                                     <TableRow
                                                         key={i}
                                                         onClick={() => {
@@ -305,43 +357,32 @@ const ActiveCustomerReport = (props) => {
                                                                 : {}
                                                         }
                                                     >
-                                                        
+
                                                         {columns.map((column) => (
-
-
                                                             <TableCell key={column.id} sx={{ textAlign: 'left', fontSize: '17px' }}>
 
-                                                                {row[column.id]}
+                                                               {row[column.id]}
                                                             </TableCell>
                                                         ))}
                                                     </TableRow>
-                                                    :null
+
 
                                                 );
                                             })}
                                 </TableBody>
                             </Table>
                         </TableContainer>
-                        <TablePagination
-                            sx={{ color: '#253A7D' }}
-                            rowsPerPageOptions={[5, 10, 25]}
-                            rowsPerPage={rowperpage}
-                            page={page}
-                            count={rows.length}
-                            component="div"
-                            onPageChange={handlechangepage}
-                            onRowsPerPageChange={handleRowsPerPage}
-                        />
+
 
                     </Paper>
                 </Box>
                 <Grid container paddingTop={2}>
                     <Grid item xs={1.2}>
-                        <Button variant="contained" sx={{backgroundColor:'#253A7D',boxShadow:24}} onClick={handleDownload}>Download</Button>
+                        <Button variant="contained" sx={{ backgroundColor: '#253A7D', boxShadow: 24 }} onClick={handleDownload}>Download</Button>
                     </Grid>
                     <Grid item xs={1}>
                         <FormControl fullWidth>
-                            <Select sx={{ boxShadow:24,width: 100, height: 20, paddingY: 2.3, textAlign: 'bottom' }}
+                            <Select sx={{ boxShadow: 24, width: 100, height: 20, paddingY: 2.3, textAlign: 'bottom' }}
 
                                 onChange={(e) => setSelectedOption(e.target.value)}
                                 required
@@ -358,11 +399,11 @@ const ActiveCustomerReport = (props) => {
                 </Grid>
             </Box>
 
-            
-        
-      
-       
-          
+
+
+
+
+
 
 
 
@@ -371,4 +412,4 @@ const ActiveCustomerReport = (props) => {
     )
 };
 
-export default ActiveCustomerReport;
+

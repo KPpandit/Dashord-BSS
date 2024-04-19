@@ -17,10 +17,10 @@ export default function TopCustomerReport(props) {
         { id: 'msisdn', name: 'MSISDN' },
         { id: 'ekycDate', name: 'Ekyc Date' },
         { id: 'phonePhoneNumber', name: 'Phone No' },
-         { id: 'totalUsedInternetDto', name: 'Data Consumed' },
-         { id: 'days_data_used', name: 'Days' },
+        { id: 'totalUsedInternetDto', name: 'Data Consumed' },
+        { id: 'days_data_used', name: 'Days' },
         { id: 'customerType', name: 'Customer Type' },
-       
+
 
     ];
     const [rows, setRows] = useState([]);
@@ -212,23 +212,24 @@ export default function TopCustomerReport(props) {
 
         }
     };
-    const [startdate,setStartDate]=useState('');
-    const [enddate,setEndDate]=useState('');
+    const [startdate, setStartDate] = useState('');
+    const [enddate, setEndDate] = useState('');
+    const [serach, setSearch] = useState('');
     const handleDateRange = () => {
-   
-        const type = 'post-paid';
-    
+
+        const type = 'pre-paid';
+
         // Construct the API URL
-        const apiUrl = `http://172.5.10.2:9098/customer/byDataUsage?startDate=${startdate}&endDate=${enddate}`;
-    
+        const apiUrl = `http://localhost:9098/customer/byDataUsage?search=${serach}&startDate=${startdate}&endDate=${enddate}`;
+
         // Make the API call
-        fetch(apiUrl,{
+        fetch(apiUrl, {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem('token')}`,
                 "Accept": "application/json",
                 "Content-Type": "application/json"
             }
-    
+
         })
             .then(response => {
                 if (!response.ok) {
@@ -248,6 +249,16 @@ export default function TopCustomerReport(props) {
                 // Handle errors
                 console.error('Error fetching data:', error);
             });
+    };
+    const [page, pagechange] = useState(0);
+    const [rowperpage, rowperpagechange] = useState(5);
+
+    const handlechangepage = (event, newpage) => {
+        pagechange(newpage);
+    };
+    const handleRowsPerPage = (event) => {
+        rowperpagechange(+event.target.value);
+        pagechange(0);
     };
     return (
         <Box sx={{ display: 'container', marginTop: -2.5 }}>
@@ -274,9 +285,20 @@ export default function TopCustomerReport(props) {
                         onSubmit={handleSerch}
                     >
 
-                        <Paper elevation={10} sx={{ marginBottom: 2,paddingBottom:0.1,paddingTop:0.5 }}>
+                        <Paper elevation={10} sx={{ marginBottom: 2, paddingBottom: 0.1, paddingTop: 0.5 }}>
                             <Grid container spacing={2} padding={1}>
-                                <Grid item xs={4}>
+                                <Grid item xs={3}>
+                                    {/* First date field */}
+                                    <TextField
+                                        label="Search"
+                                        type="text"
+                                        fullWidth
+
+                                        onChange={(e) => setSearch(e.target.value)}
+                                        value={serach}
+                                    />
+                                </Grid>
+                                <Grid item xs={3}>
                                     {/* First date field */}
                                     <TextField
                                         label="Start Date"
@@ -285,11 +307,11 @@ export default function TopCustomerReport(props) {
                                         InputLabelProps={{
                                             shrink: true,
                                         }}
-                                        onChange={(e)=>setStartDate(e.target.value)}
+                                        onChange={(e) => setStartDate(e.target.value)}
                                         value={startdate}
                                     />
                                 </Grid>
-                                <Grid item xs={4}>
+                                <Grid item xs={3}>
                                     {/* Second date field */}
                                     <TextField
                                         label="End Date"
@@ -299,18 +321,18 @@ export default function TopCustomerReport(props) {
                                             shrink: true,
                                         }}
                                         value={enddate}
-                                        onChange={(e)=>setEndDate(e.target.value)}
+                                        onChange={(e) => setEndDate(e.target.value)}
                                     />
                                 </Grid>
-                                
-                                <Grid item xs={4}>
+
+                                <Grid item xs={3}>
                                     {/* Search button */}
                                     <Button
                                         variant="contained"
-                                        
+
                                         // onClick={handleSearch}
                                         fullWidth
-                                        style={{ height: '100%' ,backgroundColor:'#F6B625',color:'black'}}
+                                        style={{ height: '100%', backgroundColor: '#F6B625', color: 'black' }}
                                         onClick={handleDateRange}
                                     >
                                         Apply
@@ -338,7 +360,7 @@ export default function TopCustomerReport(props) {
                                 <TableBody>
                                     {rows &&
                                         rows
-
+                                            .slice(page * rowperpage, page * rowperpage + rowperpage)
                                             .map((row, i) => {
                                                 return (
 
@@ -360,7 +382,7 @@ export default function TopCustomerReport(props) {
                                                         {columns.map((column) => (
                                                             <TableCell key={column.id} sx={{ textAlign: 'left', fontSize: '17px' }}>
 
-                                                               {row[column.id]}
+                                                                {row[column.id]}
                                                             </TableCell>
                                                         ))}
                                                     </TableRow>
@@ -371,7 +393,16 @@ export default function TopCustomerReport(props) {
                                 </TableBody>
                             </Table>
                         </TableContainer>
-
+                        <TablePagination
+                            sx={{ color: '#253A7D' }}
+                            rowsPerPageOptions={[5, 10, 25]}
+                            rowsPerPage={rowperpage}
+                            page={page}
+                            count={rows.length}
+                            component="div"
+                            onPageChange={handlechangepage}
+                            onRowsPerPageChange={handleRowsPerPage}
+                        />
 
                     </Paper>
                 </Box>

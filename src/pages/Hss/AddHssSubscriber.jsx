@@ -3,9 +3,13 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import SearchIcon from '@mui/icons-material/Search';
 import axios from "axios";
+import Popup from '../Popup/Popup';
+import Addhss from './AddHss';
+import AddHssBulk from './AddHssBulk';
 
 
-const Hss2 = (props) => {
+const AdddHssSubscriber = (props) => {
+    
     const columns = [
         { id: 'imsi', name: 'IMSI' },
         { id: 'msisdn', name: 'MSISDN' },
@@ -21,7 +25,7 @@ const Hss2 = (props) => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get('http://172.5.10.2:9696/api/hss/detail/get/all', {
+                const response = await axios.get('http://172.5.10.2:9697/api/hss/detail/get/all', {
                     headers: {
                         Authorization: `Bearer ${tokenValue}`,
                         "Accept": "application/json",
@@ -54,7 +58,7 @@ const Hss2 = (props) => {
         console.log(`Deleting record with ID: ${recordIdToDelete}`);
 
         // Make an API call to delete the record
-        axios.delete(`http://172.5.10.2:9696/api/hss/detail/delete?imsi=${recordIdToDelete}&msisdn=${recordMsisdnToDelete}`, {
+        axios.delete(`http://172.5.10.2:9697/api/hss/detail/delete?imsi=${recordIdToDelete}&msisdn=`, {
             headers: {
                 Authorization: `Bearer ${tokenValue}`,
                 "Accept": "application/json",
@@ -79,7 +83,7 @@ const Hss2 = (props) => {
     };
     const fetchData = async () => {
         try {
-            const response = await axios.get('http://172.5.10.2:9090/api/customers', {
+            const response = await axios.get('http://172.5.10.2:9697/api/hss/detail/get/all', {
                 headers: {
                     Authorization: `Bearer ${tokenValue}`,
                     Accept: 'application/json',
@@ -139,7 +143,7 @@ const Hss2 = (props) => {
                     <Paper elevation={10}>
 
 
-                        <Card variant="outlined" sx={{ maxWidth: 360, fontFamily: "Roboto" }}>
+                        <Card variant="outlined" sx={{ maxWidth: 420, fontFamily: "Roboto",width:'380px' }}>
 
                             <Box sx={{ p: 1, }}>
 
@@ -459,6 +463,14 @@ const Hss2 = (props) => {
     const handleRowMouseLeave = () => {
         setHighlightedRow(null);
     };
+    const [openPopup, setOpenPopup] = useState(false);
+    const closePopup = () => {
+        setOpenPopup(false);
+    };
+    const [openPopup2, setOpenPopup2] = useState(false);
+    const closePopup2 = () => {
+        setOpenPopup2(false);
+    };
     return (
         <Box sx={{ display: 'container', marginTop: -2.5 }}>
 
@@ -475,7 +487,7 @@ const Hss2 = (props) => {
                                     color: '#253A7D',
 
                                 }}
-                            >UDM Provisioning</Typography>
+                            >Add Subscriber</Typography>
                         </Grid>
                     </Paper>
                 </Box>
@@ -511,6 +523,10 @@ const Hss2 = (props) => {
                         <Button style={{ backgroundColor: '#FBB716', color: 'black' }} sx={{ marginX: 1, boxShadow: 20 }}>Export to CSV</Button>
                         <Button style={{ backgroundColor: '#FBB716', color: 'black' }} sx={{ boxShadow: 20 }}>Export to Excel</Button>
                     </Grid>
+
+
+
+
                 </Grid>
 
                 <Box component="main" sx={{ flexGrow: 1, width: '100%' }}>
@@ -578,16 +594,31 @@ const Hss2 = (props) => {
                     </Paper>
                 </Box>
 
-                <Box sx={{
-                    paddingLeft: '16px', paddingBottom: '16px', paddingTop: '14px',
-
-                }}>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', padding: 2 }}>
                     <Button
                         sx={{ backgroundColor: '#253A7D', boxShadow: 20 }}
-                        variant="contained" backgroundColor="#253A7D" onClick={handleButtonClick}>
-                        Add New
+                        variant="contained"
+                    onClick={(e) => {
+                        setOpenPopup(true);
+                    }}
+                    >
+                        Add New Subscriber
+                    </Button>
+                    <Button
+                        sx={{ backgroundColor: '#253A7D', boxShadow: 20 }}
+                        variant="contained"
+                        onClick={(e) => {
+                            setOpenPopup2(true);
+                        }}
+                    >
+                        Add Subscriber in Bulk
                     </Button>
                 </Box>
+
+
+
+
+
             </Box>
 
             <Box sx={{ paddingLeft: 3, paddingTop: 1.5 }} >
@@ -612,9 +643,24 @@ const Hss2 = (props) => {
                     </Button>
                 </DialogActions>
             </Dialog>
-
+            <Popup
+                title="Add Subscriber"
+                openPopup={openPopup}
+                setOpenPopup={setOpenPopup}
+            >
+                <Addhss onClose={closePopup} />
+                {/* <AddInventory /> */}
+            </Popup>
+            <Popup
+                title="Add Subscriber in Bulk"
+                openPopup={openPopup2}
+                setOpenPopup={setOpenPopup2}
+            >
+                <AddHssBulk onClose={closePopup2} />
+                {/* <AddInventory /> */}
+            </Popup>
         </Box>
     )
 };
 
-export default Hss2;
+export default AdddHssSubscriber;

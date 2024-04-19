@@ -5,7 +5,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import axios from "axios";
 
 
-const Hss2 = (props) => {
+export default function SubscriberServiceCapability(props) {
     const columns = [
         { id: 'imsi', name: 'IMSI' },
         { id: 'msisdn', name: 'MSISDN' },
@@ -52,7 +52,7 @@ const Hss2 = (props) => {
         // Perform the delete operation here using the recordIdToDelete
         // After successful deletion, you can update the UI accordingly
         console.log(`Deleting record with ID: ${recordIdToDelete}`);
-
+    
         // Make an API call to delete the record
         axios.delete(`http://172.5.10.2:9696/api/hss/detail/delete?imsi=${recordIdToDelete}&msisdn=${recordMsisdnToDelete}`, {
             headers: {
@@ -65,7 +65,7 @@ const Hss2 = (props) => {
                 // Handle success, you can update the UI or take other actions
                 console.log(`Record with ID ${recordIdToDelete} deleted successfully.`);
                 SetDelete('deleted');
-
+    
                 // Fetch updated data after successful deletion
                 fetchData();
             })
@@ -73,7 +73,7 @@ const Hss2 = (props) => {
                 // Handle error, you can display an error message or take other actions
                 console.error(`Error deleting record with ID ${recordIdToDelete}:`, error);
             });
-
+    
         // Close the confirmation dialog
         setConfirmationDialogOpen(false);
     };
@@ -104,11 +104,11 @@ const Hss2 = (props) => {
     const [recordIdToDelete, setRecordIdToDelete] = useState(null);
     const [recordMsisdnToDelete, setRecordMsisdnToDelete] = useState(null);
 
-    const handleOpenConfirmationDialog = (id, msisdn) => {
+    const handleOpenConfirmationDialog = (id,msisdn) => {
         setRecordIdToDelete(id);
         setRecordMsisdnToDelete(msisdn)
-        console.log("xxxx==>" + id)
-        console.log("xxxx==>" + msisdn)
+        console.log("xxxx==>"+id)
+        console.log("xxxx==>"+msisdn)
         setConfirmationDialogOpen(true);
     };
 
@@ -129,7 +129,7 @@ const Hss2 = (props) => {
     const handleRowClick = (row) => {
         setSelectedRecord(row);
     };
-
+   
     const SelectedRecordDetails = () => {
 
 
@@ -141,7 +141,7 @@ const Hss2 = (props) => {
 
                         <Card variant="outlined" sx={{ maxWidth: 360, fontFamily: "Roboto" }}>
 
-                            <Box sx={{ p: 1, }}>
+                            <Box sx={{ p: 1,}}>
 
                                 <Grid sx={{ padding: 1, backgroundColor: '#253A7D' }}>
                                     <Stack direction="row"
@@ -271,7 +271,7 @@ const Hss2 = (props) => {
                                                     sx={{ fontSize: '17px', textAlign: 'left' }}
                                                     gutterBottom variant="body2"
                                                 >
-
+                                                    
                                                     {selectedRecord.sm_dat}
                                                 </Typography>
                                             </Grid>
@@ -406,7 +406,7 @@ const Hss2 = (props) => {
                             <Grid container spacing={1} padding={1}>
                                 <Grid item xs={12}>
                                     <Button variant="contained"
-                                        sx={{ backgroundColor: '#253A7D', width: '100%', boxShadow: 20 }}
+                                        sx={{ backgroundColor: '#253A7D', width:'100%',boxShadow: 20}}
                                         onClick={() => {
                                             navigate('/edithss', { state: { selectObj: selectedRecord } })
                                         }}
@@ -415,10 +415,10 @@ const Hss2 = (props) => {
                                 <Grid item xs={12}>
                                     <Button
                                         onClick={() => {
-                                            handleOpenConfirmationDialog(selectedRecord.imsi, selectedRecord.msisdn)
+                                            handleOpenConfirmationDialog(selectedRecord.imsi,selectedRecord.msisdn)
                                             console.log("From teh Customer Delete Button")
                                         }}
-                                        sx={{ backgroundColor: '#253A7D', width: '100%', boxShadow: 20, marginY: 1 }}
+                                        sx={{ backgroundColor: '#253A7D', width:'100%',boxShadow: 20,marginY:1 }}
                                         variant="contained">Delete Record</Button>
                                 </Grid>
 
@@ -429,7 +429,7 @@ const Hss2 = (props) => {
                         </Card>
 
                     </Paper>
-
+                    
                 </Grid>
             )
         } else {
@@ -463,56 +463,60 @@ const Hss2 = (props) => {
         <Box sx={{ display: 'container', marginTop: -2.5 }}>
 
             <Box sx={{ width: '70%', }}>
-                <Box component="main" sx={{ flexGrow: 1, p: 1, width: '100%' }}>
-                    <Paper elevation={10} sx={{ padding: 1, margin: 1, backgroundColor: 'white', marginLeft: -0.8, marginRight: 1 }}>
-                        <Grid>
-                            <Typography
-                                style={{
+            <Box component="main" sx={{ flexGrow: 1, p: 1, width: '100%' }}>
+                        <Paper elevation={10} sx={{ padding: 1, margin: 1, backgroundColor: 'white', marginLeft: -0.8, marginRight: 1 }}>
+                            <Grid>
+                                <Typography
+                                    style={{
 
-                                    fontSize: '20px',
-                                    paddingLeft: 10,
-                                    fontWeight: 'bold',
-                                    color: '#253A7D',
-
-                                }}
-                            >UDM Provisioning</Typography>
-                        </Grid>
-                    </Paper>
-                </Box>
-                <Grid container padding={2}>
-                    <Grid item xs={4} sx={{ textAlign: 'right', marginY: -0.5 }} >
-                        <form onSubmit={handleSerch}>
-                            <Paper elevation={10} sx={{ marginBottom: 2 }}>
-                                <TextField
-                                    onClick={handleSerch}
+                                        fontSize: '20px',
+                                        paddingLeft: 10,
+                                        fontWeight: 'bold',
+                                         color: '#253A7D',
+                                         
+                                    }}
+                                >Subsriber Service Capability</Typography>
+                            </Grid>
+                        </Paper>
+                    </Box>
+                    <Grid container padding={2}>
+                        <Grid item xs={4} sx={{textAlign: 'right', marginY: -0.5 }} >
+                            <form onSubmit={handleSerch}>
+                                <Paper elevation={10} sx={{ marginBottom: 2 }}>
+                                    <TextField
+                                        onClick={handleSerch}
                                     label="Search"
                                     type='text'
                                     fullWidth
                                     name='value'
-
+                                    
                                     required
                                     InputProps={{
                                         endAdornment: (
                                             <InputAdornment position='end'>
                                                 <IconButton
-
+                                               
                                                 >
                                                     <SearchIcon />
                                                 </IconButton>
                                             </InputAdornment>
                                         )
-                                    }}
-                                />
-                            </Paper>
-                        </form>
+                                        }}
+                                    />
+                                </Paper>                            
+                            </form>
+                        </Grid>
+                    <Grid item xs={8} sx={{marginY:1}}>
+                        <Button style={{backgroundColor: '#FBB716', color: 'black'}}sx={{marginX:1,boxShadow: 20}}>Export to PDF</Button>
+                        <Button style={{backgroundColor: '#FBB716', color: 'black'}}sx={{marginX:1,boxShadow: 20}}>Export to CSV</Button>
+                        <Button style={{backgroundColor: '#FBB716', color: 'black'}} sx={{boxShadow: 20}}>Export to Excel</Button>
                     </Grid>
-                    <Grid item xs={8} sx={{ marginY: 1 }}>
-                        <Button style={{ backgroundColor: '#FBB716', color: 'black' }} sx={{ marginX: 1, boxShadow: 20 }}>Export to PDF</Button>
-                        <Button style={{ backgroundColor: '#FBB716', color: 'black' }} sx={{ marginX: 1, boxShadow: 20 }}>Export to CSV</Button>
-                        <Button style={{ backgroundColor: '#FBB716', color: 'black' }} sx={{ boxShadow: 20 }}>Export to Excel</Button>
-                    </Grid>
-                </Grid>
 
+
+
+                        
+                    </Grid>
+                    
                 <Box component="main" sx={{ flexGrow: 1, width: '100%' }}>
                     <Paper elevation={10}>
                         <TableContainer sx={{ maxHeight: 600 }}>
@@ -550,8 +554,8 @@ const Hss2 = (props) => {
                                                                     // Render this content if the condition is true
                                                                     <>{
                                                                         // new Date(row[column.id]).toISOString().split('T')[0]
-
-                                                                    }</>
+                                                                        
+                                                                        }</>
                                                                 ) : (
                                                                     // Render this content if the condition is false
                                                                     <>{row[column.id]}</>
@@ -617,4 +621,4 @@ const Hss2 = (props) => {
     )
 };
 
-export default Hss2;
+

@@ -57,6 +57,7 @@ export default function Report(props) {
         data = [
           { report_type: "Agent Report" },
           { report_type: "Agent Comission" },
+          { report_type: "Agents Report by Payment" },
         ];
         rowchange(data)
         console.log("Agent loop", rows)
@@ -148,6 +149,9 @@ export default function Report(props) {
     }
     if (row.report_type == 'Agent Comission') {
       navigate('/agentComission');
+    }
+    if (row.report_type == 'Agents Report by Payment') {
+      navigate('/agentReportByPayment');
     }
   };
 

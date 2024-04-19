@@ -248,6 +248,16 @@ export default function CustomerSignUp(props) {
             console.error('Error fetching data:', error);
         });
 };
+const [page, pagechange] = useState(0);
+const [rowperpage, rowperpagechange] = useState(5);
+
+const handlechangepage = (event, newpage) => {
+    pagechange(newpage);
+};
+const handleRowsPerPage = (event) => {
+    rowperpagechange(+event.target.value);
+    pagechange(0);
+};
     return (
         <Box sx={{ display: 'container', marginTop: -2.5 }}>
 
@@ -337,7 +347,7 @@ export default function CustomerSignUp(props) {
                                 <TableBody>
                                     {rows &&
                                         rows
-
+                                        .slice(page * rowperpage, page * rowperpage + rowperpage)
                                             .map((row, i) => {
                                                 return (
 
@@ -370,7 +380,16 @@ export default function CustomerSignUp(props) {
                                 </TableBody>
                             </Table>
                         </TableContainer>
-
+                        <TablePagination
+                            sx={{ color: '#253A7D' }}
+                            rowsPerPageOptions={[5, 10, 25]}
+                            rowsPerPage={rowperpage}
+                            page={page}
+                            count={rows.length}
+                            component="div"
+                            onPageChange={handlechangepage}
+                            onRowsPerPageChange={handleRowsPerPage}
+                        />
 
                     </Paper>
                 </Box>

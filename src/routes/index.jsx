@@ -100,6 +100,13 @@ import PrePaidCustomerDataAvailable from '../pages/Report/PrePaidCustomerDataAva
 import OnBoardCustomerReports from '../pages/Report/OnBoardCustomerReport';
 import TopPostPaidCallUsageReport from '../pages/Report/TopPostPaidCallUsageReport';
 import TopPostpaidSMSUsageReport from '../pages/Report/TopPostpaidSMSUsageReport';
+import AdddHssSubscriber from '../pages/Hss/AddHssSubscriber';
+import SimFap from '../pages/Hss/SimFap';
+import DeleteSubscriber from '../pages/Hss/DeleteSubscriber';
+import SubscriberServiceCapability from '../pages/Hss/SubscriberServiceCapability';
+import BlockingSubscriber from '../pages/Hss/BlockingSubscriber';
+import UnBlockingSubscriber from '../pages/Hss/UnBlockingSubscriber';
+import AgentReportByPayment from '../pages/Report/AgentsReportByPayment';
 
 
 
@@ -226,7 +233,12 @@ export const Routers = () => {
                         <Route path='/hss' element={<Hss2 />} />
                         <Route path='/addhss' element={<Addhss />} />
                         <Route path='/edithss' element={<Edithss />} />
-
+                        <Route path='/addHssSubscriber' element={<AdddHssSubscriber />} />
+                        <Route path='/simFap' element={<SimFap />} />
+                        <Route path='/deleteSubscriber' element={<DeleteSubscriber/>} />
+                        <Route path='/subscriberServiceCapability' element={<SubscriberServiceCapability/>} />
+                        <Route path='/blockingSubscriber' element={<BlockingSubscriber/>} />
+                        <Route path='/UnblockingSubscriber' element={<UnBlockingSubscriber/>} />
                         {/* Inventory */}
                         <Route path='/inventory' element={<InventoryData />} />
                         <Route path='/addinventory' element={<AddInventory />} />
@@ -271,6 +283,7 @@ export const Routers = () => {
                            <Route path='/onBoardCustomers' element={<OnBoardCustomerReports/>}/>
                            <Route path='/topPostPaidCallUsage' element={<TopPostPaidCallUsageReport/>}/>
                            <Route path='/topPostPaidSMSUsage' element={<TopPostpaidSMSUsageReport/>}/>
+                           <Route path='/agentReportByPayment' element={<AgentReportByPayment/>}/>
                         {/* <Route path='/add-Noc-sub' element={<AddNoc />} />
                         <Route path='/all-Noc-sub' element={<AllNoc />} />
                         <Route path='/all-Noc-query' element={<NOCQuery />} />

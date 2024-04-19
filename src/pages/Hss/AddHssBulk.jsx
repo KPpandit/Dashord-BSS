@@ -18,7 +18,7 @@ import { ToastContainer } from 'react-toastify';
 import Notification from '../Components/Notification/Notification';
 
 
-export default function Addhss(props) {
+export default function AddHssBulk(props) {
     const navigate = useNavigate();
 
     const [notification, setNotification] = useState({
@@ -76,9 +76,9 @@ export default function Addhss(props) {
 
     const { handleChange, handleSubmit, handleBlur, values, setValues } = useFormik({
         initialValues: {
-            imsi: '',
-            msisdn: '',
-            orderId: '',
+            start_imsi: '',
+            start_msisdn: '',
+            subscriber_number: '',
             serviceCapability: {
                 Attach: {
                     LTE: false,
@@ -105,7 +105,7 @@ export default function Addhss(props) {
             console.log("-----values----->", values)
             // console.log(values);
             // setResult(values);
-            const res = await axios.post('http://172.5.10.2:9697/api/hss/detail/save/subscriber',
+            const res = await axios.post('http://172.5.10.2:9697/api/hss/detail/save/bulk/subscriber',
                 { ...values }, {
                 headers: {
                     "Authorization": `Bearer +${tokenValue}`,
@@ -203,10 +203,10 @@ export default function Addhss(props) {
                                 <Grid container spacing={2}>
                                     <Grid item lg={4} md={4} sm={4} xs={4} > {/* Padding for individual items */}
                                         <TextField
-                                            label="IMSI"
-                                            name='imsi'
+                                            label="Start IMSI"
+                                            name='start_imsi'
                                             type='text'
-                                            value={values.imsi}
+                                            value={values.start_imsi}
                                             fullWidth
                                             onChange={handleChange}
                                         />
@@ -214,22 +214,22 @@ export default function Addhss(props) {
                                     </Grid>
                                     <Grid item lg={4} md={4} sm={4} xs={4} >
                                         <TextField
-                                            label="MSISDN"
+                                            label="Start MSISDN"
                                             type="text"
                                             fullWidth
-                                            name='msisdn'
-                                            value={values.msisdn}
+                                            name='start_msisdn'
+                                            value={values.start_msisdn}
                                             onChange={handleChange}
 
                                         />
                                     </Grid>
                                     <Grid item lg={4} md={4} sm={6} xs={12} >
                                         <TextField
-                                            label="Order Id"
-                                            type="text"
+                                            label="Subscriber Number"
+                                            type="number"
                                             fullWidth
-                                            name='orderId'
-                                            value={values.orderId}
+                                            name='subscriber_number'
+                                            value={values.subscriber_number}
                                             onChange={handleChange}
 
 

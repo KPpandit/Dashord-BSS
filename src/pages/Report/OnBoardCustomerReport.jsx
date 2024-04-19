@@ -285,12 +285,7 @@ export default function OnBoardCustomerReports() {
 
                             />
                         </Grid>
-                        <Grid item xs={12}>
-                            <Paper>
-                                <Typography>Hello</Typography>
-                            </Paper>
-
-                        </Grid>
+                       
                        
                         <Grid item xs={6} >
                                  

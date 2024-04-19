@@ -260,7 +260,35 @@ export default function Sidenavbar() {
       {
         label:'Provisning Gateway',
         route:'/hss',
-        icon:<StorageIcon/>
+        icon:<StorageIcon/>,
+        subRoute:[
+          {
+            label:"Add Subscriber",
+            route:"/addHssSubscriber"
+          },
+          {
+            label:"SIM SWAP",
+            route:"/simFap"
+          },
+          {
+            label:"Delete Subscriber",
+            route:"/deleteSubscriber"
+          },
+          {
+            label:"Subscriber Service Capability",
+            route:"/subscriberServiceCapability"
+          }
+          ,
+          {
+            label:"Blocking Subscriber",
+            route:"/blockingSubscriber"
+          }
+          ,
+          {
+            label:"Un-Blocking Subscriber",
+            route:"/UnblockingSubscriber"
+          }
+        ]
       },
       {
         label: "Invoice",
@@ -392,7 +420,7 @@ export default function Sidenavbar() {
         subRoute: [
           {
             label: 'Inventory Management',
-            icon:<CircleTwoToneIcon/>,
+          
             route: "/inventory"
           },
           {
@@ -413,20 +441,20 @@ export default function Sidenavbar() {
           }
         ]
       }
-      ,{
-        label: "Test",
-        // route: '/inventory',
-        icon: <Inventory2Icon />,
-        subRoute: [
-          {
-            label:'Invoice Sample Design',
-            route:'/invoiceDesign'
-          },{
-            label:'Invoice Sample Design',
-            route:'/test'
-          }
-        ]
-      }
+      // ,{
+      //   label: "Test",
+      //   // route: '/inventory',
+      //   icon: <Inventory2Icon />,
+      //   subRoute: [
+      //     {
+      //       label:'Invoice Sample Design',
+      //       route:'/invoiceDesign'
+      //     },{
+      //       label:'Invoice Sample Design',
+      //       route:'/test'
+      //     }
+      //   ]
+      // }
     ],
   }
   return (

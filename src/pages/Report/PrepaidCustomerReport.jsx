@@ -16,7 +16,7 @@ const PrepaidCustomerReport = (props) => {
         { id: 'ekycToken', name: 'Ekyc Token' },
         { id: 'ekycDate', name: 'Ekyc Date' },
         { id: 'phonePhoneNumber', name: 'Phone No' },
-        // { id: 'ekycStatus', name: 'Ekyc Status' },
+        { id: 'email', name: 'Email' },
         { id: 'customerType', name: 'Customer Type' },
 
     ];
@@ -191,46 +191,55 @@ const PrepaidCustomerReport = (props) => {
 
         }
     };
-    const [startdate,setStartDate]=useState('');
-    const [enddate,setEndDate]=useState('');
-    console.log("start date value and end date value ",startdate,"------>end date ",enddate)
-  
-  const handleDateRange = () => {
-   
-    const type = 'pre-paid';
+    const [startdate, setStartDate] = useState('');
+    const [enddate, setEndDate] = useState('');
+    const [serach, setSearch] = useState('');
+    const handleDateRange = () => {
 
-    // Construct the API URL
-    const apiUrl = `http://172.5.10.2:9098/customer/bydatefilter/${type}?startDate=${startdate}&endDate=${enddate}`;
+        const type = 'pre-paid';
 
-    // Make the API call
-    fetch(apiUrl,{
-        headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
-            "Accept": "application/json",
-            "Content-Type": "application/json"
-        }
+        // Construct the API URL
+        const apiUrl = `http://localhost:9098/customer/prepaid/search?search=${serach}&startDate=${startdate}&endDate=${enddate}`;
 
-    })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
+        // Make the API call
+        fetch(apiUrl, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`,
+                "Accept": "application/json",
+                "Content-Type": "application/json"
             }
-            return response.json();
+
         })
-        .then(data => {
-            // Handle the response data
-            console.log('API response:', data);
-            // setdata(data);
-            console.log(data + "----value sech datas")
-            // rowchange(data);
-            setRows(data);
-        })
-        .catch(error => {
-            // Handle errors
-            console.error('Error fetching data:', error);
-        });
-};
-console.log("value of roes ",rows)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Handle the response data
+                console.log('API response:', data);
+                // setdata(data);
+                console.log(data + "----value sech datas")
+                // rowchange(data);
+                setRows(data);
+            })
+            .catch(error => {
+                // Handle errors
+                console.error('Error fetching data:', error);
+            });
+    };
+    console.log("value of roes ", rows)
+    const [page, pagechange] = useState(0);
+    const [rowperpage, rowperpagechange] = useState(5);
+
+    const handlechangepage = (event, newpage) => {
+        pagechange(newpage);
+    };
+    const handleRowsPerPage = (event) => {
+        rowperpagechange(+event.target.value);
+        pagechange(0);
+    };
     return (
         <Box sx={{ display: 'container', marginTop: -2.5 }}>
 
@@ -255,9 +264,20 @@ console.log("value of roes ",rows)
                         onSubmit={handleSerch}
                     >
 
-                        <Paper elevation={10} sx={{ marginBottom: 2,paddingBottom:0.1,paddingTop:0.5 }}>
+                        <Paper elevation={10} sx={{ marginBottom: 2, paddingBottom: 0.1, paddingTop: 0.5 }}>
                             <Grid container spacing={2} padding={1}>
-                                <Grid item xs={4}>
+                                <Grid item xs={3}>
+                                    {/* First date field */}
+                                    <TextField
+                                        label="Search"
+                                        type="text"
+                                        fullWidth
+
+                                        onChange={(e) => setSearch(e.target.value)}
+                                        value={serach}
+                                    />
+                                </Grid>
+                                <Grid item xs={3}>
                                     {/* First date field */}
                                     <TextField
                                         label="Start Date"
@@ -266,11 +286,11 @@ console.log("value of roes ",rows)
                                         InputLabelProps={{
                                             shrink: true,
                                         }}
-                                        onChange={(e)=>setStartDate(e.target.value)}
+                                        onChange={(e) => setStartDate(e.target.value)}
                                         value={startdate}
                                     />
                                 </Grid>
-                                <Grid item xs={4}>
+                                <Grid item xs={3}>
                                     {/* Second date field */}
                                     <TextField
                                         label="End Date"
@@ -280,18 +300,18 @@ console.log("value of roes ",rows)
                                             shrink: true,
                                         }}
                                         value={enddate}
-                                        onChange={(e)=>setEndDate(e.target.value)}
+                                        onChange={(e) => setEndDate(e.target.value)}
                                     />
                                 </Grid>
-                                
-                                <Grid item xs={4}>
+
+                                <Grid item xs={3}>
                                     {/* Search button */}
                                     <Button
                                         variant="contained"
-                                        
+
                                         // onClick={handleSearch}
                                         fullWidth
-                                        style={{ height: '100%' ,backgroundColor:'#F6B625',color:'black'}}
+                                        style={{ height: '100%', backgroundColor: '#F6B625', color: 'black' }}
                                         onClick={handleDateRange}
                                     >
                                         Apply
@@ -305,7 +325,7 @@ console.log("value of roes ",rows)
                             </Grid> */}
                     </form>
                 </Grid>
-              
+
                 <Box component="main" sx={{ flexGrow: 1, width: '100%' }}>
                     <Paper elevation={10}>
                         <TableContainer sx={{ maxHeight: 600 }}>
@@ -320,7 +340,7 @@ console.log("value of roes ",rows)
                                 <TableBody>
                                     {rows &&
                                         rows
-
+                                            .slice(page * rowperpage, page * rowperpage + rowperpage)
                                             .map((row, i) => {
                                                 return (
                                                     (row.customerType == 'prepaid') || (row.customerType == 'Pre-Paid') ?
@@ -345,7 +365,7 @@ console.log("value of roes ",rows)
                                                                 <TableCell key={column.id} sx={{ textAlign: 'left', fontSize: '17px' }}>
 
                                                                     {row[column.id]}
-                                                                    
+
                                                                 </TableCell>
                                                             ))}
                                                         </TableRow>
@@ -356,7 +376,16 @@ console.log("value of roes ",rows)
                                 </TableBody>
                             </Table>
                         </TableContainer>
-
+                        <TablePagination
+                            sx={{ color: '#253A7D' }}
+                            rowsPerPageOptions={[5, 10, 25]}
+                            rowsPerPage={rowperpage}
+                            page={page}
+                            count={rows.length}
+                            component="div"
+                            onPageChange={handlechangepage}
+                            onRowsPerPageChange={handleRowsPerPage}
+                        />
 
                     </Paper>
                 </Box>

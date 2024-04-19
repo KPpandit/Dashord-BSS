@@ -16,7 +16,7 @@ const PostpaidCustomerReport = (props) => {
         { id: 'ekycToken', name: 'Ekyc Token' },
         { id: 'ekycDate', name: 'Ekyc Date' },
         { id: 'phonePhoneNumber', name: 'Phone No' },
-        // { id: 'ekycStatus', name: 'Ekyc Status' },
+        { id: 'email', name: 'Email' },
         { id: 'customerType', name: 'Customer Type' },
 
     ];
@@ -26,8 +26,8 @@ const PostpaidCustomerReport = (props) => {
     const [selectedRecord, setSelectedRecord] = useState(null);
     const [open, setOpen] = React.useState(false);
     // Generate sample data
-    
-  const [openDialog, setOpenDialog] = useState(false);
+
+    const [openDialog, setOpenDialog] = useState(false);
 
     useEffect(() => {
         // console.log("record==>",selectedRecord)
@@ -59,23 +59,23 @@ const PostpaidCustomerReport = (props) => {
         };
 
         fetchData(); // Invoke the fetchData function when the component mounts
-    }, [tokenValue,openDialog]);
+    }, [tokenValue, openDialog]);
 
-   
+
     const handleClickOpen = (row) => {
         setSelectedRecord(row)
         // setOpen(true);
-       
+
     };
     const handleClose = () => {
         setOpen(false);
     };
-    
-    
-      const handleCloseDialog = () => {
+
+
+    const handleCloseDialog = () => {
         setOpenDialog(false);
-      };
-    
+    };
+
     const [confirmationDialogOpen, setConfirmationDialogOpen] = useState(false);
     const [recordIdToDelete, setRecordIdToDelete] = useState(null);
     const handleOpenConfirmationDialog = (id) => {
@@ -83,7 +83,7 @@ const PostpaidCustomerReport = (props) => {
         setConfirmationDialogOpen(true);
     };
 
-  
+
     const navigate = useNavigate();
     const handleButtonClick = () => {
         navigate('/newCustomer');
@@ -93,8 +93,8 @@ const PostpaidCustomerReport = (props) => {
         setSelectedRecord(row);
         setOpenDialog(true);
         fetchPhoto1(row)
-      };
-      const fetchPhoto1 = async (row) => {
+    };
+    const fetchPhoto1 = async (row) => {
 
         try {
             const photoResponse = await axios.get(`http://172.5.10.2:9090/api/image/${row.id}`, {
@@ -110,7 +110,7 @@ const PostpaidCustomerReport = (props) => {
                 const imageBlob = new Blob([photoResponse.data], { type: 'image/jpeg' });
                 const imageUrl = URL.createObjectURL(imageBlob);
                 setSelectedPhoto(imageUrl);
-                sessionStorage.setItem('selectedPhoto',imageUrl)
+                sessionStorage.setItem('selectedPhoto', imageUrl)
             } else {
                 console.error('Failed to fetch photo details.');
                 sessionStorage.removeItem('selectedPhoto')
@@ -118,13 +118,13 @@ const PostpaidCustomerReport = (props) => {
         } catch (error) {
             setSelectedPhoto(null);
             console.log('Failed to load the Photo', error);
-                sessionStorage.removeItem('selectedPhoto')
+            sessionStorage.removeItem('selectedPhoto')
 
         }
-        navigate('/individualReport',{state:{selectedRecord:row}})
+        navigate('/individualReport', { state: { selectedRecord: row } })
 
     };
-   
+
 
     const handleSerch = async (e) => {
         e.preventDefault();
@@ -137,21 +137,21 @@ const PostpaidCustomerReport = (props) => {
                 setValue(value);
             })
     }
-  
+
     const [highlightedRow, setHighlightedRow] = useState(null);
 
     const handleRowMouseEnter = (row) => {
         setHighlightedRow(row)
     };
 
-    function DownloadPDF(){
+    function DownloadPDF() {
         const capture = document.getElementById('container');
-        html2canvas(capture).then((canvas)=>{
+        html2canvas(capture).then((canvas) => {
             const imgdata = canvas.toDataURL('img/png')
-            const doc = new jsPDF('p','pt','a4');
-            const pageHeight= doc.internal.pageSize.height;
-            const pageWidth= doc.internal.pageSize.width;
-            doc.addImage(imgdata,'PNG',0.5,0.5,pageWidth,pageHeight);
+            const doc = new jsPDF('p', 'pt', 'a4');
+            const pageHeight = doc.internal.pageSize.height;
+            const pageWidth = doc.internal.pageSize.width;
+            doc.addImage(imgdata, 'PNG', 0.5, 0.5, pageWidth, pageHeight);
             doc.save('customerProfile.pdf')
         })
 
@@ -162,7 +162,7 @@ const PostpaidCustomerReport = (props) => {
         //         pdf.save('customer.pdf')
         //     })
         // })
-        
+
     }
 
     // const handleRowMouseLeave = () => {
@@ -213,23 +213,23 @@ const PostpaidCustomerReport = (props) => {
 
         }
     };
-    const [startdate,setStartDate]=useState('');
-    const [enddate,setEndDate]=useState('');
+    const [startdate, setStartDate] = useState('');
+    const [enddate, setEndDate] = useState('');
     const handleDateRange = () => {
-   
+
         const type = 'post-paid';
-    
+
         // Construct the API URL
         const apiUrl = `http://172.5.10.2:9098/customer/bydatefilter/${type}?startDate=${startdate}&endDate=${enddate}`;
-    
+
         // Make the API call
-        fetch(apiUrl,{
+        fetch(apiUrl, {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem('token')}`,
                 "Accept": "application/json",
                 "Content-Type": "application/json"
             }
-    
+
         })
             .then(response => {
                 if (!response.ok) {
@@ -249,6 +249,16 @@ const PostpaidCustomerReport = (props) => {
                 // Handle errors
                 console.error('Error fetching data:', error);
             });
+    };
+    const [page, pagechange] = useState(0);
+    const [rowperpage, rowperpagechange] = useState(5);
+
+    const handlechangepage = (event, newpage) => {
+        pagechange(newpage);
+    };
+    const handleRowsPerPage = (event) => {
+        rowperpagechange(+event.target.value);
+        pagechange(0);
     };
     return (
         <Box sx={{ display: 'container', marginTop: -2.5 }}>
@@ -275,7 +285,7 @@ const PostpaidCustomerReport = (props) => {
                         onSubmit={handleSerch}
                     >
 
-                        <Paper elevation={10} sx={{ marginBottom: 2,paddingBottom:0.1,paddingTop:0.5 }}>
+                        <Paper elevation={10} sx={{ marginBottom: 2, paddingBottom: 0.1, paddingTop: 0.5 }}>
                             <Grid container spacing={2} padding={1}>
                                 <Grid item xs={4}>
                                     {/* First date field */}
@@ -286,7 +296,7 @@ const PostpaidCustomerReport = (props) => {
                                         InputLabelProps={{
                                             shrink: true,
                                         }}
-                                        onChange={(e)=>setStartDate(e.target.value)}
+                                        onChange={(e) => setStartDate(e.target.value)}
                                         value={startdate}
                                     />
                                 </Grid>
@@ -300,18 +310,18 @@ const PostpaidCustomerReport = (props) => {
                                             shrink: true,
                                         }}
                                         value={enddate}
-                                        onChange={(e)=>setEndDate(e.target.value)}
+                                        onChange={(e) => setEndDate(e.target.value)}
                                     />
                                 </Grid>
-                                
+
                                 <Grid item xs={4}>
                                     {/* Search button */}
                                     <Button
                                         variant="contained"
-                                        
+
                                         // onClick={handleSearch}
                                         fullWidth
-                                        style={{ height: '100%' ,backgroundColor:'#F6B625',color:'black'}}
+                                        style={{ height: '100%', backgroundColor: '#F6B625', color: 'black' }}
                                         onClick={handleDateRange}
                                     >
                                         Apply
@@ -339,10 +349,10 @@ const PostpaidCustomerReport = (props) => {
                                 <TableBody>
                                     {rows &&
                                         rows
-
+                                        .slice(page * rowperpage, page * rowperpage + rowperpage)
                                             .map((row, i) => {
                                                 return (
-                                                           
+
                                                     <TableRow
                                                         key={i}
                                                         onClick={() => {
@@ -357,35 +367,44 @@ const PostpaidCustomerReport = (props) => {
                                                                 : {}
                                                         }
                                                     >
-                                                        
+
                                                         {columns.map((column) => (
 
 
                                                             <TableCell key={column.id} sx={{ textAlign: 'left', fontSize: '17px' }}>
                                                                 {
-                                                                row[column.id]
+                                                                    row[column.id]
                                                                 }
                                                             </TableCell>
                                                         ))}
                                                     </TableRow>
-                                                   
+
 
                                                 );
                                             })}
                                 </TableBody>
                             </Table>
                         </TableContainer>
-                        
+                        <TablePagination
+                            sx={{ color: '#253A7D' }}
+                            rowsPerPageOptions={[5, 10, 25]}
+                            rowsPerPage={rowperpage}
+                            page={page}
+                            count={rows.length}
+                            component="div"
+                            onPageChange={handlechangepage}
+                            onRowsPerPageChange={handleRowsPerPage}
+                        />
 
                     </Paper>
                 </Box>
                 <Grid container paddingTop={2}>
                     <Grid item xs={1.2}>
-                        <Button variant="contained" sx={{backgroundColor:'#253A7D',boxShadow:24}} onClick={handleDownload}>Download</Button>
+                        <Button variant="contained" sx={{ backgroundColor: '#253A7D', boxShadow: 24 }} onClick={handleDownload}>Download</Button>
                     </Grid>
                     <Grid item xs={1}>
                         <FormControl fullWidth>
-                            <Select sx={{ boxShadow:24,width: 100, height: 20, paddingY: 2.3, textAlign: 'bottom' }}
+                            <Select sx={{ boxShadow: 24, width: 100, height: 20, paddingY: 2.3, textAlign: 'bottom' }}
 
                                 onChange={(e) => setSelectedOption(e.target.value)}
                                 required
@@ -402,11 +421,11 @@ const PostpaidCustomerReport = (props) => {
                 </Grid>
             </Box>
 
-            
-        
-      
-       
-          
+
+
+
+
+
 
 
 
