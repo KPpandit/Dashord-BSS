@@ -5,18 +5,16 @@ import SearchIcon from '@mui/icons-material/Search';
 import axios from "axios";
 export default function AudioCallSession(){
     const columns = [
-        { id: 'peer_session_id', name: 'Session ID' },
+      
         { id: 'msisdn', name: 'Msisdn' },
-        // { id: 'called_msisdn', name: 'P' },
+        { id: 'imsi', name: 'IMSI' },
+        { id: 'called_msisdn', name: 'Called MSISDN' },
         { id: 'location_info', name: 'Location' },
-        // { id: 'session_state', name: 'Sessio' },
-        // { id: 'call_start_ts', name: 'Call Start' },
-        { id: 'framed_ip', name: 'Framed IP' },
-        // { id: 'total_seconds', name: 'Period' },
-        // { id: 'call_status', name: 'Period' },
-       
-        
-
+        { id: 'session_state', name: 'Session State' },
+        { id: 'call_start_ts', name: 'Call Start' },
+        { id: 'call_end_ts', name: 'Call End' },
+        { id: 'total_seconds', name: 'Toatal Sec.' },
+        { id: 'call_status', name: 'Call Status' },
     ];
     const [rows, setRows] = useState([]);
     const tokenValue = localStorage.getItem('token');
@@ -24,7 +22,7 @@ export default function AudioCallSession(){
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get('http://172.5.10.2:9696/api/data/session/usage/get/all', {
+                const response = await axios.get('http://172.5.10.2:9696/api/call/session/usage/get/all', {
                     headers: {
                         Authorization: `Bearer ${tokenValue}`,
                         "Accept": "application/json",
@@ -413,9 +411,9 @@ export default function AudioCallSession(){
     return(
         <Box sx={{ display: 'container',marginLeft:-1, marginTop: -2.5,width:'79vw' }}>
 
-            <Box sx={{ width: '70%', }}>
+            <Box sx={{ width: '100%', }}>
             <Box component="main" sx={{ flexGrow: 1, p: 1, width: '100%' }}>
-                        <Paper elevation={10} sx={{ padding: 1, margin: 1, backgroundColor: 'white', color: '#253A7D', marginLeft: -0.8, marginRight: 1 }}>
+                        <Paper elevation={10} sx={{ padding: 1, margin: 1, backgroundColor: 'white', color: '#253A7D', marginLeft: -0.8, marginRight: -1 }}>
                             <Grid>
                                 <Typography
                                     style={{
@@ -425,7 +423,7 @@ export default function AudioCallSession(){
                                         fontWeight: 'bold',
 
                                     }}
-                                >IMS Registartions</Typography>
+                                >Audio Call Session</Typography>
                             </Grid>
                         </Paper>
                     </Box>
@@ -462,19 +460,26 @@ export default function AudioCallSession(){
                                                         {columns.map((column) => (
                                                             console.log(column.id + "from customer row"),
 
-                                                            <TableCell key={column.id} sx={{ textAlign: 'left', fontSize: '17px' }}>
-
-                                                                {column.id === 'ekycDate' ? (
-                                                                    // Render this content if the condition is true
-                                                                    <>{
-                                                                        // new Date(row[column.id]).toISOString().split('T')[0]
-                                                                        
-                                                                        }</>
-                                                                ) : (
-                                                                    // Render this content if the condition is false
-                                                                    <>{String(row[column.id])}</>
-                                                                )}
-                                                            </TableCell>
+                                                            <TableCell 
+                                                            key={column.id} 
+                                                            sx={{ 
+                                                              textAlign: 'center', // Center content horizontally
+                                                              fontSize: '17px',
+                                                              verticalAlign: 'middle' // Center content vertically
+                                                            }}
+                                                          >
+                                                            {
+                                                              column.id === 'session_state' ? (
+                                                                row[column.id] ? <span style={{ color: 'green' }}>◉</span> : <span style={{ color: 'red' }}>◉</span>
+                                                              ) : column.id === 'call_status' ? (
+                                                                row[column.id] ? <span style={{ color: 'green' }}>◉</span> : <span style={{ color: 'red' }}>◉</span>
+                                                              ) : (
+                                                                String(row[column.id])
+                                                              )
+                                                            }
+                                                          </TableCell>
+                                                          
+                                                          
                                                         ))}
                                                     </TableRow>
                                                 );
@@ -508,9 +513,9 @@ export default function AudioCallSession(){
                 </Box>
             </Box>
 
-            <Box sx={{ paddingLeft: 3, paddingTop: 1.5 }} >
+            {/* <Box sx={{ paddingLeft: 1, paddingTop: 1.5 }} >
                 <SelectedRecordDetails />
-            </Box>
+            </Box> */}
             <Dialog
                 open={confirmationDialogOpen}
                 onClose={handleCloseConfirmationDialog}

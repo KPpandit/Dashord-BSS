@@ -40,8 +40,8 @@ export default function Report(props) {
           { report_type: "Inactive Customer Report" },
           { report_type: "Customer signup Report" },
           { report_type: "Top Customers Post-Paid Data Usage Report" },
-          {report_type:"Top Customers Post-Paid Call Usage Report"},
-          {report_type:"Top Customers Post-Paid SMS Usage Report"},
+          { report_type: "Top Customers Post-Paid Call Usage Report" },
+          { report_type: "Top Customers Post-Paid SMS Usage Report" },
           { report_type: "Customers Data Available Pre-Paid" },
           { report_type: "On Board Customer Reports" },
         ];
@@ -59,6 +59,22 @@ export default function Report(props) {
           { report_type: "Agent Comission" },
           { report_type: "Agents Report by Payment" },
         ];
+        rowchange(data)
+        console.log("Agent loop", rows)
+        setcount(count++)
+        console.log(count)
+      }
+      else if (value === 'inventory') {
+        console.log("Biloing Condition is working")
+        count++
+        console.log("billing")
+        data = [
+          { report_type: "SIM By Selling Price" },
+          { report_type: "All Sim by Activation Date" },
+          { report_type: "Sim Reports" },
+         
+        ];
+
         rowchange(data)
         console.log("Agent loop", rows)
         setcount(count++)
@@ -152,6 +168,15 @@ export default function Report(props) {
     }
     if (row.report_type == 'Agents Report by Payment') {
       navigate('/agentReportByPayment');
+    }
+    if (row.report_type == 'SIM By Selling Price') {
+      navigate('/simBysellingPrice');
+    }
+    if (row.report_type == 'All Sim by Activation Date') {
+      navigate('/simByActivation');
+    }
+    if (row.report_type == 'Sim Reports') {
+      navigate('/simReports');
     }
   };
 
@@ -261,6 +286,12 @@ export default function Report(props) {
                           color: 'yellow',
                         },
                       }} />
+                      <Tab label="Inventory" value="inventory" sx={{
+                        color: rightTabValue === 3 ? 'yellow' : 'white',
+                        '&.Mui-selected': {
+                          color: 'yellow',
+                        },
+                      }} />
                       {/* <Tab label="Item Three" value="3"sx={{
                 color: rightTabValue === 1 ? 'yellow' : 'white',
                 '&.Mui-selected': {
@@ -366,6 +397,52 @@ export default function Report(props) {
                   </TabPanel>
                   {/* <TabPanel value="3">Item Three</TabPanel> */}
                   <TabPanel value="billing">
+
+                    <Table stickyHeader size='medium' padding="normal">
+                      <TableBody>
+                        {rows &&
+                          rows
+                            .slice(page * rowperpage, page * rowperpage + rowperpage)
+                            .map((row, i) => {
+                              return (
+                                <TableRow
+
+                                  key={i}
+                                  onClick={() => handleRowClick(row)}
+                                  onMouseEnter={() => handleRowMouseEnter(row)}
+                                  onMouseLeave={handleRowMouseLeave}
+                                  sx={
+                                    highlightedRow === row
+                                      ? { backgroundColor: '#FBB716' }
+                                      : {}
+                                  }
+                                >
+                                  {columns.map((column) => (
+                                    <TableCell key={column.id}
+                                      sx={{ fontSize: '17px' }}
+                                    >
+                                      {row[column.id]}
+                                    </TableCell>
+                                  ))}
+                                </TableRow>
+                              );
+                            })}
+                      </TableBody>
+                    </Table>
+                    <TablePagination
+                      sx={{ color: '#253A7D' }}
+                      rowsPerPageOptions={[5, 10, 25]}
+                      rowsPerPage={rowperpage}
+                      page={page}
+                      count={rows.length}
+                      component="div"
+                      onPageChange={handlechangepage}
+                      onRowsPerPageChange={handleRowsPerPage}
+                    />
+
+
+                  </TabPanel>
+                  <TabPanel value="inventory">
 
                     <Table stickyHeader size='medium' padding="normal">
                       <TableBody>

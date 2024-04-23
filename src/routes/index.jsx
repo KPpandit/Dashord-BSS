@@ -107,6 +107,9 @@ import SubscriberServiceCapability from '../pages/Hss/SubscriberServiceCapabilit
 import BlockingSubscriber from '../pages/Hss/BlockingSubscriber';
 import UnBlockingSubscriber from '../pages/Hss/UnBlockingSubscriber';
 import AgentReportByPayment from '../pages/Report/AgentsReportByPayment';
+import SimBySellingPrice from '../pages/Report/SimInventoryReport/SimBySellingPrice';
+import SimByActivation from '../pages/Report/SimInventoryReport/SimByActivation';
+import SimReports from '../pages/Report/SimInventoryReport/SimReports';
 
 
 
@@ -284,6 +287,12 @@ export const Routers = () => {
                            <Route path='/topPostPaidCallUsage' element={<TopPostPaidCallUsageReport/>}/>
                            <Route path='/topPostPaidSMSUsage' element={<TopPostpaidSMSUsageReport/>}/>
                            <Route path='/agentReportByPayment' element={<AgentReportByPayment/>}/>
+
+                           {/* Sim Invrntory Reports */}
+                           <Route path='/simBysellingPrice' element={<SimBySellingPrice/>}/>
+                           <Route path='/simByActivation' element={<SimByActivation/>}/>
+                           <Route path='/simReports' element={<SimReports/>}/>
+
                         {/* <Route path='/add-Noc-sub' element={<AddNoc />} />
                         <Route path='/all-Noc-sub' element={<AllNoc />} />
                         <Route path='/all-Noc-query' element={<NOCQuery />} />

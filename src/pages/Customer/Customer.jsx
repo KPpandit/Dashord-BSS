@@ -90,7 +90,7 @@ const Customer = (props) => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get('http://172.5.10.2:9090/api/customers/pack/details', {
+                const response = await axios.get('http://172.5.10.2:9090/api/customers', {
                     headers: {
                         Authorization: `Bearer ${token}`,
                         "Accept": "application/json",

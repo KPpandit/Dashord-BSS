@@ -9,12 +9,13 @@ import { ToastContainer } from 'react-toastify';
 
 const Sim_manage = (props) => {
     const columns = [
-        { id: 'sim_id', name: 'ID' },
+        { id: 'msisdn', name: 'Msisdn' },
         { id: 'imsi', name: 'IMSI' },
-        { id: 'batch_no', name: 'Batch-No' },
-        { id: 'vendor_name', name: 'Vendor Name' },
-        { id: 'key_id', name: 'Key-ID' },
-        { id: 'auth_id', name: 'Auth-ID' },
+        { id: 'category', name: 'Category' },
+        { id: 'specialNumber', name: 'Special Number' },
+        { id: 'activationDate', name: 'Activation Date' },
+        { id: 'simType', name: 'Sim Type' },
+        { id: 'sellingPriceUsd', name: 'Selling Price' },
     ];
     const [rows, setRows] = useState([]);
     const tokenValue = localStorage.getItem('token');
@@ -22,7 +23,7 @@ const Sim_manage = (props) => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get('http://172.5.10.2:9696/api/sim/mgmt/detail/get/all', {
+                const response = await axios.get('http://172.5.10.2:9090/api/siminventories', {
                     headers: {
                         Authorization: `Bearer ${tokenValue}`,
                         "Accept": "application/json",
@@ -162,7 +163,7 @@ const Sim_manage = (props) => {
 
                                             }}
                                             gutterBottom component="div">
-                                            IMSI: {selectedRecord.imsi}
+                                             {selectedRecord.msisdn}
                                         </Typography>
 
                                     </Stack>
@@ -192,14 +193,14 @@ const Sim_manage = (props) => {
                                         <Grid container>
                                             <Grid item xs={4}>
                                                 <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
-                                                    SIM ID :
+                                                    Category :
                                                 </Typography>
                                             </Grid>
                                             <Grid item xs={7} alignItems={'left'} sx={{ marginLeft: 0 }} >
                                                 <Typography
                                                     sx={{ fontSize: '17px', textAlign: 'left' }}
                                                     gutterBottom variant="body2">
-                                                    {selectedRecord.sim_id}
+                                                    {selectedRecord.category}
                                                 </Typography>
                                             </Grid>
                                         </Grid>
@@ -209,14 +210,31 @@ const Sim_manage = (props) => {
                                         <Grid container>
                                             <Grid item xs={4}>
                                                 <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
-                                                    SIM Type :
+                                                    P-IMSI :
                                                 </Typography>
                                             </Grid>
                                             <Grid item xs={7} alignItems={'left'} sx={{ marginLeft: 0 }} >
                                                 <Typography
                                                     sx={{ fontSize: '17px', textAlign: 'left' }}
                                                     gutterBottom variant="body2">
-                                                    {selectedRecord.sim_type}
+                                                    {selectedRecord.pimsi}
+                                                </Typography>
+                                            </Grid>
+                                        </Grid>
+                                    </Box>
+                                    <Divider light />
+                                    <Box sx={{ p: 1 }}>
+                                        <Grid container>
+                                            <Grid item xs={5}>
+                                                <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
+                                                    Batch Date :
+                                                </Typography>
+                                            </Grid>
+                                            <Grid item xs={6} alignItems={'left'} sx={{ marginLeft: 0 }} >
+                                                <Typography
+                                                    sx={{ fontSize: '17px', textAlign: 'left' }}
+                                                    gutterBottom variant="body2">
+                                                    {selectedRecord.batchDate}
                                                 </Typography>
                                             </Grid>
                                         </Grid>
@@ -226,31 +244,14 @@ const Sim_manage = (props) => {
                                         <Grid container>
                                             <Grid item xs={4}>
                                                 <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
-                                                    Batch No :
+                                                    Vendor Id :
                                                 </Typography>
                                             </Grid>
                                             <Grid item xs={7} alignItems={'left'} sx={{ marginLeft: 0 }} >
                                                 <Typography
                                                     sx={{ fontSize: '17px', textAlign: 'left' }}
                                                     gutterBottom variant="body2">
-                                                    {selectedRecord.batch_no}
-                                                </Typography>
-                                            </Grid>
-                                        </Grid>
-                                    </Box>
-                                    <Divider light />
-                                    <Box sx={{ p: 1 }}>
-                                        <Grid container>
-                                            <Grid item xs={4}>
-                                                <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
-                                                    Key ID :
-                                                </Typography>
-                                            </Grid>
-                                            <Grid item xs={7} alignItems={'left'} sx={{ marginLeft: 0 }} >
-                                                <Typography
-                                                    sx={{ fontSize: '17px', textAlign: 'left' }}
-                                                    gutterBottom variant="body2">
-                                                    {selectedRecord.key_id}
+                                                    {selectedRecord.vendorId}
                                                 </Typography>
                                             </Grid>
                                         </Grid>
@@ -268,7 +269,7 @@ const Sim_manage = (props) => {
                                                 <Typography
                                                     sx={{ fontSize: '17px', textAlign: 'left' }}
                                                     gutterBottom variant="body2">
-                                                    {selectedRecord.vendor_name}
+                                                    {selectedRecord.vendorName}
                                                 </Typography>
                                             </Grid>
                                         </Grid>
@@ -279,9 +280,9 @@ const Sim_manage = (props) => {
 
                                     <Box sx={{ p: 1 }}>
                                         <Grid container>
-                                            <Grid item xs={3}>
+                                            <Grid item xs={5}>
                                                 <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
-                                                    Status :
+                                                    Buying Price :
                                                 </Typography>
                                             </Grid>
                                             <Grid item xs={7} alignItems={'left'} sx={{ marginLeft: 0 }} >
@@ -290,7 +291,7 @@ const Sim_manage = (props) => {
                                                     gutterBottom variant="body2"
                                                 >
 
-                                                    {String(selectedRecord.status)}
+                                                    {String(selectedRecord.buyingPriceUsd)}
                                                 </Typography>
                                             </Grid>
                                         </Grid>
@@ -326,7 +327,7 @@ const Sim_manage = (props) => {
                                                 <Typography
                                                     sx={{ fontSize: '17px', textAlign: 'left' }}
                                                     gutterBottom variant="body2">
-                                                    {selectedRecord.allocation_date}
+                                                    {selectedRecord.allocationDate}
                                                 </Typography>
                                             </Grid>
                                         </Grid>
@@ -336,14 +337,14 @@ const Sim_manage = (props) => {
                                         <Grid container>
                                             <Grid item xs={6}>
                                                 <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
-                                                    Batch Date :
+                                                  Other taxes :
                                                 </Typography>
                                             </Grid>
                                             <Grid item xs={6} alignItems={'left'} >
                                                 <Typography
                                                     sx={{ fontSize: '17px', textAlign: 'left' }}
                                                     gutterBottom variant="body2">
-                                                    {selectedRecord.batch_date}
+                                                    {selectedRecord.otherTaxes}
                                                 </Typography>
                                             </Grid>
                                         </Grid>
@@ -453,7 +454,7 @@ const Sim_manage = (props) => {
     return (
         <Box sx={{ display: 'container', marginTop: -2.5 }}>
   <ToastContainer position="bottom-left" />
-            <Box sx={{ width: '70%', }}>
+            <Box sx={{ width: '78%', }}>
                 <Box component="main" sx={{ flexGrow: 1, p: 1, width: '100%' }}>
                     <Paper elevation={10} sx={{ padding: 1, margin: 1, backgroundColor: 'white', marginLeft: -0.8, marginRight: 1 }}>
                         <Grid>
@@ -592,7 +593,7 @@ const Sim_manage = (props) => {
 
             </Box>
 
-            <Box sx={{ paddingLeft: 3, paddingTop: 1.5 }} >
+            <Box sx={{ paddingLeft: 2, paddingTop: 1.9 }} >
                 <SelectedRecordDetails />
             </Box>
             <Dialog
