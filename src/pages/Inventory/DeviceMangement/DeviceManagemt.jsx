@@ -7,12 +7,12 @@ import axios from "axios";
 
 const DeviceManagement = (props) => {
     const columns = [
-        { id: 'imei_primary', name: 'p_IMEI'},
-        { id: 'imei_list', name: 'IMEI List'},
-        { id: 'user_agent', name: 'User'},
-        { id: 'foot_print', name: 'Foot Print' },
-        { id: 'eir_track_id', name: 'Track_ID'},
-        { id: 'is_esim', name: 'e-SIM'},
+        { id: 'deviceModel', name: 'Device Model'},
+        { id: 'deviceMake', name: 'Device Make'},
+        { id: 'manufacturer', name: 'Manufactured'},
+        { id: 'manufactureDate', name: 'Manufactured Date' },
+        { id: 'deviceType', name: 'Device Type'},
+        { id: 'sellingPriceUsd', name: 'Selling Price'},
     ];
     const [rows, setRows] = useState([]);
     const tokenValue = localStorage.getItem('token');
@@ -20,7 +20,7 @@ const DeviceManagement = (props) => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get('http://172.5.10.2:9696/api/device/mgmt/detail/get/all', {
+                const response = await axios.get('http://172.5.10.2:9090/api/deviceinventories', {
                     headers: {
                         Authorization: `Bearer ${tokenValue}`,
                         "Accept": "application/json",
@@ -138,7 +138,7 @@ const DeviceManagement = (props) => {
                     <Paper elevation={10}>
 
 
-                        <Card variant="outlined" sx={{ maxWidth: 360, fontFamily: "Roboto" }}>
+                        <Card variant="outlined" sx={{ width: 360, fontFamily: "Roboto" }}>
 
                             <Box sx={{ p: 1,}}>
 
@@ -160,7 +160,7 @@ const DeviceManagement = (props) => {
 
                                             }}
                                             gutterBottom component="div">
-                                            Primary IMEI: {selectedRecord.imei_primary}
+                                             {selectedRecord.deviceModel}
                                         </Typography>
 
                                     </Stack>
@@ -168,116 +168,118 @@ const DeviceManagement = (props) => {
 
                             </Box>
                             <Grid container>
-                                <Grid item xs={12} paddingLeft={1}>
+                                <Grid item xs={12} paddingLeft={1} >
                                     <Divider light />
-                                    <Box sx={{ p: 1 }}>
-                                        <Grid container>
+                                    
+                                        <Grid container spacing={1} padding={0.5}>
                                             <Grid item xs={4}>
-                                                <Typography sx={{ fontWeight: '480', fontSize: '17px', textAlign: 'left' }}>  Device ID :</Typography>
+                                                <Typography 
+                                                sx={{ fontWeight: '480', fontSize: '17px', textAlign: 'left' }}>
+                                                      Device Make :</Typography>
                                             </Grid>
-                                            <Grid item xs={7} alignItems={'left'} sx={{ marginLeft: 0 }} >
+                                            <Grid item xs={8} alignItems={'left'} sx={{ marginLeft: 0 }} >
                                                 <Typography
                                                     sx={{ fontSize: '17px', textAlign: 'left' }}
                                                     gutterBottom variant="body2">
-                                                    {selectedRecord.device_id}
+                                                    {selectedRecord.deviceMake}
                                                 </Typography>
                                             </Grid>
                                         </Grid>
 
-                                    </Box>
+                                   
                                     <Divider />
-                                    <Box sx={{ p: 1 }}>
-                                        <Grid container>
+                                   
+                                        <Grid container spacing={1} padding={0.5} >
                                             <Grid item xs={5}>
                                                 <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
-                                                    Primary IMEI :
+                                                    Batch ID :
                                                 </Typography>
                                             </Grid>
                                             <Grid item xs={7} alignItems={'left'} sx={{ marginLeft: 0 }} >
                                                 <Typography
                                                     sx={{ fontSize: '17px', textAlign: 'left' }}
                                                     gutterBottom variant="body2">
-                                                    {selectedRecord.imei_primary}
+                                                    {selectedRecord.batchId}
                                                 </Typography>
                                             </Grid>
                                         </Grid>
-                                    </Box>
+                                   
                                     <Divider light />
-                                    <Box sx={{ p: 1 }}>
-                                        <Grid container>
+                                    
+                                        <Grid container  spacing={1} padding={0.5}>
                                             <Grid item xs={4}>
                                                 <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
-                                                    IMEI List :
+                                                    OS Type :
                                                 </Typography>
                                             </Grid>
                                             <Grid item xs={7} alignItems={'left'} sx={{ marginLeft: 0 }} >
                                                 <Typography
                                                     sx={{ fontSize: '17px', textAlign: 'left' }}
                                                     gutterBottom variant="body2">
-                                                    {selectedRecord.imei_list}
+                                                    {selectedRecord.ostype}
                                                 </Typography>
                                             </Grid>
                                         </Grid>
-                                    </Box>
+                                   
                                     <Divider light />
-                                    <Box sx={{ p: 1 }}>
-                                        <Grid container>
-                                            <Grid item xs={3}>
+                                    
+                                        <Grid container  spacing={1} padding={0.5}>
+                                            <Grid item xs={5}>
                                                 <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
-                                                    User :
+                                                    Vendor Name :
                                                 </Typography>
                                             </Grid>
-                                            <Grid item xs={7} alignItems={'left'} sx={{ marginLeft: 0 }} >
+                                            <Grid item xs={6} alignItems={'left'} sx={{ marginLeft: 0 }} >
                                                 <Typography
                                                     sx={{ fontSize: '17px', textAlign: 'left' }}
                                                     gutterBottom variant="body2">
-                                                    {selectedRecord.user_agent}
+                                                    {selectedRecord.vendorName}
                                                 </Typography>
                                             </Grid>
                                         </Grid>
-                                    </Box>
+                                    
                                     <Divider light />
-                                    <Box sx={{ p: 1 }}>
-                                        <Grid container>
-                                            <Grid item xs={4}>
+                                   
+                                        <Grid container  spacing={1} padding={0.5}>
+                                            <Grid item xs={5}>
                                                 <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
-                                                    Foot Print :
+                                                    Vendor Contact :
                                                 </Typography>
                                             </Grid>
-                                            <Grid item xs={7} alignItems={'left'} sx={{ marginLeft: 0 }} >
+                                            <Grid item xs={5} alignItems={'left'} sx={{ marginLeft: 0 }} >
                                                 <Typography
                                                     sx={{ fontSize: '17px', textAlign: 'left' }}
                                                     gutterBottom variant="body2">
-                                                    {String(selectedRecord.foot_print)}
+                                                    {String(selectedRecord.vendorContact)}
                                                 </Typography>
                                             </Grid>
                                         </Grid>
-                                    </Box>
+                                  
                                     <Divider light />
 
-                                    <Box sx={{ p: 1 }}>
-                                        <Grid container>
+                                   
+                                        <Grid container  spacing={1} padding={0.5}>
                                             <Grid item xs={5}>
                                                 <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
-                                                   EIR Track ID :
+                                                   Vendor Address :
                                                 </Typography>
                                             </Grid>
                                             <Grid item xs={6} alignItems={'left'} sx={{ marginLeft: 0 }}>
                                                 <Typography
                                                     sx={{ fontSize: '17px', textAlign: 'left' }}
                                                     gutterBottom variant="body2">
-                                                    {String(selectedRecord.eir_track_id)}
+                                                    {String(selectedRecord.vendorAddress)}
                                                 </Typography>
                                             </Grid>
                                         </Grid>
-                                    </Box>
+                                   
                                     <Divider light />                                   
 
-                                    <Box sx={{ p: 1 }}>
-                                        <Grid container>
-                                            <Grid item xs={3}>
+                                   
+                                        <Grid container  spacing={1} padding={0.5}>
+                                            <Grid item xs={4}>
                                                 <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
-                                                    e-SIM :
+                                                    Buying Price :
                                                 </Typography>
                                             </Grid>
                                             <Grid item xs={7} alignItems={'left'} sx={{ marginLeft: 0 }} >
@@ -286,64 +288,64 @@ const DeviceManagement = (props) => {
                                                     gutterBottom variant="body2"
                                                 >
                                                     
-                                                    {String(selectedRecord.is_esim)}
+                                                    {String(selectedRecord.buyingPriceUsd)}
                                                 </Typography>
                                             </Grid>
                                         </Grid>
-                                    </Box>
+                                    
                                     <Divider light />
 
-                                    <Box sx={{ p: 1 }}>
-                                        <Grid container>
-                                            <Grid item xs={3}>
+                                   
+                                        <Grid container  spacing={1} padding={0.5}>
+                                            <Grid item xs={4}>
                                                 <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
-                                                    UICC :
+                                                    Selling Price :
                                                 </Typography>
                                             </Grid>
                                             <Grid item xs={7} alignItems={'left'} sx={{ marginLeft: 0 }} >
                                                 <Typography
                                                     sx={{ fontSize: '17px', textAlign: 'left' }}
                                                     gutterBottom variant="body2">
-                                                    {String(selectedRecord.is_uicc)}
+                                                    {String(selectedRecord.sellingPriceUsd)}
                                                 </Typography>
                                             </Grid>
                                         </Grid>
-                                    </Box>
+                                    
                                     <Divider light />
 
-                                    <Box sx={{ p: 1 }}>
-                                        <Grid container>
-                                            <Grid item xs={7}>
+                                    
+                                        <Grid container  spacing={1} padding={0.5}>
+                                            <Grid item xs={2}>
                                                 <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
-                                                    Registration Date :
+                                                    Vat :
                                                 </Typography>
                                             </Grid>
                                             <Grid item xs={4} alignItems={'left'} sx={{ marginLeft: 0 }} >
                                                 <Typography
                                                     sx={{ fontSize: '17px', textAlign: 'left' }}
                                                     gutterBottom variant="body2">
-                                                    {selectedRecord.registration_date}
+                                                    {selectedRecord.vat}
                                                 </Typography>
                                             </Grid>
                                         </Grid>
-                                    </Box>
+                                   
                                     <Divider light />
-                                    <Box sx={{ p: 1 }}>
+                                   
                                         <Grid container>
-                                            <Grid item xs={3}>
+                                            <Grid item xs={4}>
                                                 <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
-                                                    Status :
+                                                    Other Taxes :
                                                 </Typography>
                                             </Grid>
                                             <Grid item xs={6} alignItems={'left'} >
                                                 <Typography
                                                     sx={{ fontSize: '17px', textAlign: 'left' }}
                                                     gutterBottom variant="body2">
-                                                    {String(selectedRecord.status)}
+                                                    {String(selectedRecord.otherTaxes)}
                                                 </Typography>
                                             </Grid>
                                         </Grid>
-                                    </Box>
+                                    
                                     <Divider light />
                                     
                                 </Grid>
