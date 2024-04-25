@@ -70,6 +70,7 @@ export default function Report(props) {
         console.log("billing")
         data = [
           { report_type: "SIM By Selling Price" },
+          { report_type: "All Device By Selling Price" },
           { report_type: "All Sim by Activation Date" },
           { report_type: "Sim Reports" },
          
@@ -105,9 +106,7 @@ export default function Report(props) {
 
   const [rowperpage, rowperpagechange] = useState(5);
 
-  const handleRightTabChange = (event, newValue) => {
-    setRightTabValue(newValue);
-  };
+ 
   const handlechangepage = (event, newpage) => {
     pagechange(newpage);
   };
@@ -117,10 +116,8 @@ export default function Report(props) {
     pagechange(0);
   };
   const navigate = useNavigate();
-  const toPayment = () => {
-    navigate('/payment');
-  };
-  const [selectedRecord, setSelectedRecord] = useState(null);
+  
+ 
   const handleRowClick = (row) => {
     console.log("handle row click")
     sessionStorage.setItem('report_Type', row.report_type)
@@ -178,6 +175,9 @@ export default function Report(props) {
     if (row.report_type == 'Sim Reports') {
       navigate('/simReports');
     }
+    if (row.report_type == 'All Device By Selling Price') {
+      navigate('/deviceSellingReports');
+    }
   };
 
 
@@ -186,25 +186,7 @@ export default function Report(props) {
 
 
 
-  const SelectedRecordDetails = () => {
-
-
-    if (selectedRecord) {
-      const reportCount = parseInt(selectedRecord.reports) || 0;
-      const reportRows = Array.from({ length: reportCount }, (_, index) => ({
-        id: `report_${index + 1}`,
-        value: `Report ${index + 1}: ${selectedRecord[`report_${index + 1}`] || ''}`,
-      }));
-
-      return (
-        <div></div>
-
-      )
-    } else
-      return null
-
-  };
-
+ 
 
 
 
@@ -219,10 +201,10 @@ export default function Report(props) {
         setdata(res.data);
         console.log(value + "----value sech datas")
         rowchange(res.data);
-        // setValue(value);
+       
       })
   }
-  const [selectedOption, setSelectedOption] = useState('');
+ 
   const [highlightedRow, setHighlightedRow] = useState(null);
 
   const handleRowMouseEnter = (row) => {
@@ -513,11 +495,7 @@ export default function Report(props) {
           </Box> */}
         </Box>
       </Box>
-      <Box sx={{ paddingLeft: 1, paddingTop: 2 }} >
-        <SelectedRecordDetails
-
-        />
-      </Box>
+      
 
 
     </Box>

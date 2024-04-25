@@ -110,6 +110,7 @@ import AgentReportByPayment from '../pages/Report/AgentsReportByPayment';
 import SimBySellingPrice from '../pages/Report/SimInventoryReport/SimBySellingPrice';
 import SimByActivation from '../pages/Report/SimInventoryReport/SimByActivation';
 import SimReports from '../pages/Report/SimInventoryReport/SimReports';
+import DeviceBySellingRates from '../pages/Report/DeviceInventoryReport/DeviceBySellinRates';
 
 
 
@@ -292,6 +293,9 @@ export const Routers = () => {
                            <Route path='/simBysellingPrice' element={<SimBySellingPrice/>}/>
                            <Route path='/simByActivation' element={<SimByActivation/>}/>
                            <Route path='/simReports' element={<SimReports/>}/>
+
+                           {/* Device INventory Reports */}
+                           <Route path='/deviceSellingReports' element={<DeviceBySellingRates/>}/>
 
                         {/* <Route path='/add-Noc-sub' element={<AddNoc />} />
                         <Route path='/all-Noc-sub' element={<AllNoc />} />

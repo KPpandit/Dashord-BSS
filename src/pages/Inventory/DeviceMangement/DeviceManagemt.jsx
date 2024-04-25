@@ -1,4 +1,4 @@
-import { Box, Button, Card, Checkbox, Chip, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, FormControl, Grid, IconButton, InputAdornment, InputLabel, ListItemText, Menu, MenuItem, OutlinedInput, Paper, Select, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TextField, Typography, colors } from '@mui/material';
+import { Box, Button, Card, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider,  Grid, IconButton, InputAdornment, Paper,  Stack, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TextField, Typography} from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import SearchIcon from '@mui/icons-material/Search';
@@ -92,9 +92,9 @@ const DeviceManagement = (props) => {
             console.error('Error fetching data from API:', error);
         }
     };
-    // const [rows, rowchange] = useState(generateData());
-    const [page, pagechange] = useState(0);
-    const [rowperpage, rowperpagechange] = useState(5);
+   
+    const [page, pagechange] = [0];
+    const [rowperpage, rowperpagechange] = [5];
 
     const handlechangepage = (event, newpage) => {
         pagechange(newpage);
@@ -329,7 +329,7 @@ const DeviceManagement = (props) => {
                                             </Grid>
                                         </Grid>
                                    
-                                    <Divider light />
+                                    <Divider  />
                                    
                                         <Grid container>
                                             <Grid item xs={4}>
@@ -346,7 +346,7 @@ const DeviceManagement = (props) => {
                                             </Grid>
                                         </Grid>
                                     
-                                    <Divider light />
+                                    <Divider/>
                                     
                                 </Grid>
 
@@ -371,10 +371,6 @@ const DeviceManagement = (props) => {
                                         sx={{ backgroundColor: '#253A7D', width:'100%',boxShadow: 20,marginY:1 }}
                                         variant="contained">Delete Record</Button>
                                 </Grid>
-
-
-
-
                             </Grid>
                         </Card>
 
@@ -386,7 +382,7 @@ const DeviceManagement = (props) => {
             return
             <></>
         }
-    };
+    }
 
     const handleSerch = async (e) => {
         e.preventDefault();
@@ -399,7 +395,7 @@ const DeviceManagement = (props) => {
                 setValue(value);
             })
     }
-    const [selectedOption, setSelectedOption] = useState('');
+  
     const [highlightedRow, setHighlightedRow] = useState(null);
 
     const handleRowMouseEnter = (row) => {
@@ -501,16 +497,8 @@ const DeviceManagement = (props) => {
 
                                                             <TableCell key={column.id} sx={{ textAlign: 'left', fontSize: '17px' }}>
 
-                                                                {column.id === 'ekycDate' ? (
-                                                                    // Render this content if the condition is true
-                                                                    <>{
-                                                                        // new Date(row[column.id]).toISOString().split('T')[0]
-                                                                        
-                                                                        }</>
-                                                                ) : (
-                                                                    // Render this content if the condition is false
-                                                                    <>{String(row[column.id])}</>
-                                                                )}
+                                                                
+                                                                {String(row[column.id])}
                                                             </TableCell>
                                                         ))}
                                                     </TableRow>
