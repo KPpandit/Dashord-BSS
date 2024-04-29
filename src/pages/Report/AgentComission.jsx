@@ -9,14 +9,16 @@ import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 
 
-export default function AgentComission (props) {
+export default function AgentComission(props) {
     const columns = [
-        { id: 'id', name: 'ID' },
-        { id: 'amount', name: 'Amount' },
-        { id: 'type', name: 'Type' },
-        { id: 'partnerId', name: 'Partner Id' },
-        { id: 'commissionProcessRunId', name: 'Comission Id' },
-
+        { id: 'fristName', name: 'Name' },
+        { id: 'email', name: 'Email' },
+        { id: 'commissionType', name: 'Commission Type' },
+        { id: 'totalPayments', name: 'Total Payment' },
+        { id: 'locallity', name: 'Locality' },
+        { id: 'contact', name: 'Contact' },
+        { id: 'creationDate', name: "Creation Date" },
+        { id: 'partnerCommission.amount', name: 'Commission Amount' }, // Include partner commission amount here
 
     ];
     const [rows, setRows] = useState([]);
@@ -24,16 +26,16 @@ export default function AgentComission (props) {
     const [selectedPhoto, setSelectedPhoto] = useState(null);
     const [selectedRecord, setSelectedRecord] = useState(null);
     const [open, setOpen] = React.useState(false);
-    const [search,setsearch] = useState()
+    const [search, setsearch] = useState()
     // Generate sample data
-    
-  const [openDialog, setOpenDialog] = useState(false);
+
+    const [openDialog, setOpenDialog] = useState(false);
 
     useEffect(() => {
         // console.log("record==>",selectedRecord)
         const fetchData = async () => {
             try {
-                const response = await axios.get('http://172.5.10.2:9090/api/partnercommissions', {
+                const response = await axios.get('http://localhost:9098/agent/partners/byCommission', {
                     headers: {
                         Authorization: `Bearer ${tokenValue}`,
                         "Accept": "application/json",
@@ -59,30 +61,16 @@ export default function AgentComission (props) {
         };
 
         fetchData(); // Invoke the fetchData function when the component mounts
-    }, [tokenValue,selectedPhoto]);
+    }, [tokenValue, selectedPhoto]);
 
-   
+
     const handleClickOpen = (row) => {
         setSelectedRecord(row)
         // setOpen(true);
     };
-    const handleClose = () => {
-        setOpen(false);
-    };
-    
-    
-      const handleCloseDialog = () => {
-        setOpenDialog(false);
-      };
-    
-    const [confirmationDialogOpen, setConfirmationDialogOpen] = useState(false);
-    const [recordIdToDelete, setRecordIdToDelete] = useState(null);
-    const handleOpenConfirmationDialog = (id) => {
-        setRecordIdToDelete(id);
-        setConfirmationDialogOpen(true);
-    };
 
-  
+
+
     const navigate = useNavigate();
     const handleButtonClick = () => {
         navigate('/newCustomer');
@@ -92,41 +80,12 @@ export default function AgentComission (props) {
         setSelectedRecord(row);
         setOpenDialog(true);
         // fetchPhoto1(row)
-        navigate('/individualagentreport',{state:{selectedRecord:row}})
+        navigate('/individualagentreport', { state: { selectedRecord: row } })
 
-
-      };
-    const fetchPhoto1 = async (row) => {
-
-        try {
-            const photoResponse = await axios.get(`http://172.5.10.2:9090/api/image/${row.id}`, {
-                headers: {
-                    Authorization: `Bearer ${tokenValue}`,
-                    Accept: 'application/json',
-                    'Content-Type': 'application/json',
-                },
-                responseType: 'arraybuffer',
-            });
-
-            if (photoResponse.status === 200) {
-                const imageBlob = new Blob([photoResponse.data], { type: 'image/jpeg' });
-                const imageUrl = URL.createObjectURL(imageBlob);
-                setSelectedPhoto(imageUrl);
-                sessionStorage.setItem('selectedPhoto',imageUrl)
-            } else {
-                console.error('Failed to fetch photo details.');
-                sessionStorage.removeItem('selectedPhoto')
-            }
-        } catch (error) {
-            setSelectedPhoto(null);
-            console.log('Failed to load the Photo', error);
-                sessionStorage.removeItem('selectedPhoto')
-
-        }
-        navigate('/individualReport',{state:{selectedRecord:row}})
 
     };
-   
+
+
 
     const handleSerch = async (e) => {
         e.preventDefault();
@@ -139,47 +98,58 @@ export default function AgentComission (props) {
                 setValue(value);
             })
     }
-    const [selectedOption, setSelectedOption] = useState('');
+
     const [highlightedRow, setHighlightedRow] = useState(null);
 
     const handleRowMouseEnter = (row) => {
         setHighlightedRow(row)
     };
 
-    function DownloadPDF(){
-        const capture = document.getElementById('container');
-        html2canvas(capture).then((canvas)=>{
-            const imgdata = canvas.toDataURL('img/png')
-            const doc = new jsPDF('p','pt','a4');
-            const pageHeight= doc.internal.pageSize.height;
-            const pageWidth= doc.internal.pageSize.width;
-            doc.addImage(imgdata,'PNG',0.5,0.5,pageWidth,pageHeight);
-            doc.save('customerProfile.pdf')
-        })
 
-        // let pdf = new jsPDF('p','pt','a4');
-        // let capture = document.getElementById('container')
-        // pdf.html(capture,{
-        //     callback:(pdf=>{
-        //         pdf.save('customer.pdf')
-        //     })
-        // })
-        
-    }
-
-    // const handleRowMouseLeave = () => {
-    //     setHighlightedRow(null);
-    // };
-   
     const [page, pagechange] = useState(0);
     const [rowperpage, rowperpagechange] = useState(5);
     const handlechangepage = (event, newpage) => {
         pagechange(newpage);
     };
-
     const handleRowsPerPage = (event) => {
         rowperpagechange(+event.target.value);
         pagechange(0);
+    };
+    const [startdate, setStartDate] = useState('');
+    const [enddate, setEndDate] = useState('');
+    const [serach, setSearch] = useState('');
+    const handleDateRange = () => {
+
+
+        // Construct the API URL
+        const apiUrl = `http://localhost:9098/agent/partners/byCommission/bydate/range?search=${serach}&startDate=${startdate}&endDate=${enddate}`;
+        // Make the API call
+        fetch(apiUrl, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`,
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            }
+
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Handle the response data
+                console.log('API response:', data);
+                // setdata(data);
+                console.log(data + "----value sech datas")
+                // rowchange(data);
+                setRows(data);
+            })
+            .catch(error => {
+                // Handle errors
+                console.error('Error fetching data:', error);
+            });
     };
     return (
         <Box sx={{ display: 'container', marginTop: -2.5 }}>
@@ -196,40 +166,71 @@ export default function AgentComission (props) {
                                     fontWeight: 'bold',
 
                                 }}
-                            >All Agent Commission</Typography>
+                            >All Agent by Commission</Typography>
                         </Grid>
                     </Paper>
                 </Box>
 
-                <Grid lg={6} sx={{ textAlign: 'right', marginY: -0.5 }}>
+                <Grid lg={4} >
                     <form
                         onSubmit={handleSerch}
                     >
 
-                        <Paper elevation={10} sx={{ marginBottom: 2 }}>
-                            <Grid lg={8} >
-                                <TextField
-                                    onClick={handleSerch}
-                                    label="Search"
-                                    type='text'
-                                    fullWidth
-                                    name='value'
-                                    onChange={(e) => setsearch(e.target.value)}
-                                    required
-                                    InputProps={{
-                                        endAdornment: (
-                                            <InputAdornment position='end'>
-                                                <IconButton
-                                                // onSubmit={handleSerch}
-                                                >
-                                                    <SearchIcon />
-                                                </IconButton>
-                                            </InputAdornment>
-                                        )
-                                    }}
-                                />
+                        <Paper elevation={10} sx={{ marginBottom: 2, paddingBottom: 0.1, paddingTop: 0.5 }}>
+                            <Grid container spacing={2} padding={1}>
+                                <Grid item xs={3}>
+                                    {/* First date field */}
+                                    <TextField
+                                        label="Search"
+                                        type="text"
+                                        fullWidth
 
+                                        onChange={(e) => setSearch(e.target.value)}
+                                        value={serach}
+                                    />
+                                </Grid>
+                                <Grid item xs={3}>
+                                    {/* First date field */}
+                                    <TextField
+                                        label="Start Date"
+                                        type="date"
+                                        fullWidth
+                                        InputLabelProps={{
+                                            shrink: true,
+                                        }}
+                                        onChange={(e) => setStartDate(e.target.value)}
+                                        value={startdate}
+                                    />
+                                </Grid>
+                                <Grid item xs={3}>
+                                    {/* Second date field */}
+                                    <TextField
+                                        label="End Date"
+                                        type="date"
+                                        fullWidth
+                                        InputLabelProps={{
+                                            shrink: true,
+                                        }}
+                                        value={enddate}
+                                        onChange={(e) => setEndDate(e.target.value)}
+                                    />
+                                </Grid>
+
+                                <Grid item xs={3}>
+                                    {/* Search button */}
+                                    <Button
+                                        variant="contained"
+
+                                        // onClick={handleSearch}
+                                        fullWidth
+                                        style={{ height: '100%', backgroundColor: '#F6B625', color: 'black' }}
+                                        onClick={handleDateRange}
+                                    >
+                                        Apply
+                                    </Button>
+                                </Grid>
                             </Grid>
+
                         </Paper>
                         {/* <Grid paddingBottom={1}>
                             <Button type='submit' backgroundColor={'blue'} onSubmit={handleSerch} padding={2}> <SearchIcon /> Search</Button>
@@ -248,52 +249,49 @@ export default function AgentComission (props) {
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                    {rows &&rows
-                                     .slice(page * rowperpage, page * rowperpage + rowperpage)
-                                    .map((row, i) => {
-                                                return (
-                                                           
-                                                    <TableRow
-                                                        key={i}
-                                                        onClick={() => {
-                                                            handleRowClick(row)
-                                                            handleClickOpen(row)
-                                                        }}
-                                                        onMouseEnter={() => handleRowMouseEnter(row)}
-                                                        //   onMouseLeave={handleRowMouseLeave}
-                                                        sx={
-                                                            highlightedRow === row
-                                                                ? { backgroundColor: '#F6B625' }
-                                                                : {}
-                                                        }
-                                                    >
-                                                        
-                                                        {columns.map((column) => (
+                                    {rows && rows
+                                        .slice(page * rowperpage, page * rowperpage + rowperpage)
+                                        .map((row, i) => {
+                                            return (
+
+                                                <TableRow
+                                                    key={i}
+                                                    onClick={() => {
+                                                        handleRowClick(row)
+                                                        handleClickOpen(row)
+                                                    }}
+                                                    onMouseEnter={() => handleRowMouseEnter(row)}
+                                                    //   onMouseLeave={handleRowMouseLeave}
+                                                    sx={
+                                                        highlightedRow === row
+                                                            ? { backgroundColor: '#F6B625' }
+                                                            : {}
+                                                    }
+                                                >
+
+                                                    {columns.map((column) => (
 
 
-                                                            <TableCell key={column.id} sx={{ textAlign: 'left', fontSize: '17px' }}>
+                                                        <TableCell key={column.id} sx={{ textAlign: 'left', fontSize: '17px' }}>
+                                                            {column.id === 'partnerCommission.amount' ? (
+                                                                // Render partner commission amount if column ID is 'partnerCommission.amount'
+                                                                <>{row.partnerCommission.amount}</>
+                                                            ) : (
+                                                                // Render other column data
+                                                                <>{row[column.id]}</>
+                                                            )}
+                                                        </TableCell>
+                                                    ))}
+                                                </TableRow>
 
-                                                                {column.id === 'ekycDate' ? (
-                                                                    // Render this content if the condition is true
-                                                                    <>{
-                                                                        // new Date(row[column.id]).toISOString().split('T')[0]
 
-                                                                    }</>
-                                                                ) : (
-                                                                    // Render this content if the condition is false
-                                                                    <>{row[column.id]}</>
-                                                                )}
-                                                            </TableCell>
-                                                        ))}
-                                                    </TableRow>
-                                                    
-
-                                                );
-                                            })}
+                                            );
+                                        })}
                                 </TableBody>
                             </Table>
                         </TableContainer>
                         <TablePagination
+                            sx={{ color: '#253A7D' }}
                             rowsPerPageOptions={[5, 10, 25]}
                             rowsPerPage={rowperpage}
                             page={page}
@@ -302,17 +300,16 @@ export default function AgentComission (props) {
                             onPageChange={handlechangepage}
                             onRowsPerPageChange={handleRowsPerPage}
                         />
-                        
 
                     </Paper>
                 </Box>
             </Box>
 
-            
-        
-      
-       
-          
+
+
+
+
+
 
 
 
@@ -320,4 +317,5 @@ export default function AgentComission (props) {
         </Box>
     )
 };
+
 

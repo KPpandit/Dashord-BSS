@@ -1,11 +1,14 @@
-import { Box, Button, Card, Checkbox, Chip, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, FormControl, Grid, IconButton, InputAdornment, InputLabel, ListItemText, Menu, MenuItem, OutlinedInput, Paper, Select, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TextField, Typography, colors } from '@mui/material';
+import { Avatar, Box, Button, Card, Checkbox, Chip, CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, FormControl, Grid, IconButton, InputAdornment, InputLabel, ListItemText, Menu, MenuItem, OutlinedInput, Paper, Select, Skeleton, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TextField, Typography, colors } from '@mui/material';
 import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import SearchIcon from '@mui/icons-material/Search';
 import axios from "axios";
 import blanPhoto from '../../assets/blanPhoto.png'
 import { TokenContext } from '../../TokenContext';
+import ReactLoading from 'react-loading';
+import { Commet, FourSquare, LifeLine, Mosaic } from 'react-loading-indicators';
 const Customer = (props) => {
+    const [isLoading, setIsLoading] = useState(true);
     const { token } = useContext(TokenContext);
     console.log(token + "token value from Context API")
     const columns = [
@@ -102,6 +105,7 @@ const Customer = (props) => {
 
                 // Update the state with the API data
                 setRows(apiData);
+                setIsLoading(false);
             } catch (error) {
 
                 if (error.response && error.response.status === 401) {
@@ -131,6 +135,7 @@ const Customer = (props) => {
 
             // Update the state with the API data
             setRows(apiData);
+            setIsLoading(false);
         } catch (error) {
 
             if (error.response && error.response.status === 401) {
@@ -522,160 +527,176 @@ const Customer = (props) => {
         setHighlightedRow(null);
     };
     return (
-        <Box sx={{ display: 'container', marginTop: -2.5 }}>
+        <Box >
+            {isLoading ? (
+                <Grid
+                    container
+                    justifyContent="center"
+                    alignItems="center"
+                    style={{ height: '60vh' }}
 
-            <Box sx={{ width: '70%', }}>
-                <Box component="main" sx={{ flexGrow: 1, p: 1, width: '100%' }}>
-                    <Paper elevation={10} sx={{ padding: 1, margin: 1, backgroundColor: 'white', color: '#253A7D', marginLeft: -0.8, marginRight: -1 }}>
-                        <Grid>
-                            <Typography
-                                style={{
+                >
+              <FourSquare color="#FAC22E" size="medium" text="Load..." textColor="#253A7D" />
+                </Grid>
 
-                                    fontSize: '20px',
-                                    paddingLeft: 10,
-                                    fontWeight: 'bold',
+            ) :
+                <Box sx={{ display: 'container', marginTop: -2.5 }}>
 
-                                }}
-                            >Customer List</Typography>
-                        </Grid>
-                    </Paper>
-                </Box>
+                    <Box sx={{ width: '70%', }}>
+                        <Box component="main" sx={{ flexGrow: 1, p: 1, width: '100%' }}>
+                            <Paper elevation={10} sx={{ padding: 1, margin: 1, backgroundColor: 'white', color: '#253A7D', marginLeft: -0.8, marginRight: -1 }}>
+                                <Grid>
+                                    <Typography
+                                        style={{
 
-                <Grid lg={6} sx={{ textAlign: 'right', marginY: -0.5 }}>
-                    <form
-                        onSubmit={handleSerch}
-                    >
+                                            fontSize: '20px',
+                                            paddingLeft: 10,
+                                            fontWeight: 'bold',
 
-                        <Paper elevation={10} sx={{ marginBottom: 2 }}>
-                            <Grid lg={8} >
-                                <TextField
-                                    onClick={handleSerch}
-                                    label="Search"
-                                    type='text'
-                                    fullWidth
-                                    name='value'
-                                    // onChange={(e) => setValue(e.target.value)}
-                                    required
-                                    InputProps={{
-                                        endAdornment: (
-                                            <InputAdornment position='end'>
-                                                <IconButton
-                                                // onSubmit={handleSerch}
-                                                >
-                                                    <SearchIcon />
-                                                </IconButton>
-                                            </InputAdornment>
-                                        )
-                                    }}
-                                />
+                                        }}
+                                    >Customer List</Typography>
+                                </Grid>
+                            </Paper>
+                        </Box>
 
-                            </Grid>
-                        </Paper>
-                        {/* <Grid paddingBottom={1}>
+                        <Grid lg={6} sx={{ textAlign: 'right', marginY: -0.5 }}>
+                            <form
+                                onSubmit={handleSerch}
+                            >
+
+                                <Paper elevation={10} sx={{ marginBottom: 2 }}>
+                                    <Grid lg={8} >
+                                        <TextField
+                                            onClick={handleSerch}
+                                            label="Search"
+                                            type='text'
+                                            fullWidth
+                                            name='value'
+                                            // onChange={(e) => setValue(e.target.value)}
+                                            required
+                                            InputProps={{
+                                                endAdornment: (
+                                                    <InputAdornment position='end'>
+                                                        <IconButton
+                                                        // onSubmit={handleSerch}
+                                                        >
+                                                            <SearchIcon />
+                                                        </IconButton>
+                                                    </InputAdornment>
+                                                )
+                                            }}
+                                        />
+
+                                    </Grid>
+                                </Paper>
+                                {/* <Grid paddingBottom={1}>
                             <Button type='submit' backgroundColor={'blue'} onSubmit={handleSerch} padding={2}> <SearchIcon /> Search</Button>
                             </Grid> */}
-                    </form>
-                </Grid>
-                <Box component="main" sx={{ flexGrow: 1, width: '100%' }}>
-                    <Paper elevation={10}>
-                        <TableContainer sx={{ maxHeight: 600 }}>
-                            <Table stickyHeader size='medium' padding="normal">
-                                <TableHead>
-                                    <TableRow>
-                                        {columns.map((column) => (
-                                            <TableCell style={{ backgroundColor: '#253A7D', color: 'white' }} key={column.id} sx={{ textAlign: 'left' }}><Typography >{column.name}</Typography></TableCell>
-                                        ))}
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    {rows &&
-                                        rows
-                                            .slice(page * rowperpage, page * rowperpage + rowperpage)
-                                            .map((row, i) => {
-                                                return (
-                                                    <TableRow
-                                                        key={i}
-                                                        onClick={() => handleRowClick(row)}
-                                                        onMouseEnter={() => handleRowMouseEnter(row)}
+                            </form>
+                        </Grid>
+                        <Box component="main" sx={{ flexGrow: 1, width: '100%' }}>
+                            <Paper elevation={10}>
+                                <TableContainer sx={{ maxHeight: 600 }}>
+                                    <Table stickyHeader size='medium' padding="normal">
+                                        <TableHead>
+                                            <TableRow>
+                                                {columns.map((column) => (
+                                                    <TableCell style={{ backgroundColor: '#253A7D', color: 'white' }} key={column.id} sx={{ textAlign: 'left' }}><Typography >{column.name}</Typography></TableCell>
+                                                ))}
+                                            </TableRow>
+                                        </TableHead>
+                                        <TableBody>
+                                            {rows &&
+                                                rows
+                                                    .slice(page * rowperpage, page * rowperpage + rowperpage)
+                                                    .map((row, i) => {
+                                                        return (
+                                                            <TableRow
+                                                                key={i}
+                                                                onClick={() => handleRowClick(row)}
+                                                                onMouseEnter={() => handleRowMouseEnter(row)}
 
-                                                        //   onMouseLeave={handleRowMouseLeave}
-                                                        sx={
-                                                            highlightedRow === row
-                                                                ? { backgroundColor: '#F6B625' }
-                                                                : {}
-                                                        }
-                                                    >
-                                                        {columns.map((column) => (
+                                                                //   onMouseLeave={handleRowMouseLeave}
+                                                                sx={
+                                                                    highlightedRow === row
+                                                                        ? { backgroundColor: '#F6B625' }
+                                                                        : {}
+                                                                }
+                                                            >
+                                                                {columns.map((column) => (
 
 
-                                                            <TableCell key={column.id} sx={{ textAlign: 'left', fontSize: '17px' }}>
+                                                                    <TableCell key={column.id} sx={{ textAlign: 'left', fontSize: '17px' }}>
 
-                                                                {column.id === 'ekycDate' ? (
-                                                                    // Render this content if the condition is true
-                                                                    <>{
-                                                                        row[column.id]
+                                                                        {column.id === 'ekycDate' ? (
+                                                                            // Render this content if the condition is true
+                                                                            <>{
+                                                                                row[column.id]
 
-                                                                    }</>
-                                                                ) : (
-                                                                    // Render this content if the condition is false
-                                                                    <>{row[column.id]}</>
-                                                                )}
-                                                            </TableCell>
-                                                        ))}
-                                                    </TableRow>
-                                                );
-                                            })}
-                                </TableBody>
-                            </Table>
-                        </TableContainer>
-                        <TablePagination
-                            sx={{ color: '#253A7D' }}
-                            rowsPerPageOptions={[5, 10, 25]}
-                            rowsPerPage={rowperpage}
-                            page={page}
-                            count={rows.length}
-                            component="div"
-                            onPageChange={handlechangepage}
-                            onRowsPerPageChange={handleRowsPerPage}
-                        />
+                                                                            }</>
+                                                                        ) : (
+                                                                            // Render this content if the condition is false
+                                                                            <>{row[column.id]}</>
+                                                                        )}
+                                                                    </TableCell>
+                                                                ))}
+                                                            </TableRow>
+                                                        );
+                                                    })}
+                                        </TableBody>
+                                    </Table>
+                                </TableContainer>
+                                <TablePagination
+                                    sx={{ color: '#253A7D' }}
+                                    rowsPerPageOptions={[5, 10, 25]}
+                                    rowsPerPage={rowperpage}
+                                    page={page}
+                                    count={rows.length}
+                                    component="div"
+                                    onPageChange={handlechangepage}
+                                    onRowsPerPageChange={handleRowsPerPage}
+                                />
 
-                    </Paper>
+                            </Paper>
+                        </Box>
+
+                        <Box sx={{
+                            paddingLeft: '16px', paddingBottom: '16px', paddingTop: '14px',
+
+                        }}>
+                            <Button
+                                sx={{ backgroundColor: '#253A7D', boxShadow: 24 }}
+                                variant="contained" backgroundColor="#253A7D" onClick={handleButtonClick}>
+                                Add New
+                            </Button>
+                        </Box>
+                    </Box>
+
+                    <Box sx={{ paddingLeft: 3, paddingTop: 1.5 }} >
+                        <SelectedRecordDetails />
+                    </Box>
+                    <Dialog
+                        open={confirmationDialogOpen}
+                        onClose={handleCloseConfirmationDialog}
+                        aria-labelledby="alert-dialog-title"
+                        aria-describedby="alert-dialog-description"
+                    >
+                        <DialogTitle id="alert-dialog-title">Confirm Deletion</DialogTitle>
+                        <DialogContent>
+                            <DialogContentText id="alert-dialog-description">
+                                Are you sure you want to delete this record?
+                            </DialogContentText>
+                        </DialogContent>
+                        <DialogActions>
+                            <Button onClick={handleCloseConfirmationDialog}>Cancel</Button>
+                            <Button onClick={handleConfirmDelete} autoFocus>
+                                Confirm
+                            </Button>
+                        </DialogActions>
+                    </Dialog>
+
                 </Box>
-
-                <Box sx={{
-                    paddingLeft: '16px', paddingBottom: '16px', paddingTop: '14px',
-
-                }}>
-                    <Button
-                        sx={{ backgroundColor: '#253A7D', boxShadow: 24 }}
-                        variant="contained" backgroundColor="#253A7D" onClick={handleButtonClick}>
-                        Add New
-                    </Button>
-                </Box>
-            </Box>
-
-            <Box sx={{ paddingLeft: 3, paddingTop: 1.5 }} >
-                <SelectedRecordDetails />
-            </Box>
-            <Dialog
-                open={confirmationDialogOpen}
-                onClose={handleCloseConfirmationDialog}
-                aria-labelledby="alert-dialog-title"
-                aria-describedby="alert-dialog-description"
-            >
-                <DialogTitle id="alert-dialog-title">Confirm Deletion</DialogTitle>
-                <DialogContent>
-                    <DialogContentText id="alert-dialog-description">
-                        Are you sure you want to delete this record?
-                    </DialogContentText>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleCloseConfirmationDialog}>Cancel</Button>
-                    <Button onClick={handleConfirmDelete} autoFocus>
-                        Confirm
-                    </Button>
-                </DialogActions>
-            </Dialog>
+            }
 
         </Box>
     )

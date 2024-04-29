@@ -294,6 +294,7 @@ export default function AddCustomerDetails() {
             balance: "",
             paymentPeriod: "",
             paymentNotes: "",
+            product:"",
             paymentStatus: ""
         },
         onSubmit: async (values2) => {
@@ -1389,39 +1390,34 @@ export default function AddCustomerDetails() {
                                         </Select>
                                     </FormControl>
                                 </Grid>
-                                <Grid item xs={3}>
+                                {/* <Grid item xs={3}>
 
-                                    <FormControl fullWidth >
-                                        <InputLabel id="demo-simple-select-label">ekycStatus</InputLabel>
-                                        <Select
-                                            labelId="demo-simple-select-label"
-                                            id="demo-simple-select"
-                                            value={values.ekycStatus}
-                                            label="ekycStatus"
-                                            onChange={handleChange}
-                                            onBlur={handleBlur}
-                                            name="ekycStatus"
-                                            required
-                                        >
-                                            <MenuItem value={'Active'}>Active</MenuItem>
-                                            <MenuItem value={'Incative'}>InActive</MenuItem>
+                                    <TextField
+                                        label='Ekyc Status'
+                                        type="text"
+                                        required
+                                        fullWidth
 
-                                        </Select>
-                                    </FormControl>
-                                </Grid>
-                                <Grid item xs={3}>
+                                        name="ekycStatus"
+                                        value={values.ekycStatus}
+                                        onChange={handleChange}
+                                        onBlur={handleBlur}
+                                    />
+                                </Grid> */}
+                                {/* <Grid item xs={3}>
 
                                     <TextField
                                         label='ekycToken'
                                         type="text"
                                         required
                                         fullWidth
+                                        aria-readonly
                                         name="ekycToken"
                                         value={values.ekycToken}
                                         onChange={handleChange}
                                         onBlur={handleBlur}
                                     />
-                                </Grid>
+                                </Grid> */}
                                 <Grid item xs={3}>
 
                                     <TextField
@@ -1478,7 +1474,7 @@ export default function AddCustomerDetails() {
                                 <Grid item xs={3} >
 
                                     <FormControl fullWidth >
-                                        <InputLabel id="demo-simple-select-label">ekycStatus</InputLabel>
+                                        <InputLabel id="demo-simple-select-label">Maritial Status</InputLabel>
                                         <Select
                                             labelId="demo-simple-select-label"
                                             id="demo-simple-select"
@@ -1665,6 +1661,24 @@ export default function AddCustomerDetails() {
 
                                                                 <MenuItem value={1}>Yes</MenuItem>
                                                                 <MenuItem value={0}>No</MenuItem>
+
+                                                            </Select>
+                                                        </FormControl>
+                                                    </Grid>
+                                                    <Grid item xs={6}>
+                                                        <FormControl fullWidth>
+                                                            <InputLabel id="demo-simple-select-label">Product</InputLabel>
+                                                            <Select
+                                                                labelId="demo-simple-select-label"
+                                                                id="demo-simple-select"
+                                                                label="product"
+                                                                value={values2.product}
+                                                                onChange={handleChange2}
+                                                                name='product'
+                                                            >
+
+                                                                <MenuItem value={"sim"}>SIM</MenuItem>
+                                                                <MenuItem value={"device"}>Device</MenuItem>
 
                                                             </Select>
                                                         </FormControl>

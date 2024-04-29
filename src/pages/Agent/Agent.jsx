@@ -94,6 +94,7 @@ export default function Agent(props) {
                 },
             });
             setRows(response.data);
+            setIsLoading(false);
         } catch (error) {
             console.log("response from Error");
 
@@ -403,7 +404,7 @@ export default function Agent(props) {
                     justifyContent="center"
                     alignItems="center"
                     style={{ height: '60vh' }}
-                   
+
                 >
                     <CircularProgress />
                 </Grid>
@@ -554,7 +555,7 @@ export default function Agent(props) {
                 </Box>
 
 
-            </Box>}
+                 </Box>}
 
         </Box>
     )

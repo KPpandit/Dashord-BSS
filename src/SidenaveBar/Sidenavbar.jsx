@@ -384,10 +384,10 @@ export default function Sidenavbar() {
             label: 'PCRF/PCF Session',
             route: "/pcrf"
           },
-          {
-            label:'LU Registrations',
-            route:'/lu'
-          },
+          // {
+          //   label:'LU Registrations',
+          //   route:'/lu'
+          // },
           {
             label:'IMS Session',
             route:'/IMSSession'
@@ -407,7 +407,7 @@ export default function Sidenavbar() {
           }
           ,
           {
-            label: 'VoLTE Registrations',
+            label: 'UE Registrations',
             route: "/volte"
           },
          

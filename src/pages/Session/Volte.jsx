@@ -425,7 +425,7 @@ export default function Volte(){
                                         fontWeight: 'bold',
 
                                     }}
-                                >Volte Session</Typography>
+                                >UE Session</Typography>
                             </Grid>
                         </Paper>
                     </Box>
