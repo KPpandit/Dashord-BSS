@@ -7,20 +7,21 @@ import { styled } from '@mui/material/styles';
 import { Download } from '@mui/icons-material';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
-import * as XLSX from 'xlsx';
 
-export default function TopPostpaidSMSUsageReport(props) {
+
+export default function AgentReportByProduct(props) {
     const columns = [
-        { id: 'firstName', name: 'Name' },
-        { id: 'ekycStatus', name: 'Ekyc Status' },
-        { id: 'ekycToken', name: 'Ekyc Token' },
-        { id: 'msisdn', name: 'MSISDN' },
-        { id: 'ekycDate', name: 'Ekyc Date' },
-        { id: 'phonePhoneNumber', name: 'Phone No' },
-        { id: 'totalSmsUsed', name: 'SMS Consumed' },
-        { id: 'days_data_used', name: 'Days' },
-        { id: 'customerType', name: 'Customer Type' },
-
+        { id: 'fristName', name: 'Name' },
+        { id: 'email', name: 'Email' },
+        { id: 'commissionType', name: 'Commission Type' },
+        { id: 'totalPayments', name: 'Total Payment' },
+      
+        { id: 'contact', name: 'Contact' },
+        { id: 'creationDate', name: "Creation Date" },
+        { id: 'partnerCommission.amount', name: 'Commission Amount' },
+        { id: 'totalCustomerOnboard', name: 'Customers OnBoard' }, // Include partner commission amount here
+        { id: 'deviceCustomer', name: 'Device Sold' },
+        
 
     ];
     const [rows, setRows] = useState([]);
@@ -28,6 +29,7 @@ export default function TopPostpaidSMSUsageReport(props) {
     const [selectedPhoto, setSelectedPhoto] = useState(null);
     const [selectedRecord, setSelectedRecord] = useState(null);
     const [open, setOpen] = React.useState(false);
+    const [search, setsearch] = useState()
     // Generate sample data
 
     const [openDialog, setOpenDialog] = useState(false);
@@ -36,7 +38,7 @@ export default function TopPostpaidSMSUsageReport(props) {
         // console.log("record==>",selectedRecord)
         const fetchData = async () => {
             try {
-                const response = await axios.get('http://172.5.10.2:9098/customer/sms/usage', {
+                const response = await axios.get('http://172.5.10.2:9098/agent/partners/byall/records', {
                     headers: {
                         Authorization: `Bearer ${tokenValue}`,
                         "Accept": "application/json",
@@ -69,21 +71,7 @@ export default function TopPostpaidSMSUsageReport(props) {
         setSelectedRecord(row)
         // setOpen(true);
     };
-    const handleClose = () => {
-        setOpen(false);
-    };
 
-
-    const handleCloseDialog = () => {
-        setOpenDialog(false);
-    };
-
-    const [confirmationDialogOpen, setConfirmationDialogOpen] = useState(false);
-    const [recordIdToDelete, setRecordIdToDelete] = useState(null);
-    const handleOpenConfirmationDialog = (id) => {
-        setRecordIdToDelete(id);
-        setConfirmationDialogOpen(true);
-    };
 
 
     const navigate = useNavigate();
@@ -94,38 +82,12 @@ export default function TopPostpaidSMSUsageReport(props) {
     const handleRowClick = (row) => {
         setSelectedRecord(row);
         setOpenDialog(true);
-        fetchPhoto1(row)
-    };
-    const fetchPhoto1 = async (row) => {
+        // fetchPhoto1(row)
+        navigate('/individualagentreport', { state: { selectedRecord: row } })
 
-        try {
-            const photoResponse = await axios.get(`http://172.5.10.2:9090/api/image/${row.id}`, {
-                headers: {
-                    Authorization: `Bearer ${tokenValue}`,
-                    Accept: 'application/json',
-                    'Content-Type': 'application/json',
-                },
-                responseType: 'arraybuffer',
-            });
-
-            if (photoResponse.status === 200) {
-                const imageBlob = new Blob([photoResponse.data], { type: 'image/jpeg' });
-                const imageUrl = URL.createObjectURL(imageBlob);
-                setSelectedPhoto(imageUrl);
-                sessionStorage.setItem('selectedPhoto', imageUrl)
-            } else {
-                console.error('Failed to fetch photo details.');
-                sessionStorage.removeItem('selectedPhoto')
-            }
-        } catch (error) {
-            setSelectedPhoto(null);
-            console.log('Failed to load the Photo', error);
-            sessionStorage.removeItem('selectedPhoto')
-
-        }
-        navigate('/individualReport', { state: { selectedRecord: row } })
 
     };
+
 
 
     const handleSerch = async (e) => {
@@ -146,81 +108,24 @@ export default function TopPostpaidSMSUsageReport(props) {
         setHighlightedRow(row)
     };
 
-    function DownloadPDF() {
-        const capture = document.getElementById('container');
-        html2canvas(capture).then((canvas) => {
-            const imgdata = canvas.toDataURL('img/png')
-            const doc = new jsPDF('p', 'pt', 'a4');
-            const pageHeight = doc.internal.pageSize.height;
-            const pageWidth = doc.internal.pageSize.width;
-            doc.addImage(imgdata, 'PNG', 0.5, 0.5, pageWidth, pageHeight);
-            doc.save('customerProfile.pdf')
-        })
 
-        // let pdf = new jsPDF('p','pt','a4');
-        // let capture = document.getElementById('container')
-        // pdf.html(capture,{
-        //     callback:(pdf=>{
-        //         pdf.save('customer.pdf')
-        //     })
-        // })
-
-    }
-    const [serach, setSearch] = useState('');
-    const [selectedOption, setSelectedOption] = useState(null);
-    const handleDownload = () => {
-        if (selectedOption === 'pdf') {
-            const pdf = new jsPDF();
-            // Set column headers
-            const headers = Object.keys(rows[0]);
-            // Add data to PDF
-            pdf.autoTable({
-                head: [headers],
-                body: rows.map(row => Object.values(row)),
-            });
-            // Save the PDF
-            pdf.save(`${"newpdfway"}.pdf`);
-        } else if (selectedOption === 'csv') {
-            const headers = Object.keys(rows[0]);
-            const csvContent = "data:text/csv;charset=utf-8," + headers.join(',') + '\n' +
-                rows.map(row => Object.values(row).join(',')).join('\n');
-            const encodedUri = encodeURI(csvContent);
-            const link = document.createElement("a");
-            link.setAttribute("href", encodedUri);
-            link.setAttribute("download", "example123.csv");
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            console.log(csvContent + "-----cvs content")
-        } else if (selectedOption === 'xls') {
-            // Handle XLS download logic
-            const worksheet = XLSX.utils.json_to_sheet(rows);
-            const workbook = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet 1');
-            const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
-            const excelData = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-            const xlsURL = URL.createObjectURL(excelData);
-            window.open(xlsURL);
-        }
-        else if (selectedOption === null) {
-            setNotify({
-                isOpen: true,
-                message: 'Please Select The file Format ',
-                type: 'error'
-            })
-            setTimeout(() => { }, 1000)
-
-        }
+    const [page, pagechange] = useState(0);
+    const [rowperpage, rowperpagechange] = useState(5);
+    const handlechangepage = (event, newpage) => {
+        pagechange(newpage);
+    };
+    const handleRowsPerPage = (event) => {
+        rowperpagechange(+event.target.value);
+        pagechange(0);
     };
     const [startdate, setStartDate] = useState('');
     const [enddate, setEndDate] = useState('');
+    const [serach, setSearch] = useState('');
     const handleDateRange = () => {
 
-        const type = 'pre-paid';
 
         // Construct the API URL
-        const apiUrl = `http://172.5.10.2:9098/customer/sms/usage/bydate/range?search=${serach}&startDate=${startdate}&endDate=${enddate}`;
-
+        const apiUrl = `http://172.5.10.2:9098/agent/partners/byall/records/bydate/range?search=${serach}&startDate=${startdate}&endDate=${enddate}`;
         // Make the API call
         fetch(apiUrl, {
             headers: {
@@ -249,17 +154,6 @@ export default function TopPostpaidSMSUsageReport(props) {
                 console.error('Error fetching data:', error);
             });
     };
-    const [page, pagechange] = useState(0);
-    const [rowperpage, rowperpagechange] = useState(5);
-
-    const handlechangepage = (event, newpage) => {
-        pagechange(newpage);
-    };
-    const handleRowsPerPage = (event) => {
-        rowperpagechange(+event.target.value);
-        pagechange(0);
-    };
-    
     return (
         <Box sx={{ display: 'container', marginTop: -2.5 }}>
 
@@ -275,7 +169,7 @@ export default function TopPostpaidSMSUsageReport(props) {
                                     fontWeight: 'bold',
 
                                 }}
-                            >Top Post-Paid Customers SMS Usage Report</Typography>
+                            >All Agent By Product Selling</Typography>
                         </Grid>
                     </Paper>
                 </Box>
@@ -358,38 +252,44 @@ export default function TopPostpaidSMSUsageReport(props) {
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                    {rows &&
-                                        rows
+                                    {rows && rows
                                         .slice(page * rowperpage, page * rowperpage + rowperpage)
-                                            .map((row, i) => {
-                                                return (
+                                        .map((row, i) => {
+                                            return (
 
-                                                    <TableRow
-                                                        key={i}
-                                                        onClick={() => {
-                                                            handleRowClick(row)
-                                                            handleClickOpen(row)
-                                                        }}
-                                                        onMouseEnter={() => handleRowMouseEnter(row)}
-                                                        //   onMouseLeave={handleRowMouseLeave}
-                                                        sx={
-                                                            highlightedRow === row
-                                                                ? { backgroundColor: '#F6B625' }
-                                                                : {}
-                                                        }
-                                                    >
+                                                <TableRow
+                                                    key={i}
+                                                    onClick={() => {
+                                                        handleRowClick(row)
+                                                        handleClickOpen(row)
+                                                    }}
+                                                    onMouseEnter={() => handleRowMouseEnter(row)}
+                                                    //   onMouseLeave={handleRowMouseLeave}
+                                                    sx={
+                                                        highlightedRow === row
+                                                            ? { backgroundColor: '#F6B625' }
+                                                            : {}
+                                                    }
+                                                >
 
-                                                        {columns.map((column) => (
-                                                            <TableCell key={column.id} sx={{ textAlign: 'left', fontSize: '17px' }}>
-
-                                                                {row[column.id]}
-                                                            </TableCell>
-                                                        ))}
-                                                    </TableRow>
+                                                    {columns.map((column) => (
 
 
-                                                );
-                                            })}
+                                                        <TableCell key={column.id} sx={{ textAlign: 'left', fontSize: '17px' }}>
+                                                            {column.id === 'partnerCommission.amount' ? (
+                                                                // Render partner commission amount if column ID is 'partnerCommission.amount'
+                                                                <>{row.partnerCommission.amount}</>
+                                                            ) : (
+                                                                // Render other column data
+                                                                <>{row[column.id]}</>
+                                                            )}
+                                                        </TableCell>
+                                                    ))}
+                                                </TableRow>
+
+
+                                            );
+                                        })}
                                 </TableBody>
                             </Table>
                         </TableContainer>
@@ -406,38 +306,7 @@ export default function TopPostpaidSMSUsageReport(props) {
 
                     </Paper>
                 </Box>
-                <Grid container paddingTop={2}>
-                    <Grid item xs={1.2}>
-                        <Button variant="contained" sx={{ backgroundColor: '#253A7D', boxShadow: 24 }} onClick={handleDownload}>Download</Button>
-                    </Grid>
-                    <Grid item xs={1}>
-                        <FormControl fullWidth>
-                            <Select sx={{ boxShadow: 24, width: 100, height: 20, paddingY: 2.3, textAlign: 'bottom' }}
-
-                                onChange={(e) => setSelectedOption(e.target.value)}
-                                required
-                            >
-
-                                <MenuItem value="pdf">PDF</MenuItem>
-                                <MenuItem value="csv">CSV</MenuItem>
-                                <MenuItem value="xls">Excel</MenuItem>
-                            </Select>
-
-                        </FormControl>
-                    </Grid>
-
-                </Grid>
             </Box>
-
-
-
-
-
-
-
-
-
-
         </Box>
     )
 };

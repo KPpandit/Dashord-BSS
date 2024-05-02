@@ -35,7 +35,7 @@ const SimByActivation = (props) => {
         // console.log("record==>",selectedRecord)
         const fetchData = async () => {
             try {
-                const response = await axios.get('http://localhost:9098/sim/allsim/byDate', {
+                const response = await axios.get('http://172.5.10.2:9098/sim/allsim/byDate', {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem('token')}`,
                         "Accept": "application/json",
@@ -223,7 +223,7 @@ const SimByActivation = (props) => {
         const type = 'pre-paid';
 
         // Construct the API URL
-        const apiUrl = `http://localhost:9098/sim/getSim/activate/byDate?search=${serach}&startDate=${startdate}&endDate=${enddate}`;
+        const apiUrl = `http://172.5.10.2:9098/sim/getSim/activate/byDate?search=${serach}&startDate=${startdate}&endDate=${enddate}`;
 
         // Make the API call
         fetch(apiUrl, {

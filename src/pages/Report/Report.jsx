@@ -39,6 +39,7 @@ export default function Report(props) {
           { report_type: "Active Customer Report" },
           { report_type: "Inactive Customer Report" },
           { report_type: "Customer signup Report" },
+          { report_type: "Top Customers Pre-Paid Usage Report" },
           { report_type: "Top Customers Post-Paid Data Usage Report" },
           { report_type: "Top Customers Post-Paid Call Usage Report" },
           { report_type: "Top Customers Post-Paid SMS Usage Report" },
@@ -58,6 +59,7 @@ export default function Report(props) {
           { report_type: "Agent Report" },
           { report_type: "Agent Comission" },
           { report_type: "Agents Report by Payment" },
+          { report_type: "Agents Report of  All Product" },
         ];
         rowchange(data)
         console.log("Agent loop", rows)
@@ -177,6 +179,12 @@ export default function Report(props) {
     }
     if (row.report_type == 'All Device By Selling Price') {
       navigate('/deviceSellingReports');
+    }
+    if (row.report_type == 'Agents Report of  All Product') {
+      navigate('/agentReportByProduct');
+    }
+    if (row.report_type == 'Top Customers Pre-Paid Usage Report') {
+      navigate('/prepaidUsageReport');
     }
   };
 

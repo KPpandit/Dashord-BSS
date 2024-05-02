@@ -35,13 +35,9 @@ export default function AddCustomerDetails() {
         setShowPaperPayment(!showPaperPayment);
     };
     const [billingCycle, setBillingCycle] = useState('');
-    const [showCreditCardFields, setShowCreditCardFields] = useState(false);
+   
 
-    const handleBillingCycleChange = (event) => {
-        const selectedBillingCycle = event.target.value;
-        setBillingCycle(selectedBillingCycle);
-        setShowCreditCardFields(selectedBillingCycle === 'Credit Card');
-    };
+   
     const [selectedPhoto, setSelectedPhoto] = useState(null);
 
     const handlePhotoChange = (event) => {
@@ -49,33 +45,7 @@ export default function AddCustomerDetails() {
         setSelectedPhoto(file);
         // You can perform additional actions with the file if needed
     };
-    const handleImageUpload = async () => {
-        try {
-            const formData = new FormData();
-            formData.append('customerImage', selectedPhoto); // Use the correct key here
-
-            // Append additional form data
-            formData.append('key1', 'value1');
-            formData.append('key2', 'value2');
-
-            const imageResponse = await axios.post(
-                `http://172.5.10.2:9090/api/saveimage/${customerId}`,
-                formData,
-                {
-                    headers: {
-                        Authorization: `Bearer ${tokenValue}`,
-                        'Content-Type': 'multipart/form-data',
-                    },
-                }
-            );
-
-            console.log('Image uploaded successfully:', imageResponse.data);
-        } catch (error) {
-            console.error('Error uploading image:', error);
-        }
-    };
-
-
+    
     const location = useLocation();
     const accountType = location.state?.accountType;
     const tokenValue = localStorage.getItem('token');
@@ -216,18 +186,13 @@ export default function AddCustomerDetails() {
             ).then(res => {
                 if (res.status === 201) {
 
-                    // setId(res.data.id);
-                    // setCustomerID(res.data.baseUser.id);
+                   
                     const Cid = res.data.id;
                     const customerId = res.data.baseUser.id;
                     setCustomerID(res.data.id);
                     setuserId(res.data.baseUser.id);
                     setValues2({ ...values2, customerId: Cid, userId: customerId })
-                    // setNotification({
-                    //     open: true,
-                    //     message: 'Customer Added successfully!',
-                    //     severity: 'success',
-                    // });
+                  
 
 
                 }
@@ -239,30 +204,7 @@ export default function AddCustomerDetails() {
                 })
 
 
-                // setNotification({
-                //     open: true,
-                //     message: 'Failed to add Customer record. Please try again.',
-                //     severity: 'error',
-                // });
-                // if (e.response && e.response.status === 401) {
-                //     console.log("From inside if condition");
-                //     localStorage.removeItem('token');
-                //     navigate("/");
-                // }
-                // if (e.response && e.response.status === 409) {
-                //     setNotification({
-                //         open: true,
-                //         message: 'MSISDN Already Exist',
-                //         severity: 'error',
-                //     });
-                // }
-                // if (e.response && e.response.status === 404) {
-                //     setNotification({
-                //         open: true,
-                //         message: 'Please Provide Valid MSISDN',
-                //         severity: 'error',
-                //     });
-                // }
+               
             })
             console.log("API 1 response :", res1)
         }
@@ -285,6 +227,7 @@ export default function AddCustomerDetails() {
         initialValues: {
             userId: "",
             customerId: "",
+            msisdn:msisdn,
             attempt: "",
             amount: "",
             deleted: "",
@@ -298,48 +241,58 @@ export default function AddCustomerDetails() {
             paymentStatus: ""
         },
         onSubmit: async (values2) => {
-
-
-            if (selectedPhoto) {
-                await handleImageUpload();
+            // Check if billingCycle is 'cash'
+            if (billingCycle === 'cash') {
+                const res2 = await axios.post(`http://172.5.10.2:9090/api/savepayment/currency/${seleectedCurrenyId}/paymentrsult/1/paymentmethod/1`, // Use different URL for cash
+                    { ...values2 }, {
+                    headers: {
+                        Authorization: `Bearer ${tokenValue}`,
+                        "Accept": "application/json",
+                        "Content-Type": "application/json"
+                    }
+                }).then(res => {
+                    if (res.status === 201) {
+                        setNotification({
+                            open: true,
+                            message: 'Customer  Added successfully!',
+                            severity: 'success',
+                        });
+                    }
+                }).catch(e => {
+                    if (e.response.status === 401) {
+                        setNotification({
+                            open: true,
+                            message: 'Payment Filed',
+                            severity: 'error',
+                        });
+                    }
+                });
+            } else {
+                const res2 = await axios.post(`http://172.5.10.2:9090/api/savepayment/currency/${seleectedCurrenyId}/paymentrsult/1/paymentmethod/1?creditCard=1`, // Use default URL for credit card
+                    { ...values2 }, {
+                    headers: {
+                        Authorization: `Bearer ${tokenValue}`,
+                        "Accept": "application/json",
+                        "Content-Type": "application/json"
+                    }
+                }).then(res => {
+                    if (res.status === 201) {
+                        setNotification({
+                            open: true,
+                            message: 'Customer  Added successfully!',
+                            severity: 'success',
+                        });
+                    }
+                }).catch(e => {
+                    if (e.response.status === 401) {
+                        setNotification({
+                            open: true,
+                            message: 'Payment Filed',
+                            severity: 'error',
+                        });
+                    }
+                });
             }
-
-
-
-            const res2 = await axios.post('http://172.5.10.2:9090/api/savepayment/currency/' + seleectedCurrenyId + '/paymentrsult/1/paymentmethod/1?creditCard=1',
-                { ...values2 }, {
-
-                headers: {
-                    Authorization: `Bearer ${tokenValue}`,
-                    "Accept": "application/json",
-                    "Content-Type": "application/json"
-                }
-            }
-
-            ).then(res => {
-                if (res.status === 201) {
-
-                    setNotification({
-                        open: true,
-                        message: 'Customer  Added successfully!',
-                        severity: 'success',
-                    });
-                    // resetForm2()
-                    // submitMainForm1();
-
-
-                }
-            }).catch(e => {
-                if (e.response.status === 401) {
-                    setNotification({
-                        open: true,
-                        message: 'Payment Filed',
-                        severity: 'error',
-                    });
-                }
-                // submitMainForm1();
-            })
-
         },
     });
     const [userId, setuserId] = useState(null);
@@ -358,7 +311,7 @@ export default function AddCustomerDetails() {
             console.log("Initial render or customerId/userId is null, skipping effect");
             isFirstRender.current = false;
         }
-    }, [customerId, userId, submitMainForm2]);
+    }, [customerId, userId, submitMainForm2,msisdn,device]);
     const [seleectedCurrenyId, setSelectedCurrencyId] = useState('');
     const [currencyOption, setcurrencyOption] = useState([]);
     const [languageOptions, setLanguageOptions] = useState([]);
@@ -477,9 +430,7 @@ export default function AddCustomerDetails() {
                                             value={"Active"}
                                             fullWidth
                                             InputLabelProps={commonInputLabelProps}
-                                        // name="dueDateValue"
-                                        // onChange={handleChange}
-                                        // onBlur={handleBlur}
+                                      
                                         />
                                     </Grid>
                                     <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
@@ -490,9 +441,7 @@ export default function AddCustomerDetails() {
                                                 id="demo-simple-select"
                                                 // value={values.useParentPricing}
                                                 label="useParentPricing"
-                                            // onChange={handleChange}
-                                            // onBlur={handleBlur}
-                                            // name="useParentPricing"
+                                            
                                             >
                                                 <MenuItem value={"Active"}>Active</MenuItem>
                                                 <MenuItem value={"Pending Subscription"}>Pending Subscription</MenuItem>
@@ -1021,7 +970,7 @@ export default function AddCustomerDetails() {
                                             label="MSISDN"
                                             type="number"
                                             fullWidth
-
+                                            
                                             name="msisdn"
                                             value={msisdn}
                                             onChange={e => setMsisdn(e.target.value)}
@@ -1530,8 +1479,10 @@ export default function AddCustomerDetails() {
                                                     id="demo-simple-select"
                                                     label="Billing Cycle Unit"
                                                     value={billingCycle}
-                                                    onChange={handleBillingCycleChange}
+                                                    onChange={e=>setBillingCycle(e.target.value)}
+                                                    
                                                 >
+                                                    {console.log(billingCycle, 'value of Billing cycle ')}
                                                     <MenuItem value={'---'}> -- </MenuItem>
                                                     <MenuItem value={'payment_gate_way'}>Payment Gate Way</MenuItem>
                                                     <MenuItem value={'Credit Card'}>Credit Card</MenuItem>
@@ -1552,7 +1503,7 @@ export default function AddCustomerDetails() {
                                 </Grid>
                                 {/* Right side (50% of the screen) */}
                                 <Grid item lg={6} md={6} sm={12} xs={12} paddingBottom={2}>
-                                    {showCreditCardFields && (
+                                    {billingCycle=='Credit Card' && (
                                         <form onSubmit={handleSubmit2}>
                                             <Grid item lg={12} md={7} sm={12} xs={12} paddingBottom={2} sx={{ justifyContent: 'flex-end', display: 'flex', flexDirection: 'column' }}>
                                                 <Grid container spacing={2}>
@@ -1611,6 +1562,7 @@ export default function AddCustomerDetails() {
 
                                                         />
                                                     </Grid>
+                                                   
                                                     <Grid item xs={6}>
                                                         <FormControl fullWidth>
                                                             <InputLabel id="demo-simple-select-label">Delete</InputLabel>
@@ -1679,7 +1631,210 @@ export default function AddCustomerDetails() {
 
                                                                 <MenuItem value={"sim"}>SIM</MenuItem>
                                                                 <MenuItem value={"device"}>Device</MenuItem>
+                                                                <MenuItem value={"sim,device"}>Both</MenuItem>
+                                                            </Select>
+                                                        </FormControl>
+                                                    </Grid>
+                                                    <Grid item xs={6}>
+                                                        <TextField label='payout ID'
+                                                            type='number'
+                                                            fullWidth
+                                                            value={values2.payoutId}
+                                                            name='payoutId'
+                                                            required
+                                                            onChange={handleChange2}
+                                                            onBlur={handleBlur2}
 
+                                                        />
+                                                    </Grid>
+                                                    <Grid item xs={6}>
+                                                        <TextField label='balance'
+                                                            type='number'
+                                                            value={values2.balance}
+                                                            name='balance'
+                                                            required
+                                                            fullWidth
+                                                            onChange={handleChange2}
+                                                            onBlur={handleBlur2}
+                                                        />
+                                                    </Grid>
+                                                    <Grid item xs={6}>
+                                                        <TextField label='payment pariod'
+                                                            type='number'
+                                                            value={values2.paymentPeriod}
+                                                            name='paymentPeriod'
+                                                            required
+                                                            fullWidth
+                                                            onChange={handleChange2}
+                                                            onBlur={handleBlur2}
+                                                        />
+                                                    </Grid>
+                                                    <Grid item xs={6}>
+                                                        <FormControl fullWidth>
+                                                            <InputLabel id="demo-simple-select-label">Payment Status</InputLabel>
+                                                            <Select
+                                                                labelId="demo-simple-select-label"
+                                                                id="demo-simple-select"
+                                                                label="paymentStatus"
+                                                                value={values2.paymentStatus}
+                                                                onChange={handleChange2}
+                                                                name='paymentStatus'
+                                                            >
+
+                                                                <MenuItem value={1}>Yes</MenuItem>
+                                                                <MenuItem value={0}>No</MenuItem>
+
+                                                            </Select>
+                                                        </FormControl>
+                                                    </Grid>
+                                                    <Grid item xs={12}>
+                                                        <TextField label='Payment Notes'
+                                                            fullWidth
+                                                            type='text'
+                                                            value={values2.paymentNotes}
+                                                            name='paymentNotes'
+                                                            rows={4}
+                                                            required
+                                                            onChange={handleChange2}
+                                                            onBlur={handleBlur2}
+                                                        />
+                                                    </Grid>
+
+
+                                                </Grid>
+                                            </Grid>
+                                        </form>
+
+                                    )}
+                                     {billingCycle=='cash' && (
+                                        <form onSubmit={handleSubmit2}>
+                                            <Grid item lg={12} md={7} sm={12} xs={12} paddingBottom={2} sx={{ justifyContent: 'flex-end', display: 'flex', flexDirection: 'column' }}>
+                                                <Grid container spacing={2}>
+                                                    <Grid item xs={6}>
+                                                        <TextField
+
+                                                            label="userId"
+                                                            type="number"
+                                                            value={values2.userId}
+                                                            fullWidth
+                                                            name='userId'
+                                                            required
+                                                            disabled
+                                                            onChange={handleChange2}
+                                                            onBlur={handleBlur2}
+                                                        />
+                                                    </Grid>
+                                                    <Grid item xs={6}>
+                                                        <TextField
+
+                                                            label="customerId"
+                                                            type="number"
+                                                            value={values2.customerId}
+                                                            fullWidth
+                                                            name='customerId'
+                                                            required
+                                                            disabled
+                                                            onChange={handleChange2}
+                                                            onBlur={handleBlur2}
+                                                        />
+                                                    </Grid>
+
+                                                    <Grid item xs={6}>
+                                                        <TextField
+                                                            label='attempt'
+                                                            type='number'
+                                                            value={values2.attempt}
+                                                            name='attempt'
+                                                            required
+                                                            fullWidth
+                                                            onChange={handleChange2}
+                                                            onBlur={handleBlur2}
+
+                                                        />
+                                                    </Grid>
+                                                    <Grid item xs={6}>
+                                                        <TextField
+                                                            label='Amount'
+                                                            type='number'
+                                                            value={values2.amount}
+                                                            name='amount'
+                                                            required
+                                                            fullWidth
+                                                            onChange={handleChange2}
+                                                            onBlur={handleBlur2}
+
+                                                        />
+                                                    </Grid>
+                                                   
+                                                    <Grid item xs={6}>
+                                                        <FormControl fullWidth>
+                                                            <InputLabel id="demo-simple-select-label">Delete</InputLabel>
+                                                            <Select
+                                                                labelId="demo-simple-select-label"
+                                                                id="demo-simple-select"
+                                                                label="Delete"
+                                                                value={values2.deleted}
+                                                                onChange={handleChange2}
+                                                                name='deleted'
+                                                            >
+
+                                                                <MenuItem value={1}>Yes</MenuItem>
+                                                                <MenuItem value={0}>No</MenuItem>
+
+                                                            </Select>
+                                                        </FormControl>
+                                                    </Grid>
+                                                    <Grid item xs={6}>
+                                                        <FormControl fullWidth>
+                                                            <InputLabel id="demo-simple-select-label">Is Refund</InputLabel>
+                                                            <Select
+                                                                labelId="demo-simple-select-label"
+                                                                id="demo-simple-select"
+                                                                label="Is Refund"
+                                                                value={values2.isRefund}
+                                                                onChange={handleChange2}
+                                                                name='isRefund'
+                                                            >
+
+                                                                <MenuItem value={1}>Yes</MenuItem>
+                                                                <MenuItem value={0}>No</MenuItem>
+
+                                                            </Select>
+                                                        </FormControl>
+                                                    </Grid>
+                                                    <Grid item xs={6}>
+                                                        <FormControl fullWidth>
+                                                            <InputLabel id="demo-simple-select-label">isPreauth</InputLabel>
+                                                            <Select
+                                                                labelId="demo-simple-select-label"
+                                                                id="demo-simple-select"
+                                                                label="isPreauth"
+                                                                value={values2.isPreauth}
+                                                                onChange={handleChange2}
+                                                                name='isPreauth'
+                                                            >
+
+                                                                <MenuItem value={1}>Yes</MenuItem>
+                                                                <MenuItem value={0}>No</MenuItem>
+
+                                                            </Select>
+                                                        </FormControl>
+                                                    </Grid>
+                                                    <Grid item xs={6}>
+                                                        <FormControl fullWidth>
+                                                            <InputLabel id="demo-simple-select-label">Product</InputLabel>
+                                                            <Select
+                                                                labelId="demo-simple-select-label"
+                                                                id="demo-simple-select"
+                                                                label="product"
+                                                                value={values2.product}
+                                                                onChange={handleChange2}
+                                                                name='product'
+                                                            >
+
+                                                                <MenuItem value={"sim"}>SIM</MenuItem>
+                                                                <MenuItem value={"device"}>Device</MenuItem>
+                                                                <MenuItem value={"sim,device"}>Both</MenuItem>
                                                             </Select>
                                                         </FormControl>
                                                     </Grid>

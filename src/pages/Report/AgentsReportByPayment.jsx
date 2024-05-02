@@ -29,7 +29,7 @@ export default function AgentReportByPayment(props) {
         // console.log("record==>",selectedRecord)
         const fetchData = async () => {
             try {
-                const response = await axios.get('http://localhost:9098/agent/partners', {
+                const response = await axios.get('http://172.5.10.2:9098/agent/partners', {
                     headers: {
                         Authorization: `Bearer ${tokenValue}`,
                         "Accept": "application/json",
@@ -136,7 +136,7 @@ export default function AgentReportByPayment(props) {
 
 
         // Construct the API URL
-        const apiUrl = `http://localhost:9098/agent/partners/bydate/range?search=${serach}&startDate=${startdate}&endDate=${enddate}`;
+        const apiUrl = `http://172.5.10.2:9098/agent/partners/bydate/range?search=${serach}&startDate=${startdate}&endDate=${enddate}`;
         // Make the API call
         fetch(apiUrl, {
             headers: {

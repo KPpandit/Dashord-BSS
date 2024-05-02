@@ -128,7 +128,7 @@ const AllCustomerReport = (props) => {
     const handleSerch = async (e) => {
         e.preventDefault();
         return await axios
-            .get(`http://localhost:9098/customer/bySearch/Radha`, {
+            .get(`http://172.5.10.2:9098/customer/bySearch/Radha`, {
                 headers: {
                     Authorization: `Bearer ${tokenValue}`,
                     Accept: 'application/json',
@@ -278,7 +278,7 @@ const AllCustomerReport = (props) => {
         const type = 'pre-paid';
 
         // Construct the API URL
-        const apiUrl = `http://localhost:9098/customer/search?search=${serach}&startDate=${startdate}&endDate=${enddate}`;
+        const apiUrl = `http://172.5.10.2:9098/customer/search?search=${serach}&startDate=${startdate}&endDate=${enddate}`;
 
         // Make the API call
         fetch(apiUrl, {

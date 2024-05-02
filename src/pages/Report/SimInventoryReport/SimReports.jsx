@@ -38,7 +38,7 @@ export default function SimReports() {
 
     const fetchData = async () => {
         try {
-            const response1 = await axios.get(`http://localhost:9098/sim/getall/sim/bydate`, {
+            const response1 = await axios.get(`http://172.5.10.2:9098/sim/getall/sim/bydate`, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem('token')}`,
                     "Accept": "application/json",
@@ -65,7 +65,7 @@ export default function SimReports() {
                 ],
             });
 
-            const response2 = await axios.get(`http://localhost:9098/sim/getall/sim/byType`, {
+            const response2 = await axios.get(`http://172.5.10.2:9098/sim/getall/sim/byType`, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem('token')}`,
                     "Accept": "application/json",
@@ -87,7 +87,7 @@ export default function SimReports() {
 
     const handleCategory = async (categoryType) => {
         try {
-            const response = await axios.get(`http://localhost:9098/sim/getall/sim/graph/bydateRange?startDate=${startdate}&endDate=${enddate}`, {
+            const response = await axios.get(`http://172.5.10.2:9098/sim/getall/sim/graph/bydateRange?startDate=${startdate}&endDate=${enddate}`, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem('token')}`,
                     "Accept": "application/json",
@@ -119,7 +119,7 @@ export default function SimReports() {
             console.error("Error fetching data:", error);
         }
         try {
-            const response2 = await axios.get(`http://localhost:9098/sim/getall/sim/byType/byDateRange?startDate=${startdate}&endDate=${enddate}`, {
+            const response2 = await axios.get(`http://172.5.10.2:9098/sim/getall/sim/byType/byDateRange?startDate=${startdate}&endDate=${enddate}`, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem('token')}`,
                     "Accept": "application/json",

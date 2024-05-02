@@ -9,126 +9,79 @@ import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import * as XLSX from 'xlsx';
 
-export default function TopPostpaidSMSUsageReport(props) {
+export default function PrepaidCustomerUsageReport (props) {
     const columns = [
         { id: 'firstName', name: 'Name' },
         { id: 'ekycStatus', name: 'Ekyc Status' },
         { id: 'ekycToken', name: 'Ekyc Token' },
-        { id: 'msisdn', name: 'MSISDN' },
         { id: 'ekycDate', name: 'Ekyc Date' },
-        { id: 'phonePhoneNumber', name: 'Phone No' },
-        { id: 'totalSmsUsed', name: 'SMS Consumed' },
-        { id: 'days_data_used', name: 'Days' },
-        { id: 'customerType', name: 'Customer Type' },
-
+        { id: 'pack_offered_data', name: 'Data Provided' },
+        { id: 'pack_offered_calls', name: 'Call Provided(sec.)' },
+        { id: 'pack_offered_sms', name: 'Data Provided' },
 
     ];
     const [rows, setRows] = useState([]);
     const tokenValue = localStorage.getItem('token');
-    const [selectedPhoto, setSelectedPhoto] = useState(null);
-    const [selectedRecord, setSelectedRecord] = useState(null);
+    
+    const [searchKeyword, setSearchKeyword] = useState('');
+  
     const [open, setOpen] = React.useState(false);
     // Generate sample data
 
     const [openDialog, setOpenDialog] = useState(false);
 
     useEffect(() => {
-        // console.log("record==>",selectedRecord)
         const fetchData = async () => {
             try {
-                const response = await axios.get('http://172.5.10.2:9098/customer/sms/usage', {
+                let url = 'http://localhost:9098/api/pre-paid/all/info';
+                if (searchKeyword.trim() !== '') {
+                    url += `?keyword=${searchKeyword}`;
+                }
+                const response = await axios.get(url, {
                     headers: {
-                        Authorization: `Bearer ${tokenValue}`,
+                        Authorization: `Bearer ${localStorage.getItem('token')}`,
                         "Accept": "application/json",
                         "Content-Type": "application/json"
                     }
                 });
-                // Assuming your API response is an array of objects similar to the data structure in your generateData function
-                const apiData = response.data;
-
-                // Update the state with the API data
-                setRows(apiData);
+                setRows(response.data);
             } catch (error) {
-
-                if (error.response && error.response.status === 401) {
-                    // console.log("From inside if condition");
-                    // localStorage.removeItem('token');
-                    // navigate("/");
-                }
-
                 console.error('Error fetching data from API:', error);
-                // Handle error as needed
             }
         };
 
-        fetchData(); // Invoke the fetchData function when the component mounts
-    }, [tokenValue, selectedPhoto]);
+        fetchData();
+    }, [tokenValue, openDialog]);
 
 
     const handleClickOpen = (row) => {
         setSelectedRecord(row)
         // setOpen(true);
-    };
-    const handleClose = () => {
-        setOpen(false);
+
     };
 
+   
 
-    const handleCloseDialog = () => {
-        setOpenDialog(false);
-    };
 
-    const [confirmationDialogOpen, setConfirmationDialogOpen] = useState(false);
-    const [recordIdToDelete, setRecordIdToDelete] = useState(null);
-    const handleOpenConfirmationDialog = (id) => {
-        setRecordIdToDelete(id);
-        setConfirmationDialogOpen(true);
-    };
+   
+
+   
+  
 
 
     const navigate = useNavigate();
-    const handleButtonClick = () => {
-        navigate('/newCustomer');
-    };
+   
 
     const handleRowClick = (row) => {
         setSelectedRecord(row);
         setOpenDialog(true);
         fetchPhoto1(row)
     };
-    const fetchPhoto1 = async (row) => {
-
-        try {
-            const photoResponse = await axios.get(`http://172.5.10.2:9090/api/image/${row.id}`, {
-                headers: {
-                    Authorization: `Bearer ${tokenValue}`,
-                    Accept: 'application/json',
-                    'Content-Type': 'application/json',
-                },
-                responseType: 'arraybuffer',
-            });
-
-            if (photoResponse.status === 200) {
-                const imageBlob = new Blob([photoResponse.data], { type: 'image/jpeg' });
-                const imageUrl = URL.createObjectURL(imageBlob);
-                setSelectedPhoto(imageUrl);
-                sessionStorage.setItem('selectedPhoto', imageUrl)
-            } else {
-                console.error('Failed to fetch photo details.');
-                sessionStorage.removeItem('selectedPhoto')
-            }
-        } catch (error) {
-            setSelectedPhoto(null);
-            console.log('Failed to load the Photo', error);
-            sessionStorage.removeItem('selectedPhoto')
-
-        }
-        navigate('/individualReport', { state: { selectedRecord: row } })
-
-    };
+    
 
 
     const handleSerch = async (e) => {
+        console.log("from serch")
         e.preventDefault();
         return await axios
             .get(`http://172.5.10.2:9696/api/vendor/mgmt/detail/search?keyword=${value}`)
@@ -146,27 +99,13 @@ export default function TopPostpaidSMSUsageReport(props) {
         setHighlightedRow(row)
     };
 
-    function DownloadPDF() {
-        const capture = document.getElementById('container');
-        html2canvas(capture).then((canvas) => {
-            const imgdata = canvas.toDataURL('img/png')
-            const doc = new jsPDF('p', 'pt', 'a4');
-            const pageHeight = doc.internal.pageSize.height;
-            const pageWidth = doc.internal.pageSize.width;
-            doc.addImage(imgdata, 'PNG', 0.5, 0.5, pageWidth, pageHeight);
-            doc.save('customerProfile.pdf')
-        })
 
-        // let pdf = new jsPDF('p','pt','a4');
-        // let capture = document.getElementById('container')
-        // pdf.html(capture,{
-        //     callback:(pdf=>{
-        //         pdf.save('customer.pdf')
-        //     })
-        // })
 
-    }
-    const [serach, setSearch] = useState('');
+    // const handleRowMouseLeave = () => {
+    //     setHighlightedRow(null);
+    // };
+
+
     const [selectedOption, setSelectedOption] = useState(null);
     const handleDownload = () => {
         if (selectedOption === 'pdf') {
@@ -214,12 +153,13 @@ export default function TopPostpaidSMSUsageReport(props) {
     };
     const [startdate, setStartDate] = useState('');
     const [enddate, setEndDate] = useState('');
+    const [serach, setSearch] = useState('');
     const handleDateRange = () => {
 
         const type = 'pre-paid';
 
         // Construct the API URL
-        const apiUrl = `http://172.5.10.2:9098/customer/sms/usage/bydate/range?search=${serach}&startDate=${startdate}&endDate=${enddate}`;
+        const apiUrl = `http://172.5.10.2:9098/customer/prepaid/search?search=${serach}&startDate=${startdate}&endDate=${enddate}`;
 
         // Make the API call
         fetch(apiUrl, {
@@ -249,6 +189,7 @@ export default function TopPostpaidSMSUsageReport(props) {
                 console.error('Error fetching data:', error);
             });
     };
+    console.log("value of roes ", rows)
     const [page, pagechange] = useState(0);
     const [rowperpage, rowperpagechange] = useState(5);
 
@@ -259,7 +200,6 @@ export default function TopPostpaidSMSUsageReport(props) {
         rowperpagechange(+event.target.value);
         pagechange(0);
     };
-    
     return (
         <Box sx={{ display: 'container', marginTop: -2.5 }}>
 
@@ -275,11 +215,10 @@ export default function TopPostpaidSMSUsageReport(props) {
                                     fontWeight: 'bold',
 
                                 }}
-                            >Top Post-Paid Customers SMS Usage Report</Typography>
+                            >Pre-Paid Customer Usage Report</Typography>
                         </Grid>
                     </Paper>
                 </Box>
-
                 <Grid lg={4} >
                     <form
                         onSubmit={handleSerch}
@@ -346,6 +285,7 @@ export default function TopPostpaidSMSUsageReport(props) {
                             </Grid> */}
                     </form>
                 </Grid>
+
                 <Box component="main" sx={{ flexGrow: 1, width: '100%' }}>
                     <Paper elevation={10}>
                         <TableContainer sx={{ maxHeight: 600 }}>
@@ -360,33 +300,36 @@ export default function TopPostpaidSMSUsageReport(props) {
                                 <TableBody>
                                     {rows &&
                                         rows
-                                        .slice(page * rowperpage, page * rowperpage + rowperpage)
+                                            .slice(page * rowperpage, page * rowperpage + rowperpage)
                                             .map((row, i) => {
                                                 return (
+                                                    (row.customerType == 'prepaid') || (row.customerType == 'Pre-Paid') ?
+                                                        <TableRow
+                                                            key={i}
+                                                            onClick={() => {
+                                                                handleRowClick(row)
+                                                                handleClickOpen(row)
+                                                            }}
+                                                            onMouseEnter={() => handleRowMouseEnter(row)}
+                                                            //   onMouseLeave={handleRowMouseLeave}
+                                                            sx={
+                                                                highlightedRow === row
+                                                                    ? { backgroundColor: '#F6B625' }
+                                                                    : {}
+                                                            }
+                                                        >
 
-                                                    <TableRow
-                                                        key={i}
-                                                        onClick={() => {
-                                                            handleRowClick(row)
-                                                            handleClickOpen(row)
-                                                        }}
-                                                        onMouseEnter={() => handleRowMouseEnter(row)}
-                                                        //   onMouseLeave={handleRowMouseLeave}
-                                                        sx={
-                                                            highlightedRow === row
-                                                                ? { backgroundColor: '#F6B625' }
-                                                                : {}
-                                                        }
-                                                    >
+                                                            {columns.map((column) => (
 
-                                                        {columns.map((column) => (
-                                                            <TableCell key={column.id} sx={{ textAlign: 'left', fontSize: '17px' }}>
 
-                                                                {row[column.id]}
-                                                            </TableCell>
-                                                        ))}
-                                                    </TableRow>
+                                                                <TableCell key={column.id} sx={{ textAlign: 'left', fontSize: '17px' }}>
 
+                                                                    {row[column.id]}
+
+                                                                </TableCell>
+                                                            ))}
+                                                        </TableRow>
+                                                        : null
 
                                                 );
                                             })}
