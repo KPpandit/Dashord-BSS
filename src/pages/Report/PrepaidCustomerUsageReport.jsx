@@ -8,6 +8,7 @@ import { Download } from '@mui/icons-material';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import * as XLSX from 'xlsx';
+import { FourSquare } from 'react-loading-indicators';
 
 export default function PrepaidCustomerUsageReport (props) {
     const columns = [
@@ -29,7 +30,7 @@ export default function PrepaidCustomerUsageReport (props) {
     // Generate sample data
 
     const [openDialog, setOpenDialog] = useState(false);
-
+    const [isLoading, setIsLoading] = useState(true);
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -45,6 +46,7 @@ export default function PrepaidCustomerUsageReport (props) {
                     }
                 });
                 setRows(response.data);
+                setIsLoading(false);
             } catch (error) {
                 console.error('Error fetching data from API:', error);
             }
@@ -201,6 +203,19 @@ export default function PrepaidCustomerUsageReport (props) {
         pagechange(0);
     };
     return (
+        <Box >
+        {isLoading ? (
+            <Grid
+                container
+                justifyContent="center"
+                alignItems="center"
+                style={{ height: '60vh' }}
+
+            >
+                <FourSquare color="#FAC22E" size="medium" text="Load..." textColor="#253A7D" />
+            </Grid>
+
+        ) :
         <Box sx={{ display: 'container', marginTop: -2.5 }}>
 
             <Box sx={{ width: '100%', }}>
@@ -382,6 +397,9 @@ export default function PrepaidCustomerUsageReport (props) {
 
 
         </Box>
+         }
+
+         </Box>
     )
 };
 

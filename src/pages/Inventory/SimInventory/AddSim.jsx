@@ -75,22 +75,34 @@ export default function AddSim() {
     const { handleChange, handleSubmit, handleBlur, values } = useFormik({
         initialValues: {
 
+            msisdn: "",
+            category: "",
+            specialNumber: "",
             imsi: "",
-            batch_no: "",
-            batch_date: "",
-            allocation_date: "",
-            sim_type: '',
-            key_id: '',
-            auth_id: '',
-            vendor_name: '',
-            status: '',
-
-
+            pimsi: "",
+            batchId: "",
+            vendorId: "",
+            status: "",
+            provStatus: "",
+            vendorName: "",
+            vendorContact: "",
+            vendorAddress: "",
+            simType: "",
+            buyingPriceUsd: "",
+            sellingPriceUsd: "",
+            vat: "",
+            otherTaxes: "",
+            minCommision: "",
+            maxCommision: "",
+            avgCommision: "",
+            // activationDate:"",
+            // allocationDate:""
+            
         },
         onSubmit: async (values) => {
             // console.log(values);
             // setResult(values);
-            const res = await axios.post('http://172.5.10.2:9696/api/sim/mgmt/detail/save',
+            const res = await axios.post('http://172.5.10.2:9090/api/savesiminventory',
                 { ...values }, {
                 headers: {
                     Authorization: `Bearer ${tokenValue}`,
@@ -102,9 +114,9 @@ export default function AddSim() {
             }
             ).then(res => {
                 console.log(res.status + "status code ")
-                if (res.status === 200) {
+              
                     toast.success('SIM/e-SIM Record Added Successfully', { autoClose: 2000 });
-                }
+               
 
                 // location.reload();
             }).catch(err => {
@@ -187,7 +199,31 @@ export default function AddSim() {
                                 <Grid container spacing={2}>
                                     <Grid item lg={4} md={4} sm={6} xs={12} > {/* Padding for individual items */}
                                         <TextField
-                                            label="IMSI"
+                                            label="msisdn"
+                                            name='msisdn'
+                                            type='text'
+                                            value={values.msisdn}
+                                            fullWidth
+                                            required
+                                            onChange={handleChange}
+                                        />
+
+                                    </Grid>
+                                    <Grid item lg={4} md={4} sm={6} xs={12} > {/* Padding for individual items */}
+                                        <TextField
+                                            label="category"
+                                            name='category'
+                                            type='text'
+                                            value={values.category}
+                                            fullWidth
+                                            required
+                                            onChange={handleChange}
+                                        />
+
+                                    </Grid>
+                                    <Grid item lg={4} md={4} sm={6} xs={12} > {/* Padding for individual items */}
+                                        <TextField
+                                            label="imsi"
                                             name='imsi'
                                             type='text'
                                             value={values.imsi}
@@ -197,69 +233,188 @@ export default function AddSim() {
                                         />
 
                                     </Grid>
-                                    <Grid item lg={4} md={4} sm={6} xs={12} >
+                                    <Grid item lg={4} md={4} sm={6} xs={12} > {/* Padding for individual items */}
                                         <TextField
-                                            label="Batch No"
-                                            type="number"
+                                            label="pimsi"
+                                            name='pimsi'
+                                            type='text'
+                                            value={values.pimsi}
                                             fullWidth
-                                            name='batch_no'
-                                            value={values.batch_no}
                                             required
                                             onChange={handleChange}
-
                                         />
+
                                     </Grid>
-                                    <Grid item lg={4} md={4} sm={6} xs={12} >
+                                    <Grid item lg={4} md={4} sm={6} xs={12} > {/* Padding for individual items */}
                                         <TextField
-                                            label="Key Id"
-                                            type="number"
+                                            label="batchId"
+                                            name='batchId'
+                                            type='number'
+                                            value={values.batchId}
                                             fullWidth
                                             required
-                                            name='key_id'
-                                            value={values.key_id}
                                             onChange={handleChange}
-
-
                                         />
+
                                     </Grid>
-                                    <Grid item lg={4} md={4} sm={4} xs={6}>
+                                    <Grid item lg={4} md={4} sm={6} xs={12} > {/* Padding for individual items */}
                                         <TextField
-
-                                            label="Vendor Name"
-                                            type="text"
-                                            required
+                                            label="vendorId"
+                                            name='vendorId'
+                                            type='number'
+                                            value={values.vendorId}
                                             fullWidth
-                                            request
-                                            name='vendor_name'
-                                            value={values.vendor_name}
+                                            required
                                             onChange={handleChange}
                                         />
+
                                     </Grid>
-                                    <Grid item lg={4} md={4} sm={4} xs={6}>
+                                    <Grid item lg={4} md={4} sm={6} xs={12} > {/* Padding for individual items */}
                                         <TextField
-
-                                            label="Auth Id"
-                                            type="text"
-                                            required
+                                            label="vendorName"
+                                            name='vendorName'
+                                            type='text'
+                                            value={values.vendorName}
                                             fullWidth
-                                            name='auth_id'
-                                            value={values.auth_id}
+                                            required
                                             onChange={handleChange}
                                         />
+
+                                    </Grid>
+                                    <Grid item lg={4} md={4} sm={6} xs={12} > {/* Padding for individual items */}
+                                        <TextField
+                                            label="vendorContact"
+                                            name='vendorContact'
+                                            type='text'
+                                            value={values.vendorContact}
+                                            fullWidth
+                                            required
+                                            onChange={handleChange}
+                                        />
+
+                                    </Grid>
+                                    <Grid item lg={4} md={4} sm={6} xs={12} > {/* Padding for individual items */}
+                                        <TextField
+                                            label="vendorAddress"
+                                            name='vendorAddress'
+                                            type='text'
+                                            value={values.vendorAddress}
+                                            fullWidth
+                                            required
+                                            onChange={handleChange}
+                                        />
+
+                                    </Grid>
+                                    <Grid item lg={4} md={4} sm={6} xs={12} > {/* Padding for individual items */}
+                                        <TextField
+                                            label="simType"
+                                            name='simType'
+                                            type='text'
+                                            value={values.simType}
+                                            fullWidth
+                                            required
+                                            onChange={handleChange}
+                                        />
+
+                                    </Grid>
+                                    <Grid item lg={4} md={4} sm={6} xs={12} > {/* Padding for individual items */}
+                                        <TextField
+                                            label="vat"
+                                            name='vat'
+                                            type='text'
+                                            value={values.vat}
+                                            fullWidth
+                                            required
+                                            onChange={handleChange}
+                                        />
+
+                                    </Grid>
+                                    <Grid item lg={4} md={4} sm={6} xs={12} > {/* Padding for individual items */}
+                                        <TextField
+                                            label="buyingPriceUsd"
+                                            name='buyingPriceUsd'
+                                            type='number'
+                                            value={values.buyingPriceUsd}
+                                            fullWidth
+                                            required
+                                            onChange={handleChange}
+                                        />
+
+                                    </Grid>
+                                    <Grid item lg={4} md={4} sm={6} xs={12} > {/* Padding for individual items */}
+                                        <TextField
+                                            label="sellingPriceUsd"
+                                            name='sellingPriceUsd'
+                                            type='number'
+                                            value={values.sellingPriceUsd}
+                                            fullWidth
+                                            required
+                                            onChange={handleChange}
+                                        />
+
+                                    </Grid>
+                                    <Grid item lg={4} md={4} sm={6} xs={12} > {/* Padding for individual items */}
+                                        <TextField
+                                            label="otherTaxes"
+                                            name='otherTaxes'
+                                            type='number'
+                                            value={values.otherTaxes}
+                                            fullWidth
+                                            required
+                                            onChange={handleChange}
+                                        />
+
+                                    </Grid>
+                                    <Grid item lg={4} md={4} sm={6} xs={12} > {/* Padding for individual items */}
+                                        <TextField
+                                            label="minCommision"
+                                            name='minCommision'
+                                            type='number'
+                                            value={values.minCommision}
+                                            fullWidth
+                                            required
+                                            onChange={handleChange}
+                                        />
+
+                                    </Grid>
+                                    
+                                    <Grid item lg={4} md={4} sm={6} xs={12} > {/* Padding for individual items */}
+                                        <TextField
+                                            label="maxCommision"
+                                            name='maxCommision'
+                                            type='number'
+                                            value={values.maxCommision}
+                                            fullWidth
+                                            required
+                                            onChange={handleChange}
+                                        />
+
+                                    </Grid>
+                                    <Grid item lg={4} md={4} sm={6} xs={12} > {/* Padding for individual items */}
+                                        <TextField
+                                            label="avgCommision"
+                                            name='avgCommision'
+                                            type='number'
+                                            value={values.avgCommision}
+                                            fullWidth
+                                            required
+                                            onChange={handleChange}
+                                        />
+
                                     </Grid>
 
                                     <Grid item lg={4} md={4} sm={4} xs={6}>
                                         <FormControl fullWidth>
-                                            <InputLabel >SIM Type</InputLabel>
+                                            <InputLabel >specialNumber</InputLabel>
                                             <Select
                                                 fullWidth
-                                                label="sim_type"
-                                                name='sim_type'
-                                                value={values.sim_type}
+                                                label="specialNumber"
+                                                name='specialNumber'
+                                                value={values.specialNumber}
                                                 onChange={handleChange}
                                             >
-                                                <MenuItem value={"prepaid"}>Prepaid</MenuItem>
-                                                <MenuItem value={"postpaid"}>postpaid</MenuItem>
+                                                <MenuItem value={true}>Yes</MenuItem>
+                                                <MenuItem value={false}>No</MenuItem>
 
                                             </Select>
                                         </FormControl>
@@ -280,39 +435,31 @@ export default function AddSim() {
                                             </Select>
                                         </FormControl>
                                     </Grid>
-                                    <Grid item lg={4} md={4} sm={4} xs={6}>
-
-
-                                        <TextField
-                                            InputLabelProps={{ shrink: true }}
-                                            label="Batch Date"
-                                            type="date"
-                                            required
-                                            name='batch_date'
+                                    {/* <Grid item lg={4} md={4} sm={4} xs={6}>
+                                    <TextField
+                                            label="Activation Date"
+                                            name='activationDate'
+                                            type='date'
+                                            value={values.activationDate}
                                             fullWidth
-                                            value={values.batch_date}
+                                            required
                                             onChange={handleChange}
-                                            inputProps={{ max: new Date().toISOString().split('T')[0] }}
                                         />
-
                                     </Grid>
                                     <Grid item lg={4} md={4} sm={4} xs={6}>
-
-
-                                        <TextField
-                                            InputLabelProps={{ shrink: true }}
-                                            label="Allocation Date"
-                                            type="date"
-                                            required
+                                    <TextField
+                                            label="Allocation  Date"
+                                            name='allocationDate'
+                                            type='date'
+                                            value={values.allocationDate}
                                             fullWidth
-                                            name='allocation_date'
-                                            value={values.allocation_date}
+                                            required
                                             onChange={handleChange}
-                                            inputProps={{ max: new Date().toISOString().split('T')[0] }}
                                         />
-
-                                    </Grid>
-
+                                    </Grid> */}
+                                  
+                                   
+                                 
                                 </Grid>
                             </Grid>
 

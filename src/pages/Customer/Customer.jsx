@@ -1,12 +1,12 @@
-import { Avatar, Box, Button, Card, Checkbox, Chip, CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, FormControl, Grid, IconButton, InputAdornment, InputLabel, ListItemText, Menu, MenuItem, OutlinedInput, Paper, Select, Skeleton, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TextField, Typography, colors } from '@mui/material';
+import { Box, Button, Card, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, Grid, IconButton, InputAdornment, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TextField, Typography } from '@mui/material';
 import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import SearchIcon from '@mui/icons-material/Search';
 import axios from "axios";
 import blanPhoto from '../../assets/blanPhoto.png'
 import { TokenContext } from '../../TokenContext';
-import ReactLoading from 'react-loading';
-import { Commet, FourSquare, LifeLine, Mosaic } from 'react-loading-indicators';
+
+import { FourSquare } from 'react-loading-indicators';
 const Customer = (props) => {
     const [isLoading, setIsLoading] = useState(true);
     const { token } = useContext(TokenContext);
@@ -108,13 +108,7 @@ const Customer = (props) => {
                 setIsLoading(false);
             } catch (error) {
 
-                if (error.response && error.response.status === 401) {
-                    // console.log("From inside if condition");
-                    // localStorage.removeItem('token');
-                    // navigate("/");
-                }
-
-                console.error('Error fetching data from API:', error);
+               
                 // Handle error as needed
             }
         };
@@ -523,9 +517,7 @@ const Customer = (props) => {
         console.log("from hnadle row mouse enter");
     };
 
-    const handleRowMouseLeave = () => {
-        setHighlightedRow(null);
-    };
+
     return (
         <Box >
             {isLoading ? (
@@ -536,7 +528,7 @@ const Customer = (props) => {
                     style={{ height: '60vh' }}
 
                 >
-              <FourSquare color="#FAC22E" size="medium" text="Load..." textColor="#253A7D" />
+                    <FourSquare color="#FAC22E" size="medium" text="Load..." textColor="#253A7D" />
                 </Grid>
 
             ) :

@@ -8,8 +8,10 @@ import { Download } from '@mui/icons-material';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import * as XLSX from 'xlsx';
+import { FourSquare } from 'react-loading-indicators';
 
 export default function TopCustomerReport(props) {
+    const [isLoading, setIsLoading] = useState(true);
     const columns = [
         { id: 'firstName', name: 'Name' },
         { id: 'ekycStatus', name: 'Ekyc Status' },
@@ -36,7 +38,7 @@ export default function TopCustomerReport(props) {
         // console.log("record==>",selectedRecord)
         const fetchData = async () => {
             try {
-                const response = await axios.get('http://172.5.10.2:9098/customers/dataCosumption/post-paid', {
+                const response = await axios.get('http://localhost:9098/customers/dataCosumption/postpaid', {
                     headers: {
                         Authorization: `Bearer ${tokenValue}`,
                         "Accept": "application/json",
@@ -48,6 +50,7 @@ export default function TopCustomerReport(props) {
 
                 // Update the state with the API data
                 setRows(apiData);
+                setIsLoading(false);
             } catch (error) {
 
                 if (error.response && error.response.status === 401) {
@@ -69,14 +72,7 @@ export default function TopCustomerReport(props) {
         setSelectedRecord(row)
         // setOpen(true);
     };
-    const handleClose = () => {
-        setOpen(false);
-    };
-
-
-    const handleCloseDialog = () => {
-        setOpenDialog(false);
-    };
+    
 
     const [confirmationDialogOpen, setConfirmationDialogOpen] = useState(false);
     const [recordIdToDelete, setRecordIdToDelete] = useState(null);
@@ -261,6 +257,19 @@ export default function TopCustomerReport(props) {
         pagechange(0);
     };
     return (
+        <Box >
+        {isLoading ? (
+            <Grid
+                container
+                justifyContent="center"
+                alignItems="center"
+                style={{ height: '60vh' }}
+
+            >
+                <FourSquare color="#FAC22E" size="medium" text="Load..." textColor="#253A7D" />
+            </Grid>
+
+        ) :
         <Box sx={{ display: 'container', marginTop: -2.5 }}>
 
             <Box sx={{ width: '100%', }}>
@@ -439,6 +448,9 @@ export default function TopCustomerReport(props) {
 
 
         </Box>
+         }
+
+         </Box>
     )
 };
 

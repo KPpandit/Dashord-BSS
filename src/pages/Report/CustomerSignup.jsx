@@ -8,6 +8,7 @@ import { Download } from '@mui/icons-material';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import * as XLSX from 'xlsx';
+import { FourSquare } from 'react-loading-indicators';
 
 export default function CustomerSignUp(props) {
     const columns = [
@@ -28,12 +29,12 @@ export default function CustomerSignUp(props) {
     // Generate sample data
 
     const [openDialog, setOpenDialog] = useState(false);
-
+    const [isLoading, setIsLoading] = useState(true);
     useEffect(() => {
         // console.log("record==>",selectedRecord)
         const fetchData = async () => {
             try {
-                const response = await axios.get('http://172.5.10.2:9098/customer/signup', {
+                const response = await axios.get('http://localhost:9098/customer/signup', {
                     headers: {
                         Authorization: `Bearer ${tokenValue}`,
                         "Accept": "application/json",
@@ -45,6 +46,7 @@ export default function CustomerSignUp(props) {
 
                 // Update the state with the API data
                 setRows(apiData);
+                setIsLoading(false);
             } catch (error) {
 
                 if (error.response && error.response.status === 401) {
@@ -259,6 +261,19 @@ const handleRowsPerPage = (event) => {
     pagechange(0);
 };
     return (
+        <Box >
+        {isLoading ? (
+            <Grid
+                container
+                justifyContent="center"
+                alignItems="center"
+                style={{ height: '60vh' }}
+
+            >
+                <FourSquare color="#FAC22E" size="medium" text="Load..." textColor="#253A7D" />
+            </Grid>
+
+        ) :
         <Box sx={{ display: 'container', marginTop: -2.5 }}>
 
             <Box sx={{ width: '100%', }}>
@@ -426,6 +441,9 @@ const handleRowsPerPage = (event) => {
 
 
         </Box>
+         }
+
+         </Box>
     )
 };
 

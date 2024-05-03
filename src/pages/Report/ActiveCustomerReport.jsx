@@ -8,8 +8,10 @@ import { Download } from '@mui/icons-material';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import * as XLSX from 'xlsx';
+import { FourSquare } from 'react-loading-indicators';
 
 const ActiveCustomerReport = (props) => {
+    const [isLoading, setIsLoading] = useState(true);
     const columns = [
         { id: 'firstName', name: 'Name' },
         { id: 'ekycStatus', name: 'Ekyc Status' },
@@ -45,6 +47,7 @@ const ActiveCustomerReport = (props) => {
 
                 // Update the state with the API data
                 setRows(apiData);
+                setIsLoading(false);
             } catch (error) {
 
                 if (error.response && error.response.status === 401) {
@@ -219,6 +222,19 @@ const ActiveCustomerReport = (props) => {
         }
     };
     return (
+        <Box >
+        {isLoading ? (
+            <Grid
+                container
+                justifyContent="center"
+                alignItems="center"
+                style={{ height: '60vh' }}
+
+            >
+                <FourSquare color="#FAC22E" size="medium" text="Load..." textColor="#253A7D" />
+            </Grid>
+
+        ) :
         <Box sx={{ display: 'container', marginTop: -2.5 }}>
 
             <Box sx={{ width: '100%', }}>
@@ -368,6 +384,9 @@ const ActiveCustomerReport = (props) => {
 
 
         </Box>
+         }
+
+         </Box>
     )
 };
 

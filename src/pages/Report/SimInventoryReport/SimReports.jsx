@@ -38,7 +38,7 @@ export default function SimReports() {
 
     const fetchData = async () => {
         try {
-            const response1 = await axios.get(`http://172.5.10.2:9098/sim/getall/sim/bydate`, {
+            const response1 = await axios.get(`http://localhost:9098/sim/getall/sim/bydate`, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem('token')}`,
                     "Accept": "application/json",

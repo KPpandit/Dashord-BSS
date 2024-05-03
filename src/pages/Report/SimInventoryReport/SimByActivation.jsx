@@ -24,7 +24,7 @@ const SimByActivation = (props) => {
     ];
     const [rows, setRows] = useState([]);
     const tokenValue = localStorage.getItem('token');
-    const [selectedPhoto, setSelectedPhoto] = useState(null);
+   
     const [selectedRecord, setSelectedRecord] = useState(null);
     const [open, setOpen] = React.useState(false);
     // Generate sample data
@@ -35,7 +35,7 @@ const SimByActivation = (props) => {
         // console.log("record==>",selectedRecord)
         const fetchData = async () => {
             try {
-                const response = await axios.get('http://172.5.10.2:9098/sim/allsim/byDate', {
+                const response = await axios.get('http://localhost:9098/sim/allsim/byDate', {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem('token')}`,
                         "Accept": "application/json",
@@ -69,63 +69,19 @@ const SimByActivation = (props) => {
         // setOpen(true);
 
     };
-    const handleClose = () => {
-        setOpen(false);
-    };
 
 
-    const handleCloseDialog = () => {
-        setOpenDialog(false);
-    };
-
-    const [confirmationDialogOpen, setConfirmationDialogOpen] = useState(false);
-    const [recordIdToDelete, setRecordIdToDelete] = useState(null);
-    const handleOpenConfirmationDialog = (id) => {
-        setRecordIdToDelete(id);
-        setConfirmationDialogOpen(true);
-    };
+    
 
 
-    const navigate = useNavigate();
-    const handleButtonClick = () => {
-        navigate('/newCustomer');
-    };
-
+  
+  
     const handleRowClick = (row) => {
         setSelectedRecord(row);
         setOpenDialog(true);
         fetchPhoto1(row)
     };
-    const fetchPhoto1 = async (row) => {
-
-        try {
-            const photoResponse = await axios.get(`http://172.5.10.2:9090/api/image/${row.id}`, {
-                headers: {
-                    Authorization: `Bearer ${tokenValue}`,
-                    Accept: 'application/json',
-                    'Content-Type': 'application/json',
-                },
-                responseType: 'arraybuffer',
-            });
-
-            if (photoResponse.status === 200) {
-                const imageBlob = new Blob([photoResponse.data], { type: 'image/jpeg' });
-                const imageUrl = URL.createObjectURL(imageBlob);
-                setSelectedPhoto(imageUrl);
-                sessionStorage.setItem('selectedPhoto', imageUrl)
-            } else {
-                console.error('Failed to fetch photo details.');
-                sessionStorage.removeItem('selectedPhoto')
-            }
-        } catch (error) {
-            setSelectedPhoto(null);
-            console.log('Failed to load the Photo', error);
-            sessionStorage.removeItem('selectedPhoto')
-
-        }
-        navigate('/individualReport', { state: { selectedRecord: row } })
-
-    };
+ 
 
 
     const handleSerch = async (e) => {
@@ -223,7 +179,7 @@ const SimByActivation = (props) => {
         const type = 'pre-paid';
 
         // Construct the API URL
-        const apiUrl = `http://172.5.10.2:9098/sim/getSim/activate/byDate?search=${serach}&startDate=${startdate}&endDate=${enddate}`;
+        const apiUrl = `http://localhost:9098/sim/getSim/activate/byDate?search=${serach}&startDate=${startdate}&endDate=${enddate}`;
 
         // Make the API call
         fetch(apiUrl, {
