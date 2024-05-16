@@ -47,40 +47,62 @@ export default function EditVendor() {
     const tokenValue = localStorage.getItem('token');
     const { handleChange, handleSubmit, handleBlur, values, setValues } = useFormik({
         initialValues: {
-            vendor_name: "",
+            id:"",
+            firstName: "",
+            maidenName: "",
+            lastName: "",
             email: "",
-            contact: "",
-            address: "",
-            type: '',
-            identification: '',
-            batch_prefix: '',
-            // registration_date: '',
-            status: '',
-
+            contact: '',
+            address: '',
+            companyName: '',
+            createDate: '',
+            token: '',
+            userId: '',
 
         },
 
         onSubmit: async (values) => {
-            // console.log(values);
-            // setResult(values);
-            const res = await axios.put('http://172.5.10.2:9696/api/vendor/mgmt/detail/edit/' + selectObj.vendor_id,
-                { ...values }, {
-                headers: {
-                    "Authorization": `Bearer +${tokenValue}`,
-                    "Accept": "application/json",
-                    "Content-Type": "application/json"
+          
+            try {
+                const res = await axios.put(
+                  `http://172.5.10.2:9090/api/update/vendor/vendorId/`+selectObj.id,
+                  { ...values },
+                  {
+                    headers: {
+                      Authorization: `Bearer ${tokenValue}`,
+                      Accept: 'application/json',
+                      'Content-Type': 'application/json',
+                    },
+                  }
+                );
+            
+                console.log(res.status);
+                toast.success('Vendor updated Successfully', { autoClose: 2000 });
+               
+              } catch (error) {
+                console.error('Error during API request:', error);
+            
+                if (error.response) {
+                  // The request was made and the server responded with a status code
+                  console.error('Status Code:', error.response.status);
+                  console.error('Response Data:', error.response.data);
+            
+                  // Handle specific status codes if needed
+                  if (error.response.status === 401) {
+                    console.log('Unauthorized. Redirect or perform necessary actions.');
+                    localStorage.removeItem('token');
+                    navigate('/');
+                  }
+                } else if (error.request) {
+                  // The request was made but no response was received
+                  console.error('No Response Received');
+                } else {
+                  // Something happened in setting up the request that triggered an Error
+                  console.error('Error:', error.message);
                 }
-            }
-            ).then(res => {
-                console.log(res.status + "status code ")
-                if (res.status === 200) {
-                    toast.success('Vendor Record Updated Successfully', { autoClose: 2000 });
-                }
-                // location.reload();
-            }).catch(err => {
-                toast.error(err.response.data.message, { autoClose: 2000 });
-
-            })
+            
+               
+              }
 
 
         }
@@ -89,16 +111,19 @@ export default function EditVendor() {
         if (selectObj) {
             setValues((prevValues) => ({
                 ...prevValues,
-                vendor_name: selectObj.vendor_name || '',
+                id:selectObj.id|| '',
+                firstName: selectObj.firstName || '',
+                maidenName: selectObj.maidenName || '',
+                lastName: selectObj.lastName || '',
                 email: selectObj.email || '',
                 contact: selectObj.contact || '',
                 address: selectObj.address || '',
-                type: selectObj.type || '',
-                identification: selectObj.identification || '',
-                batch_prefix: selectObj.batch_prefix || '',
-                // registration_date: selectObj.registration_date || '',
-                status: selectObj.status || '',
-               
+                companyName: selectObj.companyName || '',
+              
+                createDate: selectObj.createDate || '',
+                token: selectObj.token || '',
+                userId: selectObj.userId || '',
+
             }));
         }
     }, [selectObj]);
@@ -155,14 +180,38 @@ export default function EditVendor() {
                             paddingBottom={2} // Padding for the entire container
                             paddingTop={2} // Padding for the entire container
                         >
-                          <Grid item lg={12} >
+                            <Grid item lg={12} >
                                 <Grid container spacing={2}>
                                     <Grid item lg={4} md={4} sm={6} xs={12} > {/* Padding for individual items */}
                                         <TextField
-                                            label="Vendor Name"
+                                            label="firstName"
                                             fullWidth
-                                            name='vendor_name'
-                                            value={values.vendor_name}
+                                            name='firstName'
+                                            value={values.firstName}
+                                            onChange={handleChange}
+                                            onBlur={handleBlur}
+
+                                        />
+
+                                    </Grid>
+                                    <Grid item lg={4} md={4} sm={6} xs={12} > {/* Padding for individual items */}
+                                        <TextField
+                                            label="maidenName"
+                                            fullWidth
+                                            name='maidenName'
+                                            value={values.maidenName}
+                                            onChange={handleChange}
+                                            onBlur={handleBlur}
+
+                                        />
+
+                                    </Grid>
+                                    <Grid item lg={4} md={4} sm={6} xs={12} > {/* Padding for individual items */}
+                                        <TextField
+                                            label="lastName"
+                                            fullWidth
+                                            name='lastName'
+                                            value={values.lastName}
                                             onChange={handleChange}
                                             onBlur={handleBlur}
 
@@ -211,12 +260,12 @@ export default function EditVendor() {
                                     </Grid>
                                     <Grid item lg={4} md={4} sm={6} xs={12} >
                                         <TextField
-                                            label="Type"
+                                            label="companyName"
                                             required
                                             type="text"
                                             fullWidth
-                                            name='type'
-                                            value={values.type}
+                                            name='companyName'
+                                            value={values.companyName}
                                             onChange={handleChange}
                                             onBlur={handleBlur}
 
@@ -224,71 +273,43 @@ export default function EditVendor() {
                                     </Grid>
                                     <Grid item lg={4} md={4} sm={6} xs={12} >
                                         <TextField
-                                            label="Batch"
+                                            label="create Date"
                                             required
-                                            type="text"
-                                            name='batch_prefix'
-                                            fullWidth
-                                            value={values.batch_prefix}
-                                            onChange={handleChange}
-                                            onBlur={handleBlur}
-
-                                        />
-                                    </Grid>
-                                    <Grid item lg={4} md={4} sm={6} xs={12} >
-                                        <TextField
-                                            label="Identification"
-                                            required
-                                            type="text"
-                                            name='identification'
-                                            fullWidth
-                                            value={values.identification}
-                                            onChange={handleChange}
-                                            onBlur={handleBlur}
-
-                                        />
-                                    </Grid>
-
-
-
-
-                                    <Grid item lg={4} md={4} sm={4} xs={6}>
-                                        <FormControl fullWidth>
-                                            <InputLabel >Status</InputLabel>
-                                            <Select
-                                                fullWidth
-                                                label="Status"
-                                                name='status'
-                                                value={values.status}
-                                                onChange={handleChange}
-                                                onBlur={handleBlur}
-                                            >
-                                                <MenuItem value={true}>Active</MenuItem>
-                                                <MenuItem value={false}>Inactive</MenuItem>
-
-                                            </Select>
-                                        </FormControl>
-                                    </Grid>
-
-
-                                    {/* <Grid item lg={4} md={4} sm={4} xs={6}>
-
-
-                                        <TextField
-                                            InputLabelProps={{ shrink: true }}
-                                            label="Registration Date"
                                             type="date"
-                                            required
+                                            name='createDate'
                                             fullWidth
-                                            name='registration_date'
-                                            value={values.registration_date}
+                                            value={values.createDate}
                                             onChange={handleChange}
                                             onBlur={handleBlur}
-                                            inputProps={{ max: new Date().toISOString().split('T')[0] }}
+
                                         />
-                                    </Grid> */}
+                                    </Grid>
+                                    <Grid item lg={4} md={4} sm={6} xs={12} >
+                                        <TextField
+                                            label="token"
+                                            required
+                                            type="text"
+                                            name='token'
+                                            fullWidth
+                                            value={values.token}
+                                            onChange={handleChange}
+                                            onBlur={handleBlur}
 
+                                        />
+                                    </Grid>
+                                    <Grid item lg={4} md={4} sm={6} xs={12} >
+                                        <TextField
+                                            label="userId"
+                                            required
+                                            type="number"
+                                            name='userId'
+                                            fullWidth
+                                            value={values.userId}
+                                            onChange={handleChange}
+                                            onBlur={handleBlur}
 
+                                        />
+                                    </Grid>
                                 </Grid>
                             </Grid>
 

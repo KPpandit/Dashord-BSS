@@ -38,7 +38,7 @@ export default function TopCustomerReport(props) {
         // console.log("record==>",selectedRecord)
         const fetchData = async () => {
             try {
-                const response = await axios.get('http://localhost:9098/customers/dataCosumption/postpaid', {
+                const response = await axios.get('http://172.5.10.2:9098/customers/dataCosumption/postpaid', {
                     headers: {
                         Authorization: `Bearer ${tokenValue}`,
                         "Accept": "application/json",

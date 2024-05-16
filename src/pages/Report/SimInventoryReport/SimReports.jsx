@@ -28,7 +28,18 @@ export default function SimReports() {
         },
         series: [0, 0]
     });
-
+    const [pieChartData1, setPieChartData1] = useState({
+        options: {
+            labels: ["Assigned to Agent", "Allocated", "In Stock"]
+        },
+        series: [0, 0]
+    });
+    const [chartData1, setChartData1] = useState({
+        options: {
+            labels: [],
+        },
+        series: [],
+    });
     const [startdate, setStartDate] = useState('');
     const [enddate, setEndDate] = useState('');
 
@@ -38,7 +49,7 @@ export default function SimReports() {
 
     const fetchData = async () => {
         try {
-            const response1 = await axios.get(`http://localhost:9098/sim/getall/sim/bydate`, {
+            const response1 = await axios.get(`http://172.5.10.2:9098/sim/getall/sim/bydate`, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem('token')}`,
                     "Accept": "application/json",
@@ -80,9 +91,49 @@ export default function SimReports() {
                 },
                 series: [data2.M2M || 0, data2['non-M2M'] || 0]
             });
+
+
+            const response3 = await axios.get(`http://172.5.10.2:9098/sim/getall/sim/byStatus/type`, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,
+                    "Accept": "application/json",
+                    "Content-Type": "application/json"
+                }
+            });
+            const data3 = response3.data;
+
+            setPieChartData1({
+                options: {
+                    labels: Object.keys(data3)
+                },
+                series: Object.values(data3)
+            });
         } catch (error) {
             console.error("Error fetching data:", error);
         }
+        try {
+            const response = await axios.get(
+                "http://localhost:9098/sim/getall/sim/byStatus/type"
+            );
+            const data = response.data;
+
+            // Extract labels and series from the API response
+            const labels = Object.keys(data);
+            const series = Object.values(data);
+
+            // Update chartData state with fetched data
+            setChartData1({
+                options: {
+                    labels: labels,
+                },
+                series: series,
+            });
+        } catch (error) {
+            console.error("Error fetching data:", error);
+        }
+
+
+
     };
 
     const handleCategory = async (categoryType) => {
@@ -216,6 +267,16 @@ export default function SimReports() {
                                 type="donut"
                                 width={"100%"}
                                 height={300}
+                            />
+                        </Grid>
+                        <Grid item xs={6}>
+                            
+                            <Chart
+                                options={chartData1.options}
+                                series={chartData1.series}
+                                type="donut"
+                                height={300}
+                                width="400"
                             />
                         </Grid>
                     </Grid>

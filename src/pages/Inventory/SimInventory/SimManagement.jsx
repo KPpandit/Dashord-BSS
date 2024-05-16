@@ -163,7 +163,7 @@ const Sim_manage = (props) => {
 
                                             }}
                                             gutterBottom component="div">
-                                             {selectedRecord.msisdn}
+                                            {selectedRecord.msisdn}
                                         </Typography>
 
                                     </Stack>
@@ -337,7 +337,7 @@ const Sim_manage = (props) => {
                                         <Grid container>
                                             <Grid item xs={6}>
                                                 <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
-                                                  Other taxes :
+                                                    Other taxes :
                                                 </Typography>
                                             </Grid>
                                             <Grid item xs={6} alignItems={'left'} >
@@ -424,16 +424,16 @@ const Sim_manage = (props) => {
             // Perform logic to set the file name
             const fileName = selectedFile.name; // Using the selected file name
             setSaveFileName(fileName);
-    
+
             // Depending on your requirement, you can perform additional actions such as saving the file
             // Here, I'm just logging the selected file details
             console.log('Selected File:', selectedFile);
-    
+
             // Assuming you want to upload the file using axios
             const formData = new FormData();
             formData.append('file', selectedFile);
-    
-            axios.post('http://172.5.10.2:9090/api/sim/upload/excel', formData, {
+
+            axios.post('http://172.5.10.2:9090/api/sim/upload/excel?vendorId=1', formData, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`, // Add your authorization token here
                     'Content-Type': 'multipart/form-data',
@@ -449,11 +449,11 @@ const Sim_manage = (props) => {
             console.error('No file selected.');
         }
     };
-    
+
 
     return (
         <Box sx={{ display: 'container', marginTop: -2.5 }}>
-  <ToastContainer position="bottom-left" />
+            <ToastContainer position="bottom-left" />
             <Box sx={{ width: '78%', }}>
                 <Box component="main" sx={{ flexGrow: 1, p: 1, width: '100%' }}>
                     <Paper elevation={10} sx={{ padding: 1, margin: 1, backgroundColor: 'white', marginLeft: -0.8, marginRight: 1 }}>
@@ -541,7 +541,7 @@ const Sim_manage = (props) => {
                                                         }
                                                     >
                                                         {columns.map((column) => (
-                                                           
+
 
                                                             <TableCell key={column.id} sx={{ textAlign: 'left', fontSize: '17px' }}>
 

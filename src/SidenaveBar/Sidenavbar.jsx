@@ -68,7 +68,7 @@ function Footer() {
         target="_blank"
         rel="noopener noreferrer"
       >
-        WPITS
+        Neotel
       </Link>
     </Box>
   );

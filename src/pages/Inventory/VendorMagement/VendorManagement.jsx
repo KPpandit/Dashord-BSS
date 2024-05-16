@@ -7,12 +7,12 @@ import axios from "axios";
 
 const VendorManagement = (props) => {
     const columns = [
-        { id: 'vendor_name', name: 'Vendor Name'},
-        { id: 'email', name: 'Email'},
-        { id: 'contact', name: 'Contact'},
-        { id: 'address', name: 'Address' },
-        { id: 'type', name: 'Type'},
-        { id: 'identification', name: 'Identification'},
+        { id: 'firstName', name: 'First Name'},
+        { id: 'lastName', name: 'Last Name'},
+        { id: 'email', name: 'E-mail'},
+        { id: 'contact', name: 'Contact' },
+        { id: 'address', name: 'Address'},
+        { id: 'createDate', name: 'Created Date'},
     ];
     const [rows, setRows] = useState([]);
     const tokenValue = localStorage.getItem('token');
@@ -20,7 +20,7 @@ const VendorManagement = (props) => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get('http://172.5.10.2:9696/api/vendor/mgmt/detail/get/all', {
+                const response = await axios.get('http://172.5.10.2:9090/api/vendors', {
                     headers: {
                         Authorization: `Bearer ${tokenValue}`,
                         "Accept": "application/json",
@@ -53,7 +53,7 @@ const VendorManagement = (props) => {
         console.log(`Deleting record with ID: ${recordIdToDelete}`);
     
         // Make an API call to delete the record
-        axios.delete(`http://172.5.10.2:9696/api/hss/detail/delete?imsi=${recordIdToDelete}&msisdn=${recordMsisdnToDelete}`, {
+        axios.delete(`http://172.5.10.2:9090/api/delete/vendor/vendorId/${recordMsisdnToDelete}`, {
             headers: {
                 Authorization: `Bearer ${tokenValue}`,
                 "Accept": "application/json",
@@ -62,7 +62,7 @@ const VendorManagement = (props) => {
         })
             .then(response => {
                 // Handle success, you can update the UI or take other actions
-                console.log(`Record with ID ${recordIdToDelete} deleted successfully.`);
+                fetchData();
                 SetDelete('deleted');
     
                 // Fetch updated data after successful deletion
@@ -78,7 +78,7 @@ const VendorManagement = (props) => {
     };
     const fetchData = async () => {
         try {
-            const response = await axios.get('http://172.5.10.2:9696/api/msisdn/mgmt/detail/get/all', {
+            const response = await axios.get('http://172.5.10.2:9090/api/vendors', {
                 headers: {
                     Authorization: `Bearer ${tokenValue}`,
                     Accept: 'application/json',
@@ -103,11 +103,11 @@ const VendorManagement = (props) => {
     const [recordIdToDelete, setRecordIdToDelete] = useState(null);
     const [recordMsisdnToDelete, setRecordMsisdnToDelete] = useState(null);
 
-    const handleOpenConfirmationDialog = (id,msisdn) => {
+    const handleOpenConfirmationDialog = (id) => {
         setRecordIdToDelete(id);
-        setRecordMsisdnToDelete(msisdn)
+        setRecordMsisdnToDelete(id)
         console.log("xxxx==>"+id)
-        console.log("xxxx==>"+msisdn)
+        console.log("xxxx==>"+id)
         setConfirmationDialogOpen(true);
     };
 
@@ -138,7 +138,7 @@ const VendorManagement = (props) => {
                     <Paper elevation={10}>
 
 
-                        <Card variant="outlined" sx={{ maxWidth: 360, fontFamily: "Roboto" }}>
+                        <Card variant="outlined" sx={{ width: 380, fontFamily: "Roboto" }}>
 
                             <Box sx={{ p: 1,}}>
 
@@ -160,7 +160,7 @@ const VendorManagement = (props) => {
 
                                             }}
                                             gutterBottom component="div">
-                                            Vendor ID: {selectedRecord.vendor_id}
+                                            Vendor ID: {selectedRecord.id}
                                         </Typography>
 
                                     </Stack>
@@ -172,14 +172,14 @@ const VendorManagement = (props) => {
                                     <Divider light />
                                     <Box sx={{ p: 1 }}>
                                         <Grid container>
-                                            <Grid item xs={6}>
-                                                <Typography sx={{ fontWeight: '480', fontSize: '17px', textAlign: 'left' }}> Vendor Name :</Typography>
+                                            <Grid item xs={3}>
+                                                <Typography sx={{ fontWeight: '480', fontSize: '17px', textAlign: 'left' }}>  Name :</Typography>
                                             </Grid>
-                                            <Grid item xs={6} alignItems={'left'} sx={{ marginLeft: 0 }} >
+                                            <Grid item xs={9} alignItems={'left'} sx={{ marginLeft: 0 }} >
                                                 <Typography
                                                     sx={{ fontSize: '17px', textAlign: 'left' }}
                                                     gutterBottom variant="body2">
-                                                    {selectedRecord.vendor_name}
+                                                    {selectedRecord.firstName}{" "}{selectedRecord.maidenName}{" "}{selectedRecord.lastName}
                                                 </Typography>
                                             </Grid>
                                         </Grid>
@@ -193,7 +193,7 @@ const VendorManagement = (props) => {
                                                     Email :
                                                 </Typography>
                                             </Grid>
-                                            <Grid item xs={7} alignItems={'left'} sx={{ marginLeft: 0 }} >
+                                            <Grid item xs={8} alignItems={'left'} sx={{ marginLeft: 0 }} >
                                                 <Typography
                                                     sx={{ fontSize: '17px', textAlign: 'left' }}
                                                     gutterBottom variant="body2">
@@ -205,7 +205,7 @@ const VendorManagement = (props) => {
                                     <Divider light />
                                     <Box sx={{ p: 1 }}>
                                         <Grid container>
-                                            <Grid item xs={5}>
+                                            <Grid item xs={4}>
                                                 <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
                                                     Contact No :
                                                 </Typography>
@@ -222,7 +222,7 @@ const VendorManagement = (props) => {
                                     <Divider light />
                                     <Box sx={{ p: 1 }}>
                                         <Grid container>
-                                            <Grid item xs={4}>
+                                            <Grid item xs={3}>
                                                 <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
                                                     Address :
                                                 </Typography>
@@ -239,16 +239,16 @@ const VendorManagement = (props) => {
                                     <Divider light />
                                     <Box sx={{ p: 1 }}>
                                         <Grid container>
-                                            <Grid item xs={3}>
+                                            <Grid item xs={5}>
                                                 <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
-                                                    Type :
+                                                    Company Name :
                                                 </Typography>
                                             </Grid>
-                                            <Grid item xs={7} alignItems={'left'} sx={{ marginLeft: 0 }} >
+                                            <Grid item xs={6} alignItems={'left'} sx={{ marginLeft: 0 }} >
                                                 <Typography
                                                     sx={{ fontSize: '17px', textAlign: 'left' }}
                                                     gutterBottom variant="body2">
-                                                    {String(selectedRecord.type)}
+                                                    {String(selectedRecord.companyName)}
                                                 </Typography>
                                             </Grid>
                                         </Grid>
@@ -257,98 +257,22 @@ const VendorManagement = (props) => {
 
                                     <Box sx={{ p: 1 }}>
                                         <Grid container>
-                                            <Grid item xs={2}>
+                                            <Grid item xs={5}>
                                                 <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
-                                                  ID :
+                                                  Created Date :
                                                 </Typography>
                                             </Grid>
                                             <Grid item xs={6} alignItems={'left'} sx={{ marginLeft: 0 }}>
                                                 <Typography
                                                     sx={{ fontSize: '17px', textAlign: 'left' }}
                                                     gutterBottom variant="body2">
-                                                    {String(selectedRecord.identification)}
+                                                    {String(selectedRecord.createDate)}
                                                 </Typography>
                                             </Grid>
                                         </Grid>
                                     </Box>
-                                    <Divider light />                                   
-
-                                    <Box sx={{ p: 1 }}>
-                                        <Grid container>
-                                            <Grid item xs={5}>
-                                                <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
-                                                    Batch Prefix :
-                                                </Typography>
-                                            </Grid>
-                                            <Grid item xs={7} alignItems={'left'} sx={{ marginLeft: 0 }} >
-                                                <Typography
-                                                    sx={{ fontSize: '17px', textAlign: 'left' }}
-                                                    gutterBottom variant="body2"
-                                                >
-                                                    
-                                                    {String(selectedRecord.batch_prefix)}
-                                                </Typography>
-                                            </Grid>
-                                        </Grid>
-                                    </Box>
-                                    <Divider light />
-
-                                    {/* <Box sx={{ p: 1 }}>
-                                        <Grid container>
-                                            <Grid item xs={3}>
-                                                <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
-                                                    UICC :
-                                                </Typography>
-                                            </Grid>
-                                            <Grid item xs={7} alignItems={'left'} sx={{ marginLeft: 0 }} >
-                                                <Typography
-                                                    sx={{ fontSize: '17px', textAlign: 'left' }}
-                                                    gutterBottom variant="body2">
-                                                    {String(selectedRecord.is_uicc)}
-                                                </Typography>
-                                            </Grid>
-                                        </Grid>
-                                    </Box>
-                                    <Divider light /> */}
-
-                                    <Box sx={{ p: 1 }}>
-                                        <Grid container>
-                                            <Grid item xs={7}>
-                                                <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
-                                                    Registration Date :
-                                                </Typography>
-                                            </Grid>
-                                            <Grid item xs={4} alignItems={'left'} sx={{ marginLeft: 0 }} >
-                                                <Typography
-                                                    sx={{ fontSize: '17px', textAlign: 'left' }}
-                                                    gutterBottom variant="body2">
-                                                    {selectedRecord.registration_date}
-                                                </Typography>
-                                            </Grid>
-                                        </Grid>
-                                    </Box>
-                                    <Divider light />
-                                    <Box sx={{ p: 1 }}>
-                                        <Grid container>
-                                            <Grid item xs={3}>
-                                                <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
-                                                    Status :
-                                                </Typography>
-                                            </Grid>
-                                            <Grid item xs={6} alignItems={'left'} >
-                                                <Typography
-                                                    sx={{ fontSize: '17px', textAlign: 'left' }}
-                                                    gutterBottom variant="body2">
-                                                    {String(selectedRecord.status)}
-                                                </Typography>
-                                            </Grid>
-                                        </Grid>
-                                    </Box>
-                                    <Divider light />
-                                    
+                                    <Divider light />                                                                       
                                 </Grid>
-
-
                             </Grid>
 
                             <Grid container spacing={1} padding={1}>
@@ -363,7 +287,7 @@ const VendorManagement = (props) => {
                                 <Grid item xs={12}>
                                     <Button
                                         onClick={() => {
-                                            handleOpenConfirmationDialog(selectedRecord.vendor_id)
+                                            handleOpenConfirmationDialog(selectedRecord.id)
                                             console.log("From teh Customer Delete Button")
                                         }}
                                         sx={{ backgroundColor: '#253A7D', width:'100%',boxShadow: 20,marginY:1 }}

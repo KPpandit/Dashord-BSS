@@ -197,9 +197,10 @@ export default function AddCustomerDetails() {
 
                 }
             }).catch(e => {
+                console.log(e," -----> e")
                 setNotification({
                     open: true,
-                    message: e.message,
+                    message: e.response.data.message,
                     severity: 'error',
                 })
 

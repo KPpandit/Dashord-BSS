@@ -35,7 +35,7 @@ const PostpaidCustomerReport = (props) => {
         // console.log("record==>",selectedRecord)
         const fetchData = async () => {
             try {
-                const response = await axios.get('http://172.5.10.2:9098/customer/post-paid', {
+                const response = await axios.get('http://172.5.10.2:9098/customer/postpaid', {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem('token')}`,
                         "Accept": "application/json",
@@ -218,12 +218,14 @@ const PostpaidCustomerReport = (props) => {
     };
     const [startdate, setStartDate] = useState('');
     const [enddate, setEndDate] = useState('');
+    const [serach, setSearch] = useState('');
     const handleDateRange = () => {
 
         const type = 'post-paid';
 
         // Construct the API URL
-        const apiUrl = `http://172.5.10.2:9098/customer/bydatefilter/${type}?startDate=${startdate}&endDate=${enddate}`;
+        const apiUrl = `http://172.5.10.2:9098/customer/postpaid/search?search=${serach}&startDate=${startdate}&endDate=${enddate}`;
+
 
         // Make the API call
         fetch(apiUrl, {
@@ -303,7 +305,18 @@ const PostpaidCustomerReport = (props) => {
 
                         <Paper elevation={10} sx={{ marginBottom: 2, paddingBottom: 0.1, paddingTop: 0.5 }}>
                             <Grid container spacing={2} padding={1}>
-                                <Grid item xs={4}>
+                                <Grid item xs={3}>
+                                    {/* First date field */}
+                                    <TextField
+                                        label="Search"
+                                        type="text"
+                                        fullWidth
+
+                                        onChange={(e) => setSearch(e.target.value)}
+                                        value={serach}
+                                    />
+                                </Grid>
+                                <Grid item xs={3}>
                                     {/* First date field */}
                                     <TextField
                                         label="Start Date"
@@ -316,7 +329,7 @@ const PostpaidCustomerReport = (props) => {
                                         value={startdate}
                                     />
                                 </Grid>
-                                <Grid item xs={4}>
+                                <Grid item xs={3}>
                                     {/* Second date field */}
                                     <TextField
                                         label="End Date"
@@ -330,7 +343,7 @@ const PostpaidCustomerReport = (props) => {
                                     />
                                 </Grid>
 
-                                <Grid item xs={4}>
+                                <Grid item xs={3}>
                                     {/* Search button */}
                                     <Button
                                         variant="contained"

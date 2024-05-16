@@ -18,7 +18,7 @@ export default function DeviceBySellingRates(props) {
         { id: 'manufactureDate', name: 'manufacturing Date' },
         { id: 'manufacturer', name: 'Manufacturer' },
         { id: 'deviceType', name: 'Device Type' },
-        { id: 'vendorName', name: 'Vendor Name' },
+        { id: 'vendorId', name: 'Vendor ID' },
         { id: 'sellingPriceUsd', name: 'Selling Price' },
 
     ];

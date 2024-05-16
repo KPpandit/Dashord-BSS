@@ -113,6 +113,9 @@ import SimReports from '../pages/Report/SimInventoryReport/SimReports';
 import DeviceBySellingRates from '../pages/Report/DeviceInventoryReport/DeviceBySellinRates';
 import AgentReportByProduct from '../pages/Report/AgnetReports/AgentReportbyProduct';
 import PrepaidCustomerUsageReport from '../pages/Report/PrepaidCustomerUsageReport';
+import SimByVendor from '../pages/Report/SimInventoryReport/SimBYVendor';
+import SimByAgent from '../pages/Report/SimInventoryReport/SimByAgent';
+import SimByStatus from '../pages/Report/SimInventoryReport/SimByStatus';
 
 
 
@@ -298,6 +301,9 @@ export const Routers = () => {
                            <Route path='/simBysellingPrice' element={<SimBySellingPrice/>}/>
                            <Route path='/simByActivation' element={<SimByActivation/>}/>
                            <Route path='/simReports' element={<SimReports/>}/>
+                           <Route path='/simByVendor' element={<SimByVendor/>}/>
+                           <Route path='/simByAgent' element={<SimByAgent/>}/>
+                           <Route path='/simByStatus' element={<SimByStatus/>}/>
 
                            {/* Device INventory Reports */}
                            <Route path='/deviceSellingReports' element={<DeviceBySellingRates/>}/>

@@ -75,7 +75,9 @@ export default function Report(props) {
           { report_type: "All Device By Selling Price" },
           { report_type: "All Sim by Activation Date" },
           { report_type: "Sim Reports" },
-         
+          { report_type: "Sim By Vendor" },
+          { report_type: "Sim By Agent" },
+          { report_type: "Sim By Status" },
         ];
 
         rowchange(data)
@@ -185,6 +187,15 @@ export default function Report(props) {
     }
     if (row.report_type == 'Top Customers Pre-Paid Usage Report') {
       navigate('/prepaidUsageReport');
+    }
+    if (row.report_type == 'Sim By Vendor') {
+      navigate('/simByVendor');
+    }
+    if (row.report_type == 'Sim By Agent') {
+      navigate('/simByAgent');
+    }
+    if (row.report_type == 'Sim By Status') {
+      navigate('/simByStatus');
     }
   };
 

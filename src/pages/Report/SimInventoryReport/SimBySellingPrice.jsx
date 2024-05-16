@@ -17,7 +17,7 @@ const SimBySellingPrice = (props) => {
        
         { id: 'allocationDate', name: 'Allocation Date' },
         { id: 'activationDate', name: 'Activation Date' },
-        { id: 'vendorName', name: 'Vendor Name' },
+        { id: 'vendorId', name: 'Vendor ID' },
         { id: 'simType', name: 'Sim Type' },
         { id: 'sellingPriceUsd', name: 'Selling Price' },
 

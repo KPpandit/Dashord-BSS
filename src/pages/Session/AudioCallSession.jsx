@@ -5,10 +5,10 @@ import SearchIcon from '@mui/icons-material/Search';
 import axios from "axios";
 export default function AudioCallSession(){
     const columns = [
-      
         { id: 'msisdn', name: 'Msisdn' },
         { id: 'imsi', name: 'IMSI' },
         { id: 'called_msisdn', name: 'Called MSISDN' },
+        { id: 'customer_type', name: 'Customer Type' },
         { id: 'location_info', name: 'Location' },
         { id: 'session_state', name: 'Session State' },
         { id: 'call_start_ts', name: 'Call Start' },

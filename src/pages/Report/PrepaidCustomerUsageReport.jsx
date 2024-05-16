@@ -34,7 +34,7 @@ export default function PrepaidCustomerUsageReport (props) {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                let url = 'http://localhost:9098/api/pre-paid/all/info';
+                let url = 'http://172.5.10.2:9098/api/pre-paid/all/info';
                 if (searchKeyword.trim() !== '') {
                     url += `?keyword=${searchKeyword}`;
                 }

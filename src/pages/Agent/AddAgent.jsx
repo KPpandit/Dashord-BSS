@@ -1,6 +1,6 @@
 import { Box, Button, Checkbox, Divider, FormControl, FormControlLabel, Grid, InputLabel, MenuItem, Paper, Select, Snackbar, TextField, Typography } from '@mui/material'
 import Grid2 from '@mui/material/Unstable_Grid2/Grid2'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import IconButton from '@mui/material/IconButton';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
@@ -48,8 +48,6 @@ export default function AddAgent() {
             coordinate:"",
             reasonStatus:"",
             isActive:""
-
-
 
         },
         onSubmit: async (values) => {
@@ -172,7 +170,9 @@ export default function AddAgent() {
 
         setNotification({ ...notification, open: false });
     }
-   
+   useEffect(()=>{
+    agentId;
+   },[agentId])
     
     return (
         <Box sx={{marginTop:-1}}>

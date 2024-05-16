@@ -3,9 +3,11 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import SearchIcon from '@mui/icons-material/Search';
 import axios from "axios";
+import { FourSquare } from 'react-loading-indicators';
 
 
 export default function SimFap(props) {
+    const [isLoading, setIsLoading] = useState(true);
     const columns = [
         { id: 'imsi', name: 'IMSI' },
         { id: 'msisdn', name: 'MSISDN' },
@@ -33,6 +35,7 @@ export default function SimFap(props) {
 
                 // Update the state with the API data
                 setRows(apiData);
+                setIsLoading(false);
             } catch (error) {
 
                 if (error.response && error.response.status === 401) {
@@ -87,6 +90,7 @@ export default function SimFap(props) {
                 },
             });
             setRows(response.data);
+            
         } catch (error) {
             console.log("response from Error");
 
@@ -460,6 +464,19 @@ export default function SimFap(props) {
         setHighlightedRow(null);
     };
     return (
+        <Box >
+        {isLoading ? (
+            <Grid
+                container
+                justifyContent="center"
+                alignItems="center"
+                style={{ height: '60vh' }}
+
+            >
+                <FourSquare color="#FAC22E" size="medium" text="Load..." textColor="#253A7D" />
+            </Grid>
+
+        ) :
         <Box sx={{ display: 'container', marginTop: -2.5 }}>
 
             <Box sx={{ width: '70%', }}>
@@ -616,6 +633,9 @@ export default function SimFap(props) {
                     </Button>
                 </DialogActions>
             </Dialog>
+
+        </Box>
+        }
 
         </Box>
     )

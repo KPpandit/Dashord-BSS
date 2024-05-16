@@ -9,7 +9,7 @@ import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import * as XLSX from 'xlsx';
 
-const SimByActivation = (props) => {
+export default function SimByVendor (props) {
     const columns = [
         { id: 'msisdn', name: 'MSISDN' },
         { id: 'category', name: 'Category' },
@@ -17,7 +17,8 @@ const SimByActivation = (props) => {
        
         { id: 'allocationDate', name: 'Allocation Date' },
         { id: 'activationDate', name: 'Activation Date' },
-        { id: 'vendorId', name: 'Vendor ID' },
+        { id: 'vendorName', name: 'Vendor Name' },
+        { id: 'vendorEmail', name: 'Vendor Email' },
         { id: 'simType', name: 'Sim Type' },
         { id: 'sellingPriceUsd', name: 'Selling Price' },
 
@@ -35,7 +36,7 @@ const SimByActivation = (props) => {
         // console.log("record==>",selectedRecord)
         const fetchData = async () => {
             try {
-                const response = await axios.get('http://172.5.10.2:9098/sim/allsim/byDate', {
+                const response = await axios.get('http://172.5.10.2:9098/sim/getall/sim/byVendor', {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem('token')}`,
                         "Accept": "application/json",
@@ -179,7 +180,7 @@ const SimByActivation = (props) => {
         const type = 'pre-paid';
 
         // Construct the API URL
-        const apiUrl = `http://172.5.10.2:9098/sim/getSim/activate/byDate?search=${serach}&startDate=${startdate}&endDate=${enddate}`;
+        const apiUrl = `http://172.5.10.2:9098/sim/getall/sim/byVendor/dateRange?search=${serach}&startDate=${startdate}&endDate=${enddate}`;
 
         // Make the API call
         fetch(apiUrl, {
@@ -234,7 +235,7 @@ const SimByActivation = (props) => {
                                     fontWeight: 'bold',
 
                                 }}
-                            >SIM By Activation Date</Typography>
+                            >SIM By Vendor</Typography>
                         </Grid>
                     </Paper>
                 </Box>
@@ -404,4 +405,4 @@ const SimByActivation = (props) => {
     )
 };
 
-export default SimByActivation;
+

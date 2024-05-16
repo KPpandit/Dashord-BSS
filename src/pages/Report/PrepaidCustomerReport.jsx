@@ -95,37 +95,108 @@ const PrepaidCustomerReport = (props) => {
 
     const [selectedOption, setSelectedOption] = useState(null);
     const handleDownload = () => {
-        if (selectedOption === 'pdf') {
-            const pdf = new jsPDF();
-            // Set column headers
-            const headers = Object.keys(rows[0]);
-            // Add data to PDF
-            pdf.autoTable({
-                head: [headers],
-                body: rows.map(row => Object.values(row)),
+        if (!selectedOption) {
+            setNotify({
+                isOpen: true,
+                message: 'Please select the file format.',
+                type: 'error'
             });
+            return;
+        }
+        const mainFieldsData = rows.map(row => ({
+            id: row.id,
+            msisdn: row.msisdn,
+            firstName: row.firstName,
+            lastName: row.lastName,
+            streetAddres1: row.streetAddres1,
+            dfFm: row.dfFm,
+            parentId: row.parentId,
+            isParent: row.isParent,
+            excludeAging: row.excludeAging,
+            invoiceChild: row.invoiceChild,
+            optlock: row.optlock,
+            dynamicBalance: row.dynamicBalance,
+            creditLimit: row.creditLimit,
+            autoRecharge: row.autoRecharge,
+            useParentPricing: row.useParentPricing,
+            nextInvoiceDayOfPeriod: row.nextInvoiceDayOfPeriod,
+            nextInoviceDate: row.nextInoviceDate,
+            invoiceDesign: row.invoiceDesign,
+            creditNotificationLimit1: row.creditNotificationLimit1,
+            creditNotificationLimit2: row.creditNotificationLimit2,
+            rechargeThreshold: row.rechargeThreshold,
+            monthlyLimit: row.monthlyLimit,
+            currentMonthlyAmount: row.currentMonthlyAmount,
+            currentMonth: row.currentMonth,
+            organizationName: row.organizationName,
+            streetAddres1: row.streetAddres1,
+            streetAddres2: row.streetAddres2,
+            city: row.city,
+            stateProvince: row.stateProvince,
+            postalCode: row.postalCode,
+            countryCode: row.countryCode,
+            lastName: row.lastName,
+            firstName: row.firstName,
+            personInitial: row.personInitial,
+            personTitle: row.personTitle,
+            phoneCountryCode: row.phoneCountryCode,
+            phoneAreaCode: row.phoneAreaCode,
+            phonePhoneNumber: row.phonePhoneNumber,
+            faxCountryCode: row.faxCountryCode,
+            faxAreaCode: row.faxAreaCode,
+            faxPhoneNumber: row.faxPhoneNumber,
+            email: row.email,
+            createDateTime: row.createDateTime,
+            deleted: row.deleted,
+            notificationInclude: row.notificationInclude,
+            paymentStatus: row.paymentStatus,
+            customerType: row.customerType,
+            gender: row.gender,
+            ekycStatus: row.ekycStatus,
+            ekycToken: row.ekycToken,
+            ekycId: row.ekycId,
+            idDocId: row.idDocId,
+            userType: row.userType,
+            residentType: row.residentType,
+            originalPhotoUrl: row.originalPhotoUrl,
+            maidenName: row.maidenName,
+            nationality: row.nationality,
+            remark: row.remark,
+            ekycDate: row.ekycDate,
+            alternateNumber: row.alternateNumber,
+            landlineNumber: row.landlineNumber,
+            dateOfBirth: row.dateOfBirth,
+
+            profession: row.profession,
+            maritalStatus: row.maritalStatus,
+
+        }));
+        if (selectedOption === 'pdf') {
+            const doc = new jsPDF();
+            const table = [];
+            // Convert mainFieldsData to a format compatible with autoTable
+            mainFieldsData.forEach(row => {
+                const rowData = Object.values(row);
+                table.push(rowData);
+            });
+            doc.autoTable({
+                head: [Object.keys(mainFieldsData[0])],
+                body: table,
+            });
+            doc.save('customerData.pdf');
             // Save the PDF
             pdf.save(`${"newpdfway"}.pdf`);
         } else if (selectedOption === 'csv') {
-            const headers = Object.keys(rows[0]);
-            const csvContent = "data:text/csv;charset=utf-8," + headers.join(',') + '\n' +
-                rows.map(row => Object.values(row).join(',')).join('\n');
-            const encodedUri = encodeURI(csvContent);
+            // Adding headers to the CSV content
+            const csvContent = "data:text/csv;charset=utf-8," + Object.keys(mainFieldsData[0]).join(',') + '\n';
+            // Adding rows to the CSV content
+            const csvRows = mainFieldsData.map(row => Object.values(row).join(',')).join('\n');
+            const encodedUri = encodeURI(csvContent + csvRows);
             const link = document.createElement("a");
             link.setAttribute("href", encodedUri);
-            link.setAttribute("download", "example123.csv");
+            link.setAttribute("download", "customerData.csv");
             document.body.appendChild(link);
             link.click();
-            document.body.removeChild(link);
-            console.log(csvContent + "-----cvs content")
-        } else if (selectedOption === 'xls') {
-            // Handle XLS download logic
-            const worksheet = XLSX.utils.json_to_sheet(rows);
-            const workbook = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet 1');
-            const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
-            const excelData = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-            const xlsURL = URL.createObjectURL(excelData);
             window.open(xlsURL);
         }
         else if (selectedOption === null) {

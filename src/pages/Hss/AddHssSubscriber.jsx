@@ -6,10 +6,11 @@ import axios from "axios";
 import Popup from '../Popup/Popup';
 import Addhss from './AddHss';
 import AddHssBulk from './AddHssBulk';
+import { FourSquare } from 'react-loading-indicators';
 
 
 const AdddHssSubscriber = (props) => {
-    
+    const [isLoading, setIsLoading] = useState(true);
     const columns = [
         { id: 'imsi', name: 'IMSI' },
         { id: 'msisdn', name: 'MSISDN' },
@@ -37,6 +38,7 @@ const AdddHssSubscriber = (props) => {
 
                 // Update the state with the API data
                 setRows(apiData);
+                setIsLoading(false);
             } catch (error) {
 
                 if (error.response && error.response.status === 401) {
@@ -471,7 +473,19 @@ const AdddHssSubscriber = (props) => {
     const closePopup2 = () => {
         setOpenPopup2(false);
     };
-    return (
+    return ( <Box >
+        {isLoading ? (
+            <Grid
+                container
+                justifyContent="center"
+                alignItems="center"
+                style={{ height: '60vh' }}
+
+            >
+                <FourSquare color="#FAC22E" size="medium" text="Load..." textColor="#253A7D" />
+            </Grid>
+
+        ) :
         <Box sx={{ display: 'container', marginTop: -2.5 }}>
 
             <Box sx={{ width: '70%', }}>
@@ -659,6 +673,10 @@ const AdddHssSubscriber = (props) => {
                 <AddHssBulk onClose={closePopup2} />
                 {/* <AddInventory /> */}
             </Popup>
+        </Box>
+             
+            }
+
         </Box>
     )
 };
