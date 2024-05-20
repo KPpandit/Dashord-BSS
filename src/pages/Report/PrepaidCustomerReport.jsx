@@ -36,7 +36,7 @@ const PrepaidCustomerReport = (props) => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                let url = 'http://172.5.10.2:9098/customer/prepaid';
+                let url = 'http://localhost:9098/customer/prepaid';
                 if (searchKeyword.trim() !== '') {
                     url += `?keyword=${searchKeyword}`;
                 }

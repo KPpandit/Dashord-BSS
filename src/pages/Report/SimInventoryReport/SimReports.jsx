@@ -93,41 +93,29 @@ export default function SimReports() {
             });
 
 
-            const response3 = await axios.get(`http://172.5.10.2:9098/sim/getall/sim/byStatus/type`, {
+        } catch (error) {
+            console.error("Error fetching data:", error);
+        }
+        try {
+            const response =  await axios.get(`http://localhost:9098/sim/getall/sim/byStatus/type`, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem('token')}`,
                     "Accept": "application/json",
                     "Content-Type": "application/json"
                 }
             });
-            const data3 = response3.data;
-
-            setPieChartData1({
-                options: {
-                    labels: Object.keys(data3)
-                },
-                series: Object.values(data3)
-            });
-        } catch (error) {
-            console.error("Error fetching data:", error);
-        }
-        try {
-            const response = await axios.get(
-                "http://localhost:9098/sim/getall/sim/byStatus/type"
-            );
             const data = response.data;
 
-            // Extract labels and series from the API response
             const labels = Object.keys(data);
             const series = Object.values(data);
 
-            // Update chartData state with fetched data
-            setChartData1({
+            setPieChartData1({
                 options: {
                     labels: labels,
                 },
                 series: series,
             });
+            console.log("Pie Chart Data:", pieChartData1);
         } catch (error) {
             console.error("Error fetching data:", error);
         }
@@ -169,25 +157,7 @@ export default function SimReports() {
         } catch (error) {
             console.error("Error fetching data:", error);
         }
-        try {
-            const response2 = await axios.get(`http://172.5.10.2:9098/sim/getall/sim/byType/byDateRange?startDate=${startdate}&endDate=${enddate}`, {
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem('token')}`,
-                    "Accept": "application/json",
-                    "Content-Type": "application/json"
-                }
-            });
-            const data2 = response2.data;
-
-            setPieChartData({
-                options: {
-                    labels: ["M2M", "non-M2M"]
-                },
-                series: [data2.M2M || 0, data2['non-M2M'] || 0]
-            });
-        } catch (error) {
-            console.error("Error fetching data:", error);
-        }
+       
     }
 
     return (
@@ -270,13 +240,13 @@ export default function SimReports() {
                             />
                         </Grid>
                         <Grid item xs={6}>
-                            
+
                             <Chart
-                                options={chartData1.options}
-                                series={chartData1.series}
+                                options={pieChartData1.options}
+                                series={pieChartData1.series}
                                 type="donut"
                                 height={300}
-                                width="400"
+                                width="100%"
                             />
                         </Grid>
                     </Grid>

@@ -1,24 +1,25 @@
-import { Box, Button, Card, Checkbox, Chip, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, FormControl, Grid, IconButton, InputAdornment, InputLabel, ListItemText, Menu, MenuItem, OutlinedInput, Paper, Select, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TextField, Typography, colors } from '@mui/material';
+import { Box, Button,  FormControl, Grid,  MenuItem,  Paper, Select, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TextField, Typography, colors } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import SearchIcon from '@mui/icons-material/Search';
+;
 import axios from "axios";
-import { styled } from '@mui/material/styles';
-import { Download } from '@mui/icons-material';
+
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import * as XLSX from 'xlsx';
 
-export default function DeviceBySellingRates(props) {
+export default function DeviceByAgent(props) {
     const columns = [
         { id: 'deviceModel', name: 'Device Model' },
         { id: 'deviceMake', name: 'Device Maker' },
         { id: 'ostype', name: 'OS Type' },
        
-        { id: 'manufactureDate', name: 'manufacturing Date' },
+        { id: 'manufactureDate', name: 'Manufacturing Date' },
         { id: 'manufacturer', name: 'Manufacturer' },
+        { id: 'agentName', name: 'Agent Name' },
+        { id: 'agentEmail', name: 'Agent Email' },
         { id: 'deviceType', name: 'Device Type' },
-       
+        { id: 'deviceType', name: 'Device Type' },
         { id: 'sellingPriceUsd', name: 'Selling Price' },
 
     ];
@@ -35,7 +36,7 @@ export default function DeviceBySellingRates(props) {
         // console.log("record==>",selectedRecord)
         const fetchData = async () => {
             try {
-                const response = await axios.get('http://172.5.10.2:9098/device/get/alldevice', {
+                const response = await axios.get('http://localhost:9098/device/get/alldevice/byAgent', {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem('token')}`,
                         "Accept": "application/json",
@@ -69,16 +70,20 @@ export default function DeviceBySellingRates(props) {
         // setOpen(true);
 
     };
-  
-
-
-   
-
-    const navigate = useNavigate();
-    const handleButtonClick = () => {
-        navigate('/newCustomer');
+    const handleClose = () => {
+        setOpen(false);
     };
 
+
+    const handleCloseDialog = () => {
+        setOpenDialog(false);
+    };
+
+
+
+
+    const navigate = useNavigate();
+    
     const handleRowClick = (row) => {
         setSelectedRecord(row);
         setOpenDialog(true);
@@ -181,7 +186,7 @@ export default function DeviceBySellingRates(props) {
         const type = 'pre-paid';
 
         // Construct the API URL
-        const apiUrl = `http://172.5.10.2:9098/device/get/alldevice/byDate?search=${serach}&startDate=${startdate}&endDate=${enddate}`;
+        const apiUrl = `http://localhost:9098/device/get/alldevice/byAgent/dateRange?search=${serach}&startDate=${startdate}&endDate=${enddate}`;
 
         // Make the API call
         fetch(apiUrl, {
@@ -236,7 +241,7 @@ export default function DeviceBySellingRates(props) {
                                     fontWeight: 'bold',
 
                                 }}
-                            >Device By Selling Price</Typography>
+                            >All Device By Agent</Typography>
                         </Grid>
                     </Paper>
                 </Box>

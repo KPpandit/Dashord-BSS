@@ -116,6 +116,8 @@ import PrepaidCustomerUsageReport from '../pages/Report/PrepaidCustomerUsageRepo
 import SimByVendor from '../pages/Report/SimInventoryReport/SimBYVendor';
 import SimByAgent from '../pages/Report/SimInventoryReport/SimByAgent';
 import SimByStatus from '../pages/Report/SimInventoryReport/SimByStatus';
+import DeviceByAgent from '../pages/Report/DeviceInventoryReport/DeviceByAgent';
+import DeviceByVendor from '../pages/Report/DeviceInventoryReport/DeviceByVendor';
 
 
 
@@ -307,7 +309,8 @@ export const Routers = () => {
 
                            {/* Device INventory Reports */}
                            <Route path='/deviceSellingReports' element={<DeviceBySellingRates/>}/>
-
+                           <Route path='/deviceByAgent' element={<DeviceByAgent/>}/>
+                           <Route path='/deviceByVendor' element={<DeviceByVendor/>}/>
                         {/* <Route path='/add-Noc-sub' element={<AddNoc />} />
                         <Route path='/all-Noc-sub' element={<AllNoc />} />
                         <Route path='/all-Noc-query' element={<NOCQuery />} />

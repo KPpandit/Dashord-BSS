@@ -1,81 +1,59 @@
-import React, { useState, useEffect } from "react";
-import Chart from "react-apexcharts";
-import { Grid } from "@mui/material";
-import axios from "axios";
+import React, { useState } from 'react';
+import Button from '@mui/material/Button';
 
-export default function Test() {
-  const [chartData, setChartData] = useState({
-    options: {
-      colors: ["#FAC22E"],
-      chart: {
-        id: "basic-bar",
-      },
-      xaxis: {
-        categories: [],
-      },
-    },
-    series: [
-      {
-        name: "Customer Count",
-        data: [],
-      },
-    ],
-  });
+const Test = () => {
+    const [fingerprintData, setFingerprintData] = useState(null);
+    const [captureError, setCaptureError] = useState(null);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get("http://localhost:9098/customer/graph",{
-          headers: {
-              Authorization: `Bearer ${localStorage.getItem('token')}`,
-              "Accept": "application/json",
-              "Content-Type": "application/json"
-          }
-      });
-        const data = response.data;
+    const captureFingerprint = async () => {
+        try {
+            // Call the SDK/API method to capture fingerprint data
+            const data = await fingerprintScanner.capture();
+            setFingerprintData(data);
+            setCaptureError(null);
 
-        // Extract dates and counts from the API response
-        const categories = Object.keys(data);
-        const counts = Object.values(data);
-
-        // Update chartData state with fetched data
-        setChartData({
-          options: {
-            ...chartData.options,
-            xaxis: {
-              categories: categories,
-            },
-          },
-          series: [
-            {
-              ...chartData.series[0],
-              data: counts,
-            },
-          ],
-        });
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
+            // Call a function to save the captured fingerprint data to the database
+            saveFingerprintToDatabase(data);
+        } catch (error) {
+            console.error('Error capturing fingerprint:', error);
+            setFingerprintData(null);
+            setCaptureError('Error capturing fingerprint. Please try again.');
+        }
     };
 
-    fetchData();
-  }, []); // Empty dependency array ensures useEffect runs only once on component mount
+    const saveFingerprintToDatabase = (data) => {
+        // Call an API endpoint to save the captured fingerprint data to the database
+        // You'll need to implement this function based on your backend architecture
+        // Example:
+        // fetch('/api/saveFingerprint', {
+        //     method: 'POST',
+        //     body: JSON.stringify(data),
+        //     headers: {
+        //         'Content-Type': 'application/json'
+        //     }
+        // })
+        // .then(response => {
+        //     if (!response.ok) {
+        //         throw new Error('Failed to save fingerprint data');
+        //     }
+        // })
+        // .catch(error => {
+        //     console.error('Error saving fingerprint data:', error);
+        // });
+    };
 
-  return (
-    <div className="App">
-      <Grid>
-         <i className="fas fa-user"></i>{" "}
-      </Grid>
-      <Grid container spacing={2}>
-        <Grid item xs={12}>
-          <Chart
-            options={chartData.options}
-            series={chartData.series}
-            type="bar"
-            width="800"
-          />
-        </Grid>
-      </Grid>
-    </div>
-  );
-}
+    return (
+        <div>
+            <Button variant="contained" onClick={captureFingerprint}>Capture Fingerprint</Button>
+            {fingerprintData && (
+                <div>
+                    <p>Fingerprint captured successfully!</p>
+                    <pre>{JSON.stringify(fingerprintData, null, 2)}</pre>
+                </div>
+            )}
+            {captureError && <p>{captureError}</p>}
+        </div>
+    );
+};
+
+export default Test;

@@ -12,15 +12,16 @@ import jsPDF from 'jspdf';
 export default function AgentReportByProduct(props) {
     const columns = [
         { id: 'fristName', name: 'Name' },
-        { id: 'email', name: 'Email' },
-        { id: 'commissionType', name: 'Commission Type' },
-        { id: 'totalPayments', name: 'Total Payment' },
-      
+        { id: 'email', name: 'Email' }, 
         { id: 'contact', name: 'Contact' },
-        { id: 'creationDate', name: "Creation Date" },
+        { id: 'creationDate', name: 'Date' },
+        { id: 'totalSim', name: 'Total Sim' },
+        { id: 'allocatedSim', name: 'Sim Sold' },
+
+        { id: 'totalDevice', name: 'Total Device' },
+        { id: 'allocatedDevice', name: 'Device Sold' },
         { id: 'partnerCommission.amount', name: 'Commission Amount' },
-        { id: 'totalCustomerOnboard', name: 'Customers OnBoard' }, // Include partner commission amount here
-        { id: 'deviceCustomer', name: 'Device Sold' },
+       
         
 
     ];
@@ -38,7 +39,7 @@ export default function AgentReportByProduct(props) {
         // console.log("record==>",selectedRecord)
         const fetchData = async () => {
             try {
-                const response = await axios.get('http://172.5.10.2:9098/agent/partners/byall/records', {
+                const response = await axios.get('http://localhost:9098/agent/partners/byall/records', {
                     headers: {
                         Authorization: `Bearer ${tokenValue}`,
                         "Accept": "application/json",

@@ -1,33 +1,27 @@
-import { Box, Button, Card, Checkbox, Chip, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, FormControl, Grid, IconButton, InputAdornment, InputLabel, ListItemText, Menu, MenuItem, OutlinedInput, Paper, Select, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TextField, Typography, colors } from '@mui/material';
+import { Box, Button,  FormControl, Grid,  MenuItem,  Paper, Select, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TextField, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import SearchIcon from '@mui/icons-material/Search';
+
+;
 import axios from "axios";
-import { styled } from '@mui/material/styles';
-import { Download } from '@mui/icons-material';
-import html2canvas from 'html2canvas';
+
 import jsPDF from 'jspdf';
 import * as XLSX from 'xlsx';
 
-export default function DeviceBySellingRates(props) {
+export default function DeviceByVendor(props) {
     const columns = [
         { id: 'deviceModel', name: 'Device Model' },
         { id: 'deviceMake', name: 'Device Maker' },
         { id: 'ostype', name: 'OS Type' },
-       
         { id: 'manufactureDate', name: 'manufacturing Date' },
         { id: 'manufacturer', name: 'Manufacturer' },
+        { id: 'vendorName', name: 'Vendor Name' },
+        { id: 'vendorEmail', name: 'Vendor Email' },
         { id: 'deviceType', name: 'Device Type' },
-       
         { id: 'sellingPriceUsd', name: 'Selling Price' },
 
     ];
     const [rows, setRows] = useState([]);
     const tokenValue = localStorage.getItem('token');
-    const [selectedPhoto, setSelectedPhoto] = useState(null);
-    const [selectedRecord, setSelectedRecord] = useState(null);
-    const [open, setOpen] = React.useState(false);
-    // Generate sample data
 
     const [openDialog, setOpenDialog] = useState(false);
 
@@ -35,7 +29,7 @@ export default function DeviceBySellingRates(props) {
         // console.log("record==>",selectedRecord)
         const fetchData = async () => {
             try {
-                const response = await axios.get('http://172.5.10.2:9098/device/get/alldevice', {
+                const response = await axios.get('http://localhost:9098/device/get/alldevice/byVendor', {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem('token')}`,
                         "Accept": "application/json",
@@ -66,19 +60,16 @@ export default function DeviceBySellingRates(props) {
 
     const handleClickOpen = (row) => {
         setSelectedRecord(row)
-        // setOpen(true);
+       
 
     };
-  
+   
+
+
 
 
    
-
-    const navigate = useNavigate();
-    const handleButtonClick = () => {
-        navigate('/newCustomer');
-    };
-
+    
     const handleRowClick = (row) => {
         setSelectedRecord(row);
         setOpenDialog(true);
@@ -104,26 +95,7 @@ export default function DeviceBySellingRates(props) {
         setHighlightedRow(row)
     };
 
-    function DownloadPDF() {
-        const capture = document.getElementById('container');
-        html2canvas(capture).then((canvas) => {
-            const imgdata = canvas.toDataURL('img/png')
-            const doc = new jsPDF('p', 'pt', 'a4');
-            const pageHeight = doc.internal.pageSize.height;
-            const pageWidth = doc.internal.pageSize.width;
-            doc.addImage(imgdata, 'PNG', 0.5, 0.5, pageWidth, pageHeight);
-            doc.save('customerProfile.pdf')
-        })
 
-        // let pdf = new jsPDF('p','pt','a4');
-        // let capture = document.getElementById('container')
-        // pdf.html(capture,{
-        //     callback:(pdf=>{
-        //         pdf.save('customer.pdf')
-        //     })
-        // })
-
-    }
 
     // const handleRowMouseLeave = () => {
     //     setHighlightedRow(null);
@@ -181,7 +153,7 @@ export default function DeviceBySellingRates(props) {
         const type = 'pre-paid';
 
         // Construct the API URL
-        const apiUrl = `http://172.5.10.2:9098/device/get/alldevice/byDate?search=${serach}&startDate=${startdate}&endDate=${enddate}`;
+        const apiUrl = `http://localhost:9098/device/get/alldevice/byVendor/dateRange?search=${serach}&startDate=${startdate}&endDate=${enddate}`;
 
         // Make the API call
         fetch(apiUrl, {
@@ -236,7 +208,7 @@ export default function DeviceBySellingRates(props) {
                                     fontWeight: 'bold',
 
                                 }}
-                            >Device By Selling Price</Typography>
+                            >All Device By Vendor</Typography>
                         </Grid>
                     </Paper>
                 </Box>
