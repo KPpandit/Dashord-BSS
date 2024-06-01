@@ -10,7 +10,7 @@ import { Divider, Grid } from '@mui/material';
 import LogoMo from '../../assets/LogoMo.jpg';
 import PlanDetailsModal from './PlanDetailsModal';
 
-export default function AvailablePack() {
+export default function AvailablePlan() {
     const [tabList, setTabList] = useState([]);
     const [tabData, setTabData] = useState({});
     const [value, setValue] = useState(0); // Initialize with 0 for the first tab
@@ -21,7 +21,7 @@ export default function AvailablePack() {
 
     useEffect(() => {
         // Fetch category names from the API
-        fetch('http://172.5.10.2:9696/api/rating/profile/get/all/prepaid')
+        fetch('http://172.5.10.2:9696/api/rating/profile/get/all/postpaid')
             .then(response => response.json())
             .then(data => {
                 const uniqueTabList = [...new Set(data.map(item => item.category_name))];
@@ -119,7 +119,7 @@ export default function AvailablePack() {
                         padding: 1,
                         paddingLeft: 2,
                     }}>
-                        Available Pack
+                        Available Plan
                     </Typography>
                 </Paper>
 

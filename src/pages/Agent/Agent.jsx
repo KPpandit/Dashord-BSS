@@ -7,9 +7,10 @@ export default function Agent(props) {
     const [isLoading, setIsLoading] = useState(true);
     const columns = [
         { id: 'fristName', name: 'Name' },
-        { id: 'email', name: 'Email' },
-        { id: 'parentId', name: 'Parent ID' },
-        { id: 'totalPayments', name: 'Total Payment' },
+        { id: 'creationDate', name: 'Creation Date' },
+        { id: 'contact', name: 'Contact' },
+        { id: 'documentType', name: 'Document Type' },
+        { id: 'isActive', name: 'Status' },
         { id: 'locallity', name: 'Locality' },
 
 
@@ -27,33 +28,8 @@ export default function Agent(props) {
         setConfirmationDialogOpen(false);
     };
     const [forDelete, SetDelete] = useState(false);
-    const [deleteSuccess, setDeleteSuccess] = useState(false);
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await axios.get('http://172.5.10.2:9090/api/partners', {
-                    headers: {
-                        Authorization: `Bearer ${tokenValue}`,
-                        "Accept": "application/json",
-                        "Content-Type": "application/json"
-                    }
-                });
-                setRows(response.data);
-                setIsLoading(false);
-            } catch (error) {
-                if (error.response && error.response.status === 401) {
-                    console.log("From inside if condition");
-                    localStorage.removeItem('token');
-                    navigate("/");
-                }
 
-                console.error('Error fetching data from API:', error);
 
-            }
-        };
-
-        fetchData();
-    }, [tokenValue]);
 
     const handleConfirmDelete = () => {
         // Perform the delete operation here using the recordIdToDelete
@@ -123,17 +99,46 @@ export default function Agent(props) {
     const [selectedRecord, setSelectedRecord] = useState(null);
     const handleRowClick = (row) => {
         setSelectedRecord(row);
+        fetchSellingData(row)
 
     };
+    const [sellingRecord, setSellingRecord] = useState(null);
 
+    useEffect(() => {
+
+
+        fetchData();
+
+    }, [tokenValue, sellingRecord]);
+    const fetchSellingData = async (row) => {
+
+        try {
+            const response = await axios.get(`http://172.5.10.2:9090/api/inventory/product/details/partner/${row.id}`, {
+                headers: {
+                    Authorization: `Bearer ${tokenValue}`,
+                    "Accept": "application/json",
+                    "Content-Type": "application/json"
+                }
+
+            });
+            const apiData = response.data;
+            setSellingRecord(apiData);
+            console.log(sellingRecord, "   from Sim Record");
+
+        } catch (error) {
+
+        }
+    };
     const SelectedRecordDetails = () => {
-        if (selectedRecord) {
+
+
+        if (selectedRecord && sellingRecord) {
             return (
                 <Grid>
                     <Paper elevation={10}>
 
 
-                        <Card variant="outlined" sx={{ maxWidth: 360 }}>
+                        <Card variant="outlined" sx={{ width: 400 }}>
 
                             <Box sx={{ padding: 0.3 }}>
 
@@ -155,7 +160,7 @@ export default function Agent(props) {
 
                                             }}
                                             gutterBottom component="div">
-                                            {selectedRecord.fristName}
+                                            {selectedRecord.fristName} {selectedRecord.lastName}
                                         </Typography>
 
                                     </Stack>
@@ -164,36 +169,22 @@ export default function Agent(props) {
                             </Box>
                             <Grid container>
                                 <Grid item xs={12} >
-                                    <Box sx={{ p: 1 }}>
-                                        <Grid container>
-                                            <Grid item xs={4}>
-                                                <Typography sx={{ paddingLeft: 0.5, fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
 
-                                                    Name : </Typography>
-                                            </Grid>
-                                            <Grid item xs={8} alignItems={'left'} sx={{ marginLeft: -6 }}>
-                                                <Typography
-                                                    sx={{ fontSize: '17px', textAlign: 'left' }}
-                                                    gutterBottom variant="body2">
-                                                    {selectedRecord.fristName} {selectedRecord.lastName}
-                                                </Typography>
-                                            </Grid>
-                                        </Grid>
-                                    </Box>
-                                    <Divider light />
 
                                     <Box sx={{ p: 1 }}>
                                         <Grid container padding={0.5}>
                                             <Grid item xs={6}>
                                                 <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
 
-                                                    Creation Date : </Typography>
+                                                    Total Comission : </Typography>
                                             </Grid>
                                             <Grid item xs={6} alignItems={'left'} sx={{ paddingLeft: -2 }}>
                                                 <Typography
                                                     sx={{ fontSize: '17px', textAlign: 'left' }}
                                                     gutterBottom variant="body2">
-                                                    {selectedRecord.creationDate}
+                                                    {selectedRecord && selectedRecord.partnerCommission && selectedRecord.partnerCommission.amount !== null
+                                                        ? selectedRecord.partnerCommission.amount
+                                                        : "no comission"}
                                                 </Typography>
                                             </Grid>
                                         </Grid>
@@ -216,39 +207,9 @@ export default function Agent(props) {
                                         </Grid>
                                     </Box>
                                     <Divider light />
-                                    <Box sx={{ p: 1 }}>
-                                        <Grid container padding={0.5}>
-                                            <Grid item xs={6}>
-                                                <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
 
-                                                    Bussiness Nature : </Typography>
-                                            </Grid>
-                                            <Grid item xs={6} alignItems={'left'} sx={{ paddingLeft: -2 }}>
-                                                <Typography
-                                                    sx={{ fontSize: '17px', textAlign: 'left' }}
-                                                    gutterBottom variant="body2">
-                                                    {selectedRecord.businessNature}
-                                                </Typography>
-                                            </Grid>
-                                        </Grid>
-                                    </Box>
-                                    <Divider light />
-                                    <Box sx={{ p: 1 }}>
-                                        <Grid container padding={0.5}>
-                                            <Grid item xs={6}>
-                                                <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
 
-                                                    Contact No : </Typography>
-                                            </Grid>
-                                            <Grid item xs={6} alignItems={'left'} sx={{ paddingLeft: -2 }}>
-                                                <Typography
-                                                    sx={{ fontSize: '17px', textAlign: 'left' }}
-                                                    gutterBottom variant="body2">
-                                                    {selectedRecord.contact}
-                                                </Typography>
-                                            </Grid>
-                                        </Grid>
-                                    </Box>
+
                                     <Divider light />
                                     <Box sx={{ p: 1 }}>
                                         <Grid container padding={0.5}>
@@ -272,6 +233,23 @@ export default function Agent(props) {
                                             <Grid item xs={6}>
                                                 <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
 
+                                                    EKYC Token : </Typography>
+                                            </Grid>
+                                            <Grid item xs={6} alignItems={'left'} sx={{ paddingLeft: -2 }}>
+                                                <Typography
+                                                    sx={{ fontSize: '17px', textAlign: 'left' }}
+                                                    gutterBottom variant="body2">
+                                                    {String(selectedRecord.token)}
+                                                </Typography>
+                                            </Grid>
+                                        </Grid>
+                                    </Box>
+                                    <Divider light />
+                                    <Box sx={{ p: 1 }}>
+                                        <Grid container padding={0.5}>
+                                            <Grid item xs={6}>
+                                                <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
+
                                                     Document Type : </Typography>
                                             </Grid>
                                             <Grid item xs={6} alignItems={'left'} sx={{ paddingLeft: -2 }}>
@@ -284,18 +262,20 @@ export default function Agent(props) {
                                         </Grid>
                                     </Box>
                                     <Divider light />
+
+                                    <Divider light />
                                     <Box sx={{ p: 1 }}>
                                         <Grid container padding={0.5}>
-                                            <Grid item xs={6}>
+                                            <Grid item xs={3}>
                                                 <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
 
-                                                    Coordiante : </Typography>
+                                                    Email : </Typography>
                                             </Grid>
                                             <Grid item xs={6} alignItems={'left'} sx={{ paddingLeft: -2 }}>
                                                 <Typography
                                                     sx={{ fontSize: '17px', textAlign: 'left' }}
                                                     gutterBottom variant="body2">
-                                                    {selectedRecord.coordinate}
+                                                    {String(selectedRecord.email)}
                                                 </Typography>
                                             </Grid>
                                         </Grid>
@@ -306,35 +286,77 @@ export default function Agent(props) {
                                             <Grid item xs={6}>
                                                 <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
 
-                                                    Status : </Typography>
+                                                    Inactive Reason : </Typography>
                                             </Grid>
                                             <Grid item xs={6} alignItems={'left'} sx={{ paddingLeft: -2 }}>
                                                 <Typography
                                                     sx={{ fontSize: '17px', textAlign: 'left' }}
                                                     gutterBottom variant="body2">
-                                                    {String(selectedRecord.isActive)}
+                                                    {String(selectedRecord.reasonStatus)}
+                                                </Typography>
+                                            </Grid>
+                                        </Grid>
+                                    </Box>
+                                    <Divider light />
+                                    <Divider light />
+                                    <Box sx={{ p: 1 }}>
+                                        <Grid container padding={0.5}>
+                                            <Grid item xs={4}>
+                                                <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
+
+                                                    SIM in Stock : </Typography>
+                                            </Grid>
+                                            <Grid item xs={2} alignItems={'left'} sx={{ paddingLeft: -2 }}>
+                                                <Typography
+                                                    sx={{ fontSize: '17px', textAlign: 'left' }}
+                                                    gutterBottom variant="body2">
+                                                    {String(sellingRecord.availableSim)}
+                                                </Typography>
+                                            </Grid>
+                                            <Grid item xs={3}>
+                                                <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
+
+                                                    SIM Sold: </Typography>
+                                            </Grid>
+                                            <Grid item xs={2} alignItems={'left'} sx={{ paddingLeft: -2 }}>
+                                                <Typography
+                                                    sx={{ fontSize: '17px', textAlign: 'left' }}
+                                                    gutterBottom variant="body2">
+                                                    {String(sellingRecord.allocatedSim)}
                                                 </Typography>
                                             </Grid>
                                         </Grid>
                                     </Box>
                                     <Divider light />
                                     <Box sx={{ p: 1 }}>
-                                        <Grid container padding={0.5}>
-                                            <Grid item xs={6}>
+                                        <Grid container padding={0.5} spacing={2}>
+                                            <Grid item xs={5}>
                                                 <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
 
-                                                    Partner ID : </Typography>
+                                                    Device in Stock: </Typography>
                                             </Grid>
-                                            <Grid item xs={6} alignItems={'left'} sx={{ paddingLeft: -2 }}>
+                                            <Grid item xs={1.8} alignItems={'left'} sx={{ paddingLeft: -2 }}>
                                                 <Typography
                                                     sx={{ fontSize: '17px', textAlign: 'left' }}
                                                     gutterBottom variant="body2">
-                                                    {/* {selectedRecord.partnerCommission.partnerId} */}
+                                                    {String(sellingRecord.availableDevice)}
+                                                </Typography>
+                                            </Grid>
+                                            <Grid item xs={4}>
+                                                <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
+
+                                                    Device Sold : </Typography>
+                                            </Grid>
+                                            <Grid item xs={1} alignItems={'left'} >
+                                                <Typography
+                                                    sx={{ fontSize: '17px', textAlign: 'left' }}
+                                                    gutterBottom variant="body2">
+                                                    {String(sellingRecord.allocatedDevice)}
                                                 </Typography>
                                             </Grid>
                                         </Grid>
                                     </Box>
-                                    <Divider light />
+
 
 
 
@@ -343,13 +365,18 @@ export default function Agent(props) {
 
                             </Grid>
                             <div>
-                                <Button variant="contained" style={{ marginRight: '10px', marginBottom: '10px', marginLeft: '10px', backgroundColor: '#253A7D', boxShadow: 20 }}
+                                {/* <Button variant="contained" style={{ marginRight: '10px', marginBottom: '10px', marginLeft: '10px', backgroundColor: '#253A7D', boxShadow: 20 }}
                                     onClick={() => navigate('/userCodes', { state: { id: selectedRecord.id } })}
-                                >USER CODES</Button>
-                                <Button variant="contained" style={{ marginRight: '10px', marginBottom: '10px', backgroundColor: '#253A7D', boxShadow: 20 }}
+                                >USER CODES</Button> */}
+                                {/* <Button variant="contained" style={{ marginRight: '10px', marginBottom: '10px', backgroundColor: '#253A7D', boxShadow: 20 }}
                                     onClick={() => navigate('/addSubAgent', { state: { id: selectedRecord.id } })}
-                                >Add SUB-AGENT</Button>
-                                <Button variant="contained" style={{ marginRight: '10px', marginBottom: '10px', marginLeft: '10px', backgroundColor: '#253A7D', boxShadow: 20 }}>SHOW COMMISSIONS</Button>
+                                >Add SUB-AGENT</Button> */}
+                                <Button variant="contained" 
+                                style={{ marginRight: '10px', marginBottom: '10px', marginLeft: '10px', backgroundColor: '#253A7D', boxShadow: 20 }}
+                                onClick={() => navigate('/singleAgentComission', { state: { id: selectedRecord } })}
+                                >
+                                    SHOW COMMISSIONS
+                                </Button>
                                 <Button variant="contained" style={{ marginRight: '10px', marginBottom: '10px', backgroundColor: '#253A7D', boxShadow: 20 }}
                                     onClick={() => navigate('/editAgent', { state: { id: selectedRecord.id } })}
                                 >EDIT</Button>
@@ -385,7 +412,7 @@ export default function Agent(props) {
                 setValue(value);
             })
     }
-    const [selectedOption, setSelectedOption] = useState('');
+
     const [highlightedRow, setHighlightedRow] = useState(null);
 
     const handleRowMouseEnter = (row) => {
@@ -395,6 +422,7 @@ export default function Agent(props) {
     const handleRowMouseLeave = () => {
         setHighlightedRow(null);
     };
+
     return (
 
         <Box >
@@ -409,7 +437,7 @@ export default function Agent(props) {
                     <CircularProgress />
                 </Grid>
 
-            ) : <Box sx={{ display: 'container', marginTop: -3 }}>
+            ) : <Box sx={{ display: 'container', marginTop: -3.5 }}>
                 <Box sx={{ width: '70%' }}>
                     <Box component="main" sx={{ flexGrow: 1, p: 1, width: '100%' }}>
                         <Paper elevation={10} sx={{ padding: 1, margin: 1, backgroundColor: 'white', color: '#253A7D', marginLeft: 0.2, marginRight: 0.2 }}>
@@ -422,7 +450,7 @@ export default function Agent(props) {
                                         fontWeight: 'bold',
 
                                     }}
-                                > Agent's List</Typography>
+                                > Agents List</Typography>
                             </Grid>
                         </Paper>
                     </Box>
@@ -510,7 +538,14 @@ export default function Agent(props) {
                                                         >
                                                             {columns.map((column) => (
                                                                 <TableCell key={column.id} sx={{ textAlign: 'left', fontSize: '17px' }}>
-                                                                    {row[column.id]}
+                                                                    {column.id === 'isActive' ? (
+                                                                        // Handle rendering of 'Status' column content here
+                                                                        // For example:
+                                                                        row[column.id] ? 'Active' : 'Inactive'
+                                                                    ) : (
+                                                                        // Render other column content
+                                                                        String(row[column.id])
+                                                                    )}
                                                                 </TableCell>
                                                             ))}
                                                         </TableRow>
@@ -555,7 +590,7 @@ export default function Agent(props) {
                 </Box>
 
 
-                 </Box>}
+            </Box>}
 
         </Box>
     )

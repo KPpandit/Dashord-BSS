@@ -12,7 +12,7 @@ import jsPDF from 'jspdf';
 export default function AgentReportByProduct(props) {
     const columns = [
         { id: 'fristName', name: 'Name' },
-        { id: 'email', name: 'Email' }, 
+        { id: 'email', name: 'Email' },
         { id: 'contact', name: 'Contact' },
         { id: 'creationDate', name: 'Date' },
         { id: 'totalSim', name: 'Total Sim' },
@@ -21,8 +21,8 @@ export default function AgentReportByProduct(props) {
         { id: 'totalDevice', name: 'Total Device' },
         { id: 'allocatedDevice', name: 'Device Sold' },
         { id: 'partnerCommission.amount', name: 'Commission Amount' },
-       
-        
+
+
 
     ];
     const [rows, setRows] = useState([]);
@@ -126,7 +126,7 @@ export default function AgentReportByProduct(props) {
 
 
         // Construct the API URL
-        const apiUrl = `http://172.5.10.2:9098/agent/partners/byall/records/bydate/range?search=${serach}&startDate=${startdate}&endDate=${enddate}`;
+        const apiUrl = `http://localhost:9098/agent/partners/byall/records/bydate/range?search=${serach}&startDate=${startdate}&endDate=${enddate}`;
         // Make the API call
         fetch(apiUrl, {
             headers: {
@@ -255,43 +255,35 @@ export default function AgentReportByProduct(props) {
                                 <TableBody>
                                     {rows && rows
                                         .slice(page * rowperpage, page * rowperpage + rowperpage)
-                                        .map((row, i) => {
-                                            return (
-
-                                                <TableRow
-                                                    key={i}
-                                                    onClick={() => {
-                                                        handleRowClick(row)
-                                                        handleClickOpen(row)
-                                                    }}
-                                                    onMouseEnter={() => handleRowMouseEnter(row)}
-                                                    //   onMouseLeave={handleRowMouseLeave}
-                                                    sx={
-                                                        highlightedRow === row
-                                                            ? { backgroundColor: '#F6B625' }
-                                                            : {}
-                                                    }
-                                                >
-
-                                                    {columns.map((column) => (
-
-
-                                                        <TableCell key={column.id} sx={{ textAlign: 'left', fontSize: '17px' }}>
-                                                            {column.id === 'partnerCommission.amount' ? (
-                                                                // Render partner commission amount if column ID is 'partnerCommission.amount'
-                                                                <>{row.partnerCommission.amount}</>
-                                                            ) : (
-                                                                // Render other column data
-                                                                <>{row[column.id]}</>
-                                                            )}
-                                                        </TableCell>
-                                                    ))}
-                                                </TableRow>
-
-
-                                            );
-                                        })}
+                                        .map((row, i) => (
+                                            <TableRow
+                                                key={i}
+                                                onClick={() => {
+                                                    handleRowClick(row);
+                                                    handleClickOpen(row);
+                                                }}
+                                                onMouseEnter={() => handleRowMouseEnter(row)}
+                                                sx={
+                                                    highlightedRow === row
+                                                        ? { backgroundColor: '#F6B625' }
+                                                        : {}
+                                                }
+                                            >
+                                                {columns.map((column) => (
+                                                    <TableCell key={column.id} sx={{ textAlign: 'left', fontSize: '17px' }}>
+                                                        {column.id === 'partnerCommission.amount' ? (
+                                                            row?.partnerCommission?.amount !== null && row?.partnerCommission?.amount !== undefined
+                                                                ? row.partnerCommission.amount
+                                                                : "no commission"
+                                                        ) : (
+                                                            row[column.id]
+                                                        )}
+                                                    </TableCell>
+                                                ))}
+                                            </TableRow>
+                                        ))}
                                 </TableBody>
+
                             </Table>
                         </TableContainer>
                         <TablePagination

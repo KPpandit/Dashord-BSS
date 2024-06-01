@@ -5,9 +5,10 @@ import SearchIcon from '@mui/icons-material/Search';
 import axios from "axios";
 export default function PrePaidRoaming(){
     const columns = [
-        { id: 'price', name: 'MSISDN' },
-        { id: 'price_type', name: 'Voice Call' },
-        { id: 'period', name: '4 G Data' },
+        { id: 'msisdn', name: 'MISIDNs' },
+        { id: 'imsi', name: 'IMSI' },
+        { id: '4g_data_octets', name: '4 G Octets' },
+        { id: '5g_data_octets', name: '5 G Octets' },
         
 
     ];
@@ -17,7 +18,7 @@ export default function PrePaidRoaming(){
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get('http://localhost:9696/api/rates/offer/get/all', {
+                const response = await axios.get('http://172.5.10.2:9696/api/prepaid/account/get/all/prepaid/account', {
                     headers: {
                         Authorization: `Bearer ${tokenValue}`,
                         "Accept": "application/json",
@@ -50,7 +51,7 @@ export default function PrePaidRoaming(){
         console.log(`Deleting record with ID: ${recordIdToDelete}`);
     
         // Make an API call to delete the record
-        axios.delete(`http://localhost:9696/api/rates/detail/delete/${recordIdToDelete}`, {
+        axios.delete(`http://172.5.10.2:9696/api/rates/detail/delete/${recordIdToDelete}`, {
             headers: {
                 Authorization: `Bearer ${tokenValue}`,
                 "Accept": "application/json",

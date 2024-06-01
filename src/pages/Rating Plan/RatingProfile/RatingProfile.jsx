@@ -5,6 +5,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import axios from "axios";
 export default function RatingProfile() {
     const columns = [
+        { id: 'rating_profile_id', name: 'Pack ID' },
         { id: 'pack_name', name: 'Pack Name' },
         { id: 'pack_type', name: 'Pack Type' },
         { id: 'category_name', name: 'Category' },
@@ -271,6 +272,22 @@ export default function RatingProfile() {
                                         </Grid>
                                     </Box>
                                     <Divider light />
+                                    <Box sx={{ p: 1 }}>
+                                        <Grid container>
+                                            <Grid item xs={6}>
+                                                <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
+                                                    Pack For :
+                                                </Typography>
+                                            </Grid>
+                                            <Grid item xs={6} alignItems={'left'} sx={{ marginLeft: -6 }}>
+                                                <Typography
+                                                    sx={{ fontSize: '17px', textAlign: 'left' }}
+                                                    gutterBottom variant="body2">
+                                                    {selectedRecord.pack_for}
+                                                </Typography>
+                                            </Grid>
+                                        </Grid>
+                                    </Box>
                                 </Grid>
 
 

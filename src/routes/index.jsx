@@ -118,6 +118,10 @@ import SimByAgent from '../pages/Report/SimInventoryReport/SimByAgent';
 import SimByStatus from '../pages/Report/SimInventoryReport/SimByStatus';
 import DeviceByAgent from '../pages/Report/DeviceInventoryReport/DeviceByAgent';
 import DeviceByVendor from '../pages/Report/DeviceInventoryReport/DeviceByVendor';
+import AvailablePack from '../pages/Available Plan/AvailablePack';
+import PackPayment from '../pages/Customer/Payment.jsx/PackPayment';
+import SingleAgentCommission from '../pages/Agent/SingleAgentCommision';
+import PackDetails from '../pages/Customer/PackDetails.jsx/PackDeails';
 
 
 
@@ -149,6 +153,7 @@ export const Routers = () => {
                         <Route path='/userCodes' element={<UserCodes />} />
                         <Route path='/addUserCode' element={<AddUserCode />} />
                         <Route path='/editUserCode' element={<EditUserCode />} />
+                        <Route path='/singleAgentComission' element={<SingleAgentCommission />} />
 
 
                         {/*Add  Payment */}
@@ -209,6 +214,12 @@ export const Routers = () => {
 
                         {/* Available Plan */}
                         <Route path='/availablePlan' element={<AvailablePlan />} />
+                        <Route path='/availablePack' element={<AvailablePack />} />
+
+                        {/* Payment */}
+                        <Route path='/packpayment' element={<PackPayment />} />
+
+
                         {/* Rating Plan */}
                         <Route path='/ratingPlan' element={<RatingPlan />} />
 
@@ -311,6 +322,9 @@ export const Routers = () => {
                            <Route path='/deviceSellingReports' element={<DeviceBySellingRates/>}/>
                            <Route path='/deviceByAgent' element={<DeviceByAgent/>}/>
                            <Route path='/deviceByVendor' element={<DeviceByVendor/>}/>
+
+                           {/* Pack  */}
+                           <Route path='/packDetails' element={<PackDetails/>}/>
                         {/* <Route path='/add-Noc-sub' element={<AddNoc />} />
                         <Route path='/all-Noc-sub' element={<AllNoc />} />
                         <Route path='/all-Noc-query' element={<NOCQuery />} />

@@ -7,6 +7,7 @@ import axios from "axios";
 
 const DeviceManagement = (props) => {
     const columns = [
+        { id: 'id', name: 'Device id' },
         { id: 'deviceModel', name: 'Device Model' },
         { id: 'deviceMake', name: 'Device Make' },
         { id: 'manufacturer', name: 'Manufactured' },

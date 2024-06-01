@@ -184,7 +184,24 @@ export default function Plan(props) {
                                         </Grid>
                                     </Box>
                                     <Divider light />
-                                   
+                                    <Box sx={{ p: 1 }}>
+                                        <Grid container>
+                                            <Grid item xs={6}>
+                                                <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
+                                                    For :
+                                                </Typography>
+                                            </Grid>
+                                            <Grid item xs={6} alignItems={'left'} sx={{ marginLeft: -6 }}>
+                                                <Typography
+                                                    sx={{ fontSize: '17px', textAlign: 'left' }}
+                                                    gutterBottom variant="body2"
+                                                >
+                                                   
+                                                    {String(selectedRecord.pack_for)}
+                                                </Typography>
+                                            </Grid>
+                                        </Grid>
+                                    </Box>
                                    
                                 </Grid>
 

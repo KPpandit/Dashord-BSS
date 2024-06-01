@@ -30,7 +30,7 @@ function Copyright(props) {
       {'.'}
       All Copyright Reserved,
       <Link color="inherit" href="https://wpits.com/">
-        WPITS
+        Neotel
       </Link>{' '}
     </Typography>
   );

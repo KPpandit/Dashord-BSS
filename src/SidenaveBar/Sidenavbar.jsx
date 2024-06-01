@@ -258,7 +258,7 @@ export default function Sidenavbar() {
         icon: <DashboardIcon />
       },
       {
-        label:'Provisning Gateway',
+        label:'Provisioning Gateway',
         route:'/hss',
         icon:<StorageIcon/>,
         subRoute:[
@@ -326,7 +326,7 @@ export default function Sidenavbar() {
         icon: <PaymentsTwoToneIcon />
       },
       {
-        label: "Plan",
+        label: "Pack",
         route: '/plan',
         icon: <NextPlanIcon />
       },
@@ -334,6 +334,11 @@ export default function Sidenavbar() {
         label: "Configuration",
         route: '/configuration',
         icon: <DisplaySettingsIcon />
+      },
+      {
+        label: "Available Pack",
+        route: '/availablePack',
+        icon: <AppsIcon />
       },
       {
         label: "Available Plan",
@@ -441,20 +446,20 @@ export default function Sidenavbar() {
           }
         ]
       }
-      ,{
-        label: "Test",
-        // route: '/inventory',
-        icon: <Inventory2Icon />,
-        subRoute: [
-          {
-            label:'Invoice Sample Design',
-            route:'/invoiceDesign'
-          },{
-            label:'Invoice Sample Design',
-            route:'/test'
-          }
-        ]
-      }
+      // ,{
+      //   label: "Test",
+      //   // route: '/inventory',
+      //   icon: <Inventory2Icon />,
+      //   subRoute: [
+      //     {
+      //       label:'Invoice Sample Design',
+      //       route:'/invoiceDesign'
+      //     },{
+      //       label:'Invoice Sample Design',
+      //       route:'/test'
+      //     }
+      //   ]
+      // }
     ],
   }
   return (

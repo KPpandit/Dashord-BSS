@@ -18,7 +18,7 @@ export default function PrepaidCustomerUsageReport (props) {
         { id: 'ekycDate', name: 'Ekyc Date' },
         { id: 'pack_offered_data', name: 'Data Provided' },
         { id: 'pack_offered_calls', name: 'Call Provided(sec.)' },
-        { id: 'pack_offered_sms', name: 'Data Provided' },
+        { id: 'pack_offered_sms', name: 'SMS Provided' },
 
     ];
     const [rows, setRows] = useState([]);

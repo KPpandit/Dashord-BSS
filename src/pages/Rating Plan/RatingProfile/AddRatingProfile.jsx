@@ -20,6 +20,7 @@ export default function AddRatingProfile() {
     const navigate = useNavigate();
     const [category_name, setCategory_name_list] = useState();
     const [rates_offer, setRating_offer_list] = useState('');
+    const [pack_for, setPack_for] = useState();
 
     const [call_balance, setCall] = useState('');
     const [call_balance_parameter, setCallBalanceParameter] = useState("");
@@ -108,7 +109,8 @@ export default function AddRatingProfile() {
                 call_balance: parseInt(call_balance, 10) || 0,
                 sms_balance: parseInt(sms_balance, 10) || 0,
                 call_balance_parameter,
-                data_balance_parameter
+                data_balance_parameter,
+                pack_for
             }, {
 
             headers: {
@@ -315,6 +317,25 @@ export default function AddRatingProfile() {
                                                             {name}
                                                         </MenuItem>
                                                     ))}
+                                                </Select>
+                                            </FormControl>
+                                        </Grid>
+                                        <Grid item xs={6}>
+                                            <FormControl fullWidth>
+                                                <InputLabel required id="demo-simple-select-label">Pack For</InputLabel>
+                                                <Select
+                                                    required
+                                                    id="demo-simple-select"
+                                                    label="Pack For"
+                                                    fullWidth
+                                                    name="pack_type"
+                                                    value={pack_for}
+                                                    onChange={e => setPack_for(e.target.value)}
+                                                >
+                                                    <MenuItem value={'prepaid'}>Prepaid</MenuItem>
+                                                    <MenuItem value={'postpaid'}>Postpaid</MenuItem>
+
+
                                                 </Select>
                                             </FormControl>
                                         </Grid>

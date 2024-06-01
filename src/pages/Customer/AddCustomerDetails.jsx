@@ -7,10 +7,12 @@ import RemoveIcon from '@mui/icons-material/Remove';
 import { useFormik } from 'formik';
 import { Label } from '@mui/icons-material';
 import axios from "axios";
-import Notification from '../Components/Notification/Notification';
+import { toast } from 'react-toastify';
 import MuiAlert from '@mui/material/Alert';
 import { useLocation } from 'react-router-dom';
 import CancelIcon from '@mui/icons-material/Cancel';
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from 'react-toastify';
 export default function AddCustomerDetails() {
     const [notification, setNotification] = useState({
         open: false,
@@ -94,7 +96,6 @@ export default function AddCustomerDetails() {
     }, [])
     const { handleChange, handleSubmit, handleBlur, values, submitForm: submitMainForm1, resetForm: resetForm1 } = useFormik({
         initialValues: {
-
             referralFeePaid: "",
             autoPaymentType: "",
             dueDateUnitId: "",
@@ -145,6 +146,7 @@ export default function AddCustomerDetails() {
             vatId: "",
             profession: "",
             maritalStatus: "",
+            serviceType:""
 
         },
 
@@ -198,12 +200,12 @@ export default function AddCustomerDetails() {
                 }
             }).catch(e => {
                 console.log(e," -----> e")
-                setNotification({
-                    open: true,
-                    message: e.response.data.message,
-                    severity: 'error',
-                })
-
+                // setNotification({
+                //     open: true,
+                //     message: ,
+                //     severity: 'error',
+                // })
+                toast.error(e.response.data.message, { autoClose: 2000 });
 
                
             })
@@ -253,19 +255,12 @@ export default function AddCustomerDetails() {
                     }
                 }).then(res => {
                     if (res.status === 201) {
-                        setNotification({
-                            open: true,
-                            message: 'Customer  Added successfully!',
-                            severity: 'success',
-                        });
+                        toast.success('Customer  Added successfully!', { autoClose: 2000 });
+                       
                     }
                 }).catch(e => {
                     if (e.response.status === 401) {
-                        setNotification({
-                            open: true,
-                            message: 'Payment Filed',
-                            severity: 'error',
-                        });
+                        toast.error(e.response.data.message, { autoClose: 2000 });
                     }
                 });
             } else {
@@ -278,19 +273,12 @@ export default function AddCustomerDetails() {
                     }
                 }).then(res => {
                     if (res.status === 201) {
-                        setNotification({
-                            open: true,
-                            message: 'Customer  Added successfully!',
-                            severity: 'success',
-                        });
+                        console.log(" saved success fully")
+                        toast.success('Customer  Added successfully!', { autoClose: 2000 });
                     }
                 }).catch(e => {
                     if (e.response.status === 401) {
-                        setNotification({
-                            open: true,
-                            message: 'Payment Filed',
-                            severity: 'error',
-                        });
+                        toast.error('Error! Please try again later', { autoClose: 2000 });
                     }
                 });
             }
@@ -326,6 +314,7 @@ export default function AddCustomerDetails() {
     const commonInputLabelProps = { shrink: true, style: { fontFamily: 'Roboto', } };
     return (
         <Box component="form" onSubmit={handleSubmit} >
+            <ToastContainer position="bottom-left" />
             <Box component="main" sx={{ flexGrow: 1, width: '100%' }}>
                 <Paper elevation={10} sx={{ padding: 1, paddingLeft: 3, margin: 1, backgroundColor: 'white', color: '#253A7D', marginLeft: -0, marginRight: 0.2 }}>
                     <Grid>
@@ -505,9 +494,7 @@ export default function AddCustomerDetails() {
                                                 id="demo-simple-select"
                                                 // value={values.currency}
                                                 label="Preferred Payment Type"
-                                            // onChange={handleChange}
-                                            // onBlur={handleBlur}
-                                            // name="currency"
+                                           
                                             >
                                                 <MenuItem value={"Credit Card"}>Credit Card</MenuItem>
                                                 <MenuItem value={"ach"}>ACH</MenuItem>
@@ -518,17 +505,26 @@ export default function AddCustomerDetails() {
                                         </FormControl>
                                     </Grid>
                                     <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
-                                        <TextField
+                                        <FormControl fullWidth >
+                                            <InputLabel id="demo-simple-select-label">Service Type</InputLabel>
+                                            <Select
+                                                labelId="demo-simple-select-label"
+                                                id="demo-simple-select"
+                                                value={values.serviceType}
+                                                name='serviceType'
+                                                label="Service Type"
+                                                onChange={handleChange}
+                                                onBlur={handleBlur}
+                                           
+                                            >
+                                                <MenuItem value={"Mobility"}>Mobility</MenuItem>
+                                                <MenuItem value={"Fixed Wireless"}>Fixed Wireless</MenuItem>
+                                                <MenuItem value={"Fiber"}>Fiber</MenuItem>
+                                                <MenuItem value={"VOIP"}>VOIP</MenuItem>
 
-                                            label="Agent ID"
-                                            type="number"
 
-                                            fullWidth
-                                        // name="creditNotificationLimit2"
-                                        // value={values.creditNotificationLimit2}
-                                        // onChange={handleChange}
-                                        // onBlur={handleBlur}
-                                        />
+                                            </Select>
+                                        </FormControl>
                                     </Grid>
                                     <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
                                         <TextField
@@ -560,9 +556,7 @@ export default function AddCustomerDetails() {
                                             type="number"
                                             // value={values}
                                             fullWidth
-                                        // name="autoPaymentType"
-                                        // onChange={handleChange}
-                                        // onBlur={handleBlur}
+                                       
                                         />
                                     </Grid>
 
@@ -574,9 +568,7 @@ export default function AddCustomerDetails() {
                                                 id="demo-simple-select"
                                                 // value={values.useParentPricing}
                                                 label="Invoice Delivery Method"
-                                            // onChange={handleChange}
-                                            // onBlur={handleBlur}
-                                            // name="useParentPricing"
+                                           
                                             >
                                                 <MenuItem value={"Email"}>Email</MenuItem>
                                                 <MenuItem value={"Paper"}>Paper</MenuItem>
@@ -1927,8 +1919,7 @@ export default function AddCustomerDetails() {
                     Submit
                 </Button>
             </Grid>
-
-
+            
         </Box>
     )
 }

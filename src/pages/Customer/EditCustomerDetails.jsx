@@ -7,7 +7,7 @@ import RemoveIcon from '@mui/icons-material/Remove';
 import { useFormik } from 'formik';
 import { Label } from '@mui/icons-material';
 import axios from "axios";
-import Notification from '../Components/Notification/Notification';
+
 import MuiAlert from '@mui/material/Alert';
 import { useLocation } from 'react-router-dom';
 import CancelIcon from '@mui/icons-material/Cancel';
@@ -123,6 +123,7 @@ export default function EditCustomerDetails() {
             maritalStatus: "",
             partner:'',
             deviceId:"",
+            serviceType:""
 
         },
 
@@ -177,7 +178,8 @@ export default function EditCustomerDetails() {
             balance: "",
             paymentPeriod: "",
             paymentNotes: "",
-            paymentStatus: ""
+            paymentStatus: "",
+            product:""
         },
         onSubmit: async (values2) => {
             // your submission logic for the second formik instance
@@ -302,6 +304,7 @@ export default function EditCustomerDetails() {
                         maritalStatus: customerDetails.maritalStatus,
                         partner:customerDetails.partner,
                         deviceId:customerDetails.deviceInventory,
+                        serviceType:customerDetails. serviceType
 
 
                     });
@@ -364,7 +367,8 @@ export default function EditCustomerDetails() {
                         balance: paymentDetails.balance,
                         paymentPeriod: paymentDetails.paymentPeriod,
                         paymentNotes: paymentDetails.paymentNotes,
-                        paymentStatus: paymentDetails.paymentStatus
+                        paymentStatus: paymentDetails.paymentStatus,
+                        product:paymentDetails.product
                     });
                     setSelectedCurrencyId(paymentDetails.currency.id)
                     console.log("Currency id  :" , paymentDetails.currency.id)
@@ -640,17 +644,26 @@ export default function EditCustomerDetails() {
                                         </FormControl>
                                     </Grid>
                                     <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
-                                        <TextField
+                                        <FormControl fullWidth >
+                                            <InputLabel id="demo-simple-select-label">Service Type</InputLabel>
+                                            <Select
+                                                labelId="demo-simple-select-label"
+                                                id="demo-simple-select"
+                                                value={values.serviceType}
+                                                name='serviceType'
+                                                label="Service Type"
+                                                onChange={handleChange}
+                                                onBlur={handleBlur}
+                                           
+                                            >
+                                                <MenuItem value={"Mobility"}>Mobility</MenuItem>
+                                                <MenuItem value={"Fixed Wireless"}>Fixed Wireless</MenuItem>
+                                                <MenuItem value={"Fiber"}>Fiber</MenuItem>
+                                                <MenuItem value={"VOIP"}>VOIP</MenuItem>
 
-                                            label="Agent ID"
-                                            type="number"
 
-                                            fullWidth
-                                        // name="creditNotificationLimit2"
-                                        // value={values.creditNotificationLimit2}
-                                        // onChange={handleChange}
-                                        // onBlur={handleBlur}
-                                        />
+                                            </Select>
+                                        </FormControl>
                                     </Grid>
                                     <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
                                         <TextField
@@ -1761,6 +1774,24 @@ export default function EditCustomerDetails() {
                                                             </Select>
                                                         </FormControl>
                                                     </Grid>
+                                                    <Grid item xs={6}>
+                                                        <FormControl fullWidth>
+                                                            <InputLabel id="demo-simple-select-label">Product</InputLabel>
+                                                            <Select
+                                                                labelId="demo-simple-select-label"
+                                                                id="demo-simple-select"
+                                                                label="product"
+                                                                value={values2.product}
+                                                                onChange={handleChange2}
+                                                                name='product'
+                                                            >
+
+                                                                <MenuItem value={"sim"}>SIM</MenuItem>
+                                                                <MenuItem value={"device"}>Device</MenuItem>
+                                                                <MenuItem value={"sim,device"}>Both</MenuItem>
+                                                            </Select>
+                                                        </FormControl>
+                                                    </Grid>
                                                     <Grid item lg={6}>
                                                         <TextField label='payout ID'
                                                             type='number'
@@ -1816,6 +1847,209 @@ export default function EditCustomerDetails() {
                                                             type='text'
                                                             value={values2.paymentNotes}
                                                             name='paymentNotes'
+                                                            required
+                                                            onChange={handleChange2}
+                                                            onBlur={handleBlur2}
+                                                        />
+                                                    </Grid>
+
+
+                                                </Grid>
+                                            </Grid>
+                                        </form>
+
+                                    )}
+                                    {billingCycle=='cash' && (
+                                        <form onSubmit={handleSubmit2}>
+                                            <Grid item lg={12} md={7} sm={12} xs={12} paddingBottom={2} sx={{ justifyContent: 'flex-end', display: 'flex', flexDirection: 'column' }}>
+                                                <Grid container spacing={2}>
+                                                    <Grid item xs={6}>
+                                                        <TextField
+
+                                                            label="userId"
+                                                            type="number"
+                                                            value={values2.userId}
+                                                            fullWidth
+                                                            name='userId'
+                                                            required
+                                                            disabled
+                                                            onChange={handleChange2}
+                                                            onBlur={handleBlur2}
+                                                        />
+                                                    </Grid>
+                                                    <Grid item xs={6}>
+                                                        <TextField
+
+                                                            label="customerId"
+                                                            type="number"
+                                                            value={values2.customerId}
+                                                            fullWidth
+                                                            name='customerId'
+                                                            required
+                                                            disabled
+                                                            onChange={handleChange2}
+                                                            onBlur={handleBlur2}
+                                                        />
+                                                    </Grid>
+
+                                                    <Grid item xs={6}>
+                                                        <TextField
+                                                            label='attempt'
+                                                            type='number'
+                                                            value={values2.attempt}
+                                                            name='attempt'
+                                                            required
+                                                            fullWidth
+                                                            onChange={handleChange2}
+                                                            onBlur={handleBlur2}
+
+                                                        />
+                                                    </Grid>
+                                                    <Grid item xs={6}>
+                                                        <TextField
+                                                            label='Amount'
+                                                            type='number'
+                                                            value={values2.amount}
+                                                            name='amount'
+                                                            required
+                                                            fullWidth
+                                                            onChange={handleChange2}
+                                                            onBlur={handleBlur2}
+
+                                                        />
+                                                    </Grid>
+                                                   
+                                                    <Grid item xs={6}>
+                                                        <FormControl fullWidth>
+                                                            <InputLabel id="demo-simple-select-label">Delete</InputLabel>
+                                                            <Select
+                                                                labelId="demo-simple-select-label"
+                                                                id="demo-simple-select"
+                                                                label="Delete"
+                                                                value={values2.deleted}
+                                                                onChange={handleChange2}
+                                                                name='deleted'
+                                                            >
+
+                                                                <MenuItem value={1}>Yes</MenuItem>
+                                                                <MenuItem value={0}>No</MenuItem>
+
+                                                            </Select>
+                                                        </FormControl>
+                                                    </Grid>
+                                                    <Grid item xs={6}>
+                                                        <FormControl fullWidth>
+                                                            <InputLabel id="demo-simple-select-label">Is Refund</InputLabel>
+                                                            <Select
+                                                                labelId="demo-simple-select-label"
+                                                                id="demo-simple-select"
+                                                                label="Is Refund"
+                                                                value={values2.isRefund}
+                                                                onChange={handleChange2}
+                                                                name='isRefund'
+                                                            >
+
+                                                                <MenuItem value={1}>Yes</MenuItem>
+                                                                <MenuItem value={0}>No</MenuItem>
+
+                                                            </Select>
+                                                        </FormControl>
+                                                    </Grid>
+                                                    <Grid item xs={6}>
+                                                        <FormControl fullWidth>
+                                                            <InputLabel id="demo-simple-select-label">isPreauth</InputLabel>
+                                                            <Select
+                                                                labelId="demo-simple-select-label"
+                                                                id="demo-simple-select"
+                                                                label="isPreauth"
+                                                                value={values2.isPreauth}
+                                                                onChange={handleChange2}
+                                                                name='isPreauth'
+                                                            >
+
+                                                                <MenuItem value={1}>Yes</MenuItem>
+                                                                <MenuItem value={0}>No</MenuItem>
+
+                                                            </Select>
+                                                        </FormControl>
+                                                    </Grid>
+                                                    <Grid item xs={6}>
+                                                        <FormControl fullWidth>
+                                                            <InputLabel id="demo-simple-select-label">Product</InputLabel>
+                                                            <Select
+                                                                labelId="demo-simple-select-label"
+                                                                id="demo-simple-select"
+                                                                label="product"
+                                                                value={values2.product}
+                                                                onChange={handleChange2}
+                                                                name='product'
+                                                            >
+
+                                                                <MenuItem value={"sim"}>SIM</MenuItem>
+                                                                <MenuItem value={"device"}>Device</MenuItem>
+                                                                <MenuItem value={"sim,device"}>Both</MenuItem>
+                                                            </Select>
+                                                        </FormControl>
+                                                    </Grid>
+                                                    <Grid item xs={6}>
+                                                        <TextField label='payout ID'
+                                                            type='number'
+                                                            fullWidth
+                                                            value={values2.payoutId}
+                                                            name='payoutId'
+                                                            required
+                                                            onChange={handleChange2}
+                                                            onBlur={handleBlur2}
+
+                                                        />
+                                                    </Grid>
+                                                    <Grid item xs={6}>
+                                                        <TextField label='balance'
+                                                            type='number'
+                                                            value={values2.balance}
+                                                            name='balance'
+                                                            required
+                                                            fullWidth
+                                                            onChange={handleChange2}
+                                                            onBlur={handleBlur2}
+                                                        />
+                                                    </Grid>
+                                                    <Grid item xs={6}>
+                                                        <TextField label='payment pariod'
+                                                            type='number'
+                                                            value={values2.paymentPeriod}
+                                                            name='paymentPeriod'
+                                                            required
+                                                            fullWidth
+                                                            onChange={handleChange2}
+                                                            onBlur={handleBlur2}
+                                                        />
+                                                    </Grid>
+                                                    <Grid item xs={6}>
+                                                        <FormControl fullWidth>
+                                                            <InputLabel id="demo-simple-select-label">Payment Status</InputLabel>
+                                                            <Select
+                                                                labelId="demo-simple-select-label"
+                                                                id="demo-simple-select"
+                                                                label="paymentStatus"
+                                                                value={values2.paymentStatus}
+                                                                onChange={handleChange2}
+                                                                name='paymentStatus'
+                                                            >
+
+                                                                <MenuItem value={1}>Yes</MenuItem>
+                                                                <MenuItem value={0}>No</MenuItem>
+
+                                                            </Select>
+                                                        </FormControl>
+                                                    </Grid>
+                                                    <Grid item xs={12}>
+                                                        <TextField label='Payment Notes'
+                                                            fullWidth
+                                                            type='text'
+                                                            value={values2.paymentNotes}
+                                                            name='paymentNotes'
+                                                            rows={4}
                                                             required
                                                             onChange={handleChange2}
                                                             onBlur={handleBlur2}

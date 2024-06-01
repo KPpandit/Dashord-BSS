@@ -82,6 +82,9 @@ export default function Report(props) {
       case 'All Customer Report':
         navigate('/allcustomerReport');
         break;
+        case 'Agents Report of  All Product':
+          navigate('/agentReportByProduct');
+          break;
       case 'Pre-Paid Customer Report':
         navigate('/prepaidcustomerReport');
         break;

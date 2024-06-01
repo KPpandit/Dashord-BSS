@@ -28,7 +28,7 @@ export default function CustomerInvoice() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get(`http://172.5.10.2:9098/bill/${id}`, {
+                const response = await axios.get(`http://localhost:9098/bill/${id}`, {
                     headers: {
                         Authorization: `Bearer ${tokenValue}`,
                         Accept: 'application/json',

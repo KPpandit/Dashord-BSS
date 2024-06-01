@@ -9,12 +9,13 @@ import axios from "axios";
 export default function Payment(props) {
     const columns = [
         { id: 'id', name: 'ID' },
-        { id: 'attempt', name: 'Attempt' },
+        { id: 'msisdn', name: 'MSISDN' },
+        // { id: 'attempt', name: 'Attempt' },
         { id: 'amount', name: 'Amount' },
-        { id: 'createDatetime', name: 'Created Date' },
+        { id: 'createDatetime', name: 'Purchased Date' },
         { id: 'product', name: 'Product' },
-        { id: 'optlock', name: 'OPT Lock' },
-        { id: 'planId', name: 'PLan Id' },
+        // { id: 'optlock', name: 'OPT Lock' },
+        { id: 'planId', name: 'Plan Id' },
     ];
 
     // Generate sample data
@@ -109,6 +110,12 @@ export default function Payment(props) {
                                     Amount : {selectedRecord.amount}
                                 </Typography>
                             </Box>
+                            <Divider light />
+                            <Box sx={{ p: 2 }}>
+                                <Typography gutterBottom variant="body2">
+                                  Transaction  Mode : {selectedRecord.creditCard==null ? ' Cash' :' Credit Card'}
+                                </Typography>
+                            </Box>
 
                             <Divider light />
                             <Box sx={{ p: 2 }}>
@@ -116,12 +123,7 @@ export default function Payment(props) {
                                     Deleted : {selectedRecord.deleted}
                                 </Typography>
                             </Box>
-                            <Divider light />
-                            <Box sx={{ p: 2 }}>
-                                <Typography gutterBottom variant="body2">
-                                    OPT Lock : {selectedRecord.optlock}
-                                </Typography>
-                            </Box>
+                           
                             <Divider light />
                             <Box sx={{ p: 2 }}>
                                 <Typography gutterBottom variant="body2">
@@ -186,7 +188,7 @@ export default function Payment(props) {
                                     fontWeight: 'bold',
 
                                 }}
-                            > Payment's List</Typography>
+                            > Inward Payments </Typography>
                         </Grid>
                     </Paper>
                 </Box>
@@ -254,8 +256,10 @@ export default function Payment(props) {
                                                         }
                                                     >
                                                         {columns.map((column) => (
+                                                           
                                                             <TableCell key={column.id} >
-                                                                {row[column.id]}
+                                                              
+                                                                {String(row[column.id]).toUpperCase()}
                                                             </TableCell>
                                                         ))}
                                                     </TableRow>
@@ -281,13 +285,13 @@ export default function Payment(props) {
                             sx={{ backgroundColor: '#253A7D' ,boxShadow:24}}
                         //  onClick={handleButtonClick}
                         >
-                            Downloade PDF
+                            Download PDF
                         </Button>
 
                         <Button variant="contained" backgroundColor="#6471B5"
                             // onClick={handleButtonClick} 
                             sx={{ marginLeft: '16px', backgroundColor: '#253A7D' ,boxShadow:24}}>
-                            DOWNLOADE CSV
+                            DOWNLOAD CSV
                         </Button>
                     </Box>
                 </Box>
