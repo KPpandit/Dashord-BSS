@@ -2,7 +2,7 @@ import { Box, Button, Card, Checkbox, Chip, Dialog, DialogActions, DialogContent
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import SearchIcon from '@mui/icons-material/Search';
-import axios from "axios";
+// import axios from "axios";
 export default function RatingProfile() {
     const columns = [
         { id: 'rating_profile_id', name: 'Pack ID' },

@@ -423,7 +423,7 @@ export default function AddCustomerDetails() {
                                       
                                         />
                                     </Grid>
-                                    <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
+                                    {/* <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
                                         <FormControl fullWidth >
                                             <InputLabel id="demo-partnerple-select-label">Subscriber Status</InputLabel>
                                             <Select
@@ -443,7 +443,9 @@ export default function AddCustomerDetails() {
 
                                             </Select>
                                         </FormControl>
-                                    </Grid>
+                                    </Grid> */}
+
+
                                     <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
                                         <FormControl fullWidth>
                                             <InputLabel id="demo-simple-select-label" required>Language</InputLabel>
@@ -486,6 +488,7 @@ export default function AddCustomerDetails() {
                                             </Select>
                                         </FormControl>
                                     </Grid>
+{/*                                     
                                     <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
                                         <FormControl fullWidth >
                                             <InputLabel id="demo-simple-select-label">Preferred Payment Type</InputLabel>
@@ -503,16 +506,19 @@ export default function AddCustomerDetails() {
 
                                             </Select>
                                         </FormControl>
-                                    </Grid>
+                                    </Grid> */}
+
+
                                     <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
                                         <FormControl fullWidth >
-                                            <InputLabel id="demo-simple-select-label">Service Type</InputLabel>
+                                            <InputLabel id="demo-simple-select-label" required>Service Type</InputLabel>
                                             <Select
                                                 labelId="demo-simple-select-label"
                                                 id="demo-simple-select"
                                                 value={values.serviceType}
                                                 name='serviceType'
                                                 label="Service Type"
+                                                required
                                                 onChange={handleChange}
                                                 onBlur={handleBlur}
                                            
@@ -550,7 +556,7 @@ export default function AddCustomerDetails() {
                             </Grid>
                             <Grid item lg={6}>
                                 <Grid container spacing={2}>
-                                    <Grid item lg={6} md={4} sm={6} xs={12} >
+                                    {/* <Grid item lg={6} md={4} sm={6} xs={12} >
                                         <TextField
                                             label="User Code"
                                             type="number"
@@ -558,7 +564,7 @@ export default function AddCustomerDetails() {
                                             fullWidth
                                        
                                         />
-                                    </Grid>
+                                    </Grid> */}
 
                                     <Grid item lg={6} md={4} sm={6} xs={12} >
                                         <FormControl fullWidth >
@@ -580,7 +586,7 @@ export default function AddCustomerDetails() {
                                     </Grid>
                                     <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
                                         <FormControl fullWidth >
-                                            <InputLabel id="demo-simple-select-label">useParentPricing</InputLabel>
+                                            <InputLabel id="demo-simple-select-label" required>useParentPricing</InputLabel>
                                             <Select
 
                                                 id="demo-simple-select"
@@ -602,9 +608,9 @@ export default function AddCustomerDetails() {
 
 
                                     <Grid item lg={12} md={4} sm={6} xs={12} >
-                                        {accountType === 'postpaid' && (
+                                        {accountType.toLowerCase() === 'postpaid' && (
                                             <Grid container spacing={2}>
-                                                <Grid item lg={6} md={4} sm={6} xs={12} fullWidth paddingBottom={2}>
+                                                {/* <Grid item lg={6} md={4} sm={6} xs={12} fullWidth paddingBottom={2}>
                                                     <TextField
 
                                                         label="Billing Cycle Day"
@@ -616,46 +622,8 @@ export default function AddCustomerDetails() {
                                                     // onChange={handleChange}
                                                     // onBlur={handleBlur}
                                                     />
-                                                </Grid>
-                                                <Grid item lg={6} md={4} sm={6} xs={12} fullWidth paddingBottom={2}>
-                                                    <Grid container spacing={0} alignItems="center">
-                                                        <Grid item xs={12}>
-                                                            <Grid container spacing={1}>
-                                                                <Grid item xs={8}>
-                                                                    {/* Left side for text input */}
-                                                                    <TextField
-                                                                        label="Due Date"
-                                                                        fullWidth
-                                                                    // name="creditLimit"
-                                                                    // value={values.creditLimit}
-                                                                    // onChange={handleChange}
-                                                                    // onBlur={handleBlur}
-
-                                                                    />
-                                                                </Grid>
-                                                                <Grid item xs={4}>
-                                                                    {/* Right side for dropdown */}
-                                                                    <Select
-
-                                                                        // value={values.selectedOption}
-                                                                        // onChange={handleChange}
-                                                                        // name="selectedOption"
-                                                                        fullWidth
-                                                                        displayEmpty
-
-                                                                    >
-                                                                        <MenuItem value={'month'}>Month</MenuItem>
-                                                                        <MenuItem value={'week'}>Week</MenuItem>
-                                                                        <MenuItem value={'day'}>Day</MenuItem>
-                                                                        <MenuItem value={'year'}>Year</MenuItem>
-                                                                        <MenuItem value={'semi-month'}>Semi-Month</MenuItem>
-                                                                    </Select>
-                                                                </Grid>
-                                                            </Grid>
-                                                        </Grid>
-
-                                                    </Grid>
-                                                </Grid>
+                                                </Grid> */}
+                                                
                                                 <Grid item lg={6} md={4} sm={6} xs={12} >
                                                     <TextField
                                                         label="creditLimit"

@@ -196,26 +196,7 @@ export default function OnBoardCustomerReports() {
                                 }}
                             >On Board Customers Report</Typography>
                         </Grid>
-                        {/* <Grid item xs={4.5}>
-                            <FormControl fullWidth>
-                                <InputLabel id="demo-simple-select-label">Category</InputLabel>
-                                <Select
-                                    labelId="Category"
-                                    id="demo-simple-select"
-                                     value={categoryType}
-                                    label="Category"
-                                     onChange={(e)=>setCategoryType(e.target.value)}
-                                >
-                                    <MenuItem value={"Weeks"}>Weeks</MenuItem>
-                                    <MenuItem value={"Months"}>Months</MenuItem>
-                                    <MenuItem value={"Years"}>Years</MenuItem>
-                                </Select>
-                            </FormControl>
-                        </Grid>
-                        <Grid item={1} >
-                        <Button sx={{marginTop:1,backgroundColor:'#253A7D'}} onClick={handleCategory} variant="contained">Apply</Button>
-
-                        </Grid> */}
+                        
                     </Grid>
                 </Paper>
             </Box>

@@ -17,7 +17,7 @@ const AllCustomerReport = (props) => {
         { id: 'ekycStatus', name: 'Ekyc Status' },
         { id: 'ekycToken', name: 'Ekyc Token' },
         { id: 'ekycDate', name: 'Ekyc Date' },
-        { id: 'phonePhoneNumber', name: 'Phone No' },
+        { id: 'msisdn', name: 'MSISDN' },
         { id: 'email', name: 'Email' },
         { id: 'customerType', name: 'Customer Type' },
 
@@ -94,39 +94,9 @@ const AllCustomerReport = (props) => {
     const handleRowClick = (row) => {
         setSelectedRecord(row);
         setOpenDialog(true);
-        fetchPhoto1(row)
+       
     };
-    const fetchPhoto1 = async (row) => {
-
-        try {
-            const photoResponse = await axios.get(`http://172.5.10.2:9090/api/image/${row.id}`, {
-                headers: {
-                    Authorization: `Bearer ${tokenValue}`,
-                    Accept: 'application/json',
-                    'Content-Type': 'application/json',
-                },
-                responseType: 'arraybuffer',
-            });
-
-            if (photoResponse.status === 200) {
-                const imageBlob = new Blob([photoResponse.data], { type: 'image/jpeg' });
-                const imageUrl = URL.createObjectURL(imageBlob);
-                setSelectedPhoto(imageUrl);
-                sessionStorage.setItem('selectedPhoto', imageUrl)
-            } else {
-                console.error('Failed to fetch photo details.');
-                sessionStorage.removeItem('selectedPhoto')
-            }
-        } catch (error) {
-            setSelectedPhoto(null);
-            console.log('Failed to load the Photo', error);
-            sessionStorage.removeItem('selectedPhoto')
-
-        }
-        navigate('/individualReport', { state: { selectedRecord: row } })
-
-    };
-
+   
 
     const handleSerch = async (e) => {
         e.preventDefault();
@@ -281,7 +251,7 @@ const AllCustomerReport = (props) => {
         const type = 'pre-paid';
 
         // Construct the API URL
-        const apiUrl = `http://172.5.10.2:9098/customer/search?search=${serach}&startDate=${startdate}&endDate=${enddate}`;
+        const apiUrl = `http://localhost:9098/customer/search?search=${serach}&startDate=${startdate}&endDate=${enddate}`;
 
         // Make the API call
         fetch(apiUrl, {

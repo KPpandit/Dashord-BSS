@@ -69,15 +69,10 @@ const ActiveCustomerReport = (props) => {
         setSelectedRecord(row)
         
     };
-    const handleClose = () => {
-        setOpen(false);
-    };
+  
     
     
-      const handleCloseDialog = () => {
-        setOpenDialog(false);
-      };
-    
+     
     const [confirmationDialogOpen, setConfirmationDialogOpen] = useState(false);
     const [recordIdToDelete, setRecordIdToDelete] = useState(null);
     const handleOpenConfirmationDialog = (id) => {

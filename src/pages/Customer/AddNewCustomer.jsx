@@ -93,8 +93,8 @@ export default function AddNewCustomer() {
                   onBlur={handleBlur}
                   name="is_rates_active"
                 >
-                  <MenuItem value={'Pre-Paid'}>Pre Paid</MenuItem>
-                  <MenuItem value={'Post-Paid'}>Post Paid</MenuItem>
+                  <MenuItem value={'PrePaid'}>Pre Paid</MenuItem>
+                  <MenuItem value={'PostPaid'}>Post Paid</MenuItem>
                 </Select>
               </FormControl>
             </Grid>

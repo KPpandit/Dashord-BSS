@@ -20,7 +20,7 @@ const Customer = (props) => {
         { id: 'ekycToken', name: 'Ekyc Token' },
         { id: 'simInventory.msisdn', name: 'MSISDN' },
         { id: 'serviceType', name: 'Service Type' },
-       
+
         { id: 'customerType', name: 'Customer Type' },
     ];
     const getNestedValue = (obj, path) => {
@@ -122,6 +122,7 @@ const Customer = (props) => {
 
         fetchData(); // Invoke the fetchData function when the component mounts
     }, [tokenValue, delete1]);
+
     const fetchData = async () => {
         try {
             const response = await axios.get('http://172.5.10.2:9090/api/customers/pack/details', {
@@ -180,11 +181,53 @@ const Customer = (props) => {
     };
     const SelectedRecordDetails = () => {
 
+        const formatDate = (dateStr) => {
+            // Split the date string into components
+            const parts = dateStr.split(" ");
+
+            // Extract date components
+            const dateComponents = parts[0].split("-");
+            const year = parseInt(dateComponents[0]);
+            const month = dateComponents[1];
+            const day = parseInt(dateComponents[2]);
+
+            // Extract time components
+            const timeComponents = parts[1].split(":");
+            const hour = parseInt(timeComponents[0]);
+            const minute = parseInt(timeComponents[1]);
+            const second = parseInt(timeComponents[2]);
+
+            // Determine AM/PM
+            const meridian = parts[2] === "l" ? "PM" : "AM";
+
+            // Create a new Date object with parsed components
+            const date = new Date(year, monthToIndex(month), day, hour, minute, second);
+
+            // Format the date using toLocaleString with custom options
+            const options = {
+                year: "numeric",
+                month: "short",
+                day: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+                second: "2-digit",
+                hour12: true, // Use 12-hour format
+            };
+
+            return date.toLocaleString("en-US", options);
+        };
+
+        // Helper function to convert month name to index (0-based)
+        const monthToIndex = (monthName) => {
+            const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+            return months.indexOf(monthName);
+        };
 
 
-console.log(selectedRecord)
+
+        console.log(selectedRecord)
         if (selectedRecord) {
-
+                console.log(selectedRecord.originalPhotoUrl,'  photo url')
             return (
                 <Grid>
                     <Paper elevation={10}>
@@ -249,15 +292,15 @@ console.log(selectedRecord)
                                                             </Typography>
 
                                                         </Grid>
-                                                        {selectedRecord.customerType === "Post-Paid" || selectedRecord.customerType === "postpaid" ? <></>:<></>}
+                                                        {selectedRecord.customerType === "Post-Paid" || selectedRecord.customerType === "postpaid" ? <></> : <></>}
                                                         <Grid item xs={4.7} sx={{ fontWeight: '480', fontSize: '17px', textAlign: 'right' }}>
                                                             Agent ID :
                                                         </Grid>
                                                         <Grid item xs={6} sx={{ textAlign: 'left' }}>
                                                             <Typography sx={{ textAlign: 'left' }}>
-                                                            {selectedRecord 
-                                                            && selectedRecord.partner && 
-                                                            selectedRecord.partner.id ? String(selectedRecord.partner.id) : "Not Available"}
+                                                                {selectedRecord
+                                                                    && selectedRecord.partner &&
+                                                                    selectedRecord.partner.id ? String(selectedRecord.partner.id) : "Not Available"}
                                                             </Typography>
                                                         </Grid>
 
@@ -340,130 +383,130 @@ console.log(selectedRecord)
                                         </Box>
                                         <Divider light />
 
-                                        {selectedRecord.customerType === "Post-Paid" || selectedRecord.customerType === "postpaid" ? 
-                                         
-                                        <Box sx={{ p: 1 }}>
-                                            
-                                            <Grid container>
-                                                <Grid item xs={6}>
-                                                    <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
-                                                        Monthly Limit :
-                                                    </Typography>
+                                        {selectedRecord.customerType === "Post-Paid" || selectedRecord.customerType === "postpaid" ?
+
+                                            <Box sx={{ p: 1 }}>
+
+                                                <Grid container>
+                                                    <Grid item xs={6}>
+                                                        <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
+                                                            Monthly Limit :
+                                                        </Typography>
+                                                    </Grid>
+                                                    <Grid item xs={6} alignItems={'left'} sx={{ marginLeft: -4 }}>
+                                                        <Typography
+                                                            sx={{ fontSize: '17px', textAlign: 'left' }}
+                                                            gutterBottom variant="body2">
+                                                            {selectedRecord.monthlyLimit}
+                                                        </Typography>
+                                                    </Grid>
                                                 </Grid>
-                                                <Grid item xs={6} alignItems={'left'} sx={{ marginLeft: -4 }}>
-                                                    <Typography
-                                                        sx={{ fontSize: '17px', textAlign: 'left' }}
-                                                        gutterBottom variant="body2">
-                                                        {selectedRecord.monthlyLimit}
-                                                    </Typography>
-                                                </Grid>
-                                            </Grid>
-                                        </Box>
-                                        : <></>}
-                                        {selectedRecord.customerType === "Post-Paid" || selectedRecord.customerType === "postpaid" ? 
-                                        <>
-                                          <Divider light />
+                                            </Box>
+                                            : <></>}
+                                        {selectedRecord.customerType === "Post-Paid" || selectedRecord.customerType === "postpaid" ?
+                                            <>
+                                                <Divider light />
 
-                                         <Box sx={{ p: 1 }}>
-                                             
-                                             <Grid container>
-                                                 <Grid item xs={6}>
-                                                     <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
-                                                         Service Status :
-                                                     </Typography>
-                                                 </Grid>
-                                                 <Grid item xs={6} alignItems={'left'} sx={{ marginLeft: -4 }}>
-                                                     <Typography
-                                                         sx={{ fontSize: '17px', textAlign: 'left' }}
-                                                         gutterBottom variant="body2">
-                                                         {String(selectedRecord.serviceStatus)}
-                                                     </Typography>
-                                                 </Grid>
-                                             </Grid>
-                                         </Box>
-                                        </>
-                                        
-                                         : <></>}
+                                                <Box sx={{ p: 1 }}>
 
-                                       
+                                                    <Grid container>
+                                                        <Grid item xs={6}>
+                                                            <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
+                                                                Service Status :
+                                                            </Typography>
+                                                        </Grid>
+                                                        <Grid item xs={6} alignItems={'left'} sx={{ marginLeft: -4 }}>
+                                                            <Typography
+                                                                sx={{ fontSize: '17px', textAlign: 'left' }}
+                                                                gutterBottom variant="body2">
+                                                                {String(selectedRecord.serviceStatus)}
+                                                            </Typography>
+                                                        </Grid>
+                                                    </Grid>
+                                                </Box>
+                                            </>
+
+                                            : <></>}
+
+
                                         <Divider light />
-                                        {selectedRecord.customerType === "Post-Paid" || selectedRecord.customerType === "postpaid" ? 
-                                         
-                                         <Box sx={{ p: 1 }}>
-                                         <Grid container>
-                                             <Grid item xs={6}>
-                                                 <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
-                                                     Next Invoice Date :
-                                                 </Typography>
-                                             </Grid>
-                                             <Grid item xs={6} alignItems={'left'} sx={{ marginLeft: -4 }}>
-                                                 <Typography
-                                                     sx={{ fontSize: '17px', textAlign: 'left' }}
-                                                     gutterBottom variant="body2">
-                                                     {selectedRecord.nextInoviceDate}
-                                                 </Typography>
-                                             </Grid>
-                                         </Grid>
-                                     </Box>
-                                         :  <Box sx={{ p: 1 }}>
-                                         <Grid container>
-                                             <Grid item xs={6}>
-                                                 <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
-                                                     LandLine No. :
-                                                 </Typography>
-                                             </Grid>
-                                             <Grid item xs={6} alignItems={'left'} sx={{ marginLeft: -4 }}>
-                                                 <Typography
-                                                     sx={{ fontSize: '17px', textAlign: 'left' }}
-                                                     gutterBottom variant="body2">
-                                                     {selectedRecord.landlineNumber}
-                                                 </Typography>
-                                             </Grid>
-                                         </Grid>
-                                     </Box> }
-                                       
-                                     {selectedRecord.customerType === "Post-Paid" || selectedRecord.customerType === "postpaid" ? 
-                                        <>
-                                          <Divider light />
+                                        {selectedRecord.customerType === "Post-Paid" || selectedRecord.customerType === "postpaid" ?
 
-                                         <Box sx={{ p: 1 }}>
-                                             
-                                             <Grid container>
-                                                 <Grid item xs={8}>
-                                                     <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
-                                                         Current Month Amount :
-                                                     </Typography>
-                                                 </Grid>
-                                                 <Grid item xs={4} alignItems={'left'} sx={{ marginLeft: -4 }}>
-                                                     <Typography
-                                                         sx={{ fontSize: '17px', textAlign: 'left' }}
-                                                         gutterBottom variant="body2">
-                                                         {String(selectedRecord.currentMonthlyAmount)}
-                                                     </Typography>
-                                                 </Grid>
-                                             </Grid>
-                                         </Box>
-                                        </>
-                                        
-                                         : <></>}
+                                            <Box sx={{ p: 1 }}>
+                                                <Grid container>
+                                                    <Grid item xs={6}>
+                                                        <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
+                                                            Next Invoice Date :
+                                                        </Typography>
+                                                    </Grid>
+                                                    <Grid item xs={6} alignItems={'left'} sx={{ marginLeft: -4 }}>
+                                                        <Typography
+                                                            sx={{ fontSize: '17px', textAlign: 'left' }}
+                                                            gutterBottom variant="body2">
+                                                            {selectedRecord.nextInoviceDate}
+                                                        </Typography>
+                                                    </Grid>
+                                                </Grid>
+                                            </Box>
+                                            : <Box sx={{ p: 1 }}>
+                                                <Grid container>
+                                                    <Grid item xs={6}>
+                                                        <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
+                                                            Fixed Line No. :
+                                                        </Typography>
+                                                    </Grid>
+                                                    <Grid item xs={6} alignItems={'left'} sx={{ marginLeft: -4 }}>
+                                                        <Typography
+                                                            sx={{ fontSize: '17px', textAlign: 'left' }}
+                                                            gutterBottom variant="body2">
+                                                            {selectedRecord.landlineNumber === 'null' ? "Not Available" : selectedRecord.landlineNumber}
+                                                        </Typography>
+                                                    </Grid>
+                                                </Grid>
+                                            </Box>}
+
+                                        {selectedRecord.customerType === "Post-Paid" || selectedRecord.customerType === "postpaid" ?
+                                            <>
+                                                <Divider light />
+
+                                                <Box sx={{ p: 1 }}>
+
+                                                    <Grid container>
+                                                        <Grid item xs={8}>
+                                                            <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
+                                                                Current Month Amount :
+                                                            </Typography>
+                                                        </Grid>
+                                                        <Grid item xs={4} alignItems={'left'} sx={{ marginLeft: -4 }}>
+                                                            <Typography
+                                                                sx={{ fontSize: '17px', textAlign: 'left' }}
+                                                                gutterBottom variant="body2">
+                                                                {String(selectedRecord.currentMonthlyAmount)}
+                                                            </Typography>
+                                                        </Grid>
+                                                    </Grid>
+                                                </Box>
+                                            </>
+
+                                            : <></>}
                                         <Divider light />
                                         <Box sx={{ p: 1 }}>
                                             <Grid container>
-                                                <Grid item xs={6}>
+                                                <Grid item xs={4}>
                                                     <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
                                                         Ekyc Date :
                                                     </Typography>
                                                 </Grid>
-                                                <Grid item xs={6} alignItems={'left'} sx={{ marginLeft: -6 }}>
+                                                <Grid item xs={8} alignItems={'left'} sx={{ marginLeft: -2 }}>
                                                     <Typography
-                                                        sx={{ fontSize: '17px', textAlign: 'left' }}
+                                                        sx={{ fontSize: '17px' }}
                                                         gutterBottom variant="body2">
-                                                        {selectedRecord.ekycDate}
+                                                        {formatDate(selectedRecord.ekycDate)}
                                                     </Typography>
                                                 </Grid>
                                             </Grid>
                                         </Box>
-                                         {/* <Divider light />
+                                        {/* <Divider light />
                                         <Box sx={{ p: 1 }}>
                                             <Grid container>
                                                 <Grid item xs={6}>
@@ -480,9 +523,9 @@ console.log(selectedRecord)
                                                 </Grid>
                                             </Grid>
                                         </Box> */}
-                                        
-                                      
-                                        
+
+
+
                                         <Divider light />
                                     </Grid>
 
@@ -514,42 +557,42 @@ console.log(selectedRecord)
                                         <Button
                                             onClick={() => {
                                                 handleOpenConfirmationDialog(selectedRecord.id)
-                                                
+
                                             }}
                                             sx={{ backgroundColor: '#253A7D' }}
                                             variant="contained">Delete</Button>
                                     </Grid>
                                     {console.log(selectedRecord.customerType + "account type")}
-                                    {selectedRecord.customerType === "Post-Paid" || selectedRecord.customerType === "postpaid" ? 
-                                    <Grid item sx={6}>
-                                        <Button
-                                            onClick={() => {
-                                                navigate('/custInvoice', { state: { id: selectedRecord.simInventory.msisdn, type: selectedRecord.customerType } })
-                                            }}
-                                            sx={{ backgroundColor: '#253A7D' }}
-                                            variant="contained">Invoice</Button>
-                                    </Grid> : <></>}
+                                    {selectedRecord.customerType === "Post-Paid" || selectedRecord.customerType === "postpaid" ?
+                                        <Grid item sx={6}>
+                                            <Button
+                                                onClick={() => {
+                                                    navigate('/custInvoice', { state: { id: selectedRecord.simInventory.msisdn, type: selectedRecord.customerType } })
+                                                }}
+                                                sx={{ backgroundColor: '#253A7D' }}
+                                                variant="contained">Invoice</Button>
+                                        </Grid> : <></>}
                                     {selectedRecord.customerType.toLowerCase() === "pre-paid" || selectedRecord.customerType.toLowerCase() === "prepaid" ?
-                                    <Grid item sx={6}>
-                                        <Button
-                                            onClick={(e) => {
-                                                setOpenPopup(true);
-                                                console.log(selectedRecord.id)
-                                            }}
-                                            sx={{ backgroundColor: '#253A7D' }}
-                                            variant="contained">Show Pack Details</Button>
-                                    </Grid> : <></>}
-                                    {selectedRecord.customerType.toLowerCase() === "post-paid" || selectedRecord.customerType.toLowerCase() === "postpaid" ? 
-                                    <Grid item sx={6}>
-                                        <Button
-                                            onClick={(e) => {
-                                                setOpenPopup1(true);
-                                                console.log(selectedRecord.id)
-                                            }}
-                                            sx={{ backgroundColor: '#253A7D' }}
-                                            variant="contained">Show Plan Details</Button>
-                                    </Grid> 
-                                    : <></>}
+                                        <Grid item sx={6}>
+                                            <Button
+                                                onClick={(e) => {
+                                                    setOpenPopup(true);
+                                                    console.log(selectedRecord.id)
+                                                }}
+                                                sx={{ backgroundColor: '#253A7D' }}
+                                                variant="contained">Show Pack Details</Button>
+                                        </Grid> : <></>}
+                                    {selectedRecord.customerType.toLowerCase() === "post-paid" || selectedRecord.customerType.toLowerCase() === "postpaid" ?
+                                        <Grid item sx={6}>
+                                            <Button
+                                                onClick={(e) => {
+                                                    setOpenPopup1(true);
+                                                    console.log(selectedRecord.id)
+                                                }}
+                                                sx={{ backgroundColor: '#253A7D' }}
+                                                variant="contained">Show Plan Details</Button>
+                                        </Grid>
+                                        : <></>}
                                 </Grid>
                             </Card>
                         </Grid>
@@ -597,6 +640,9 @@ console.log(selectedRecord)
     const handleRowMouseEnter = (row) => {
         setHighlightedRow(row)
         console.log("from hnadle row mouse enter");
+    };
+    const capitalizeFirstLetterOfEachWord = (str) => {
+        return str.replace(/\b\w/g, (char) => char.toUpperCase());
     };
 
 
@@ -690,13 +736,23 @@ console.log(selectedRecord)
                                                             sx={highlightedRow === row ? { backgroundColor: '#F6B625' } : {}}
                                                         >
                                                             {columns.map((column) => (
+
                                                                 <TableCell key={column.id} sx={{ textAlign: 'left', fontSize: '17px' }}>
-                                                                    {column.id === 'ekycDate' ? (
-                                                                        <> {row[column.id]} </>
-                                                                    ) : (
-                                                                        // Render nested properties correctly
-                                                                        <>{getNestedValue(row, column.id)}</>
-                                                                    )}
+                                                                    {console.log(column.id)}
+                                                                    {
+                                                                        column.id === 'simInventory.msisdn' ? (
+                                                                            // Condition 2: If column.id is 'anotherColumnId'
+                                                                            <>
+                                                                                {getNestedValue(row, column.id)}
+
+                                                                            </>
+                                                                        ) : (
+                                                                            // Default case
+                                                                            <>
+                                                                                {capitalizeFirstLetterOfEachWord(String(row[column.id]))}
+                                                                            </>
+                                                                        )
+                                                                    }
                                                                 </TableCell>
                                                             ))}
                                                         </TableRow>

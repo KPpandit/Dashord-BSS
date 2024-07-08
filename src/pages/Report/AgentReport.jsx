@@ -156,7 +156,7 @@ const AllAgentReport = (props) => {
         const type = 'post-paid';
 
         // Construct the API URL
-        const apiUrl = `http://172.5.10.2:9098/agent/partners/serach/bydate/range?search=${serach}&startDate=${startdate}&endDate=${enddate}`;
+        const apiUrl = `http://localhost:9098/agent/partners/serach/bydate/range?search=${serach}&startDate=${startdate}&endDate=${enddate}`;
         // Make the API call
         fetch(apiUrl, {
             headers: {
