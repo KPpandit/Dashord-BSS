@@ -447,6 +447,20 @@ export default function Sidenavbar() {
         ]
       }
       ,{
+        label: "V M S",
+        // route: '/inventory',
+        icon: <Inventory2Icon />,
+        subRoute: [
+          {
+            label:'Special Offers',
+            route:'/specialOffers'
+          },{
+            label:'Invoice Sample Design',
+            route:'/test'
+          }
+        ]
+      }
+      ,{
         label: "Test",
         // route: '/inventory',
         icon: <Inventory2Icon />,

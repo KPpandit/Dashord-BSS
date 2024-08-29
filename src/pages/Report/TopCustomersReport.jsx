@@ -90,51 +90,11 @@ export default function TopCustomerReport(props) {
     const handleRowClick = (row) => {
         setSelectedRecord(row);
         setOpenDialog(true);
-        fetchPhoto1(row)
+        
     };
-    const fetchPhoto1 = async (row) => {
+   
 
-        try {
-            const photoResponse = await axios.get(`http://172.5.10.2:9090/api/image/${row.id}`, {
-                headers: {
-                    Authorization: `Bearer ${tokenValue}`,
-                    Accept: 'application/json',
-                    'Content-Type': 'application/json',
-                },
-                responseType: 'arraybuffer',
-            });
-
-            if (photoResponse.status === 200) {
-                const imageBlob = new Blob([photoResponse.data], { type: 'image/jpeg' });
-                const imageUrl = URL.createObjectURL(imageBlob);
-                setSelectedPhoto(imageUrl);
-                sessionStorage.setItem('selectedPhoto', imageUrl)
-            } else {
-                console.error('Failed to fetch photo details.');
-                sessionStorage.removeItem('selectedPhoto')
-            }
-        } catch (error) {
-            setSelectedPhoto(null);
-            console.log('Failed to load the Photo', error);
-            sessionStorage.removeItem('selectedPhoto')
-
-        }
-        navigate('/individualReport', { state: { selectedRecord: row } })
-
-    };
-
-
-    const handleSerch = async (e) => {
-        e.preventDefault();
-        return await axios
-            .get(`http://172.5.10.2:9696/api/vendor/mgmt/detail/search?keyword=${value}`)
-            .then((res) => {
-                setdata(res.data);
-                console.log(value + "----value sech datas")
-                rowchange(res.data);
-                setValue(value);
-            })
-    }
+   
 
     const [highlightedRow, setHighlightedRow] = useState(null);
 
@@ -142,26 +102,7 @@ export default function TopCustomerReport(props) {
         setHighlightedRow(row)
     };
 
-    function DownloadPDF() {
-        const capture = document.getElementById('container');
-        html2canvas(capture).then((canvas) => {
-            const imgdata = canvas.toDataURL('img/png')
-            const doc = new jsPDF('p', 'pt', 'a4');
-            const pageHeight = doc.internal.pageSize.height;
-            const pageWidth = doc.internal.pageSize.width;
-            doc.addImage(imgdata, 'PNG', 0.5, 0.5, pageWidth, pageHeight);
-            doc.save('customerProfile.pdf')
-        })
-
-        // let pdf = new jsPDF('p','pt','a4');
-        // let capture = document.getElementById('container')
-        // pdf.html(capture,{
-        //     callback:(pdf=>{
-        //         pdf.save('customer.pdf')
-        //     })
-        // })
-
-    }
+    
 
     const [selectedOption, setSelectedOption] = useState(null);
     const handleDownload = () => {
@@ -291,7 +232,7 @@ export default function TopCustomerReport(props) {
 
                 <Grid lg={4} >
                     <form
-                        onSubmit={handleSerch}
+                       
                     >
 
                         <Paper elevation={10} sx={{ marginBottom: 2, paddingBottom: 0.1, paddingTop: 0.5 }}>

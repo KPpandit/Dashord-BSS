@@ -122,6 +122,9 @@ import AvailablePack from '../pages/Available Plan/AvailablePack';
 import PackPayment from '../pages/Customer/Payment.jsx/PackPayment';
 import SingleAgentCommission from '../pages/Agent/SingleAgentCommision';
 import PackDetails from '../pages/Customer/PackDetails.jsx/PackDeails';
+import CardDetails from '../pages/Customer/Payment.jsx/CardDetails';
+import Specialoffers from '../pages/Voucher/SpecialOffers';
+import AddNewVoucher from '../pages/Voucher/AddNewVoucher';
 
 
 
@@ -218,7 +221,10 @@ export const Routers = () => {
 
                         {/* Payment */}
                         <Route path='/packpayment' element={<PackPayment />} />
-
+                        <Route path='/cardDetails' element={<CardDetails />} />
+                         {/* Voucher */}
+                         <Route path='/specialOffers' element={<Specialoffers />} />
+                         <Route path='/addNewVoucher' element={<AddNewVoucher />} />
 
                         {/* Rating Plan */}
                         <Route path='/ratingPlan' element={<RatingPlan />} />

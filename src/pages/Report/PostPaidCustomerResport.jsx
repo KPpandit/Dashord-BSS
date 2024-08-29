@@ -100,7 +100,7 @@ const PostpaidCustomerReport = (props) => {
     const fetchPhoto1 = async (row) => {
 
         try {
-            const photoResponse = await axios.get(`http://172.5.10.2:9090/api/image/${row.id}`, {
+            const photoResponse = await axios.get(`http://localhost:9090/api/image/${row.id}`, {
                 headers: {
                     Authorization: `Bearer ${tokenValue}`,
                     Accept: 'application/json',
@@ -132,7 +132,7 @@ const PostpaidCustomerReport = (props) => {
     const handleSerch = async (e) => {
         e.preventDefault();
         return await axios
-            .get(`http://172.5.10.2:9696/api/vendor/mgmt/detail/search?keyword=${value}`)
+            .get(`http://localhost:9696/api/vendor/mgmt/detail/search?keyword=${value}`)
             .then((res) => {
                 setdata(res.data);
                 console.log(value + "----value sech datas")
@@ -224,7 +224,7 @@ const PostpaidCustomerReport = (props) => {
         const type = 'post-paid';
 
         // Construct the API URL
-        const apiUrl = `http://172.5.10.2:9098/customer/postpaid/search?search=${serach}&startDate=${startdate}&endDate=${enddate}`;
+        const apiUrl = `http://localhost:9098/customer/postpaid/search?search=${serach}&startDate=${startdate}&endDate=${enddate}`;
 
 
         // Make the API call

@@ -36,7 +36,7 @@ const PrepaidCustomerReport = (props) => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                let url = 'http://localhost:9098/customer/prepaid';
+                let url = 'http://172.5.10.2:9098/customer/prepaid';
                 if (searchKeyword.trim() !== '') {
                     url += `?keyword=${searchKeyword}`;
                 }
@@ -217,7 +217,7 @@ const PrepaidCustomerReport = (props) => {
         const type = 'pre-paid';
 
         // Construct the API URL
-        const apiUrl = `http://172.5.10.2:9098/customer/prepaid/search?search=${serach}&startDate=${startdate}&endDate=${enddate}`;
+        const apiUrl = `http://localhost:9098/customer/prepaid/search?search=${serach}&startDate=${startdate}&endDate=${enddate}`;
 
         // Make the API call
         fetch(apiUrl, {

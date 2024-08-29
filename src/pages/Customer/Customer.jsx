@@ -181,6 +181,11 @@ const Customer = (props) => {
     };
     const SelectedRecordDetails = () => {
 
+        const monthToIndex = (month) => {
+            const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+            return months.indexOf(month.substring(0, 3)); // Use substring to handle "Jun." format
+        };
+
         const formatDate = (dateStr) => {
             // Split the date string into components
             const parts = dateStr.split(" ");
@@ -217,17 +222,12 @@ const Customer = (props) => {
             return date.toLocaleString("en-US", options);
         };
 
-        // Helper function to convert month name to index (0-based)
-        const monthToIndex = (monthName) => {
-            const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-            return months.indexOf(monthName);
-        };
 
 
 
         console.log(selectedRecord)
         if (selectedRecord) {
-                console.log(selectedRecord.originalPhotoUrl,'  photo url')
+            console.log(selectedRecord.originalPhotoUrl, '  photo url')
             return (
                 <Grid>
                     <Paper elevation={10}>

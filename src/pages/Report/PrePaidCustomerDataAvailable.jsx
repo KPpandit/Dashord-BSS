@@ -36,7 +36,7 @@ const PrePaidCustomerDataAvailable = (props) => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                let url = 'http://172.5.10.2:9098/perPaid/customer/accountDetails';
+                let url = 'http://localhost:9098/perPaid/customer/accountDetails';
                 if (searchKeyword.trim() !== '') {
                     url += `?keyword=${searchKeyword}`;
                 }
@@ -93,7 +93,7 @@ const PrePaidCustomerDataAvailable = (props) => {
     const fetchPhoto1 = async (row) => {
 
         try {
-            const photoResponse = await axios.get(`http://172.5.10.2:9090/api/image/${row.id}`, {
+            const photoResponse = await axios.get(`http://localhost:9090/api/image/${row.id}`, {
                 headers: {
                     Authorization: `Bearer ${tokenValue}`,
                     Accept: 'application/json',
@@ -126,7 +126,7 @@ const PrePaidCustomerDataAvailable = (props) => {
         console.log("from serch")
         e.preventDefault();
         return await axios
-            .get(`http://172.5.10.2:9696/api/vendor/mgmt/detail/search?keyword=${value}`)
+            .get(`http://localhost:9696/api/vendor/mgmt/detail/search?keyword=${value}`)
             .then((res) => {
                 setdata(res.data);
                 console.log(value + "----value sech datas")
@@ -202,7 +202,7 @@ const PrePaidCustomerDataAvailable = (props) => {
     const type = 'pre-paid';
 
     // Construct the API URL
-    const apiUrl = `http://172.5.10.2:9098/customer/bydatefilter/${type}?startDate=${startdate}&endDate=${enddate}`;
+    const apiUrl = `http://localhost:9098/customer/bydatefilter/${type}?startDate=${startdate}&endDate=${enddate}`;
 
     // Make the API call
     fetch(apiUrl,{

@@ -24,11 +24,7 @@ export default function PackPayment({ onPaymentSuccess }) {
             postalcode: "",
             address: "",
             locality: "",
-            card_holder_name: "",
-            card_number: "",
-            expiry_month: "",
-            expiry_year: "",
-            cvn: "",
+            
             amount: "",
             invoicenumbe: "",
             invoicedescription: "",
@@ -37,7 +33,7 @@ export default function PackPayment({ onPaymentSuccess }) {
         onSubmit: async (values) => {
             console.log(values);
             try {
-                const paymentResponse = await axios.post('http://182.74.113.61/eway/test1.php', values, {
+                const paymentResponse = await axios.post('http://182.74.113.61/eway/payment_transparent.php', values, {
                     headers: {
                         "Accept": "application/json",
                         "Content-Type": "application/json"
@@ -46,7 +42,7 @@ export default function PackPayment({ onPaymentSuccess }) {
 
                 if (paymentResponse.status === 200) {
                     // toast.success('Payment Done', { autoClose: 2000 });
-                    
+                    // console.log(paymentResponse.data.accessCode," API Access Code")
                     try {
                         const packResponse = await axios.post('http://172.5.10.2:9698/api/pack/allocation/prepaid/customer', 
                             { ...formValues, pack_id }, {
@@ -57,11 +53,26 @@ export default function PackPayment({ onPaymentSuccess }) {
                             }
                         });
 
+                        // if (packResponse.status === 200) {
+                        //     toast.success('Payment Done and Pack Allocated Successfully', { autoClose: 2000 });
+                        //     setTimeout(() => {
+                        //         navigate('/customer', { state: { paymentResponse: paymentResponse.data, record } });
+                        //     }, 2000); // Delay navigation by 2 seconds
+                        // }
                         if (packResponse.status === 200) {
-                            toast.success('Payment Done and Pack Allocated Successfully', { autoClose: 2000 });
+                           
+                            const { accessCode, formUrl } = paymentResponse.data;
+                            // console.log(packResponse," API Responsse")
+                    
+                            
+                            const paymentResponse1 = { accessCode, formUrl };
+                            console.log(accessCode, 'Access code value');
+                            console.log(formUrl, 'Form  URL value');
+                    
+                            // Delay navigation by 2 seconds
                             setTimeout(() => {
-                                navigate('/customer', { state: { paymentResponse: paymentResponse.data, record } });
-                            }, 2000); // Delay navigation by 2 seconds
+                                navigate('/cardDetails', { state: { paymentResponse1, record } });
+                            }, 2000);
                         }
                     } catch (packError) {
                         console.error('Error allocating pack:', packError);
@@ -84,11 +95,11 @@ export default function PackPayment({ onPaymentSuccess }) {
                 postalcode: record.postalCode,
                 address: record.streetAddres1,
                 locality: record.streetAddres2,
-                card_holder_name: "",
-                card_number: "",
-                expiry_month: "",
-                expiry_year: "",
-                cvn: "",
+                // card_holder_name: "",
+                // card_number: "",
+                // expiry_month: "",
+                // expiry_year: "",
+                // cvn: "",
                 amount: rates_offer,
                 invoicenumbe: "",
                 invoicedescription: "",
@@ -141,11 +152,11 @@ export default function PackPayment({ onPaymentSuccess }) {
                                             { label: 'postalcode', name: 'postalcode' },
                                             { label: 'address', name: 'address' },
                                             { label: 'locality', name: 'locality' },
-                                            { label: 'card_holder_name', name: 'card_holder_name' },
-                                            { label: 'card_number', name: 'card_number' },
-                                            { label: 'expiry_month', name: 'expiry_month' },
-                                            { label: 'expiry_year', name: 'expiry_year' },
-                                            { label: 'cvn', name: 'cvn' },
+                                            // { label: 'card_holder_name', name: 'card_holder_name' },
+                                            // { label: 'card_number', name: 'card_number' },
+                                            // { label: 'expiry_month', name: 'expiry_month' },
+                                            // { label: 'expiry_year', name: 'expiry_year' },
+                                            // { label: 'cvn', name: 'cvn' },
                                             { label: 'amount', name: 'amount' },
                                             { label: 'invoicenumbe', name: 'invoicenumbe' },
                                             { label: 'invoicedescription', name: 'invoicedescription' },
