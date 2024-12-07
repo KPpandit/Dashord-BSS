@@ -1,0 +1,71 @@
+Arguments: 
+  C:\Program Files\nodejs\node.exe C:\Program Files (x86)\Yarn\bin\yarn.js add react-toastify --force
+
+PATH: 
+  C:\Program Files\Common Files\Oracle\Java\javapath;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\Microsoft VS Code\bin;C:\Program Files\MongoDB\Server\4.4\bin;C:\Program Files\Git\cmd;C:\Program Files\dotnet\;C:\Program Files\PuTTY\;%JAVA_HOME%\bin;C:\Program Files (x86)\Yarn\bin\;C:\Program Files\CMake\bin;C:\Users\Sangamesh Hiremath\AppData\Local\Programs\Python\Python37;C:\Program Files\nodejs\;C:\Program Files\MySQL\MySQL Shell 8.0\bin\;C:\Users\krishna prohit\AppData\Local\Microsoft\WindowsApps;C:\Program Files\Java\jdk-21\bin;C:\Users\krishna prohit\AppData\Roaming\npm;C:\Program Files\MySQL\MySQL Server 8.0\bin;C:\Users\krishna prohit\Desktop\flutter\bin;C:\Users\krishna prohit\AppData\Local\Android\Sdk\emulator;C:\Users\krishna prohit\AppData\Local\Android\Sdk;C:\Users\krishna prohit\AppData\Local\Android\Sdk\platform-tools;
+
+Yarn version: 
+  1.22.4
+
+Node version: 
+  18.18.2
+
+Platform: 
+  win32 x64
+
+Trace: 
+  Error: EPERM: operation not permitted, unlink 'C:\Users\krishna prohit\Desktop\ReactJs\crm\node_modules\@esbuild\win32-x64\esbuild.exe'
+
+npm manifest: 
+  {
+    "name": "crm",
+    "private": true,
+    "version": "0.0.0",
+    "type": "module",
+    "homepage": "http://172.5.10.2:8090",
+    "scripts": {
+      "dev": "vite",
+      "build": "vite build",
+      "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
+      "preview": "vite preview"
+    },
+    "dependencies": {
+      "@emotion/react": "^11.11.3",
+      "@emotion/styled": "^11.11.0",
+      "@fontsource/roboto": "^5.0.8",
+      "@fortawesome/fontawesome-svg-core": "^6.5.1",
+      "@material-ui/lab": "^4.0.0-alpha.61",
+      "@mui/icons-material": "^5.15.3",
+      "@mui/lab": "^5.0.0-alpha.159",
+      "@mui/material": "^5.15.3",
+      "@mui/styled-engine-sc": "^6.0.0-alpha.11",
+      "@mui/styles": "^5.15.3",
+      "axios": "^1.6.5",
+      "express": "^4.18.2",
+      "material-ui-search-bar": "^1.0.1",
+      "path": "^0.12.7",
+      "react": "^18.2.0",
+      "react-dom": "^18.2.0",
+      "react-helmet": "^6.1.0",
+      "react-router-dom": "^6.21.1",
+      "react-toastify": "^10.0.4",
+      "styled-components": "^6.1.6",
+      "vue-react": "^1.2.0"
+    },
+    "devDependencies": {
+      "@types/react": "^18.2.43",
+      "@types/react-dom": "^18.2.17",
+      "@vitejs/plugin-react": "^4.2.1",
+      "eslint": "^8.55.0",
+      "eslint-plugin-react": "^7.33.2",
+      "eslint-plugin-react-hooks": "^4.6.0",
+      "eslint-plugin-react-refresh": "^0.4.5",
+      "vite": "^5.0.8"
+    }
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile
