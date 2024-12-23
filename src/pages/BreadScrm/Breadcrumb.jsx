@@ -16,6 +16,9 @@ const Breadcrumb = ({ onRootMarginChange }) => {
     "/category": "Category",
     "/ratingProfile": "Tariff Creation",
     "/prepaidActivatedPlan": "Prepaid Approved Plans",
+    "/subscriber":"Subsriber ",
+    "/subscriber/newSubscriber":"New Subscriber",
+    "/subscriber/newSubscriber/addSubscriberDetails":"Add Subscriber Details"
   };
 
   // Split the pathname into parts for breadcrumb navigation

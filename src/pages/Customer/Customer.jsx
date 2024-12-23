@@ -20,12 +20,13 @@ const Customer = (props) => {
     const [isLoading, setIsLoading] = useState(true);
     const { token } = useContext(TokenContext);
     console.log(token + "token value from Context API")
+    const [value, setValue] = useState(""); // State for search input
     const columns = [
         { id: 'firstName', name: 'Name' },
         { id: 'serviceType', name: 'Service Type' },
         { id: 'customerType', name: 'Customer Type' },
         { id: 'simInventory.msisdn', name: 'MSISDN' },
-        { id: 'ekycStatus', name: 'Ekyc Status' },
+        { id: 'ekycStatus', name: 'eKYC Status' },
         // { id: 'ekycToken', name: 'Ekyc Token' },
         { id: 'vip', name: 'VIP' },
 
@@ -110,56 +111,33 @@ const Customer = (props) => {
     const [openPopup1, setOpenPopup1] = useState(false);
     const [openPopup2, setOpenPopup2] = useState(false);
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await axios.get('https://bssproxy01.neotel.nr/crm/api/customers', {
-                    headers: {
-                        Authorization: `Bearer ${tokenValue}`,
-                        "Accept": "application/json",
-                        "Content-Type": "application/json"
-                    }
-                });
-                // Assuming your API response is an array of objects similar to the data structure in your generateData function
-                const apiData = response.data;
-
-                // Update the state with the API data
-                setRows(apiData);
-                setIsLoading(false);
-            } catch (error) {
-
-
-                // Handle error as needed
-            }
-        };
+       
 
         fetchData(); // Invoke the fetchData function when the component mounts
-    }, [tokenValue, delete1]);
+    }, [tokenValue, delete1,value]);
 
     const fetchData = async () => {
         try {
-            const response = await axios.get('https://172.17.1.11:9090/api/customers/pack/details', {
+            const response = await axios.get('https://bssproxy01.neotel.nr/crm/api/all/customers', {
                 headers: {
                     Authorization: `Bearer ${tokenValue}`,
                     "Accept": "application/json",
                     "Content-Type": "application/json"
                 }
             });
-
+            // Assuming your API response is an array of objects similar to the data structure in your generateData function
             const apiData = response.data;
+
+            // Update the state with the API data
             setRows(apiData);
-            setPage(0);  // Reset to the first page on data fetch
             setIsLoading(false);
         } catch (error) {
-            if (error.response && error.response.status === 401) {
-                // Handle unauthorized error, e.g., navigate to login
-                // localStorage.removeItem('token');
-                // navigate("/");
-            }
 
-            console.error('Error fetching data from API:', error);
-            // Handle other errors as needed
+
+            // Handle error as needed
         }
     };
+    
 
     const handleRowClick = (row) => {
         setSelectedRecord(row);
@@ -347,12 +325,7 @@ const Customer = (props) => {
                                             <Grid container>
                                                 <Grid item xs={7.3} >
                                                     <Grid container spacing={1.5} >
-                                                        {/* <Grid item xs={3} sx={{ fontWeight: '480', fontSize: '17px', textAlign: 'right' }}>
-                                                            Title :
-                                                        </Grid>
-                                                        <Grid item xs={8}>
-                                                            {selectedRecord.personTitle}
-                                                        </Grid> */}
+                                                       
                                                         <Grid item xs={3.6} sx={{ fontWeight: '480', fontSize: '17px', textAlign: 'right' }}>
                                                             Name :
                                                         </Grid>
@@ -487,13 +460,14 @@ const Customer = (props) => {
                                                 </Grid>
                                             </Grid>
                                         </Box>
+
                                         <Divider light />
-                                        {(selectedRecord.payment === null) ?
+                                        {(selectedRecord.payment === null || selectedRecord.payment === "") ?
                                             <Box sx={{ p: 1 }}>
                                                 <Grid container>
                                                     <Grid item xs={6}>
                                                         <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
-                                                            Ekyc Token :
+                                                            eKYC Token :
                                                         </Typography>
                                                     </Grid>
                                                     <Grid item xs={6} alignItems={'left'}>
@@ -518,26 +492,7 @@ const Customer = (props) => {
                                             : null}
 
                                         <Divider light />
-                                        {selectedRecord.customerType === "Post-Paid" || selectedRecord.customerType === "postpaid" ?
-
-                                            <Box sx={{ p: 1 }}>
-
-                                                <Grid container>
-                                                    <Grid item xs={6}>
-                                                        <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
-                                                            Monthly Limit :
-                                                        </Typography>
-                                                    </Grid>
-                                                    <Grid item xs={6} alignItems={'left'} >
-                                                        <Typography
-                                                            sx={{ fontSize: '17px', textAlign: 'left' }}
-                                                            gutterBottom variant="body2">
-                                                            {selectedRecord.monthlyLimit}
-                                                        </Typography>
-                                                    </Grid>
-                                                </Grid>
-                                            </Box>
-                                            : <></>}
+                                       
                                         {selectedRecord.customerType === "Post-Paid" || selectedRecord.customerType === "postpaid" ?
                                             <>
                                                 <Divider light />
@@ -565,40 +520,7 @@ const Customer = (props) => {
 
 
                                         <Divider light />
-                                        {selectedRecord.customerType === "Post-Paid" || selectedRecord.customerType === "postpaid" ?
-
-                                            <Box sx={{ p: 1 }}>
-                                                <Grid container>
-                                                    <Grid item xs={6}>
-                                                        <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
-                                                            Next Invoice Date :
-                                                        </Typography>
-                                                    </Grid>
-                                                    <Grid item xs={6} alignItems={'left'} >
-                                                        <Typography
-                                                            sx={{ fontSize: '17px', textAlign: 'left' }}
-                                                            gutterBottom variant="body2">
-                                                            {selectedRecord.nextInoviceDate}
-                                                        </Typography>
-                                                    </Grid>
-                                                </Grid>
-                                            </Box>
-                                            : <Box sx={{ p: 1 }}>
-                                                <Grid container>
-                                                    <Grid item xs={6}>
-                                                        <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
-                                                            Fixed Line No. :
-                                                        </Typography>
-                                                    </Grid>
-                                                    <Grid item xs={6} alignItems={'left'} >
-                                                        <Typography
-                                                            sx={{ fontSize: '17px', textAlign: 'left' }}
-                                                            gutterBottom variant="body2">
-                                                            {selectedRecord.landlineNumber === 'null' ? "Not Available" : selectedRecord.landlineNumber}
-                                                        </Typography>
-                                                    </Grid>
-                                                </Grid>
-                                            </Box>}
+                                       
 
                                         {selectedRecord.customerType === "Post-Paid" || selectedRecord.customerType === "postpaid" ?
                                             <>
@@ -616,7 +538,7 @@ const Customer = (props) => {
                                                             <Typography
                                                                 sx={{ fontSize: '17px', textAlign: 'left' }}
                                                                 gutterBottom variant="body2">
-                                                                {selectedRecord.currentMonthlyAmount}
+                                                               {selectedRecord.currentMonthlyAmount ? selectedRecord.currentMonthlyAmount : 'N/A'}
                                                             </Typography>
                                                         </Grid>
                                                     </Grid>
@@ -629,7 +551,7 @@ const Customer = (props) => {
                                             <Grid container>
                                                 <Grid item xs={4}>
                                                     <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
-                                                        Ekyc Date :
+                                                        eKYC Date :
                                                     </Typography>
                                                 </Grid>
                                                 <Grid item xs={8} alignItems={'left'} sx={{ marginLeft: -2 }}>
@@ -740,7 +662,7 @@ const Customer = (props) => {
                                     {
                                     /* {selectedRecord.isParent === 0 &&
                                         selectedRecord.useParentPricing === false && */}
-                                    {selectedRecord.customerType === 'postpaid' && (
+                                    {(selectedRecord.customerType === 'postpaid' && selectedRecord.parentId == 0) && (
                                         <Grid item sx={6}>
                                             <Button
                                                 onClick={() => {
@@ -753,7 +675,7 @@ const Customer = (props) => {
                                                 sx={{ backgroundColor: '#253A7D' }}
                                                 variant="contained"
                                             >
-                                                crate Child
+                                                Create Child
                                             </Button>
                                         </Grid>
                                     )}
@@ -795,7 +717,7 @@ const Customer = (props) => {
             <></>
         }
     };
-    const [value, setValue] = useState(""); // State for search input
+  
     const handleSearch = async (e) => {
         e.preventDefault();
         console.log("From the handle search");
@@ -900,83 +822,96 @@ const Customer = (props) => {
                         <Box component="main" sx={{ flexGrow: 1, width: '100%' }}>
                             <Paper elevation={10}>
                                 <TableContainer sx={{ maxHeight: 600 }}>
-                                    <Table stickyHeader size='medium' padding="normal">
-                                        <TableHead>
-                                            <TableRow>
-                                                {columns.map((column) => (
-                                                    <TableCell style={{ backgroundColor: '#253A7D', color: 'white' }} key={column.id} sx={{ textAlign: 'left' }}><Typography >{column.name}</Typography></TableCell>
-                                                ))}
-                                            </TableRow>
-                                        </TableHead>
-
-                                        <TableBody>
-                                            {rows &&
-                                                rows.slice(page * rowperpage, page * rowperpage + rowperpage).map((row, i) => {
-                                                    return (
+                                    {rows && rows.length > 0 ? (
+                                        <Table stickyHeader size="medium" padding="normal">
+                                            <TableHead>
+                                                <TableRow>
+                                                    {columns.map((column) => (
+                                                        <TableCell
+                                                            key={column.id}
+                                                            style={{ backgroundColor: '#253A7D', color: 'white' }}
+                                                            sx={{ textAlign: 'left' }}
+                                                        >
+                                                            <Typography>{column.name}</Typography>
+                                                        </TableCell>
+                                                    ))}
+                                                </TableRow>
+                                            </TableHead>
+                                            <TableBody>
+                                                {rows
+                                                    .slice(page * rowperpage, page * rowperpage + rowperpage)
+                                                    .map((row, i) => (
                                                         <TableRow
                                                             key={i}
                                                             onClick={() => handleRowClick(row)}
                                                             onMouseEnter={() => handleRowMouseEnter(row)}
                                                             sx={{
-                                                                backgroundColor: highlightedRow === row ? '#F6B625' : 'inherit', // Highlight logic
+                                                                backgroundColor:
+                                                                    highlightedRow === row ? '#F6B625' : 'inherit', // Highlight logic
                                                             }}
                                                         >
                                                             {columns.map((column) => (
-                                                                <TableCell key={column.id} sx={{ textAlign: 'left', fontSize: '17px' }}>
+                                                                <TableCell
+                                                                    key={column.id}
+                                                                    sx={{ textAlign: 'left', fontSize: '17px' }}
+                                                                >
                                                                     {column.id === 'firstName' ? (
                                                                         <>
-                                                                            {/* Display both firstName and lastName */}
-                                                                            {capitalizeFirstLetterOfEachWord(String(row.firstName || ''))}{" "}
+                                                                            {capitalizeFirstLetterOfEachWord(String(row.firstName || ''))}{' '}
                                                                             {capitalizeFirstLetterOfEachWord(String(row.lastName || ''))}
                                                                         </>
                                                                     ) : column.id === 'simInventory.msisdn' ? (
-                                                                        <>
-                                                                            {getNestedValue(row, column.id)}
-                                                                        </>
+                                                                        getNestedValue(row, column.id)
                                                                     ) : column.id === 'ekycStatus' ? (
-                                                                        <>
-                                                                            {row[column.id] === '' || row[column.id] === null
-                                                                                ? 'N/A'
-                                                                                : capitalizeFirstLetterOfEachWord(String(row[column.id]))}
-                                                                        </>
-                                                                    )
-                                                                        : column.id === 'customerType' ? (
-                                                                            <>
-                                                                                {row[column.id] === '' || row[column.id] === null
-                                                                                    ? 'N/A'
-                                                                                    : capitalizeFirstLetterOfEachWord(String(row[column.id]))}
-                                                                            </>
-                                                                        )
-                                                                            : (
-                                                                                <>
-                                                                                    {capitalizeFirstLetterOfEachWord(String(row[column.id]))}
-                                                                                </>
-                                                                            )}
+                                                                        row[column.id] === '' || row[column.id] === null
+                                                                            ? 'N/A'
+                                                                            : capitalizeFirstLetterOfEachWord(String(row[column.id]))
+                                                                    ) : column.id === 'customerType' ? (
+                                                                        row[column.id] === '' || row[column.id] === null
+                                                                            ? 'N/A'
+                                                                            : capitalizeFirstLetterOfEachWord(String(row[column.id]))
+                                                                    ) : (
+                                                                        capitalizeFirstLetterOfEachWord(String(row[column.id]))
+                                                                    )}
                                                                 </TableCell>
                                                             ))}
                                                         </TableRow>
-                                                    );
-                                                })}
-                                        </TableBody>
-
-
-
-
-                                    </Table>
+                                                    ))}
+                                            </TableBody>
+                                        </Table>
+                                    ) : (
+                                        // Message when no rows exist
+                                        <Box
+                                            sx={{
+                                                display: 'flex',
+                                                justifyContent: 'center',
+                                                alignItems: 'center',
+                                                height: '50px',
+                                                fontSize: '18px',
+                                                color: '#253A7D',
+                                                fontWeight: 'bold',
+                                            }}
+                                            onClick={() => handleRowClick(row)}
+                                        >
+                                            No records exist
+                                        </Box>
+                                    )}
                                 </TableContainer>
-                                <TablePagination
-                                    sx={{ color: '#253A7D' }}
-                                    rowsPerPageOptions={[5, 10, 25]}
-                                    rowsPerPage={rowperpage}
-                                    page={page}
-                                    count={rows.length}
-                                    component="div"
-                                    onPageChange={handlechangepage}
-                                    onRowsPerPageChange={handleRowsPerPage}
-                                />
-
+                                {rows && rows.length > 0 && (
+                                    <TablePagination
+                                        sx={{ color: '#253A7D' }}
+                                        rowsPerPageOptions={[5, 10, 25]}
+                                        rowsPerPage={rowperpage}
+                                        page={page}
+                                        count={rows.length}
+                                        component="div"
+                                        onPageChange={handlechangepage}
+                                        onRowsPerPageChange={handleRowsPerPage}
+                                    />
+                                )}
                             </Paper>
                         </Box>
+
 
                         <Box sx={{
                             paddingLeft: '16px', paddingBottom: '16px', paddingTop: '14px',

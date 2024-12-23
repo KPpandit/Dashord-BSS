@@ -20,7 +20,7 @@ export default function PostpaidDeActivatedPlan() {
     const [selectedPlan, setSelectedPlan] = useState(null);
 
     useEffect(() => {
-        fetch('https://bssproxy01.neotel.nr/abmf-postpaid/api/postpaid/packs?pack_status=Rejected')
+        fetch('https://bssproxy01.neotel.nr/abmf-postpaid-s/api/postpaid/packs?pack_status=Rejected')
             .then(response => response.json())
             .then(data => {
                 const uniqueTabList = [...new Set(data.map(item => item.category_name))];
@@ -167,7 +167,7 @@ export default function PostpaidDeActivatedPlan() {
                                                         <Grid item xs={12}>
                                                             <Grid container spacing={2}>
                                                                 <Grid item xs={6}>
-                                                                    <Typography>AUD$ {plan.price ?? 0}</Typography>
+                                                                    <Typography>AUD$ {plan.plan_price ?? 0}</Typography>
                                                                     <Typography sx={{ font: 'Bold', color: 'yellow', cursor: 'pointer' }} onClick={() => handleDetailsClick(plan)}>View Details...</Typography>
                                                                 </Grid>
                                                                 <Grid item xs={6}><img src={LogoMo} alt='_blank' /></Grid>

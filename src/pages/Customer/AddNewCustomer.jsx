@@ -57,20 +57,20 @@ export default function AddNewCustomer() {
         <form onSubmit={handleSubmit}>
           <Grid container spacing={2} textAlign='center'>
 
-            <Grid container display="flex" alignItems="center" justifyContent="center" paddingBottom={5} marginTop={-7}>
-              <Paper elevation={10} sx={{ width: 500, paddingRight: 2, marginLeft: 2, marginTop: -3 }}>
-                <Typography  color={'#253A7D'} sx={{fontSize:'22px',paddingLeft:2, textAlign: 'left', width: '100%' }}>Select Account Type</Typography>
+            <Grid container display="flex" alignItems="center" justifyContent="center" paddingBottom={1} marginTop={-7}>
+              <Paper elevation={0} sx={{ width: 500, paddingRight: 2, marginLeft: 2, marginTop: -3 }}>
+                <Typography  color={'#253A7D'} sx={{fontSize:'22px',paddingLeft:2, textAlign: 'center', width: '100%',fontWeight:'bold' }}>Select Account Type</Typography>
               </Paper>
             </Grid>
 
             <Grid item xs={12}>
               <FormControl sx={{ width: 400 }}>
-                <InputLabel id="neotel-label">Neotel</InputLabel>
+                {/* <InputLabel id="neotel-label">Neotel</InputLabel> */}
                 <Select
                   labelId="neotel-label"
                   id="neotel-select"
                   value={values.rates_id}
-                  label="Neotel"
+                  // label="Neotel"
                   onChange={handleChange}
                   onBlur={handleBlur}
                   name="rates_id"
@@ -93,8 +93,8 @@ export default function AddNewCustomer() {
                   onBlur={handleBlur}
                   name="is_rates_active"
                 >
-                  <MenuItem value={'prepaid'}>Pre Paid</MenuItem>
-                  <MenuItem value={'postpaid'}>Post Paid</MenuItem>
+                  <MenuItem value={'prepaid'}>PrePaid</MenuItem>
+                  <MenuItem value={'postpaid'}>PostPaid</MenuItem>
                   <MenuItem value={'Broadband'}>Broadband</MenuItem>
                 </Select>
               </FormControl>

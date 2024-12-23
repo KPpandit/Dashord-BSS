@@ -2,45 +2,51 @@ import React, { useState } from "react";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
 import { TextField, Button, Grid, Typography, Box, Paper } from "@mui/material";
-import { useSnackbar } from "notistack";
-import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import { ToastContainer } from 'react-toastify';
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
 
 export default function AssignProducts() {
     const location = useLocation();
     const { record } = location.state || {}; // Get partnerId from location state
 
-    const [product, setProduct] = useState("SIM");
+    const [product, setProduct] = useState("SIM"); // Default to SIM
     const [startingNumber, setStartingNumber] = useState("");
     const [endingNumber, setEndingNumber] = useState("");
     const [productType, setProductType] = useState("");
     const [totalUnits, setTotalUnits] = useState("");
     const [offeredDiscount, setOfferedDiscount] = useState("");
 
-    // For payment
     const [invoiceNumber, setInvoiceNumber] = useState("");
     const [amount, setAmount] = useState("");
-    const [paymentMode, setPaymentMode] = useState("CASH");
+    const [paymentMode] = useState("CASH");
 
-    // State to toggle between steps
     const [isProductAssigned, setIsProductAssigned] = useState(false);
 
-    // Snackbar for notifications
-    const { enqueueSnackbar } = useSnackbar();
+    const validateAssignProductFields = () => {
+        if (!productType || !totalUnits || (product !== "Broadband" && !offeredDiscount)) {
+            toast.error("All fields are required to assign the product.", { autoClose: 2000 });
+            return false;
+        }
+        if (product === "SIM" && (!startingNumber || !endingNumber)) {
+            toast.error("Starting and Ending numbers are required for SIM.", { autoClose: 2000 });
+            return false;
+        }
+        return true;
+    };
 
     const handleAssignProduct = async () => {
-        const tokenValue = localStorage.getItem("token"); // Replace with actual token retrieval logic
+        if (!validateAssignProductFields()) return;
+
+        const tokenValue = localStorage.getItem("token");
         const assignProductApi = "https://bssproxy01.neotel.nr/crm/api/partner/order";
 
         const payload = {
             partnerId: record,
             product,
-            startingNumber,
-            endingNumber,
             productType,
             totalUnits: parseInt(totalUnits),
-            offeredDiscount: parseFloat(offeredDiscount),
+            ...(product === "SIM" && { startingNumber, endingNumber }),
         };
 
         try {
@@ -51,86 +57,162 @@ export default function AssignProducts() {
                 },
             });
 
-            const { transactionID, payAmount } = response.data; // Extract invoiceNumber and amount from response
-            console.log(response.data, '-- data');
+            const { transactionID, payAmount } = response.data;
+            if (product !== "Broadband") {
+                setInvoiceNumber(transactionID);
+                setAmount(payAmount);
+                setIsProductAssigned(true);
+            }
 
-            // Set the invoice number, amount, and payment mode
-            setInvoiceNumber(transactionID);
-            setAmount(payAmount);
-            setPaymentMode("CASH"); // Always set to "CASH"
 
-            setIsProductAssigned(true); // Move to payment step
-            toast.success("Invoice Generated Succesfully", { autoClose: 2000 });
+            // setIsProductAssigned(true);
+            toast.success("Product Assigned Successfully", { autoClose: 2000 });
         } catch (error) {
             console.error("Error assigning product:", error);
-            toast.error(error.message, { autoClose: 2000 });
+            toast.error("Error assigning product. Please try again.", { autoClose: 2000 });
         }
     };
 
     const handlePayment = async () => {
-        const tokenValue = localStorage.getItem("token"); // Replace with actual token retrieval logic
+        if (product === "SIM" && (!startingNumber || !endingNumber)) {
+            toast.error("Starting and Ending numbers are required for SIM payment.", { autoClose: 2000 });
+            return;
+        }
+
+        const tokenValue = localStorage.getItem("token");
         const paymentApi = `https://bssproxy01.neotel.nr/crm/api/save/partner/payment/currency/1?creditCard=1&startingNumber=${startingNumber}&endingNumber=${endingNumber}`;
 
         const payload = {
             partnerId: record,
             invoiceNumber,
+            product,
             amount: parseFloat(amount),
             paymentMode,
         };
 
         try {
-            const response = await axios.post(paymentApi, payload, {
+            await axios.post(paymentApi, payload, {
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${tokenValue}`,
                 },
             });
             toast.success("Payment Saved Successfully", { autoClose: 2000 });
-            enqueueSnackbar("Payment saved successfully!", { variant: "success" });
         } catch (error) {
-            toast.error("Payment is already done", error);
-            enqueueSnackbar("Failed to save payment", { variant: "error" });
+            console.error("Payment Error:", error);
+            toast.error("Payment Failed. Please try again.", { autoClose: 2000 });
         }
     };
 
+
     return (
         <Box p={2}>
-            <Typography variant="h4" sx={{ textAlign: 'center', fontWeight: '500', color: '#253A7D' }} mb={2}>
-                Assign SIM to Partner (ID: {record})
+            <Typography
+                variant="h4"
+                sx={{
+                    textAlign: "center",
+                    fontWeight: "600",
+                    color: "#253A7D",
+                    marginBottom: "20px",
+                }}
+            >
+                Assign {product} to Partner (ID: {record})
             </Typography>
             <ToastContainer position="bottom-left" />
-            <Paper sx={{ padding: 5, boxShadow: 24 }}>
-                <Grid container spacing={2}>
+            <Paper
+                sx={{
+                    padding: "30px",
+                    boxShadow: "0 4px 10px rgba(0, 0, 0, 0.2)",
+                    borderRadius: "10px",
+                    border: `2px solid ${isProductAssigned ? "#DBA818" : "#253A7D"}`,
+                }}
+            >
+                <Grid container spacing={3}>
                     {!isProductAssigned ? (
                         <>
-                            {/* Product Assignment Form */}
                             <Grid item xs={12}>
-                                <Typography variant="h5" sx={{ textAlign: 'center', fontWeight: '500', color: '#253A7D' }}>Step 1: Assign Product</Typography>
+                                <Typography
+                                    variant="h6"
+                                    sx={{
+                                        fontWeight: "500",
+                                        color: "#253A7D",
+                                        marginBottom: "10px",
+                                    }}
+                                >
+                                    Step 1: Assign Product
+                                </Typography>
                             </Grid>
-                            <Grid item xs={6}>
-                                <TextField
-                                    fullWidth
-                                    label="Product"
-                                    value={product}
-                                    onChange={(e) => setProduct(e.target.value)}
-                                />
+                            <Grid item xs={12}>
+                                <Button
+                                    variant={product === "SIM" ? "contained" : "outlined"}
+                                    sx={{
+                                        backgroundColor: product === "SIM" ? "#253A7D" : "#fff",
+                                        color: product === "SIM" ? "#fff" : "#253A7D",
+                                        border: `2px solid #253A7D`,
+                                        marginRight: "10px",
+                                        "&:hover": {
+                                            backgroundColor: "#253A7D",
+                                            color: "#fff",
+                                        },
+                                    }}
+                                    onClick={() => setProduct("SIM")}
+                                >
+                                    SIM
+                                </Button>
+                                <Button
+                                    variant={product === "Mobile device" ? "contained" : "outlined"}
+                                    sx={{
+                                        backgroundColor: product === "Mobile device" ? "#253A7D" : "#fff",
+                                        color: product === "Mobile device" ? "#fff" : "#253A7D",
+                                        border: `2px solid #253A7D`,
+                                        marginRight: "10px",
+                                        "&:hover": {
+                                            backgroundColor: "#253A7D",
+                                            color: "#fff",
+                                        },
+                                    }}
+                                    onClick={() => setProduct("Mobile device")}
+                                >
+                                    Device
+                                </Button>
+                                <Button
+                                    variant={product === "Broadband" ? "contained" : "outlined"}
+                                    sx={{
+                                        backgroundColor: product === "Broadband" ? "#253A7D" : "#fff",
+                                        color: product === "Broadband" ? "#fff" : "#253A7D",
+                                        border: `2px solid #253A7D`,
+                                        "&:hover": {
+                                            backgroundColor: "#253A7D",
+                                            color: "#fff",
+                                        },
+                                    }}
+                                    onClick={() => setProduct("Broadband")}
+                                >
+                                    Broadband
+                                </Button>
                             </Grid>
-                            <Grid item xs={6}>
-                                <TextField
-                                    fullWidth
-                                    label="Starting Number"
-                                    value={startingNumber}
-                                    onChange={(e) => setStartingNumber(e.target.value)}
-                                />
-                            </Grid>
-                            <Grid item xs={6}>
-                                <TextField
-                                    fullWidth
-                                    label="Ending Number"
-                                    value={endingNumber}
-                                    onChange={(e) => setEndingNumber(e.target.value)}
-                                />
-                            </Grid>
+
+                            {product === "SIM" && (
+                                <>
+                                    <Grid item xs={6}>
+                                        <TextField
+                                            fullWidth
+                                            label="Starting Number"
+                                            value={startingNumber}
+                                            onChange={(e) => setStartingNumber(e.target.value)}
+                                        />
+                                    </Grid>
+                                    <Grid item xs={6}>
+                                        <TextField
+                                            fullWidth
+                                            label="Ending Number"
+                                            value={endingNumber}
+                                            onChange={(e) => setEndingNumber(e.target.value)}
+                                        />
+                                    </Grid>
+                                </>
+                            )}
+
                             <Grid item xs={6}>
                                 <TextField
                                     fullWidth
@@ -148,19 +230,27 @@ export default function AssignProducts() {
                                     onChange={(e) => setTotalUnits(e.target.value)}
                                 />
                             </Grid>
-                            <Grid item xs={6}>
-                                <TextField
-                                    fullWidth
-                                    label="Offered Discount (%)"
-                                    value={offeredDiscount}
-                                    type="number"
-                                    onChange={(e) => setOfferedDiscount(e.target.value)}
-                                />
-                            </Grid>
+                            {product !== "Broadband" && (
+                                <Grid item xs={6}>
+                                    <TextField
+                                        fullWidth
+                                        label="Offered Discount (%)"
+                                        value={offeredDiscount}
+                                        type="number"
+                                        onChange={(e) => setOfferedDiscount(e.target.value)}
+                                    />
+                                </Grid>
+                            )}
                             <Grid item xs={12}>
                                 <Button
                                     variant="contained"
-                                    color="primary"
+                                    sx={{
+                                        backgroundColor: "#DBA818",
+                                        color: "#fff",
+                                        "&:hover": {
+                                            backgroundColor: "#253A7D",
+                                        },
+                                    }}
                                     onClick={handleAssignProduct}
                                 >
                                     Assign Product
@@ -168,46 +258,46 @@ export default function AssignProducts() {
                             </Grid>
                         </>
                     ) : (
-                        <>
-                            {/* Payment Form */}
-                            <Grid item xs={12}>
-                                <Typography variant="h6">Step 2: Make Payment</Typography>
-                            </Grid>
-                            <Grid item xs={6}>
-                                <TextField
-                                    fullWidth
-                                    label="Invoice Number"
-                                    value={invoiceNumber}
-                                    disabled
-                                />
-                            </Grid>
-                            <Grid item xs={6}>
-                                <TextField
-                                    fullWidth
-                                    label="Amount"
-                                    value={amount}
-                                    type="number"
-                                    disabled
-                                />
-                            </Grid>
-                            <Grid item xs={6}>
-                                <TextField
-                                    fullWidth
-                                    label="Payment Mode"
-                                    value={paymentMode}
-                                    disabled // Payment mode is always CASH
-                                />
-                            </Grid>
-                            <Grid item xs={12}>
-                                <Button
-                                    variant="contained"
-                                    color="secondary"
-                                    onClick={handlePayment}
-                                >
-                                    Make Payment
-                                </Button>
-                            </Grid>
-                        </>
+                        product !== "Broadband" && (
+                            <>
+                                <Grid item xs={12}>
+                                    <Typography
+                                        variant="h6"
+                                        sx={{
+                                            fontWeight: "500",
+                                            color: "#253A7D",
+                                            marginBottom: "10px",
+                                        }}
+                                    >
+                                        Step 2: Make Payment
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={6}>
+                                    <TextField fullWidth label="Invoice Number" value={invoiceNumber} disabled />
+                                </Grid>
+                                <Grid item xs={6}>
+                                    <TextField fullWidth label="Amount" value={amount} type="number" disabled />
+                                </Grid>
+                                <Grid item xs={6}>
+                                    <TextField fullWidth label="Payment Mode" value={paymentMode} disabled />
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <Button
+                                        variant="contained"
+                                        sx={{
+                                            backgroundColor: "#DBA818",
+                                            color: "#fff",
+                                            "&:hover": {
+                                                backgroundColor: "#253A7D",
+                                            },
+                                        }}
+                                        onClick={handlePayment}
+                                    >
+                                        Make Payment
+                                    </Button>
+                                </Grid>
+                            </>
+                        )
                     )}
                 </Grid>
             </Paper>

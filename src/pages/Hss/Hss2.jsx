@@ -21,7 +21,7 @@ const Hss2 = (props) => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get('http://172.17.1.11:9696/api/hss/detail/get/all', {
+                const response = await axios.get('https://bssproxy01.neotel.nr/udm/api/hss/detail/get/all/subscribers', {
                     headers: {
                         Authorization: `Bearer ${tokenValue}`,
                         "Accept": "application/json",

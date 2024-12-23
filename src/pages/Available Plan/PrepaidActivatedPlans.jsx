@@ -21,7 +21,7 @@ export default function PrepaidActivatedPlans() {
 
     useEffect(() => {
         // Fetch category names from the API
-        fetch('https://bssproxy01.neotel.nr/abmf-prepaid/api/prepaid/packs?pack_status=Approved')
+        fetch('https://bssproxy01.neotel.nr/abmf-prepaid-s/api/prepaid/packs?pack_status=Approved')
             .then(response => response.json())
             .then(data => {
                 const uniqueTabList = [...new Set(data.map(item => item.category_name))];
@@ -34,7 +34,7 @@ export default function PrepaidActivatedPlans() {
         // Fetch plans data from the API based on selected category and tab name
         if (tabList.length > 0) {
             const promises = tabList.map(category =>
-                fetch(`https://bssproxy01.neotel.nr/abmf-prepaid/api/prepaid/packs/get/all?category_name=${category}`)
+                fetch(`https://bssproxy01.neotel.nr/abmf-prepaid-s/api/prepaid/packs/get/all?category_name=${category}`)
                     .then(response => response.json())
                     .then(data => ({ category, data }))
             );
@@ -208,7 +208,7 @@ export default function PrepaidActivatedPlans() {
                                                                     <Grid container spacing={2}>
                                                                         <Grid item xs={12}>
                                                                             <Typography>
-                                                                                AUD$ {plan.price}
+                                                                                AUD$ {plan.pack_price}
                                                                             </Typography>
                                                                         </Grid>
                                                                         <Grid item xs={12}>

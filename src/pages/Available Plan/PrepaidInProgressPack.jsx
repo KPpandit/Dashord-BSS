@@ -20,7 +20,7 @@ export default function PrepaidInProgressPlan() {
     const [checkedPlan, setCheckedPlan] = useState(null); // State to track the checked plan
 
     useEffect(() => {
-        fetch('https://bssproxy01.neotel.nr/abmf-prepaid/api/prepaid/packs?pack_status=Pending')
+        fetch('https://bssproxy01.neotel.nr/abmf-prepaid-s/api/prepaid/packs?pack_status=Pending')
             .then(response => response.json())
             .then(data => {
                 const uniqueTabList = [...new Set(data.map(item => item.category_name))];
@@ -57,7 +57,7 @@ export default function PrepaidInProgressPlan() {
     const handleApprove = async (name) => {
         // console.log(name,'  hello how are you')
         try {
-            await axios.post('https://bssproxy01.neotel.nr/abmf-prepaid/api/prepaid/packs/update/detail', {
+            await axios.post('https://bssproxy01.neotel.nr/abmf-prepaid-s/api/prepaid/packs/update/detail', {
                 pack_name: name,
                 approver_user_id: localStorage.getItem("customer_id"),
                 approver_name: localStorage.getItem("userName"),
@@ -72,7 +72,7 @@ export default function PrepaidInProgressPlan() {
 
     const handleRejectSubmit = async () => {
         try {
-            await axios.post('https://bssproxy01.neotel.nr/abmf-prepaid/api/prepaid/packs/update/detail', {
+            await axios.post('https://bssproxy01.neotel.nr/abmf-prepaid-s/api/prepaid/packs/update/detail', {
                 pack_name: selectedPlanName,
                 approver_user_id: localStorage.getItem("customer_id"),
                 approver_name: localStorage.getItem("userName"),
@@ -114,7 +114,7 @@ export default function PrepaidInProgressPlan() {
                                                 <Grid item xs={12}>
                                                     <Grid container spacing={2}>
                                                         <Grid item xs={6}>
-                                                            <Typography>AUD$ {plan.price ?? 0}</Typography>
+                                                            <Typography>AUD$ {plan.pack_price ?? 0}</Typography>
                                                             <Typography sx={{ font: 'Bold', color: 'yellow', cursor: 'pointer' }} onClick={() => handleDetailsClick(plan)}>View Details...</Typography>
                                                         </Grid>
                                                         <Grid item xs={6}><img src={LogoMo} alt='_blank' /></Grid>

@@ -40,7 +40,7 @@ export default function PlanDetails(selectedRecordId) {
         onSubmit: async (values) => {
             console.log(values);
             setResult(values);
-            const res = await axios.post('https://bssproxy01.neotel.nr/abmf-postpaid/api/plan/allocation/postpaid/customer',
+            const res = await axios.post(`https://bssproxy01.neotel.nr/abmf-postpaid-s/api/postpaid/packs/activation?pack_id=${plan_id}&msisdn=${values.msisdn}`,
                 { ...values, plan_id }, {
                 headers: {
                     "Authorization": "Bearer +00f35991-0de0-4f5c-a432-b5d20a7ce240 ",
@@ -84,12 +84,12 @@ export default function PlanDetails(selectedRecordId) {
         }
     })
     useEffect(() => {
-        fetch("https://bssproxy01.neotel.nr/abmf-rating/api/rating/profile/get/all/postpaid")
+        fetch("https://bssproxy01.neotel.nr/abmf-postpaid-s/api/postpaid/packs?pack_status=Approved")
             .then((resp) => resp.json())
             .then((resp) => {
                 const formattedData = resp.map((item) => ({
-                    pack_name: item.pack_name,
-                    rating_profile_id: item.rating_profile_id,
+                    pack_name: item.plan_name,
+                    rating_profile_id: item.plan_id,
                 }));
                 setdata(formattedData);
             })
@@ -101,7 +101,7 @@ export default function PlanDetails(selectedRecordId) {
 
     const getApi = async (event) => {
         try {
-            const response = await fetch(`https://bssproxy01.neotel.nr/abmf-postpaid/api/plan/allocation/assigned/postpaid/customer/${id}`);
+            const response = await fetch(`https://bssproxy01.neotel.nr/abmf-postpaid-s/api/postpaid/customer/get/available/with/offered/balance?imsi=&msisdn=${id}`);
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
@@ -189,23 +189,8 @@ export default function PlanDetails(selectedRecordId) {
                                     }}
                                 />
                             </Grid>
-                            <Grid item xs={4}>
-                                <TextField
 
-                                    label="Activation Date"
-                                    type="text"
-                                    required
-                                    fullWidth
-                                    name="name"
-                                    value={result.activation_date}
-                                    disabled
-                                    InputLabelProps={{
-                                        shrink: true,
-                                    }}
-
-                                />
-                            </Grid>
-                            <Grid item xs={4}>
+                            {/* <Grid item xs={4}>
                                 <TextField
                                     disabled
                                     label="Expiration Date"
@@ -219,114 +204,78 @@ export default function PlanDetails(selectedRecordId) {
                                         shrink: true,
                                     }}
                                 />
-                            </Grid>
+                            </Grid> */}
+
 
 
                             <Grid item xs={4}>
                                 <TextField
-                                    disabled
-                                    label="partner_msisdn"
-                                    type="text"
-                                    required
+                                    label="Data Available"
                                     fullWidth
-                                    name="partner_msisdn"
-                                    value={values.partner_msisdn}
-                                    onChange={handleChange}
-                                    onBlur={handleBlur}
-                                    InputLabelProps={{
-                                        shrink: true,
-                                    }}
+                                    disabled
+                                    value={result.total_data_available ? Math.floor(result.total_data_available / (1024 * 1024 * 1024)) + ' GB' : ''}
+                                    InputLabelProps={{ shrink: true }}
                                 />
                             </Grid>
                             <Grid item xs={4}>
                                 <TextField
-                                    disabled
                                     label="Data Offered"
-                                    type="text"
-                                    required
                                     fullWidth
-                                    name="offered_data"
-                                    value={result.offered_data}
+                                    disabled
+                                    value={result.offered_data ? Math.floor(result.offered_data / (1024 * 1024 * 1024)) + ' GB' : ''}
+                                    InputLabelProps={{ shrink: true }}
+                                />
+                            </Grid>
 
-                                    InputLabelProps={{
-                                        shrink: true,
-                                    }}
+
+                            <Grid item xs={4}>
+                                <TextField
+                                    label="Voice ON NET Available"
+                                    fullWidth
+                                    disabled
+                                    value={result.total_onn_calls_available ? Math.floor(result.total_onn_calls_available / 60) + ' min' : ''}
+                                    InputLabelProps={{ shrink: true }}
                                 />
                             </Grid>
                             <Grid item xs={4}>
                                 <TextField
-                                    disabled
-                                    label="Data Used"
-                                    type="text"
-                                    required
+                                    label="Voice Off NET Available"
                                     fullWidth
-                                    name="used_data"
-                                    value={result.used_data}
-
-                                    InputLabelProps={{
-                                        shrink: true,
-                                    }}
+                                    disabled
+                                    value={result.total_ofn_calls_available ? Math.floor(result.total_ofn_calls_available / 60) + ' min' : ''}
+                                    InputLabelProps={{ shrink: true }}
                                 />
                             </Grid>
                             <Grid item xs={4}>
                                 <TextField
-                                    disabled
-                                    label="Calls Offered"
-                                    type="text"
-                                    required
+                                    label="Voice ON NET Offered"
                                     fullWidth
-                                    name="offered_calls"
-                                    value={result.offered_calls}
-
-                                    InputLabelProps={{
-                                        shrink: true,
-                                    }}
+                                    disabled
+                                    value={result.offered_onn_calls ? Math.floor(result.offered_onn_calls / 60) + ' min' : ''}
+                                    InputLabelProps={{ shrink: true }}
                                 />
                             </Grid>
                             <Grid item xs={4}>
                                 <TextField
-                                    disabled
-                                    label="Calls Used"
-                                    type="text"
-                                    required
+                                    label="Voice OFF NET Offered"
                                     fullWidth
-                                    name="used_calls"
-                                    value={result.used_calls}
-
-                                    InputLabelProps={{
-                                        shrink: true,
-                                    }}
+                                    disabled
+                                    value={result.offered_ofn_calls ? Math.floor(result.offered_ofn_calls / 60) + ' min' : ''}
+                                    InputLabelProps={{ shrink: true }}
                                 />
                             </Grid>
-                            <Grid item xs={4}>
-                                <TextField
-                                    disabled
-                                    label="SMS Offered"
-                                    type="text"
-                                    required
-                                    fullWidth
-                                    name="offered_sms"
-                                    value={result.offered_sms}
 
-                                    InputLabelProps={{
-                                        shrink: true,
-                                    }}
-                                />
+                            <Grid item xs={4}>
+                                <TextField label="SMS ON NET Available" fullWidth disabled value={result.total_onn_sms_available || ''} InputLabelProps={{ shrink: true }} />
                             </Grid>
                             <Grid item xs={4}>
-                                <TextField
-                                    disabled
-                                    label="Used SMS"
-                                    type="text"
-                                    required
-                                    fullWidth
-                                    name="used_sms"
-                                    value={result.used_sms}
-
-                                    InputLabelProps={{
-                                        shrink: true,
-                                    }}
-                                />
+                                <TextField label="SMS OFF NET Available" fullWidth disabled value={result.total_ofn_sms_available || ''} InputLabelProps={{ shrink: true }} />
+                            </Grid>
+                            <Grid item xs={4}>
+                                <TextField label="SMS ON NET Offered" fullWidth disabled value={result.offered_onn_sms || ''} InputLabelProps={{ shrink: true }} />
+                            </Grid>
+                            <Grid item xs={4}>
+                                <TextField label="SMS OFF NET Offered" fullWidth disabled value={result.offered_ofn_sms || ''} InputLabelProps={{ shrink: true }} />
                             </Grid>
                             <Grid item xs={12}>
                                 <Box  >
@@ -391,7 +340,7 @@ export default function PlanDetails(selectedRecordId) {
                                                     onClick={handleSubmit}
                                                     sx={{ mt: 1, mb: 2 }}
                                                 >
-                                                    Submit123
+                                                    Submit
                                                 </Button>
                                             </Grid>
 

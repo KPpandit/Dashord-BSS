@@ -78,13 +78,7 @@ export default function CoreBalanceMgmt(props) {
     const [recordIdToDelete, setRecordIdToDelete] = useState(null);
     const [recordMsisdnToDelete, setRecordMsisdnToDelete] = useState(null);
 
-    const handleOpenConfirmationDialog = (id) => {
-        setRecordIdToDelete(id);
-        setRecordMsisdnToDelete(id)
-        console.log("xxxx==>" + id)
-        console.log("xxxx==>" + id)
-        setConfirmationDialogOpen(true);
-    };
+   
 
     const handleCloseConfirmationDialog = () => {
         setRecordIdToDelete(null);
@@ -131,7 +125,7 @@ export default function CoreBalanceMgmt(props) {
           
             // { label: "Device Status", value: selectedRecord?.deviceStatus },
             ...(balance
-                ? [{ label: "Core Balance", value: balance.totalCoreBalance }]
+                ? [{ label: "Core Balance", value:  Math.round(balance.totalCoreBalance) }]
                 : [{ label: "Core Balance", value: "Loading..." }]),
         ];
 

@@ -3,7 +3,7 @@ import Grid2 from '@mui/material/Unstable_Grid2/Grid2'
 import React, { useEffect, useRef, useState } from 'react'
 import IconButton from '@mui/material/IconButton';
 import AddIcon from '@mui/icons-material/Add';
-import RemoveIcon from '@mui/icons-material/Remove';
+import * as Yup from 'yup'; // For validation schema
 import { useFormik } from 'formik';
 import { Label } from '@mui/icons-material';
 import axios from "axios";
@@ -26,14 +26,12 @@ export default function AddCustomerDetails() {
 
         setNotification({ ...notification, open: false });
     }
-    const [showPaper, setShowPaper] = useState(false);
 
-    const togglePaper = () => {
-        setShowPaper(!showPaper);
-    };
-    const [showPaperPayment, setShowPaperPayment] = useState(false);
 
-  
+
+    
+
+
     const [billingCycle, setBillingCycle] = useState('');
 
 
@@ -55,8 +53,7 @@ export default function AddCustomerDetails() {
     const [device, setDevice] = useState('');
     const [router, setRouter] = useState('');
     let photo_id;
-    // const [userId, setuserId] = useState(null);
-    // const [customerId, setCustomerID] = useState(null);
+    
     const isFirstRender = useRef(true);
 
     const savePhoto = async () => {
@@ -66,7 +63,7 @@ export default function AddCustomerDetails() {
             const file = fileInput?.files[0]; // Get the file from the input
 
             if (!file) {
-                toast.error('Please select a file before uploading.');
+                // toast.error('Please select a file before uploading.');
                 return;
             }
 
@@ -90,49 +87,33 @@ export default function AddCustomerDetails() {
             if (photoRes.status === 200) {
                 toast.success('Photo uploaded successfully!', { autoClose: 2000 });
             } else {
-                toast.error('Photo upload failed.', { autoClose: 2000 });
+                // toast.error('Photo upload failed.', { autoClose: 2000 });
             }
         } catch (error) {
             console.log(error, " -----> photo upload error");
-            toast.error('Photo upload failed.', { autoClose: 2000 });
+            // toast.error('Photo upload failed.', { autoClose: 2000 });
         }
     };
 
 
-    useEffect(() => {
-        axios.get('https://bssproxy01.neotel.nr/crm/api/alllanguage', {
-            headers: {
-                Authorization: `Bearer ${tokenValue}`,
-                "Accept": "application/json",
-                "Content-Type": "application/json"
-            }
-        })
-            .then(response => {
-                // Store language options (id and code) in state
-                setLanguageOptions(response.data);
-            })
-            .catch(error => {
-                console.error('Error fetching language options:', error);
-                // Handle error as needed
-            });
-        // For All Currency
-        axios.get('https://bssproxy01.neotel.nr/crm/api/allcurrency', {
-            headers: {
-                Authorization: `Bearer ${tokenValue}`,
-                "Accept": "application/json",
-                "Content-Type": "application/json"
-            }
-        })
-            .then(response => {
-                // Store language options (id and code) in state
-                setcurrencyOption(response.data);
-            })
-            .catch(error => {
-                console.error('Error fetching language options:', error);
-                // Handle error as needed
-            });
-    }, [])
-    const { handleChange, handleSubmit, handleBlur, values, submitForm: submitMainForm1, resetForm: resetForm1 } = useFormik({
+   
+    const validationSchema = Yup.object({
+        email: Yup.string().email('Invalid email format').required('Email is required'),
+        postalCode: Yup.string()
+            .matches(/^[0-9]{5}$/, 'Postal Code must be exactly 5 digits')
+            .required('Postal Code is required'),
+        ekycToken: Yup.string()
+            .matches(/^[0-9]{10}$/, 'eKYC Token must be exactly 10 digits')
+            .required('eKYC Token is required'),
+        firstName: Yup.string().required('First Name is required'),
+        lastName: Yup.string().required('Last Name is required'),
+        phonePhoneNumber: Yup.string()
+            .matches(/^[0-9]{10}$/, 'Phone Number must be exactly 10 digits'),
+        dateOfBirth: Yup.date().required('Date of Birth is required'),
+        gender: Yup.string().required('Gender is required'),
+        maritalStatus: Yup.string(),
+    });
+    const { handleChange, handleSubmit, handleBlur, values, touched, errors, submitForm: submitMainForm1, resetForm: resetForm1 } = useFormik({
         initialValues: {
             referralFeePaid: "",
             autoPaymentType: "",
@@ -187,7 +168,7 @@ export default function AddCustomerDetails() {
             serviceType: "",
             isVip: false
         },
-
+        validationSchema,
         onSubmit: async (values) => {
             console.log(partner + "partner ID");
             console.log(values);
@@ -242,7 +223,7 @@ export default function AddCustomerDetails() {
 
             } catch (e) {
                 console.log(e, " -----> e");
-                toast.error(e.response.data.Database_error, { autoClose: 2000 });
+                toast.error(e.response.data.message, { autoClose: 2000 });
             }
         }
     });
@@ -281,7 +262,7 @@ export default function AddCustomerDetails() {
         onSubmit: async (values2) => {
             // Check if billingCycle is 'cash'
             if (billingCycle === 'cash') {
-                const res2 = await axios.post(`https://bssproxy01.neotel.nr/crm/api/savepayment/currency/${seleectedCurrenyId}/paymentrsult/1/paymentmethod/1`, // Use different URL for cash
+                const res2 = await axios.post(`https://bssproxy01.neotel.nr/crm/api/savepayment/currency/1/paymentrsult/1/paymentmethod/1`, // Use different URL for cash
                     { ...values2 }, {
                     headers: {
                         Authorization: `Bearer ${tokenValue}`,
@@ -299,7 +280,7 @@ export default function AddCustomerDetails() {
                     }
                 });
             } else {
-                const res2 = await axios.post(`https://bssproxy01.neotel.nr/crm/api/savepayment/currency/${seleectedCurrenyId}/paymentrsult/1/paymentmethod/1?creditCard=1`, // Use default URL for credit card
+                const res2 = await axios.post(`https://bssproxy01.neotel.nr/crm/api/savepayment/currency/1/paymentrsult/1/paymentmethod/1?creditCard=1`, // Use default URL for credit card
                     { ...values2 }, {
                     headers: {
                         Authorization: `Bearer ${tokenValue}`,
@@ -336,16 +317,55 @@ export default function AddCustomerDetails() {
             isFirstRender.current = false;
         }
     }, [customerId, userId, submitMainForm2, msisdn, device]);
-    const [seleectedCurrenyId, setSelectedCurrencyId] = useState('');
-    const [currencyOption, setcurrencyOption] = useState([]);
-    const [languageOptions, setLanguageOptions] = useState([]);
-    const [selectedLanguageId, setSelectedLanguageId] = useState('');
-    const handleChangeLanguage = (event) => {
-        setSelectedLanguageId(event.target.value);
+    const renderTextField = ({ label, value, onChange, name, type = "text", error = false, helperText = "", required = false, fullWidth = true }) => (
+        <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
+            <TextField
+                label={label}
+                name={name}
+                type={type}
+                value={value}
+                onChange={onChange}
+                required={required}
+                fullWidth={fullWidth}
+                error={error}
+                helperText={helperText}
+                InputLabelProps={commonInputLabelProps}
+            />
+        </Grid>
+    );
+    
+    const renderSelectField = ({ label, value, onChange, name, options, required = false }) => (
+        <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
+            <FormControl fullWidth>
+                <InputLabel id={label} required>{label}</InputLabel>
+                <Select
+                    labelId={label}
+                    id={label}
+                    value={value}
+                    name={name}
+                    label={label}
+                    required={required}
+                    onChange={onChange}
+                >
+                    {options.map(option => (
+                        <MenuItem key={option.value} value={option.value}>{option.label}</MenuItem>
+                    ))}
+                </Select>
+            </FormControl>
+        </Grid>
+    );
+    const validateEmail = (value) => {
+        let error;
+        const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        if (!value) {
+            error = "Email is required";
+        } else if (!emailRegex.test(value)) {
+            error = "Invalid email format";
+        }
+        return error;
     };
-    const handleChangeCurrency = (event) => {
-        setSelectedCurrencyId(event.target.value);
-    };
+    
+  
     const commonInputLabelProps = { shrink: true, style: { fontFamily: 'Roboto', } };
     return (
         <Box component="form" onSubmit={handleSubmit} >
@@ -390,9 +410,9 @@ export default function AddCustomerDetails() {
                     }}
                 >
 
-                    <Grid2 >
+                    <Grid >
                         <Grid container justifyContent="space-between">
-                            <Grid item lg={2} md={8} sm={6} xs={12} paddingBottom={2} sx={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                            <Grid item lg={2} md={8} sm={6} xs={12} paddingBottom={2} sx={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'left' }}>
                                 {/* Display the selected photo */}
                                 {selectedPhoto ? (
                                     <>
@@ -401,8 +421,8 @@ export default function AddCustomerDetails() {
                                         <img src={URL.createObjectURL(selectedPhoto)} alt="Selected" style={{ maxWidth: '100%', maxHeight: '200px', paddingBottom: '10px' }} />
                                     </>
                                 ) : (
-                                    <Typography variant="body1" color="textSecondary">
-                                        No photo selected
+                                    <Typography variant="body1" color="textSecondary" sx={{padding:1}}>
+                                        {/* No photo selected */}
                                     </Typography>
                                 )}
                                 <input
@@ -415,1377 +435,243 @@ export default function AddCustomerDetails() {
                                 />
                                 <label htmlFor="upload-photo">
                                     <Button variant="contained" sx={{ backgroundColor: '#253A7D' }} color="primary" component="span" fullWidth>
-                                        Update Photo
+                                        Uploade Photo
                                     </Button>
                                 </label>
                             </Grid>
 
                         </Grid>
                         <Divider />
-                        <Grid
-                            container
-                            spacing={6} // Adjust the spacing between items as needed
-                            paddingBottom={2} // Padding for the entire container
-                            paddingTop={2} // Padding for the entire container
-                        >
-                            <Grid item lg={6}>
-                                <Grid container spacing={2}>
-                                    <Grid item lg={6} md={4} sm={6} xs={12} > {/* Padding for individual items */}
-                                        <TextField
-                                            label="Account Type"
-                                            name='customerType'
-                                            type='text'
-                                            fullWidth
-                                            onChange={handleChange}
-                                            value={accountType || values.customerType}
-                                            onBlur={handleBlur}
-                                            InputLabelProps={commonInputLabelProps}
-                                        />
-                                      
-                                    </Grid>
-                                    <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
-                                        <TextField
-                                            label="Status"
-                                            type="text"
-                                            value={"Active"}
-                                            fullWidth
-                                            InputLabelProps={commonInputLabelProps}
+                       
 
-                                        />
-                                    </Grid>
+<Grid container spacing={6} paddingBottom={2} paddingTop={2}>
+    <Grid item lg={6}>
+        <Grid container spacing={2}>
+            {renderTextField({ label: "Account Type", name: 'customerType', value: accountType || values.customerType, onChange: handleChange })}
+            {renderTextField({ label: "Status", value: "Active", onChange: () => {}, required: false })}
+            {renderSelectField({ label: "Service Type", value: values.serviceType, onChange: handleChange, name: 'serviceType', options: [{ value: "Mobility", label: "Mobility" }, { value: "FTTH", label: "FTTH" }, { value: "FWA", label: "FWA" }, { value: "VOIP", label: "VOIP" }] })}
+            {renderTextField({ label: "Partner Id", name: 'partner', value: partner, onChange: e => setpartner(e.target.value), required: true, type: "number" })}
+            
+            {(accountType.toLowerCase() === 'postpaid' || accountType.toLowerCase() === 'post-paid') && renderSelectField({
+                label: "Is VIP", value: values.isVip, onChange: handleChange, name: 'isVip', options: [{ value: true, label: "Yes" }, { value: false, label: "No" }]
+            })}
+            
+            <Grid item lg={12} md={4} sm={6} xs={12} paddingBottom={2}>
+                <Divider />
+            </Grid>
+        </Grid>
+    </Grid>
 
+    <Grid item lg={6}>
+        <Grid container spacing={2}>
+            {accountType === "Broadband" ? (
+                renderTextField({
+                    label: "Router ID",
+                    name: "router",
+                    value: router,
+                    onChange: e => setRouter(e.target.value.replace(/[^0-9]/g, "")),
+                    error: router && Number(router) < 0,
+                    helperText: router && Number(router) < 0 ? "Router ID cannot be negative." : "",
+                    type: "text"
+                })
+            ) : (
+                <>
+                    {renderTextField({
+                        label: "Device ID",
+                        name: "device",
+                        value: device,
+                        onChange: e => setDevice(e.target.value.replace(/[^0-9]/g, "")),
+                        error: device && Number(device) < 0,
+                        helperText: device && Number(device) < 0 ? "Device ID cannot be negative." : "",
+                        type: "text"
+                    })}
+                    {renderTextField({
+                        label: "MSISDN",
+                        name: "msisdn",
+                        value: `674 ${msisdn.slice(3)}`,
+                        onChange: e => setMsisdn(e.target.value.replace(/[^0-9]/g, "")),
+                        error: msisdn.length !== 10 || !msisdn.startsWith("674"),
+                        helperText: msisdn.length !== 10 || !msisdn.startsWith("674") ? "MSISDN must be 10 digits starting with '674'." : ""
+                    })}
+                </>
+            )}
+        </Grid>
+    </Grid>
+</Grid>
 
-                                    <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
-                                        <FormControl fullWidth>
-                                            <InputLabel id="demo-simple-select-label" required>Language</InputLabel>
-                                            <Select
-                                                required
-                                                labelId="demo-simple-select-label"
-                                                id="demo-simple-select"
-                                                value={selectedLanguageId}
-                                                name='selectedLanguageId'
-                                                onChange={handleChangeLanguage}
-                                                label="Language "
-                                            >
-                                                {languageOptions.map(option => (
-                                                    <MenuItem key={option.id} value={option.id}>
-                                                        {option.code}
-                                                    </MenuItem>
-                                                ))}
-                                                {console.log(selectedLanguageId + " selected language ID")}
-                                            </Select>
-                                        </FormControl>
-                                    </Grid>
-                                    <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
-                                        <FormControl fullWidth>
-                                            <InputLabel id="demo-simple-select-label" required>Currency</InputLabel>
-                                            <Select
-                                                required
-                                                labelId="demo-simple-select-label"
-                                                id="demo-simple-select"
-                                                value={seleectedCurrenyId}
-                                                name='currenyId'
-                                                onChange={handleChangeCurrency}
-                                                label="Language "
-                                            >
-                                                {currencyOption.map(option => (
-                                                    <MenuItem key={option.id} value={option.id}>
-                                                        {option.symbol}
-                                                    </MenuItem>
-                                                ))}
-                                                {console.log(seleectedCurrenyId + "------selected Currency ID ID")}
-                                            </Select>
-                                        </FormControl>
-                                    </Grid>
-
-
-
-                                    <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
-                                        <FormControl fullWidth >
-                                            <InputLabel id="demo-simple-select-label" required>Service Type</InputLabel>
-                                            <Select
-                                                labelId="demo-simple-select-label"
-                                                id="demo-simple-select"
-                                                value={values.serviceType}
-                                                name='serviceType'
-                                                label="Service Type"
-                                                required
-                                                onChange={handleChange}
-                                                onBlur={handleBlur}
-
-                                            >
-                                                <MenuItem value={"Mobility"}>Mobility</MenuItem>
-                                                <MenuItem value={"FTTH"}>FTTH</MenuItem>
-                                                <MenuItem value={"VOIP"}>VOIP</MenuItem>
-
-
-                                            </Select>
-                                        </FormControl>
-                                    </Grid>
-                                    <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
-                                        <TextField
-
-                                            label="Partner Id"
-                                            required
-                                            type="number"
-                                            name='partner'
-                                            value={partner}
-                                            onChange={e => setpartner(e.target.value)}
-
-                                            fullWidth
-
-                                        />
-                                    </Grid>
-                                    <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
-                                        <FormControl fullWidth >
-                                            <InputLabel id="demo-simple-select-label" required>Is VIP</InputLabel>
-                                            <Select
-                                                labelId="demo-simple-select-label"
-                                                id="demo-simple-select"
-                                                value={values.isVip}
-                                                name='isVip'
-                                                label="Is VIP"
-                                                required
-                                                onChange={handleChange}
-                                                onBlur={handleBlur}
-
-                                            >
-                                                <MenuItem value={true}>Yes</MenuItem>
-                                                <MenuItem value={false}>No</MenuItem>
-
-
-                                            </Select>
-                                        </FormControl>
-                                    </Grid>
-                                    <Grid item lg={12} md={4} sm={6} xs={12} paddingBottom={2}>
-                                        <Divider />
-                                    </Grid >
-                                </Grid>
-                            </Grid>
-                            <Grid item lg={6} >
-                                <Grid container spacing={2}>
-                                    {accountType === "Broadband" ? (
-                                        // Render only Router ID if accountTYPE is "broadband"
-                                        <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
-                                            <TextField
-                                                fullWidth
-                                                label="Router ID"
-                                                name="router"
-                                                value={router}
-                                                type="number"
-                                                onChange={(e) => setRouter(e.target.value)}
-                                            />
-                                        </Grid>
-                                    ) : (
-                                        // Render other fields if accountTYPE is not "broadband"
-                                        <>
-                                            <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
-                                                <TextField
-                                                    fullWidth
-                                                    label="Device ID"
-                                                    name="device"
-                                                    value={device}
-                                                    type="number"
-                                                    onChange={(e) => setDevice(e.target.value)}
-                                                />
-                                            </Grid>
-
-                                            <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
-                                                <TextField
-                                                    label="MSISDN"
-                                                    type="number"
-                                                    fullWidth
-                                                    name="msisdn"
-                                                    value={msisdn}
-                                                    onChange={(e) => setMsisdn(e.target.value)}
-                                                />
-                                            </Grid>
-                                        </>
-                                    )}
-                                    <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
-                                        <FormControl fullWidth >
-                                            <InputLabel id="demo-simple-select-label" required>useParentPricing</InputLabel>
-                                            <Select
-
-                                                id="demo-simple-select"
-                                                value={values.useParentPricing}
-                                                label="useParentPricing"
-                                                onChange={handleChange}
-                                                onBlur={handleBlur}
-                                                name="useParentPricing"
-                                                required
-                                            >
-                                                <MenuItem value={true}>True</MenuItem>
-                                                <MenuItem value={false}>False</MenuItem>
-
-
-
-                                            </Select>
-                                        </FormControl>
-                                    </Grid>
-                                    <Grid item lg={12} md={4} sm={6} xs={12} >
-                                        
-                                        {(accountType.toLowerCase() === 'postpaid' || accountType === 'Broadband')  && (
-                                            <Grid container spacing={2}>
-                                                <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
-                                                    <TextField
-
-                                                        label="Invoice Design"
-                                                        type="text"
-                                                        required
-                                                        fullWidth
-                                                        name="invoiceDesign"
-                                                        value={values.invoiceDesign}
-                                                        onChange={handleChange}
-                                                        onBlur={handleBlur}
-                                                    />
-                                                </Grid>
-
-                                                <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={0}>
-                                                    <TextField
-                                                        label="Parent ID"
-                                                        type="number"
-
-                                                        fullWidth
-                                                        name="parentId"
-                                                        value={values.parentId}
-                                                        onChange={handleChange}
-                                                        onBlur={handleBlur}
-                                                    />
-                                                </Grid>
-                                                {/* <Grid item lg={6} md={4} sm={6} xs={12} >
-                                                    <FormControl fullWidth >
-                                                        <InputLabel id="demo-simple-select-label">Invoice Delivery Method</InputLabel>
-                                                        <Select
-                                                            labelId="demo-simple-select-label"
-                                                            id="demo-simple-select"
-                                                            // value={values.useParentPricing}
-                                                            label="Invoice Delivery Method"
-
-                                                        >
-                                                            <MenuItem value={"Email"}>Email</MenuItem>
-                                                            <MenuItem value={"Paper"}>Paper</MenuItem>
-                                                            <MenuItem value={"Email & Paper"}>Email & Paper</MenuItem>
-
-
-                                                        </Select>
-                                                    </FormControl>
-                                                </Grid> */}
-
-
-                                                <Grid item lg={6} md={4} sm={6} xs={12} >
-                                                    <TextField
-                                                        label="creditLimit"
-                                                        type="number"
-                                                        value={values.creditLimit}
-                                                        fullWidth
-                                                        name="creditLimit"
-                                                        required
-                                                        onChange={handleChange}
-                                                        onBlur={handleBlur}
-                                                    />
-                                                </Grid>
-                                                <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
-                                                    <TextField
-
-                                                        label="Auto Recharge Amount"
-                                                        type="number"
-                                                        required
-                                                        fullWidth
-                                                        name="autoRecharge"
-                                                        value={values.autoRecharge}
-                                                        onChange={handleChange}
-                                                        onBlur={handleBlur}
-                                                    />
-                                                </Grid>
-                                                <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
-                                                    <TextField
-                                                        required
-                                                        label="Auto-Recharge Threshold"
-                                                        type="number"
-                                                        fullWidth
-                                                        name="rechargeThreshold"
-                                                        value={values.rechargeThreshold}
-                                                        onChange={handleChange}
-                                                        onBlur={handleBlur}
-                                                    />
-                                                </Grid>
-                                                <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
-                                                    <TextField
-
-                                                        label="Auto-Recharge Monthly Limit"
-                                                        type="number"
-                                                        name="monthlyLimit"
-                                                        fullWidth
-                                                        required
-                                                        value={values.monthlyLimit}
-                                                        onChange={handleChange}
-                                                        onBlur={handleBlur}
-                                                    />
-                                                </Grid>
-                                                <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
-                                                    <TextField
-
-                                                        label="autoPaymentType"
-                                                        type="number"
-                                                        required
-                                                        fullWidth
-                                                        name="autoPaymentType"
-                                                        value={values.autoPaymentType}
-                                                        onChange={handleChange}
-                                                        onBlur={handleBlur}
-                                                    />
-                                                </Grid>
-                                                
-                                                <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
-                                                    <TextField
-
-                                                        label="dueDateValue"
-                                                        type="number"
-                                                        required
-                                                        fullWidth
-                                                        name="dueDateValue"
-                                                        value={values.dueDateValue}
-                                                        onChange={handleChange}
-                                                        onBlur={handleBlur}
-                                                    />
-                                                </Grid>
-                                                
-                                                <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
-                                                    <TextField
-
-                                                        label="nextInvoiceDayOfPeriod"
-                                                        type="number"
-                                                        required
-                                                        fullWidth
-                                                        name="nextInvoiceDayOfPeriod"
-                                                        value={values.nextInvoiceDayOfPeriod}
-                                                        onChange={handleChange}
-                                                        onBlur={handleBlur}
-                                                    />
-                                                </Grid>
-
-                                                
-                                                
-
-
-                                                <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
-                                                    <TextField
-                                                        label="currentMonthlyAmount"
-                                                        type="number"
-                                                        required
-                                                        fullWidth
-                                                        name="currentMonthlyAmount"
-                                                        value={values.currentMonthlyAmount}
-                                                        onChange={handleChange}
-                                                        onBlur={handleBlur}
-                                                        InputProps={{
-                                                            inputProps: {
-                                                                inputMode: "numeric",
-                                                            },
-                                                        }}
-                                                    />
-                                                </Grid>
-                                              
-                                                <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
-                                                    <TextField
-
-                                                        label="dynamicBalance"
-                                                        type="number"
-                                                        required
-                                                        fullWidth
-                                                        name="dynamicBalance"
-                                                        value={values.dynamicBalance}
-                                                        onChange={handleChange}
-                                                        onBlur={handleBlur}
-                                                    />
-                                                </Grid>
-                                                <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
-                                                    <FormControl fullWidth >
-                                                        <InputLabel id="demo-simple-select-label">IS Parent ?</InputLabel>
-                                                        <Select
-                                                            labelId="demo-simple-select-label"
-                                                            id="demo-simple-select"
-                                                            value={values.isParent}
-                                                            label="useParentPricing"
-                                                            onChange={handleChange}
-                                                            onBlur={handleBlur}
-                                                            name="isParent"
-                                                        >
-                                                            <MenuItem value={1}>Yes</MenuItem>
-                                                            <MenuItem value={0}>No</MenuItem>
-
-
-                                                        </Select>
-                                                    </FormControl>
-                                                </Grid>
-
-                                                <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
-                                                    <TextField
-
-                                                        label="invoiceChild"
-                                                        type="number"
-                                                        required
-                                                        fullWidth
-                                                        name="invoiceChild"
-                                                        value={values.invoiceChild}
-                                                        onChange={handleChange}
-                                                        onBlur={handleBlur}
-                                                    />
-                                                </Grid>
-
-
-
-
-
-
-
-                                            </Grid>
-                                        )}
-
-                                    </Grid>
-                                    {/* <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
-                                        <TextField
-
-                                            label="Referral Fee Paid"
-                                            type="number"
-                                            required
-                                            fullWidth
-                                            name="referralFeePaid"
-                                            value={values.referralFeePaid}
-                                            onChange={handleChange}
-                                            onBlur={handleBlur}
-                                        />
-                                    </Grid> */}
-
-                                </Grid>
-                            </Grid>
-                        </Grid>
-                    </Grid2>
+                    </Grid>
 
                 </Box>
                 <Box sx={{ paddingBottom: 5 }} >
 
                     <Box sx={{ backgroundColor: '#253A7D' }}>
-                        <Button onClick={togglePaper}>
+                        <Button>
                             <Typography variant="body1" sx={{ marginRight: 1, color: 'white' }}>Contact</Typography>
-                            {showPaper ? < RemoveIcon sx={{ color: 'white' }} /> : <AddIcon sx={{ color: 'white' }} />}
+
                         </Button>
                     </Box>
-                    {showPaper && (
-                        <Paper sx={{ padding: 2, marginTop: 2 }}>
-                            <Grid container spacing={2}>
 
-                                <Grid item xs={3}>
-
+                    <Paper sx={{ padding: 2, marginTop: 2 }}>
+                        <Grid container spacing={2}>
+                            {/* Email Field */}
+                            {[
+                                { label: 'Email', type: 'email', name: 'email', required: true, validate: validateEmail },
+                                { label: 'Organization Name', type: 'text', name: 'organizationName' },
+                                { label: 'Street Address', type: 'text', name: 'streetAddres1' },
+                                { label: 'Postal Code', type: 'text', name: 'postalCode', required: true },
+                                { label: 'First Name', type: 'text', name: 'firstName', required: true },
+                                { label: 'Last Name', type: 'text', name: 'lastName', required: true },
+                                // { label: 'Phone Number', type: 'text', name: 'phonePhoneNumber' },
+                                // { label: 'eKYC Token', type: 'text', name: 'ekycToken', required: true },
+                                { label: 'Alternate Number', type: 'text', name: 'alternateNumber' },
+                            ].map(({ label, type, name, required, validate }, index) => (
+                                <Grid item xs={3} key={index}>
                                     <TextField
-                                        label='email'
-                                        type="email"
-                                        required
+                                        label={label}
+                                        type={type}
                                         fullWidth
-                                        name="email"
-                                        value={values.email}
+                                        name={name}
+                                        required={required}
+                                        value={values[name]}
                                         onChange={handleChange}
                                         onBlur={handleBlur}
+                                        error={touched[name] && !!errors[name]}
+                                        helperText={touched[name] && errors[name]}
+                                        InputLabelProps={{ shrink: true }}
                                     />
                                 </Grid>
+                            ))}
 
-                                <Grid item xs={3}>
+                            {/* Phone Number Validation */}
+                            <Grid item xs={3}>
+                                <TextField
+                                    label="Phone Number"
+                                    type="text"
+                                    fullWidth
+                                    name="phonePhoneNumber"
+                                    required
+                                    value={values.phonePhoneNumber}
+                                    onChange={(e) => {
+                                        if (e.target.value.length <= 10) {
+                                            handleChange(e);
+                                        }
+                                    }}
+                                    onBlur={handleBlur}
+                                    error={touched.phonePhoneNumber && !!errors.phonePhoneNumber}
+                                    helperText={touched.phonePhoneNumber && errors.phonePhoneNumber}
+                                    InputLabelProps={{ shrink: true }}
+                                />
+                            </Grid>
 
-                                    <TextField
-                                        label="organizationName"
-                                        type="text"
-                                        required
-                                        fullWidth
-                                        name="organizationName"
-                                        value={values.organizationName}
-                                        onChange={handleChange}
-                                        onBlur={handleBlur}
-                                    />
-                                </Grid>
+                            {/* eKYC Token Validation */}
+                            <Grid item xs={3}>
+                                <TextField
+                                    label="eKYC Token"
+                                    type="text"
+                                    fullWidth
+                                    name="ekycToken"
+                                    required
+                                    value={values.ekycToken}
+                                    onChange={(e) => {
+                                        if (e.target.value.length <= 10) {
+                                            handleChange(e);
+                                        }
+                                    }}
+                                    onBlur={handleBlur}
+                                    error={touched.ekycToken && !!errors.ekycToken}
+                                    helperText={touched.ekycToken && errors.ekycToken}
+                                    InputLabelProps={{ shrink: true }}
+                                />
+                            </Grid>
 
-                                <Grid item xs={3}>
-
-                                    <TextField
-                                        label='streetAddres1'
-                                        type="text"
-                                        required
-                                        fullWidth
-                                        name="streetAddres1"
-                                        value={values.streetAddres1}
-                                        onChange={handleChange}
-                                        onBlur={handleBlur}
-                                    />
-                                </Grid>
-
-                                <Grid item xs={3}>
-
-                                    <TextField
-                                        label='streetAddres2'
-                                        type="text"
-                                        required
-                                        fullWidth
-                                        name="streetAddres2"
-                                        value={values.streetAddres2}
-                                        onChange={handleChange}
-                                        onBlur={handleBlur}
-                                    />
-                                </Grid>
-
-                                <Grid item xs={3}>
-
-                                    <TextField
-                                        label='city'
-                                        type="text"
-                                        required
-                                        fullWidth
-                                        name="city"
+                            {/* City Dropdown */}
+                            <Grid item xs={3}>
+                                <FormControl fullWidth>
+                                    <InputLabel id="city-label">City</InputLabel>
+                                    <Select
                                         value={values.city}
                                         onChange={handleChange}
+                                        label="City"
                                         onBlur={handleBlur}
-                                    />
-                                </Grid>
-
-                                <Grid item xs={3}>
-
-                                    <TextField
-                                        label='state / Province'
-                                        type="text"
+                                        name="city"
                                         required
-                                        fullWidth
-                                        name="stateProvince"
-                                        value={values.stateProvince}
-                                        onChange={handleChange}
-                                        onBlur={handleBlur}
-                                    />
-                                </Grid>
-
-                                <Grid item xs={3}>
-
-                                    <TextField
-                                        label='postalCode'
-                                        type="text"
-                                        required
-                                        fullWidth
-                                        name="postalCode"
-                                        value={values.postalCode}
-                                        onChange={handleChange}
-                                        onBlur={handleBlur}
-                                    />
-                                </Grid>
-
-                                <Grid item xs={3}>
-
-                                    <TextField
-                                        label='countryCode'
-                                        type="text"
-                                        required
-                                        fullWidth
-                                        name="countryCode"
-                                        value={values.countryCode}
-                                        onChange={handleChange}
-                                        onBlur={handleBlur}
-                                    />
-                                </Grid>
-
-                                <Grid item xs={3}>
-
-                                    <TextField
-                                        label='firstName'
-                                        type="text"
-                                        required
-                                        fullWidth
-                                        name="firstName"
-                                        value={values.firstName}
-                                        onChange={handleChange}
-                                        onBlur={handleBlur}
-                                    />
-                                </Grid>
-
-                                <Grid item xs={3}>
-
-                                    <TextField
-                                        label='lastName'
-                                        type="text"
-                                        required
-                                        fullWidth
-                                        name="lastName"
-                                        value={values.lastName}
-                                        onChange={handleChange}
-                                        onBlur={handleBlur}
-                                    />
-                                </Grid>
-
-                                <Grid item xs={3}>
-
-                                    <TextField
-                                        label='personInitial'
-                                        type="text"
-                                        required
-                                        fullWidth
-                                        name="personInitial"
-                                        value={values.personInitial}
-                                        onChange={handleChange}
-                                        onBlur={handleBlur}
-                                    />
-                                </Grid>
-
-                                <Grid item xs={3}>
-
-                                    <FormControl fullWidth >
-                                        <InputLabel id="demo-simple-select-label">Person Title</InputLabel>
-                                        <Select
-                                            labelId="demo-simple-select-label"
-                                            id="demo-simple-select"
-                                            value={values.personTitle}
-                                            label="Person Title"
-                                            onChange={handleChange}
-                                            onBlur={handleBlur}
-                                            name="personTitle"
-                                            required
-
-                                        >
-                                            <MenuItem value={'Mr'}>Mr.</MenuItem>
-                                            <MenuItem value={'Ms'}>Ms.</MenuItem>
-                                            <MenuItem value={'Miss'}>Miss.</MenuItem>
-
-                                            <MenuItem value={'Mrs'}>Mrs.</MenuItem>
-
-
-                                        </Select>
-                                    </FormControl>
-                                </Grid>
-
-                                <Grid item xs={3}>
-
-                                    <TextField
-                                        label='phoneCountryCode'
-                                        type="number"
-                                        required
-                                        fullWidth
-                                        name="phoneCountryCode"
-                                        value={values.phoneCountryCode}
-                                        onChange={handleChange}
-                                        onBlur={handleBlur}
-                                    />
-                                </Grid>
-
-                                <Grid item xs={3}>
-
-                                    <TextField
-                                        label='phoneAreaCode'
-                                        type="number"
-                                        required
-                                        fullWidth
-                                        name="phoneAreaCode"
-                                        value={values.phoneAreaCode}
-                                        onChange={handleChange}
-                                        onBlur={handleBlur}
-                                    />
-                                </Grid>
-
-                                <Grid item xs={3}>
-
-                                    <TextField
-                                        label='phonePhoneNumber'
-                                        type="text"
-                                        required
-                                        fullWidth
-                                        name="phonePhoneNumber"
-                                        value={values.phonePhoneNumber}
-                                        onChange={handleChange}
-                                        onBlur={handleBlur}
-                                    />
-                                </Grid>
-
-                                <Grid item xs={3}>
-
-                                    <TextField
-                                        label='faxCountryCode'
-                                        type="number"
-                                        required
-                                        fullWidth
-                                        name="faxCountryCode"
-                                        value={values.faxCountryCode}
-                                        onChange={handleChange}
-                                        onBlur={handleBlur}
-                                    />
-                                </Grid>
-
-                                <Grid item xs={3}>
-
-                                    <TextField
-                                        label='faxAreaCode'
-                                        type="number"
-                                        required
-                                        fullWidth
-                                        name="faxAreaCode"
-                                        value={values.faxAreaCode}
-                                        onChange={handleChange}
-                                        onBlur={handleBlur}
-                                    />
-                                </Grid>
-
-                                <Grid item xs={3}>
-
-                                    <TextField
-                                        label='faxPhoneNumber'
-                                        type="text"
-                                        required
-                                        fullWidth
-                                        name="faxPhoneNumber"
-                                        value={values.faxPhoneNumber}
-                                        onChange={handleChange}
-                                        onBlur={handleBlur}
-                                    />
-                                </Grid>
-                                <Grid item xs={3}>
-                                    <FormControl fullWidth >
-                                        <InputLabel id="demo-simple-select-label">Deleted ?</InputLabel>
-                                        <Select
-                                            labelId="demo-simple-select-label"
-                                            id="demo-simple-select"
-                                            value={values.deleted}
-                                            label="Deleted ?"
-                                            onChange={handleChange}
-                                            onBlur={handleBlur}
-                                            name="deleted"
-                                            required
-
-                                        >
-                                            <MenuItem value={1}>Yes</MenuItem>
-                                            <MenuItem value={0}>No</MenuItem>
-
-                                        </Select>
-                                    </FormControl>
-                                </Grid>
-                                <Grid item xs={3}>
-
-                                    <TextField
-                                        label='notificationInclude'
-                                        type="number"
-                                        required
-                                        fullWidth
-                                        name="notificationInclude"
-                                        value={values.notificationInclude}
-                                        onChange={handleChange}
-                                        onBlur={handleBlur}
-                                    />
-                                </Grid>
-                                {/* <Grid item xs={3}>
-
-                                    <TextField
-                                        label='customerType'
-                                        type="text"
-                                        required
-                                        fullWidth
-                                        name="customerType"
-                                        value={values.customerType}
-                                        onChange={handleChange}
-                                        onBlur={handleBlur}
-                                    />
-                                </Grid> */}
-                                <Grid item xs={3}>
-
-                                    <FormControl fullWidth >
-                                        <InputLabel id="demo-simple-select-label">gender</InputLabel>
-                                        <Select
-                                            labelId="demo-simple-select-label"
-                                            id="demo-simple-select"
-                                            value={values.gender}
-                                            label="useParentPricing"
-                                            onChange={handleChange}
-                                            onBlur={handleBlur}
-                                            name="gender"
-                                            required
-                                        >
-                                            <MenuItem value={'M'}>Male</MenuItem>
-                                            <MenuItem value={'F'}>Female</MenuItem>
-                                            <MenuItem value={'o'}>Others</MenuItem>
-                                        </Select>
-                                    </FormControl>
-                                </Grid>
-                                {/* <Grid item xs={3}>
-
-                                    <TextField
-                                        label='Ekyc Status'
-                                        type="text"
-                                        required
-                                        fullWidth
-
-                                        name="ekycStatus"
-                                        value={values.ekycStatus}
-                                        onChange={handleChange}
-                                        onBlur={handleBlur}
-                                    />
-                                </Grid> */}
-                                <Grid item xs={3}>
-
-                                    <TextField
-                                        label='ekycToken'
-                                        type="text"
-                                        required
-                                        fullWidth
-                                        aria-readonly
-                                        name="ekycToken"
-                                        value={values.ekycToken}
-                                        onChange={handleChange}
-                                        onBlur={handleBlur}
-                                    />
-                                </Grid>
-                                <Grid item xs={3}>
-
-                                    <TextField
-                                        label='alternateNumber'
-                                        type="text"
-                                        required
-                                        fullWidth
-                                        name="alternateNumber"
-                                        value={values.alternateNumber}
-                                        onChange={handleChange}
-                                        onBlur={handleBlur}
-                                    />
-                                </Grid>
-                                <Grid item xs={3}>
-
-                                    <TextField
-                                        label='landlineNumber'
-                                        type="text"
-                                        required
-                                        fullWidth
-                                        name="landlineNumber"
-                                        value={values.landlineNumber}
-                                        onChange={handleChange}
-                                        onBlur={handleBlur}
-                                    />
-                                </Grid>
-                                <Grid item xs={3}>
-
-                                    <TextField
-                                        label='vatId'
-                                        type="text"
-                                        required
-                                        fullWidth
-                                        name="vatId"
-                                        value={values.vatId}
-                                        onChange={handleChange}
-                                        onBlur={handleBlur}
-                                    />
-                                </Grid>
-                                <Grid item xs={3}>
-
-                                    <TextField
-                                        label='profession'
-                                        type="text"
-                                        required
-                                        fullWidth
-                                        name="profession"
-                                        value={values.profession}
-                                        onChange={handleChange}
-                                        onBlur={handleBlur}
-                                    />
-                                </Grid>
-
-                                <Grid item xs={3} >
-
-                                    <FormControl fullWidth >
-                                        <InputLabel id="demo-simple-select-label">Maritial Status</InputLabel>
-                                        <Select
-                                            labelId="demo-simple-select-label"
-                                            id="demo-simple-select"
-                                            value={values.maritalStatus}
-                                            label="maritalStatus"
-                                            onChange={handleChange}
-                                            onBlur={handleBlur}
-                                            name="maritalStatus"
-                                            required
-
-                                        >
-                                            <MenuItem value={'Married'}>Married</MenuItem>
-                                            <MenuItem value={'Un Married'}>Un Married</MenuItem>
-
-                                        </Select>
-                                    </FormControl>
-                                </Grid>
-                                <Grid item xs={3}>
-
-                                    <TextField
-                                        type="date"
-                                        required
-                                        fullWidth
-                                        name="dateOfBirth"
-                                        label="Date of Birth"
-                                        value={values.dateOfBirth}
-                                        onChange={handleChange}
-                                        onBlur={handleBlur}
-                                        InputLabelProps={{
-                                            shrink: true, // Keeps the label open above the TextField
-                                        }}
-                                    />
-                                </Grid>
-
+                                        error={touched.city && !!errors.city}
+                                    >
+                                        {[
+                                            "Aiwo", "Anabar", "Anetan", "Anibare", "Baitsi",
+                                            "Boe", "Buada", "Denigomodu", "Ewa", "Ijuw",
+                                            "Meneng", "Nibok", "Uaboe", "Yaren"
+                                        ].map((cityOption, index) => (
+                                            <MenuItem key={index} value={cityOption}>
+                                                {cityOption}
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                                    {touched.city && errors.city && <FormHelperText error>{errors.city}</FormHelperText>}
+                                </FormControl>
                             </Grid>
-                        </Paper>
 
-                    )}
+                            {/* Dropdown for Gender */}
+                            <Grid item xs={3}>
+                                <FormControl fullWidth>
+                                    <InputLabel id="gender-label">Gender</InputLabel>
+                                    <Select
+                                        labelId="gender-label"
+                                        value={values.gender}
+                                        onChange={handleChange}
+                                        onBlur={handleBlur}
+                                        name="gender"
+                                        error={touched.gender && !!errors.gender}
+                                    >
+                                        <MenuItem value="M">Male</MenuItem>
+                                        <MenuItem value="F">Female</MenuItem>
+                                    </Select>
+                                </FormControl>
+                            </Grid>
+
+                            {/* Dropdown for Marital Status */}
+                            <Grid item xs={3}>
+                                <FormControl fullWidth>
+                                    <InputLabel id="marital-status-label">Marital Status</InputLabel>
+                                    <Select
+                                        labelId="marital-status-label"
+                                        value={values.maritalStatus}
+                                        onChange={handleChange}
+                                        onBlur={handleBlur}
+                                        name="maritalStatus"
+                                    >
+                                        <MenuItem value="Married">Married</MenuItem>
+                                        <MenuItem value="Un Married">Un Married</MenuItem>
+                                    </Select>
+                                </FormControl>
+                            </Grid>
+
+                            {/* Date Picker */}
+                            <Grid item xs={3}>
+                                <TextField
+                                    type="date"
+                                    required
+                                    fullWidth
+                                    name="dateOfBirth"
+                                    label="Date of Birth"
+                                    value={values.dateOfBirth}
+                                    onChange={handleChange}
+                                    onBlur={handleBlur}
+                                    error={touched.dateOfBirth && !!errors.dateOfBirth}
+                                    helperText={touched.dateOfBirth && errors.dateOfBirth}
+                                    InputLabelProps={{ shrink: true }}
+                                />
+                            </Grid>
+                        </Grid>
+
+
+                    </Paper>
+
+
+
                 </Box>
 
-                <Grid sx={{ paddingBottom: 5 }}>
-                    {/* <Box sx={{ backgroundColor: '#253A7D' }}>
-                        <Button onClick={togglePaperPayment}>
-                            <Typography variant="body1" sx={{ marginRight: 1, color: 'white' }}>Payment Method</Typography>
-                            {showPaperPayment ? < RemoveIcon sx={{ color: 'white' }} /> : <AddIcon sx={{ color: 'white' }} />}
-                        </Button>
-                    </Box> */}
-                    {showPaperPayment && (
-                        <Paper elevation={10} sx={{ padding: 2, marginTop: 2 }}>
-                            <Grid container spacing={2}>
-                                {/* Left side (40% of the screen) */}
-                                <Grid item lg={5} md={5} sm={12} xs={12} paddingBottom={2} sx={{ marginRight: 2 }}>
-                                    <Grid container spacing={2}>
-                                        <Grid item lg={12} md={12} sm={12} xs={12} paddingBottom={2}>
-                                            <FormControl fullWidth>
-                                                <InputLabel id="demo-simple-select-label">Billing Cycle Unit</InputLabel>
-                                                <Select
-                                                    labelId="demo-simple-select-label"
-                                                    id="demo-simple-select"
-                                                    label="Billing Cycle Unit"
-                                                    value={billingCycle}
-                                                    onChange={e => setBillingCycle(e.target.value)}
 
-                                                >
-                                                    {console.log(billingCycle, 'value of Billing cycle ')}
-                                                    <MenuItem value={'---'}> -- </MenuItem>
-                                                    <MenuItem value={'payment_gate_way'}>Payment Gate Way</MenuItem>
-                                                    <MenuItem value={'Credit Card'}>Credit Card</MenuItem>
-                                                    <MenuItem value={'cash'}>Cash</MenuItem>
-                                                </Select>
-                                            </FormControl>
-                                        </Grid>
-                                        <Grid item lg={12} md={12} sm={12} xs={12} paddingBottom={2}>
-                                            <TextField
-                                                type="text"
-
-                                                fullWidth
-                                                name="description"
-                                                label='Processing Order'
-                                            />
-                                        </Grid>
-                                    </Grid>
-                                </Grid>
-                                {/* Right side (50% of the screen) */}
-                                <Grid item lg={6} md={6} sm={12} xs={12} paddingBottom={2}>
-                                    {billingCycle == 'Credit Card' && (
-                                        <form onSubmit={handleSubmit2}>
-                                            <Grid item lg={12} md={7} sm={12} xs={12} paddingBottom={2} sx={{ justifyContent: 'flex-end', display: 'flex', flexDirection: 'column' }}>
-                                                <Grid container spacing={2}>
-                                                    <Grid item xs={6}>
-                                                        <TextField
-
-                                                            label="userId"
-                                                            type="number"
-                                                            value={values2.userId}
-                                                            fullWidth
-                                                            name='userId'
-                                                            required
-                                                            disabled
-                                                            onChange={handleChange2}
-                                                            onBlur={handleBlur2}
-                                                        />
-                                                    </Grid>
-                                                    <Grid item xs={6}>
-                                                        <TextField
-
-                                                            label="customerId"
-                                                            type="number"
-                                                            value={values2.customerId}
-                                                            fullWidth
-                                                            name='customerId'
-                                                            required
-                                                            disabled
-                                                            onChange={handleChange2}
-                                                            onBlur={handleBlur2}
-                                                        />
-                                                    </Grid>
-
-                                                    <Grid item xs={6}>
-                                                        <TextField
-                                                            label='attempt'
-                                                            type='number'
-                                                            value={values2.attempt}
-                                                            name='attempt'
-                                                            required
-                                                            fullWidth
-                                                            onChange={handleChange2}
-                                                            onBlur={handleBlur2}
-
-                                                        />
-                                                    </Grid>
-                                                    <Grid item xs={6}>
-                                                        <TextField
-                                                            label='Amount'
-                                                            type='number'
-                                                            value={values2.amount}
-                                                            name='amount'
-                                                            required
-                                                            fullWidth
-                                                            onChange={handleChange2}
-                                                            onBlur={handleBlur2}
-
-                                                        />
-                                                    </Grid>
-
-                                                    <Grid item xs={6}>
-                                                        <FormControl fullWidth>
-                                                            <InputLabel id="demo-simple-select-label">Delete</InputLabel>
-                                                            <Select
-                                                                labelId="demo-simple-select-label"
-                                                                id="demo-simple-select"
-                                                                label="Delete"
-                                                                value={values2.deleted}
-                                                                onChange={handleChange2}
-                                                                name='deleted'
-                                                            >
-
-                                                                <MenuItem value={1}>Yes</MenuItem>
-                                                                <MenuItem value={0}>No</MenuItem>
-
-                                                            </Select>
-                                                        </FormControl>
-                                                    </Grid>
-                                                    <Grid item xs={6}>
-                                                        <FormControl fullWidth>
-                                                            <InputLabel id="demo-simple-select-label">Is Refund</InputLabel>
-                                                            <Select
-                                                                labelId="demo-simple-select-label"
-                                                                id="demo-simple-select"
-                                                                label="Is Refund"
-                                                                value={values2.isRefund}
-                                                                onChange={handleChange2}
-                                                                name='isRefund'
-                                                            >
-
-                                                                <MenuItem value={1}>Yes</MenuItem>
-                                                                <MenuItem value={0}>No</MenuItem>
-
-                                                            </Select>
-                                                        </FormControl>
-                                                    </Grid>
-                                                    <Grid item xs={6}>
-                                                        <FormControl fullWidth>
-                                                            <InputLabel id="demo-simple-select-label">isPreauth</InputLabel>
-                                                            <Select
-                                                                labelId="demo-simple-select-label"
-                                                                id="demo-simple-select"
-                                                                label="isPreauth"
-                                                                value={values2.isPreauth}
-                                                                onChange={handleChange2}
-                                                                name='isPreauth'
-                                                            >
-
-                                                                <MenuItem value={1}>Yes</MenuItem>
-                                                                <MenuItem value={0}>No</MenuItem>
-
-                                                            </Select>
-                                                        </FormControl>
-                                                    </Grid>
-                                                    <Grid item xs={6}>
-                                                        <FormControl fullWidth>
-                                                            <InputLabel id="demo-simple-select-label">Product</InputLabel>
-                                                            <Select
-                                                                labelId="demo-simple-select-label"
-                                                                id="demo-simple-select"
-                                                                label="product"
-                                                                value={values2.product}
-                                                                onChange={handleChange2}
-                                                                name='product'
-                                                            >
-
-                                                                <MenuItem value={"sim"}>SIM</MenuItem>
-                                                                <MenuItem value={"device"}>Device</MenuItem>
-                                                                <MenuItem value={"sim,device"}>Both</MenuItem>
-                                                            </Select>
-                                                        </FormControl>
-                                                    </Grid>
-                                                    <Grid item xs={6}>
-                                                        <TextField label='payout ID'
-                                                            type='number'
-                                                            fullWidth
-                                                            value={values2.payoutId}
-                                                            name='payoutId'
-                                                            required
-                                                            onChange={handleChange2}
-                                                            onBlur={handleBlur2}
-
-                                                        />
-                                                    </Grid>
-                                                    <Grid item xs={6}>
-                                                        <TextField label='balance'
-                                                            type='number'
-                                                            value={values2.balance}
-                                                            name='balance'
-                                                            required
-                                                            fullWidth
-                                                            onChange={handleChange2}
-                                                            onBlur={handleBlur2}
-                                                        />
-                                                    </Grid>
-                                                    <Grid item xs={6}>
-                                                        <TextField label='payment pariod'
-                                                            type='number'
-                                                            value={values2.paymentPeriod}
-                                                            name='paymentPeriod'
-                                                            required
-                                                            fullWidth
-                                                            onChange={handleChange2}
-                                                            onBlur={handleBlur2}
-                                                        />
-                                                    </Grid>
-                                                    <Grid item xs={6}>
-                                                        <FormControl fullWidth>
-                                                            <InputLabel id="demo-simple-select-label">Payment Status</InputLabel>
-                                                            <Select
-                                                                labelId="demo-simple-select-label"
-                                                                id="demo-simple-select"
-                                                                label="paymentStatus"
-                                                                value={values2.paymentStatus}
-                                                                onChange={handleChange2}
-                                                                name='paymentStatus'
-                                                            >
-
-                                                                <MenuItem value={1}>Yes</MenuItem>
-                                                                <MenuItem value={0}>No</MenuItem>
-
-                                                            </Select>
-                                                        </FormControl>
-                                                    </Grid>
-                                                    <Grid item xs={12}>
-                                                        <TextField label='Payment Notes'
-                                                            fullWidth
-                                                            type='text'
-                                                            value={values2.paymentNotes}
-                                                            name='paymentNotes'
-                                                            rows={4}
-                                                            required
-                                                            onChange={handleChange2}
-                                                            onBlur={handleBlur2}
-                                                        />
-                                                    </Grid>
-
-
-                                                </Grid>
-                                            </Grid>
-                                        </form>
-
-                                    )}
-                                    {billingCycle == 'cash' && (
-                                        <form onSubmit={handleSubmit2}>
-                                            <Grid item lg={12} md={7} sm={12} xs={12} paddingBottom={2} sx={{ justifyContent: 'flex-end', display: 'flex', flexDirection: 'column' }}>
-                                                <Grid container spacing={2}>
-                                                    <Grid item xs={6}>
-                                                        <TextField
-
-                                                            label="userId"
-                                                            type="number"
-                                                            value={values2.userId}
-                                                            fullWidth
-                                                            name='userId'
-                                                            required
-                                                            disabled
-                                                            onChange={handleChange2}
-                                                            onBlur={handleBlur2}
-                                                        />
-                                                    </Grid>
-                                                    <Grid item xs={6}>
-                                                        <TextField
-
-                                                            label="customerId"
-                                                            type="number"
-                                                            value={values2.customerId}
-                                                            fullWidth
-                                                            name='customerId'
-                                                            required
-                                                            disabled
-                                                            onChange={handleChange2}
-                                                            onBlur={handleBlur2}
-                                                        />
-                                                    </Grid>
-
-                                                    <Grid item xs={6}>
-                                                        <TextField
-                                                            label='attempt'
-                                                            type='number'
-                                                            value={values2.attempt}
-                                                            name='attempt'
-                                                            required
-                                                            fullWidth
-                                                            onChange={handleChange2}
-                                                            onBlur={handleBlur2}
-
-                                                        />
-                                                    </Grid>
-                                                    <Grid item xs={6}>
-                                                        <TextField
-                                                            label='Amount'
-                                                            type='number'
-                                                            value={values2.amount}
-                                                            name='amount'
-                                                            required
-                                                            fullWidth
-                                                            onChange={handleChange2}
-                                                            onBlur={handleBlur2}
-
-                                                        />
-                                                    </Grid>
-
-                                                    <Grid item xs={6}>
-                                                        <FormControl fullWidth>
-                                                            <InputLabel id="demo-simple-select-label">Delete</InputLabel>
-                                                            <Select
-                                                                labelId="demo-simple-select-label"
-                                                                id="demo-simple-select"
-                                                                label="Delete"
-                                                                value={values2.deleted}
-                                                                onChange={handleChange2}
-                                                                name='deleted'
-                                                            >
-
-                                                                <MenuItem value={1}>Yes</MenuItem>
-                                                                <MenuItem value={0}>No</MenuItem>
-
-                                                            </Select>
-                                                        </FormControl>
-                                                    </Grid>
-                                                    <Grid item xs={6}>
-                                                        <FormControl fullWidth>
-                                                            <InputLabel id="demo-simple-select-label">Is Refund</InputLabel>
-                                                            <Select
-                                                                labelId="demo-simple-select-label"
-                                                                id="demo-simple-select"
-                                                                label="Is Refund"
-                                                                value={values2.isRefund}
-                                                                onChange={handleChange2}
-                                                                name='isRefund'
-                                                            >
-
-                                                                <MenuItem value={1}>Yes</MenuItem>
-                                                                <MenuItem value={0}>No</MenuItem>
-
-                                                            </Select>
-                                                        </FormControl>
-                                                    </Grid>
-                                                    <Grid item xs={6}>
-                                                        <FormControl fullWidth>
-                                                            <InputLabel id="demo-simple-select-label">isPreauth</InputLabel>
-                                                            <Select
-                                                                labelId="demo-simple-select-label"
-                                                                id="demo-simple-select"
-                                                                label="isPreauth"
-                                                                value={values2.isPreauth}
-                                                                onChange={handleChange2}
-                                                                name='isPreauth'
-                                                            >
-
-                                                                <MenuItem value={1}>Yes</MenuItem>
-                                                                <MenuItem value={0}>No</MenuItem>
-
-                                                            </Select>
-                                                        </FormControl>
-                                                    </Grid>
-                                                    <Grid item xs={6}>
-                                                        <FormControl fullWidth>
-                                                            <InputLabel id="demo-simple-select-label">Product</InputLabel>
-                                                            <Select
-                                                                labelId="demo-simple-select-label"
-                                                                id="demo-simple-select"
-                                                                label="product"
-                                                                value={values2.product}
-                                                                onChange={handleChange2}
-                                                                name='product'
-                                                            >
-
-                                                                <MenuItem value={"sim"}>SIM</MenuItem>
-                                                                <MenuItem value={"device"}>Device</MenuItem>
-                                                                <MenuItem value={"sim,device"}>Both</MenuItem>
-                                                            </Select>
-                                                        </FormControl>
-                                                    </Grid>
-                                                    <Grid item xs={6}>
-                                                        <TextField label='payout ID'
-                                                            type='number'
-                                                            fullWidth
-                                                            value={values2.payoutId}
-                                                            name='payoutId'
-                                                            required
-                                                            onChange={handleChange2}
-                                                            onBlur={handleBlur2}
-
-                                                        />
-                                                    </Grid>
-                                                    <Grid item xs={6}>
-                                                        <TextField label='balance'
-                                                            type='number'
-                                                            value={values2.balance}
-                                                            name='balance'
-                                                            required
-                                                            fullWidth
-                                                            onChange={handleChange2}
-                                                            onBlur={handleBlur2}
-                                                        />
-                                                    </Grid>
-                                                    <Grid item xs={6}>
-                                                        <TextField label='payment pariod'
-                                                            type='number'
-                                                            value={values2.paymentPeriod}
-                                                            name='paymentPeriod'
-                                                            required
-                                                            fullWidth
-                                                            onChange={handleChange2}
-                                                            onBlur={handleBlur2}
-                                                        />
-                                                    </Grid>
-                                                    <Grid item xs={6}>
-                                                        <FormControl fullWidth>
-                                                            <InputLabel id="demo-simple-select-label">Payment Status</InputLabel>
-                                                            <Select
-                                                                labelId="demo-simple-select-label"
-                                                                id="demo-simple-select"
-                                                                label="paymentStatus"
-                                                                value={values2.paymentStatus}
-                                                                onChange={handleChange2}
-                                                                name='paymentStatus'
-                                                            >
-
-                                                                <MenuItem value={1}>Yes</MenuItem>
-                                                                <MenuItem value={0}>No</MenuItem>
-
-                                                            </Select>
-                                                        </FormControl>
-                                                    </Grid>
-                                                    <Grid item xs={12}>
-                                                        <TextField label='Payment Notes'
-                                                            fullWidth
-                                                            type='text'
-                                                            value={values2.paymentNotes}
-                                                            name='paymentNotes'
-                                                            rows={4}
-                                                            required
-                                                            onChange={handleChange2}
-                                                            onBlur={handleBlur2}
-                                                        />
-                                                    </Grid>
-
-
-                                                </Grid>
-                                            </Grid>
-                                        </form>
-
-                                    )}
-                                </Grid>
-                            </Grid>
-                        </Paper>
-                    )}
-                </Grid>
 
 
             </Paper>

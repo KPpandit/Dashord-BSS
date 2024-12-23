@@ -21,7 +21,7 @@ export default function PrepaidDeActivatedPlan() {
 
     useEffect(() => {
         // Fetch category names and associated plans from the API in a single effect
-        fetch('https://bssproxy01.neotel.nr/abmf-prepaid/api/prepaid/packs?pack_status=Rejected')
+        fetch('https://bssproxy01.neotel.nr/abmf-prepaid-s/api/prepaid/packs?pack_status=Rejected')
             .then(response => response.json())
             .then(data => {
                 // Extract unique category names from the data
@@ -197,7 +197,7 @@ export default function PrepaidDeActivatedPlan() {
                                                                     <Grid container spacing={2}>
                                                                         <Grid item xs={12}>
                                                                             <Typography>
-                                                                                AUD$ {plan.price}
+                                                                                AUD$ {plan.pack_price}
                                                                             </Typography>
                                                                         </Grid>
                                                                         <Grid item xs={12}>

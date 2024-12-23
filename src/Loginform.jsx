@@ -209,7 +209,7 @@ export default function Loginform({ children }) {
                       autoFocus
                       margin="dense"
                       id="forgotPasswordEmail"
-                      label="Login Id"
+                      label="Enter Registered Email"
                       type="email"
                       fullWidth
                       variant="standard"

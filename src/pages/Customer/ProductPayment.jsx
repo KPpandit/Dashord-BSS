@@ -81,12 +81,12 @@ export default function ProductPayment() {
   // Handle Cash Payment
   const handleCashPayment = async () => {
     setLoading(true);
-
-    if (!tokenValue || !invoiceData?.invoiceId || !invoiceData?.totalAmount) {
-      showNotification("Required data is missing. Please try again.", "error");
-      setLoading(false);
-      return;
-    }
+    console.log(invoiceData?.invoiceId,'-------->',invoiceData?.totalAmount);
+    // if (!tokenValue || !invoiceData?.invoiceId || !invoiceData?.totalAmount) {
+    //   showNotification("Required data is missing. Please try again.", "error");
+    //   setLoading(false);
+    //   return;
+    // }
 
     try {
       const paymentPayload = {

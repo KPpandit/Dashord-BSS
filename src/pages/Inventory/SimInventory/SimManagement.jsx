@@ -12,9 +12,9 @@ const Sim_manage = (props) => {
         { id: 'msisdn', name: 'Msisdn' },
         { id: 'imsi', name: 'IMSI' },
         { id: 'category', name: 'Category' },
-        {id:'partnerId',name:'Agent ID'},
+        { id: 'partnerId', name: 'Agent ID' },
         { id: 'specialNumber', name: 'Special Number' },
-        { id: 'activationDate', name: 'Activation Date' },
+        // { id: 'activationDate', name: 'Activation Date' },
         { id: 'simType', name: 'Sim Type' },
         { id: 'sellingPriceUsd', name: 'Selling Price' },
     ];
@@ -134,263 +134,91 @@ const Sim_manage = (props) => {
     };
 
     const SelectedRecordDetails = () => {
+        if (!selectedRecord) return <></>;
 
-
-        if (selectedRecord) {
-            return (
-                <Grid>
-                    <Paper elevation={10}>
-
-
-                        <Card variant="outlined" sx={{ maxWidth: 360, fontFamily: "Roboto" }}>
-
-                            <Box sx={{ p: 1, }}>
-
-                                <Grid sx={{ padding: 1, backgroundColor: '#253A7D' }}>
-                                    <Stack direction="row"
-                                        sx={{ borderRadius: '30%', }}
-                                        justifyContent="space-between" alignItems="center">
-                                        <Typography
-                                            style={{
-                                                fontSize: '17px',
-
-                                                color: 'white',
-                                                marginBottom: '2px',
-
-                                                // Add this line for circular border
-                                                backgroundColor: '#253A7D',  // Add this line for background color
-                                                padding: '2px',  // Add this line for padding
-                                                display: 'inline-block',
-
-                                            }}
-                                            gutterBottom component="div">
-                                            {selectedRecord.msisdn}
-                                        </Typography>
-
-                                    </Stack>
-                                </Grid>
-
-                            </Box>
-                            <Grid container>
-                                <Grid item xs={12} paddingLeft={1}>
-                                    <Divider light />
-                                    <Box sx={{ p: 1 }}>
-                                        <Grid container>
-                                            <Grid item xs={3}>
-                                                <Typography sx={{ fontWeight: '480', fontSize: '17px', textAlign: 'left' }}>  IMSI :</Typography>
-                                            </Grid>
-                                            <Grid item xs={7} alignItems={'left'} sx={{ marginLeft: 0 }} >
-                                                <Typography
-                                                    sx={{ fontSize: '17px', textAlign: 'left' }}
-                                                    gutterBottom variant="body2">
-                                                    {selectedRecord.imsi}
-                                                </Typography>
-                                            </Grid>
-                                        </Grid>
-
-                                    </Box>
-                                    <Divider />
-                                    <Box sx={{ p: 1 }}>
-                                        <Grid container>
-                                            <Grid item xs={4}>
-                                                <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
-                                                    Category :
-                                                </Typography>
-                                            </Grid>
-                                            <Grid item xs={7} alignItems={'left'} sx={{ marginLeft: 0 }} >
-                                                <Typography
-                                                    sx={{ fontSize: '17px', textAlign: 'left' }}
-                                                    gutterBottom variant="body2">
-                                                    {selectedRecord.category}
-                                                </Typography>
-                                            </Grid>
-                                        </Grid>
-                                    </Box>
-                                    <Divider light />
-                                    <Box sx={{ p: 1 }}>
-                                        <Grid container>
-                                            <Grid item xs={4}>
-                                                <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
-                                                    P-IMSI :
-                                                </Typography>
-                                            </Grid>
-                                            <Grid item xs={7} alignItems={'left'} sx={{ marginLeft: 0 }} >
-                                                <Typography
-                                                    sx={{ fontSize: '17px', textAlign: 'left' }}
-                                                    gutterBottom variant="body2">
-                                                    {selectedRecord.pimsi}
-                                                </Typography>
-                                            </Grid>
-                                        </Grid>
-                                    </Box>
-                                    <Divider light />
-                                    <Box sx={{ p: 1 }}>
-                                        <Grid container>
-                                            <Grid item xs={5}>
-                                                <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
-                                                    Batch Date :
-                                                </Typography>
-                                            </Grid>
-                                            <Grid item xs={6} alignItems={'left'} sx={{ marginLeft: 0 }} >
-                                                <Typography
-                                                    sx={{ fontSize: '17px', textAlign: 'left' }}
-                                                    gutterBottom variant="body2">
-                                                    {selectedRecord.batchDate}
-                                                </Typography>
-                                            </Grid>
-                                        </Grid>
-                                    </Box>
-                                    <Divider light />
-                                    <Box sx={{ p: 1 }}>
-                                        <Grid container>
-                                            <Grid item xs={4}>
-                                                <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
-                                                    Vendor Id :
-                                                </Typography>
-                                            </Grid>
-                                            <Grid item xs={7} alignItems={'left'} sx={{ marginLeft: 0 }} >
-                                                <Typography
-                                                    sx={{ fontSize: '17px', textAlign: 'left' }}
-                                                    gutterBottom variant="body2">
-                                                    {selectedRecord.vendorId}
-                                                </Typography>
-                                            </Grid>
-                                        </Grid>
-                                    </Box>
-                                    <Divider light />
-
-                                    <Box sx={{ p: 1 }}>
-                                        <Grid container>
-                                            <Grid item xs={6}>
-                                                <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
-                                                    Vendor Name :
-                                                </Typography>
-                                            </Grid>
-                                            <Grid item xs={6} alignItems={'left'} sx={{ marginLeft: 0 }}>
-                                                <Typography
-                                                    sx={{ fontSize: '17px', textAlign: 'left' }}
-                                                    gutterBottom variant="body2">
-                                                    {selectedRecord.vendorName}
-                                                </Typography>
-                                            </Grid>
-                                        </Grid>
-                                    </Box>
-                                    <Divider light />
-
-
-
-                                    <Box sx={{ p: 1 }}>
-                                        <Grid container>
-                                            <Grid item xs={5}>
-                                                <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
-                                                    Buying Price :
-                                                </Typography>
-                                            </Grid>
-                                            <Grid item xs={7} alignItems={'left'} sx={{ marginLeft: 0 }} >
-                                                <Typography
-                                                    sx={{ fontSize: '17px', textAlign: 'left' }}
-                                                    gutterBottom variant="body2"
-                                                >
-
-                                                    {String(selectedRecord.buyingPriceUsd)}
-                                                </Typography>
-                                            </Grid>
-                                        </Grid>
-                                    </Box>
-                                    <Divider light />
-
-                                    <Box sx={{ p: 1 }}>
-                                        <Grid container>
-                                            <Grid item xs={5}>
-                                                <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
-                                                    Auth ID :
-                                                </Typography>
-                                            </Grid>
-                                            <Grid item xs={7} alignItems={'left'} sx={{ marginLeft: 0 }} >
-                                                <Typography
-                                                    sx={{ fontSize: '17px', textAlign: 'left' }}
-                                                    gutterBottom variant="body2">
-                                                    {String(selectedRecord.auth_id)}
-                                                </Typography>
-                                            </Grid>
-                                        </Grid>
-                                    </Box>
-                                    <Divider light />
-
-                                    <Box sx={{ p: 1 }}>
-                                        <Grid container>
-                                            <Grid item xs={6}>
-                                                <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
-                                                    Allocation Date :
-                                                </Typography>
-                                            </Grid>
-                                            <Grid item xs={6} alignItems={'left'} sx={{ marginLeft: 0 }} >
-                                                <Typography
-                                                    sx={{ fontSize: '17px', textAlign: 'left' }}
-                                                    gutterBottom variant="body2">
-                                                    {selectedRecord.allocationDate}
-                                                </Typography>
-                                            </Grid>
-                                        </Grid>
-                                    </Box>
-                                    <Divider light />
-                                    <Box sx={{ p: 1 }}>
-                                        <Grid container>
-                                            <Grid item xs={6}>
-                                                <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
-                                                    Other taxes :
-                                                </Typography>
-                                            </Grid>
-                                            <Grid item xs={6} alignItems={'left'} >
-                                                <Typography
-                                                    sx={{ fontSize: '17px', textAlign: 'left' }}
-                                                    gutterBottom variant="body2">
-                                                    {selectedRecord.otherTaxes}
-                                                </Typography>
-                                            </Grid>
-                                        </Grid>
-                                    </Box>
-                                    <Divider light />
-
-                                </Grid>
-
-
-                            </Grid>
-
-                            <Grid container spacing={1} padding={1}>
-                                <Grid item xs={12}>
-                                    <Button variant="contained"
-                                        sx={{ backgroundColor: '#253A7D', width: '100%', boxShadow: 20 }}
-                                        onClick={() => {
-                                            navigate('/editSim', { state: { selectObj: selectedRecord } })
-                                        }}
-                                    >Edit Record</Button>
-                                </Grid>
-                                <Grid item xs={12}>
-                                    <Button
-                                        onClick={() => {
-                                            handleOpenConfirmationDialog(selectedRecord.imsi, selectedRecord.msisdn)
-                                            console.log("From teh Customer Delete Button")
-                                        }}
-                                        sx={{ backgroundColor: '#253A7D', width: '100%', boxShadow: 20, marginY: 1 }}
-                                        variant="contained">Delete Record</Button>
-                                </Grid>
-
-
-
-
-                            </Grid>
-                        </Card>
-
-                    </Paper>
-
+        const DetailRow = ({ label, value }) => (
+            <Box sx={{ p: 1 }}>
+                <Grid container>
+                    <Grid item xs={6}>
+                        <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
+                            {label}
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={6} sx={{ marginLeft: 0 }}>
+                        <Typography sx={{ fontSize: '17px', textAlign: 'left' }} gutterBottom variant="body2">
+                            {value}
+                        </Typography>
+                    </Grid>
                 </Grid>
-            )
-        } else {
-            return
-            <></>
-        }
+                <Divider light />
+            </Box>
+        );
+
+        return (
+            <Grid>
+                <Paper elevation={10}>
+                    <Card variant="outlined" sx={{ maxWidth: 360, fontFamily: "Roboto" }}>
+                        <Box sx={{ p: 1 }}>
+                            <Grid sx={{ padding: 1, backgroundColor: '#253A7D' }}>
+                                <Stack direction="row" justifyContent="space-between" alignItems="center">
+                                    <Typography
+                                        style={{
+                                            fontSize: '17px',
+                                            color: 'white',
+                                            marginBottom: '2px',
+                                            backgroundColor: '#253A7D',
+                                            padding: '2px',
+                                            display: 'inline-block',
+                                        }}
+                                        gutterBottom
+                                        component="div"
+                                    >
+                                        {selectedRecord.msisdn}
+                                    </Typography>
+                                </Stack>
+                            </Grid>
+                        </Box>
+                        <Grid container>
+                            <Grid item xs={12} paddingLeft={1}>
+                                <Divider light />
+                                <DetailRow label="IMSI :" value={selectedRecord.imsi} />
+                                <DetailRow label="Category :" value={selectedRecord.category} />
+                                <DetailRow label="P-IMSI :" value={selectedRecord.pimsi} />
+                                <DetailRow label="Batch Date :" value={selectedRecord.batchDate} />
+                                <DetailRow label="Vendor Id :" value={selectedRecord.vendorId} />
+                                <DetailRow label="Vendor Name :" value={selectedRecord.vendorName} />
+                                <DetailRow label="Buying Price :" value={String(selectedRecord.buyingPriceUsd)} />
+                                <DetailRow label="Auth ID :" value={String(selectedRecord.auth_id)} />
+                                <DetailRow label="Allocation Date :" value={selectedRecord.allocationDate} />
+                                <DetailRow label="Other taxes :" value={selectedRecord.otherTaxes} />
+                            </Grid>
+                        </Grid>
+                        <Grid container spacing={1} padding={1}>
+                            <Grid item xs={12}>
+                                <Button
+                                    variant="contained"
+                                    sx={{ backgroundColor: '#253A7D', width: '100%', boxShadow: 20 }}
+                                    onClick={() => navigate('/editSim', { state: { selectObj: selectedRecord } })}
+                                >
+                                    Edit Record
+                                </Button>
+                            </Grid>
+                            <Grid item xs={12}>
+                                <Button
+                                    variant="contained"
+                                    sx={{ backgroundColor: '#253A7D', width: '100%', boxShadow: 20, marginY: 1 }}
+                                    onClick={() => handleOpenConfirmationDialog(selectedRecord.imsi, selectedRecord.msisdn)}
+                                >
+                                    Delete Record
+                                </Button>
+                            </Grid>
+                        </Grid>
+                    </Card>
+                </Paper>
+            </Grid>
+        );
     };
+
 
     const handleSerch = async (e) => {
         e.preventDefault();
@@ -403,7 +231,7 @@ const Sim_manage = (props) => {
                 setValue(value);
             })
     }
-    const [selectedOption, setSelectedOption] = useState('');
+  
     const [highlightedRow, setHighlightedRow] = useState(null);
 
     const handleRowMouseEnter = (row) => {
@@ -444,8 +272,8 @@ const Sim_manage = (props) => {
                 console.log('File uploaded successfully:', response.data);
             }).catch(error => {
                 // toast.success('File uploaded successfully:', { autoClose: 2000 });
-                console.error('Error uploading file:', error);
-                toast.error(error.response, { autoClose: 2000 });
+                console.error('Error uploading file:', error.response.data);
+                toast.error(error.response.data.Database_error, { autoClose: 3000 });
             });
         } else {
             console.error('No file selected.');
@@ -455,170 +283,149 @@ const Sim_manage = (props) => {
 
     return (
         <Box sx={{ display: 'container', marginTop: -2.5 }}>
-            <ToastContainer position="bottom-left" />
-            <Box sx={{ width: '78%', }}>
-                <Box component="main" sx={{ flexGrow: 1, p: 1, width: '100%' }}>
-                    <Paper elevation={10} sx={{ padding: 1, margin: 1, backgroundColor: 'white', marginLeft: -0.8, marginRight: 1 }}>
-                        <Grid>
-                            <Typography
-                                style={{
-
-                                    fontSize: '20px',
-                                    paddingLeft: 10,
-                                    fontWeight: 'bold',
-                                    color: '#253A7D',
-
-
+        <ToastContainer position="bottom-left" />
+        <Box sx={{ width: '78%' }}>
+            <Box component="main" sx={{ flexGrow: 1, p: 1, width: '100%' }}>
+                <Paper elevation={10} sx={{ padding: 1, margin: 1, backgroundColor: 'white', marginX: -0.8 }}>
+                    <Grid>
+                        <Typography sx={{ fontSize: '20px', paddingLeft: 1, fontWeight: 'bold', color: '#253A7D' }}>
+                            SIM/e-SIM Management
+                        </Typography>
+                    </Grid>
+                </Paper>
+            </Box>
+            <Grid container padding={2}>
+                <Grid item xs={12} sx={{ textAlign: 'right', marginY: -0.5 }}>
+                    <form onSubmit={handleSerch}>
+                        <Paper elevation={10} sx={{ marginBottom: 2 }}>
+                            <TextField
+                                onClick={handleSerch}
+                                label="Search"
+                                type="text"
+                                fullWidth
+                                name="value"
+                                required
+                                InputProps={{
+                                    endAdornment: (
+                                        <InputAdornment position="end">
+                                            <IconButton>
+                                                <SearchIcon />
+                                            </IconButton>
+                                        </InputAdornment>
+                                    ),
                                 }}
-                            >SIM/e-SIM Management</Typography>
-                        </Grid>
-                    </Paper>
-                </Box>
-                <Grid container padding={2}>
-                    <Grid item xs={4} sx={{ textAlign: 'right', marginY: -0.5 }} >
-                        <form onSubmit={handleSerch}>
-                            <Paper elevation={10} sx={{ marginBottom: 2 }}>
-                                <TextField
-                                    onClick={handleSerch}
-                                    label="Search"
-                                    type='text'
-                                    fullWidth
-                                    name='value'
-
-                                    required
-                                    InputProps={{
-                                        endAdornment: (
-                                            <InputAdornment position='end'>
-                                                <IconButton
-
-                                                >
-                                                    <SearchIcon />
-                                                </IconButton>
-                                            </InputAdornment>
-                                        )
-                                    }}
-                                />
-                            </Paper>
-                        </form>
-                    </Grid>
-                    <Grid item xs={6} sx={{ marginY: 1 }}>
-                        <Button style={{ backgroundColor: '#FBB716', color: 'black' }} sx={{ marginX: 1, boxShadow: 20 }}>Export to PDF</Button>
-                        <Button style={{ backgroundColor: '#FBB716', color: 'black' }} sx={{ marginX: 1, boxShadow: 20 }}>Export to CSV</Button>
-                        <Button style={{ backgroundColor: '#FBB716', color: 'black' }} sx={{ boxShadow: 20 }}>Export to Excel</Button>
-
-                    </Grid>
-
-
-
-
-
+                            />
+                        </Paper>
+                    </form>
                 </Grid>
-
-                <Box component="main" sx={{ flexGrow: 1, width: '100%' }}>
-                    <Paper elevation={10}>
-                        <TableContainer sx={{ maxHeight: 600 }}>
-                            <Table stickyHeader size='medium' padding="normal">
-                                <TableHead>
-                                    <TableRow>
-                                        {columns.map((column) => (
-                                            <TableCell style={{ backgroundColor: '#253A7D', color: 'white' }} key={column.id} sx={{ textAlign: 'left' }}><Typography >{column.name}</Typography></TableCell>
+              
+            </Grid>
+            <Box component="main" sx={{ flexGrow: 1, width: '100%' }}>
+                <Paper elevation={10}>
+                    <TableContainer sx={{ maxHeight: 600 }}>
+                        <Table stickyHeader size="medium" padding="normal">
+                            <TableHead>
+                                <TableRow>
+                                    {columns.map((column) => (
+                                        <TableCell
+                                            key={column.id}
+                                            sx={{ textAlign: 'left', backgroundColor: '#253A7D', color: 'white' }}
+                                        >
+                                            <Typography>{column.name}</Typography>
+                                        </TableCell>
+                                    ))}
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {rows &&
+                                    rows
+                                        .slice(page * rowperpage, page * rowperpage + rowperpage)
+                                        .map((row, i) => (
+                                            <TableRow
+                                                key={i}
+                                                onClick={() => handleRowClick(row)}
+                                                onMouseEnter={() => handleRowMouseEnter(row)}
+                                                onMouseLeave={handleRowMouseLeave}
+                                                sx={highlightedRow === row ? { backgroundColor: '#F6B625' } : {}}
+                                            >
+                                                {columns.map((column) => (
+                                                    <TableCell key={column.id} sx={{ textAlign: 'left', fontSize: '17px' }}>
+                                                        {column.id === 'ekycDate'
+                                                            ? ''
+                                                            : String(row[column.id])}
+                                                    </TableCell>
+                                                ))}
+                                            </TableRow>
                                         ))}
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    {rows &&
-                                        rows
-                                            .slice(page * rowperpage, page * rowperpage + rowperpage)
-                                            .map((row, i) => {
-                                                return (
-                                                    <TableRow
-                                                        key={i}
-                                                        onClick={() => handleRowClick(row)}
-                                                        onMouseEnter={() => handleRowMouseEnter(row)}
-                                                        onMouseLeave={handleRowMouseLeave}
-                                                        sx={
-                                                            highlightedRow === row
-                                                                ? { backgroundColor: '#F6B625' }
-                                                                : {}
-                                                        }
-                                                    >
-                                                        {columns.map((column) => (
-
-
-                                                            <TableCell key={column.id} sx={{ textAlign: 'left', fontSize: '17px' }}>
-
-                                                                {column.id === 'ekycDate' ? (
-                                                                    // Render this content if the condition is true
-                                                                    <>{
-                                                                        // new Date(row[column.id]).toISOString().split('T')[0]
-
-                                                                    }</>
-                                                                ) : (
-                                                                    // Render this content if the condition is false
-                                                                    <>{String(row[column.id])}</>
-                                                                )}
-                                                            </TableCell>
-                                                        ))}
-                                                    </TableRow>
-                                                );
-                                            })}
-                                </TableBody>
-                            </Table>
-                        </TableContainer>
-                        <TablePagination
-                            sx={{ color: '#253A7D' }}
-                            rowsPerPageOptions={[5, 10, 25]}
-                            rowsPerPage={rowperpage}
-                            page={page}
-                            count={rows.length}
-                            component="div"
-                            onPageChange={handlechangepage}
-                            onRowsPerPageChange={handleRowsPerPage}
-                        />
-
-                    </Paper>
-                </Box>
-
-                <Box sx={{ paddingLeft: '16px', paddingBottom: '16px', paddingTop: '14px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <Button
-                        sx={{ backgroundColor: '#253A7D', boxShadow: 20 }}
-                        variant="contained" backgroundColor="#253A7D" onClick={handleButtonClick}>
-                        Add New SIM
-                    </Button>
-                    <Grid item xs={8} sx={{ marginY: 1 }}>
-                        <Box sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
-                            <TextField type="file" onChange={handleFileChange} />
-                            <Button style={{ backgroundColor: '#FBB716', color: 'black' }} sx={{ marginX: 1, boxShadow: 20 }} onClick={handleSaveFile}>Save File</Button>
-                        </Box>
-                    </Grid>
-                </Box>
-
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                    <TablePagination
+                        sx={{ color: '#253A7D' }}
+                        rowsPerPageOptions={[5, 10, 25]}
+                        rowsPerPage={rowperpage}
+                        page={page}
+                        count={rows.length}
+                        component="div"
+                        onPageChange={handlechangepage}
+                        onRowsPerPageChange={handleRowsPerPage}
+                    />
+                </Paper>
             </Box>
-
-            <Box sx={{ paddingLeft: 2, paddingTop: 1.9 }} >
-                <SelectedRecordDetails />
-            </Box>
-            <Dialog
-                open={confirmationDialogOpen}
-                onClose={handleCloseConfirmationDialog}
-                aria-labelledby="alert-dialog-title"
-                aria-describedby="alert-dialog-description"
+            <Box
+                sx={{
+                    paddingLeft: '16px',
+                    paddingBottom: '16px',
+                    paddingTop: '14px',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                }}
             >
-                <DialogTitle id="alert-dialog-title">Confirm Deletion</DialogTitle>
-                <DialogContent>
-                    <DialogContentText id="alert-dialog-description">
-                        Are you sure you want to delete this record?
-                    </DialogContentText>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleCloseConfirmationDialog}>Cancel</Button>
-                    <Button onClick={handleConfirmDelete} autoFocus>
-                        Confirm
-                    </Button>
-                </DialogActions>
-            </Dialog>
-
+                <Button
+                    sx={{ backgroundColor: '#253A7D', boxShadow: 20 }}
+                    variant="contained"
+                    onClick={handleButtonClick}
+                >
+                    Add New SIM
+                </Button>
+                <Grid item xs={8} sx={{ marginY: 1 }}>
+                    <Box sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
+                        <TextField type="file" onChange={handleFileChange} />
+                        <Button
+                            sx={{ backgroundColor: '#FBB716', color: 'black', marginX: 1, boxShadow: 20 }}
+                            onClick={handleSaveFile}
+                        >
+                            Save File
+                        </Button>
+                    </Box>
+                </Grid>
+            </Box>
         </Box>
+        <Box sx={{ paddingLeft: 1, paddingTop: 1.9 }}>
+            <SelectedRecordDetails />
+        </Box>
+        <Dialog
+            open={confirmationDialogOpen}
+            onClose={handleCloseConfirmationDialog}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+        >
+            <DialogTitle id="alert-dialog-title">Confirm Deletion</DialogTitle>
+            <DialogContent>
+                <DialogContentText id="alert-dialog-description">
+                    Are you sure you want to delete this record?
+                </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+                <Button onClick={handleCloseConfirmationDialog}>Cancel</Button>
+                <Button onClick={handleConfirmDelete} autoFocus>
+                    Confirm
+                </Button>
+            </DialogActions>
+        </Dialog>
+    </Box>
+    
     )
 };
 

@@ -3,29 +3,33 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import SearchIcon from '@mui/icons-material/Search';
 import axios from "axios";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from 'react-toastify';
 
-
-export default function Broadband  (props)  {
+export default function Broadband(props) {
     const columns = [
-        { id: 'serialNumber', name: 'Serial Number'},
-        { id: 'brand', name: 'Brand'},
-        { id: 'vendorId', name: 'Vendor ID'},
+        { id: 'serialNumber', name: 'Serial Number' },
+        // { id: 'brand', name: 'Brand' },
+        { id: 'vendorId', name: 'Vendor ID' },
+        { id: 'macAddress', name: 'Mac Address' },
         { id: 'cpeUsername', name: 'User Name' },
         // { id: 'cpePassword', name: 'Password'},
-        { id: 'activationDate', name: 'Activation  Date'},
+        { id: 'activationDate', name: 'Activation  Date' },
+        
     ];
     const [rows, setRows] = useState([]);
     const tokenValue = localStorage.getItem('token');
     // Generate sample data
     useEffect(() => {
-       
+
         fetchData(); // Invoke the fetchData function when the component mounts
     }, [tokenValue]);
     const handleConfirmDelete = () => {
         // Perform the delete operation here using the recordIdToDelete
         // After successful deletion, you can update the UI accordingly
         console.log(`Deleting record with ID: ${recordIdToDelete}`);
-    
+
         // Make an API call to delete the record
         axios.delete(`https://bssproxy01.neotel.nr/crm/api/delete/vendor/vendorId/${recordMsisdnToDelete}`, {
             headers: {
@@ -38,7 +42,7 @@ export default function Broadband  (props)  {
                 // Handle success, you can update the UI or take other actions
                 fetchData();
                 SetDelete('deleted');
-    
+
                 // Fetch updated data after successful deletion
                 fetchData();
             })
@@ -46,7 +50,7 @@ export default function Broadband  (props)  {
                 // Handle error, you can display an error message or take other actions
                 console.error(`Error deleting record with ID ${recordIdToDelete}:`, error);
             });
-    
+
         // Close the confirmation dialog
         setConfirmationDialogOpen(false);
     };
@@ -80,8 +84,8 @@ export default function Broadband  (props)  {
     const handleOpenConfirmationDialog = (id) => {
         setRecordIdToDelete(id);
         setRecordMsisdnToDelete(id)
-        console.log("xxxx==>"+id)
-        console.log("xxxx==>"+id)
+        console.log("xxxx==>" + id)
+        console.log("xxxx==>" + id)
         setConfirmationDialogOpen(true);
     };
 
@@ -102,7 +106,45 @@ export default function Broadband  (props)  {
     const handleRowClick = (row) => {
         setSelectedRecord(row);
     };
-   
+    const [saveFileName, setSaveFileName] = useState('');
+    const [selectedFile, setSelectedFile] = useState(null);
+
+    const handleFileChange = (event) => {
+        setSelectedFile(event.target.files[0]);
+    };
+
+    const handleSaveFile = () => {
+        if (selectedFile) {
+            // Perform logic to set the file name
+            const fileName = selectedFile.name; // Using the selected file name
+            setSaveFileName(fileName);
+
+            // Depending on your requirement, you can perform additional actions such as saving the file
+            // Here, I'm just logging the selected file details
+            console.log('Selected File:', selectedFile);
+
+            // Assuming you want to upload the file using axios
+            const formData = new FormData();
+            formData.append('file', selectedFile);
+
+            axios.post('https://bssproxy01.neotel.nr/crm/api/router/upload/excel?vendorId=1', formData, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`, // Add your authorization token here
+                    'Content-Type': 'multipart/form-data',
+                },
+            }).then(response => {
+                toast.success('File uploaded successfully:', { autoClose: 2000 });
+                console.log('File uploaded successfully:', response.data);
+            }).catch(error => {
+                // toast.success('File uploaded successfully:', { autoClose: 2000 });
+                console.error('Error uploading file:', error.response.data);
+                toast.error(error.response.data.Database_error, { autoClose: 3000 });
+            });
+        } else {
+            console.error('No file selected.');
+        }
+    };
+
     const SelectedRecordDetails = () => {
 
 
@@ -114,7 +156,7 @@ export default function Broadband  (props)  {
 
                         <Card variant="outlined" sx={{ width: 380, fontFamily: "Roboto" }}>
 
-                            <Box sx={{ p: 1,}}>
+                            <Box sx={{ p: 1, }}>
 
                                 <Grid sx={{ padding: 1, backgroundColor: '#253A7D' }}>
                                     <Stack direction="row"
@@ -134,7 +176,7 @@ export default function Broadband  (props)  {
 
                                             }}
                                             gutterBottom component="div">
-                                           Manufactorer : {selectedRecord.deviceManufactorer}
+                                            Manufactorer : {selectedRecord.deviceManufactorer}
                                         </Typography>
 
                                     </Stack>
@@ -148,7 +190,7 @@ export default function Broadband  (props)  {
                                         <Grid container>
                                             <Grid item xs={6}>
                                                 <Typography sx={{ fontWeight: '480', fontSize: '17px', textAlign: 'left' }}>
-                                                      Serial Number :</Typography>
+                                                    Serial Number :</Typography>
                                             </Grid>
                                             <Grid item xs={6} alignItems={'left'} sx={{ marginLeft: 0 }} >
                                                 <Typography
@@ -223,7 +265,7 @@ export default function Broadband  (props)  {
                                                 <Typography
                                                     sx={{ fontSize: '17px', textAlign: 'left' }}
                                                     gutterBottom variant="body2">
-                                                    {String(selectedRecord.deviceStaticIp)}
+                                                    {selectedRecord.deviceStaticIp}
                                                 </Typography>
                                             </Grid>
                                         </Grid>
@@ -234,19 +276,19 @@ export default function Broadband  (props)  {
                                         <Grid container>
                                             <Grid item xs={5}>
                                                 <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
-                                                  Device Status :
+                                                    Device Status :
                                                 </Typography>
                                             </Grid>
                                             <Grid item xs={6} alignItems={'left'} sx={{ marginLeft: 0 }}>
                                                 <Typography
                                                     sx={{ fontSize: '17px', textAlign: 'left' }}
                                                     gutterBottom variant="body2">
-                                                    {String(selectedRecord.deviceStatus)}
+                                                    {selectedRecord.deviceStatus}
                                                 </Typography>
                                             </Grid>
                                         </Grid>
                                     </Box>
-                                    <Divider light />                                                                       
+                                    <Divider light />
                                 </Grid>
                             </Grid>
 
@@ -265,7 +307,7 @@ export default function Broadband  (props)  {
                                             handleOpenConfirmationDialog(selectedRecord.id)
                                             console.log("From teh Customer Delete Button")
                                         }}
-                                        sx={{ backgroundColor: '#253A7D', width:'100%',boxShadow: 20,marginY:1 }}
+                                        sx={{ backgroundColor: '#253A7D', width: '100%', boxShadow: 20, marginY: 1 }}
                                         variant="contained">Assign Broadband</Button>
                                 </Grid>
 
@@ -276,7 +318,7 @@ export default function Broadband  (props)  {
                         </Card>
 
                     </Paper>
-                    
+
                 </Grid>
             )
         } else {
@@ -308,63 +350,63 @@ export default function Broadband  (props)  {
     };
     return (
         <Box sx={{ display: 'container', marginTop: -2.5 }}>
-
+            <ToastContainer position="bottom-left" />
             <Box sx={{ width: '70%', }}>
-            <Box component="main" sx={{ flexGrow: 1, p: 1, width: '100%' }}>
-                        <Paper elevation={10} sx={{ padding: 1, margin: 1, backgroundColor: 'white', marginLeft: -0.8, marginRight: 1 }}>
-                            <Grid>
-                                <Typography
-                                    style={{
+                <Box component="main" sx={{ flexGrow: 1, p: 1, width: '100%' }}>
+                    <Paper elevation={10} sx={{ padding: 1, margin: 1, backgroundColor: 'white', marginLeft: -0.8, marginRight: 1 }}>
+                        <Grid>
+                            <Typography
+                                style={{
 
-                                        fontSize: '20px',
-                                        paddingLeft: 10,
-                                        fontWeight: 'bold',
-                                         color: '#253A7D',
-                                        
+                                    fontSize: '20px',
+                                    paddingLeft: 10,
+                                    fontWeight: 'bold',
+                                    color: '#253A7D',
 
-                                    }}
-                                >Broad Band</Typography>
-                            </Grid>
-                        </Paper>
-                    </Box>
-                    <Grid container padding={2}>
-                        <Grid item xs={4} sx={{textAlign: 'right', marginY: -0.5 }} >
-                            <form onSubmit={handleSerch}>
-                                <Paper elevation={10} sx={{ marginBottom: 2 }}>
-                                    <TextField
-                                        onClick={handleSerch}
+
+                                }}
+                            >Broad Band</Typography>
+                        </Grid>
+                    </Paper>
+                </Box>
+                <Grid container padding={2}>
+                    <Grid item xs={4} sx={{ textAlign: 'right', marginY: -0.5 }} >
+                        <form onSubmit={handleSerch}>
+                            <Paper elevation={10} sx={{ marginBottom: 2 }}>
+                                <TextField
+                                    onClick={handleSerch}
                                     label="Search"
                                     type='text'
                                     fullWidth
                                     name='value'
-                                    
+
                                     required
                                     InputProps={{
                                         endAdornment: (
                                             <InputAdornment position='end'>
                                                 <IconButton
-                                               
+
                                                 >
                                                     <SearchIcon />
                                                 </IconButton>
                                             </InputAdornment>
                                         )
-                                        }}
-                                    />
-                                </Paper>                            
-                            </form>
-                        </Grid>
-                    <Grid item xs={8} sx={{marginY:1}}>
-                        <Button style={{backgroundColor: '#FBB716', color: 'black'}}sx={{marginX:1,boxShadow: 20}}>Export to PDF</Button>
-                        <Button style={{backgroundColor: '#FBB716', color: 'black'}}sx={{marginX:1,boxShadow: 20}}>Export to CSV</Button>
-                        <Button style={{backgroundColor: '#FBB716', color: 'black'}} sx={{boxShadow: 20}}>Export to Excel</Button>
+                                    }}
+                                />
+                            </Paper>
+                        </form>
+                    </Grid>
+                    <Grid item xs={8} sx={{ marginY: 1 }}>
+                        <Button style={{ backgroundColor: '#FBB716', color: 'black' }} sx={{ marginX: 1, boxShadow: 20 }}>Export to PDF</Button>
+                        <Button style={{ backgroundColor: '#FBB716', color: 'black' }} sx={{ marginX: 1, boxShadow: 20 }}>Export to CSV</Button>
+                        <Button style={{ backgroundColor: '#FBB716', color: 'black' }} sx={{ boxShadow: 20 }}>Export to Excel</Button>
                     </Grid>
 
 
 
-                        
-                    </Grid>
-                    
+
+                </Grid>
+
                 <Box component="main" sx={{ flexGrow: 1, width: '100%' }}>
                     <Paper elevation={10}>
                         <TableContainer sx={{ maxHeight: 600 }}>
@@ -402,8 +444,8 @@ export default function Broadband  (props)  {
                                                                     // Render this content if the condition is true
                                                                     <>{
                                                                         // new Date(row[column.id]).toISOString().split('T')[0]
-                                                                        
-                                                                        }</>
+
+                                                                    }</>
                                                                 ) : (
                                                                     // Render this content if the condition is false
                                                                     <>{String(row[column.id])}</>
@@ -430,15 +472,22 @@ export default function Broadband  (props)  {
                     </Paper>
                 </Box>
 
-                <Box sx={{
-                    paddingLeft: '16px', paddingBottom: '16px', paddingTop: '14px',
-
-                }}>
+                <Box sx={{ paddingLeft: '16px', paddingBottom: '16px', paddingTop: '14px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <Button
                         sx={{ backgroundColor: '#253A7D', boxShadow: 20 }}
                         variant="contained" backgroundColor="#253A7D" onClick={handleButtonClick}>
-                        Add New
+                        Add New SIM
                     </Button>
+                    <Grid item xs={8} sx={{ marginY: 1 }}>
+                        <Box sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
+                            <TextField type="file"
+                                onChange={handleFileChange}
+                            />
+                            <Button style={{ backgroundColor: '#FBB716', color: 'black' }} sx={{ marginX: 1, boxShadow: 20 }}
+                                onClick={handleSaveFile}
+                            >Save File</Button>
+                        </Box>
+                    </Grid>
                 </Box>
             </Box>
 

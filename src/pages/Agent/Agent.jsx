@@ -15,9 +15,6 @@ export default function Agent(props) {
         { id: 'isActive', name: 'Status' },
         { id: 'documentId', name: 'Document ID' },
 
-
-
-
     ];
     const [confirmationDialogOpen, setConfirmationDialogOpen] = useState(false);
     const [recordIdToDelete, setRecordIdToDelete] = useState(null);
@@ -151,16 +148,20 @@ export default function Agent(props) {
                 { label: "EKYC Token", value: String(selectedRecord.token) },
                 { label: "Document Type", value: String(selectedRecord.documentType) },
                 { label: "Email", value: String(selectedRecord.email) },
-                { label: "Inactive Reason", value: String(selectedRecord.reasonStatus) },
+                // { label: "Inactive Reason", value: String(selectedRecord.reasonStatus) },
             ];
+            console.log("Hello",sellingRecord)
 
             const assignedFields = [
-                { label: "All SIM", value: totalSim },
-                { label: "All Device", value: totalDevice },
-                { label: "SIM in Stock", value: String(sellingRecord.availableSim) },
-                { label: "SIM Sold", value: String(sellingRecord.allocatedSim) },
-                { label: "Device in Stock", value: String(sellingRecord.availableDevice) },
-                { label: "Device Sold", value: String(sellingRecord.allocatedDevice) },
+                { label: "All SIM", value: sellingRecord.SIM.totalSim },
+                { label: "SIM in Stock", value: String(sellingRecord.SIM.availableSim) },
+                { label: "SIM Sold", value: String(sellingRecord.SIM.activatedSim) },
+                { label: "All Device", value: sellingRecord.DEVICE.totalDevice },
+                { label: "Device in Stock", value: String(sellingRecord.DEVICE.availableDevice) },
+                { label: "Device Sold", value: String(sellingRecord.DEVICE.allocatedDevice) },
+                { label: "All Routers", value: sellingRecord.Router.totalRouter },
+                { label: "Router in Stock", value: String(sellingRecord.Router.availableRouter) },
+                { label: "Router Sold", value: String(sellingRecord.Router.allocatedRouter) },
             ];
 
             return (
@@ -310,8 +311,10 @@ export default function Agent(props) {
                                                 backgroundColor: "#253A7D",
                                                 boxShadow: 20,
                                             }}
+                                            
                                             onClick={() =>
                                                 navigate("/partner/showProducts", { state: { record: selectedRecord.id } })
+                                                
                                             }
                                         >
                                             Show Products
@@ -326,6 +329,7 @@ export default function Agent(props) {
                                                 boxShadow: 20,
                                             }}
                                             onClick={() =>
+                                                // navigate("/partner/AssignProducts", { state: { record: selectedRecord.id } })
                                                 navigate("/partner/AssignProducts", { state: { record: selectedRecord.id } })
                                             }
                                         >
@@ -410,7 +414,7 @@ export default function Agent(props) {
                                         fontWeight: 'bold',
 
                                     }}
-                                > Partners</Typography>
+                                > Resellers</Typography>
                             </Grid>
                         </Paper>
                     </Box>

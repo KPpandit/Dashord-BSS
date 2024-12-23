@@ -504,7 +504,7 @@ export default function EditCustomerDetails() {
                                             onBlur={handleBlur}
                                         />
                                     </Grid>
-                                    <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
+                                    {/* <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
                                         <TextField
                                             label="Ekyc Status"
                                             type="text"
@@ -516,7 +516,7 @@ export default function EditCustomerDetails() {
                                             onChange={handleChange}
                                             onBlur={handleBlur}
                                         />
-                                    </Grid>
+                                    </Grid> */}
 
                                     <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
                                         <TextField
@@ -658,7 +658,7 @@ export default function EditCustomerDetails() {
                                             </Select>
                                         </FormControl>
                                     </Grid> */}
-                                    <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
+                                    {/* <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
                                         <FormControl fullWidth >
                                             <InputLabel id="demo-simple-select-label">useParentPricing</InputLabel>
                                             <Select
@@ -680,7 +680,7 @@ export default function EditCustomerDetails() {
 
                                             </Select>
                                         </FormControl>
-                                    </Grid>
+                                    </Grid> */}
 
 
                                     <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2} >
@@ -689,7 +689,7 @@ export default function EditCustomerDetails() {
                                             label='Device ID'
                                             InputLabelProps={{ shrink: true }}
                                             name='deviceId'
-                                            value={String(values.deviceId)}
+                                            value={values.deviceId ?? 'N/A'}
                                             onChange={handleChange}
                                             onBlur={handleBlur}
                                             disabled
@@ -729,7 +729,7 @@ export default function EditCustomerDetails() {
                                     <Grid item lg={12} md={4} sm={6} xs={12}>
                                         {(accountType.toLowerCase() === 'postpaid' || accountType === 'Broadband') && (
                                             <Grid container spacing={2}>
-                                                <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
+                                                {/* <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
                                                     <TextField
                                                         disabled
 
@@ -742,7 +742,7 @@ export default function EditCustomerDetails() {
                                                         onChange={handleChange}
                                                         onBlur={handleBlur}
                                                     />
-                                                </Grid>
+                                                </Grid> */}
                                                 {/* <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
                                                     <TextField
 
@@ -758,7 +758,7 @@ export default function EditCustomerDetails() {
                                                         onBlur={handleBlur}
                                                     />
                                                 </Grid> */}
-                                                <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
+                                                {/* <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
                                                     <TextField
                                                         disabled
 
@@ -802,8 +802,8 @@ export default function EditCustomerDetails() {
                                                         onChange={handleChange}
                                                         onBlur={handleBlur}
                                                     />
-                                                </Grid>
-                                                <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
+                                                </Grid> */}
+                                                {/* <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
                                                     <TextField
                                                         required
                                                         label="Auto-Recharge Threshold"
@@ -845,9 +845,9 @@ export default function EditCustomerDetails() {
                                                         onChange={handleChange}
                                                         onBlur={handleBlur}
                                                     />
-                                                </Grid>
+                                                </Grid> */}
 
-                                                <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
+                                                {/* <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
                                                     <TextField
 
                                                         label="dueDateValue"
@@ -861,9 +861,9 @@ export default function EditCustomerDetails() {
                                                         onChange={handleChange}
                                                         onBlur={handleBlur}
                                                     />
-                                                </Grid>
+                                                </Grid> */}
 
-                                                <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
+                                                {/* <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
                                                     <TextField
 
                                                         label="nextInvoiceDayOfPeriod"
@@ -877,7 +877,7 @@ export default function EditCustomerDetails() {
                                                         onChange={handleChange}
                                                         onBlur={handleBlur}
                                                     />
-                                                </Grid>
+                                                </Grid> */}
 
 
 
@@ -887,7 +887,7 @@ export default function EditCustomerDetails() {
 
 
 
-                                                <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
+                                                {/* <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
                                                     <TextField
                                                         label="currentMonthlyAmount"
                                                         type="number"
@@ -905,7 +905,7 @@ export default function EditCustomerDetails() {
                                                             },
                                                         }}
                                                     />
-                                                </Grid>
+                                                </Grid> */}
                                                 {/* <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
                                                     <TextField
 
@@ -919,7 +919,7 @@ export default function EditCustomerDetails() {
                                                         onBlur={handleBlur}
                                                     />
                                                 </Grid> */}
-                                                <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
+                                                {/* <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
                                                     <TextField
 
                                                         label="dynamicBalance"
@@ -933,8 +933,8 @@ export default function EditCustomerDetails() {
                                                         onChange={handleChange}
                                                         onBlur={handleBlur}
                                                     />
-                                                </Grid>
-                                                <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
+                                                </Grid> */}
+                                                {/* <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
                                                     <FormControl fullWidth >
                                                         <InputLabel id="demo-simple-select-label">IS Parent ?</InputLabel>
                                                         <Select
@@ -954,9 +954,9 @@ export default function EditCustomerDetails() {
 
                                                         </Select>
                                                     </FormControl>
-                                                </Grid>
+                                                </Grid> */}
 
-                                                <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
+                                                {/* <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
                                                     <TextField
 
                                                         label="invoiceChild"
@@ -970,7 +970,7 @@ export default function EditCustomerDetails() {
                                                         onChange={handleChange}
                                                         onBlur={handleBlur}
                                                     />
-                                                </Grid>
+                                                </Grid> */}
 
 
 
@@ -1045,7 +1045,7 @@ export default function EditCustomerDetails() {
                                     />
                                 </Grid>
 
-                                <Grid item xs={3}>
+                                {/* <Grid item xs={3}>
 
                                     <TextField
                                         label='streetAddres2'
@@ -1058,7 +1058,7 @@ export default function EditCustomerDetails() {
                                         onChange={handleChange}
                                         onBlur={handleBlur}
                                     />
-                                </Grid>
+                                </Grid> */}
 
                                 <Grid item xs={3}>
 
@@ -1075,7 +1075,7 @@ export default function EditCustomerDetails() {
                                     />
                                 </Grid>
 
-                                <Grid item xs={3}>
+                                {/* <Grid item xs={3}>
 
                                     <TextField
                                         label='state / Province'
@@ -1088,7 +1088,7 @@ export default function EditCustomerDetails() {
                                         onChange={handleChange}
                                         onBlur={handleBlur}
                                     />
-                                </Grid>
+                                </Grid> */}
 
                                 <Grid item xs={3}>
 
@@ -1105,7 +1105,7 @@ export default function EditCustomerDetails() {
                                     />
                                 </Grid>
 
-                                <Grid item xs={3}>
+                                {/* <Grid item xs={3}>
 
                                     <TextField
                                         label='countryCode'
@@ -1118,7 +1118,7 @@ export default function EditCustomerDetails() {
                                         onChange={handleChange}
                                         onBlur={handleBlur}
                                     />
-                                </Grid>
+                                </Grid> */}
 
                                 <Grid item xs={3}>
 
@@ -1150,20 +1150,7 @@ export default function EditCustomerDetails() {
                                     />
                                 </Grid>
 
-                                <Grid item xs={3}>
-
-                                    <TextField
-                                        label='personInitial'
-                                        type="text"
-                                        required
-                                        fullWidth
-                                        disabled
-                                        name="personInitial"
-                                        value={values.personInitial}
-                                        onChange={handleChange}
-                                        onBlur={handleBlur}
-                                    />
-                                </Grid>
+                               
 
                                 <Grid item xs={3}>
 
@@ -1180,7 +1167,7 @@ export default function EditCustomerDetails() {
                                     />
                                 </Grid>
 
-                                <Grid item xs={3}>
+                                {/* <Grid item xs={3}>
 
                                     <TextField
                                         label='phoneCountryCode'
@@ -1208,7 +1195,7 @@ export default function EditCustomerDetails() {
                                         onChange={handleChange}
                                         onBlur={handleBlur}
                                     />
-                                </Grid>
+                                </Grid> */}
 
                                 <Grid item xs={3}>
 
@@ -1225,7 +1212,7 @@ export default function EditCustomerDetails() {
                                     />
                                 </Grid>
 
-                                <Grid item xs={3}>
+                                {/* <Grid item xs={3}>
 
                                     <TextField
                                         label='faxCountryCode'
@@ -1268,8 +1255,8 @@ export default function EditCustomerDetails() {
                                         onChange={handleChange}
                                         onBlur={handleBlur}
                                     />
-                                </Grid>
-                                <Grid item xs={3}>
+                                </Grid> */}
+                                {/* <Grid item xs={3}>
                                     <FormControl fullWidth >
                                         <InputLabel id="demo-simple-select-label">Deleted ?</InputLabel>
                                         <Select
@@ -1289,8 +1276,8 @@ export default function EditCustomerDetails() {
 
                                         </Select>
                                     </FormControl>
-                                </Grid>
-                                <Grid item xs={3}>
+                                </Grid> */}
+                                {/* <Grid item xs={3}>
 
                                     <TextField
                                         label='notificationInclude'
@@ -1303,7 +1290,7 @@ export default function EditCustomerDetails() {
                                         onChange={handleChange}
                                         onBlur={handleBlur}
                                     />
-                                </Grid>
+                                </Grid> */}
                                 {/* <Grid item xs={3}>
 
                                 <TextField
@@ -1338,7 +1325,7 @@ export default function EditCustomerDetails() {
                                         </Select>
                                     </FormControl>
                                 </Grid>
-                                <Grid item xs={3}>
+                                {/* <Grid item xs={3}>
 
                                     <FormControl fullWidth >
                                         <InputLabel id="demo-simple-select-label">ekycStatus</InputLabel>
@@ -1358,7 +1345,7 @@ export default function EditCustomerDetails() {
 
                                         </Select>
                                     </FormControl>
-                                </Grid>
+                                </Grid> */}
                                 <Grid item xs={3}>
 
                                     <TextField
@@ -1368,7 +1355,7 @@ export default function EditCustomerDetails() {
                                         fullWidth
                                         name="ekycToken"
                                         value={values.ekycToken}
-                                        disabled
+                                        // disabled
                                         onChange={handleChange}
                                         onBlur={handleBlur}
                                     />
@@ -1387,7 +1374,7 @@ export default function EditCustomerDetails() {
                                         onBlur={handleBlur}
                                     />
                                 </Grid>
-                                <Grid item xs={3}>
+                                {/* <Grid item xs={3}>
 
                                     <TextField
                                         label='landlineNumber'
@@ -1414,7 +1401,7 @@ export default function EditCustomerDetails() {
                                         onChange={handleChange}
                                         onBlur={handleBlur}
                                     />
-                                </Grid>
+                                </Grid> */}
                                 <Grid item xs={3}>
 
                                     <TextField
@@ -1453,7 +1440,7 @@ export default function EditCustomerDetails() {
                                     </FormControl>
                                 </Grid>
                                 <Grid item xs={3}>
-                                    <InputLabel>Date of Birth</InputLabel>
+                                    {/* <InputLabel>Date of Birth</InputLabel> */}
                                     <TextField
                                         type="date"
                                         required
@@ -1463,6 +1450,9 @@ export default function EditCustomerDetails() {
                                         value={values.dateOfBirth}
                                         onChange={handleChange}
                                         onBlur={handleBlur}
+                                        InputLabelProps={{
+                                            shrink: true, // Keeps the label open above the TextField
+                                        }}
                                     />
                                 </Grid>
                             </Grid>

@@ -62,7 +62,7 @@ function Footer() {
         zIndex: 1000, // Ensure it appears above other content
       }}
     >
-      &copy; 2024 Telecom Nauru Corporation. All rights reserved.
+       &copy; {new Date().getFullYear()} Nauru Telikom Corporation. All rights reserved.
     </Box>
   );
 }
@@ -173,16 +173,16 @@ export default function Sidenavbar() {
     super: [
       { label: 'Subscriber Management ', icon: <Person />, route: '/subscriber' },
       {
-        label: 'Partner Management',
+        label: 'Reseller Management',
         route: '/partner',
         icon: <HandshakeIcon />,
         subRoute:[
-          {label:'Certified Partners',route: '/partner'},
+          {label:'Certified Reseller',route: '/partner'},
           // {label:'Buy Core Balance',route: '#'},
-          {label:'Partner Product Management',
+          {label:'Reseller Product Management',
             subRoute:[
              { label:'Core Balance Management',route:'/partner/coreBalanceManagment'},
-             { label:'Device Management',route:'#'},
+            //  { label:'UDM',route:'/hss'},
             ]
 
           },
@@ -292,11 +292,11 @@ export default function Sidenavbar() {
           }
         ]
       },
-      {
-        label: 'Voucher  Management',
-        route: '/specialOffers',
-        icon: <LocalActivityIcon />,
-      },
+      // {
+      //   label: 'Voucher  Management',
+      //   route: '/specialOffers',
+      //   icon: <LocalActivityIcon />,
+      // },
       {
         label: 'UE Session Management',
         route: '/specialOffers',

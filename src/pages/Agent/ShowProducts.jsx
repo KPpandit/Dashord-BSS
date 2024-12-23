@@ -9,159 +9,173 @@ import {
   TableHead,
   TableRow,
   Typography,
-  CircularProgress,
   Box,
-  Button,
   Paper,
-  Grid,
   TablePagination,
 } from "@mui/material";
 
-export default function ShowProduct(props) {
-    const location = useLocation();
-    const { record } = location.state || {};
-    console.log(record,' record ')
-    const columns = [
-        { id: 'msisdn', name: 'MSISDN' },
-        { id: 'imsi', name: 'IMSI' },
-        { id: 'category', name: 'Category' },
-        { id: 'simType', name: 'SIM Type' },
-        { id: 'amount', name: 'Amount' },
+export default function ShowProduct() {
+  const location = useLocation();
+  const { record } = location.state || {};
+  console.log(record, "record");
 
+  const tokenValue = localStorage.getItem("token");
 
-    ];
-    const tokenValue = localStorage.getItem('token');
+  // Columns for each table
+  const columns1 = [
+    { id: "msisdn", name: "MSISDN" },
+    { id: "imsi", name: "IMSI" },
+    { id: "category", name: "Category" },
+    { id: "simType", name: "SIM Type" },
+    { id: "amount", name: "Amount" },
+  ];
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await axios.get('https://bssproxy01.neotel.nr/crm/api/assigned/sim/partner/'+record, {
-                    headers: {
-                        Authorization: `Bearer ${tokenValue}`,
-                        "Accept": "application/json",
-                        "Content-Type": "application/json"
-                    }
-                });
-                setRows(response.data);
-            } catch (error) {
-                console.error('Error fetching data from API:', error);
-            }
-        };
+  const columns2 = [
+    { id: "SerialNumber", name: "Serial Number" },
+    { id: "MacAddress", name: "Mac Address" },
+    { id: "type", name: "Type" },
+    { id: "AccountNumber", name: "Account No" },
+    { id: "Password", name: "Password" },
+  ];
 
-        fetchData();
-    }, []);
-    // Generate sample data
+  const columns3 = [
+    { id: "deviceId", name: "Device ID" },
+    { id: "deviceModel", name: "Model" },
+    { id: "deviceType", name: "Type" },
+    { id: "osType", name: "OS Type" },
+    { id: "price", name: "Price" },
+  ];
 
+  // States for Table 1
+  const [rows1, setRows1] = useState([]);
+  const [page1, setPage1] = useState(0);
+  const [rowsPerPage1, setRowsPerPage1] = useState(5);
 
-    const [rows, setRows] = useState('');
-    const [page, pagechange] = useState(0);
-    const [rowperpage, rowperpagechange] = useState(5);
+  // States for Table 2
+  const [rows2, setRows2] = useState([]);
+  const [page2, setPage2] = useState(0);
+  const [rowsPerPage2, setRowsPerPage2] = useState(5);
 
-    const handlechangepage = (event, newpage) => {
-        pagechange(newpage);
+  // States for Table 3
+  const [rows3, setRows3] = useState([]);
+  const [page3, setPage3] = useState(0);
+  const [rowsPerPage3, setRowsPerPage3] = useState(5);
+
+  // Fetch data for each table
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // API 1
+        const response1 = await axios.get(
+          `https://bssproxy01.neotel.nr/crm/api/assigned/sim/partner/${record}`,
+          {
+            headers: {
+              Authorization: `Bearer ${tokenValue}`,
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        setRows1(response1.data);
+
+        // API 2
+        const response2 = await axios.get(
+          `https://bssproxy01.neotel.nr/crm/api/assigned/router/partner/${record}`,
+          {
+            headers: {
+              Authorization: `Bearer ${tokenValue}`,
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        setRows2(response2.data);
+
+        // API 3
+        const response3 = await axios.get(
+          `https://bssproxy01.neotel.nr/crm/api/assigned/device/partner/${record}`,
+          {
+            headers: {
+              Authorization: `Bearer ${tokenValue}`,
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        setRows3(response3.data);
+      } catch (error) {
+        console.error("Error fetching data from API:", error);
+      }
     };
 
-    const handleRowsPerPage = (event) => {
-        rowperpagechange(+event.target.value);
-        pagechange(0);
-    };
+    fetchData();
+  }, [record, tokenValue]);
 
-    const [highlightedRow, setHighlightedRow] = useState(null);
+  // Handlers for Table Pagination
+  const handlePageChange = (setPage) => (event, newPage) => setPage(newPage);
+  const handleRowsPerPageChange = (setRowsPerPage, setPage) => (event) => {
+    setRowsPerPage(+event.target.value);
+    setPage(0);
+  };
 
-    const handleRowMouseEnter = (row) => {
-        setHighlightedRow(row);
-    };
+  // Render Table
+  const renderTable = (rows, page, rowsPerPage, columns, setPage, setRowsPerPage) => (
+    <Paper elevation={10} sx={{ marginBottom: 2 }}>
+      <TableContainer sx={{ maxHeight: 600 }}>
+        <Table stickyHeader>
+          <TableHead>
+            <TableRow>
+              {columns.map((column) => (
+                <TableCell
+                  key={column.id}
+                  style={{ backgroundColor: "#253A7D", color: "white" }}
+                >
+                  <Typography>{column.name}</Typography>
+                </TableCell>
+              ))}
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {rows
+              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              .map((row, i) => (
+                <TableRow key={i}>
+                  {columns.map((column) => (
+                    <TableCell key={column.id}>{row[column.id]}</TableCell>
+                  ))}
+                </TableRow>
+              ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      <TablePagination
+        rowsPerPageOptions={[5, 10, 25]}
+        component="div"
+        count={rows.length}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onPageChange={handlePageChange(setPage)}
+        onRowsPerPageChange={handleRowsPerPageChange(setRowsPerPage, setPage)}
+      />
+    </Paper>
+  );
 
-    const handleRowMouseLeave = () => {
-        setHighlightedRow(null);
-    };
-    return (
-        <Box sx={{ display: 'container', marginTop: -3 }}>
-            <Box sx={{ width: '70%' }}>
-                <Box component="main" sx={{ flexGrow: 1, p: 1, width: '100%' }}>
-                    <Paper elevation={10} sx={{ padding: 1,margin: 1, backgroundColor: 'white', color: '#253A7D',marginLeft:-1 }}>
-                        <Grid>
-                            <Typography
-                                style={{
-                                    fontFamily: 'Roboto',
-                                    fontSize: '20px',
-                                    paddingLeft: 5,
-                                    fontWeight: 'bold',
+  return (
+    <Box sx={{ padding: 2 }}>
+      <Typography variant="h5" gutterBottom>
+        All Assigned SIMs
+      </Typography>
+      {renderTable(rows1, page1, rowsPerPage1, columns1, setPage1, setRowsPerPage1)}
 
-                                }}
-                            >All Assigned SIM</Typography>
-                        </Grid>
-                    </Paper>
-                </Box>
-                <Box component="main" sx={{ flexGrow: 1, paddingTop: "1%", width: '100%' }} >
+      <Typography variant="h5" gutterBottom>
+        All Assigned CPE
+      </Typography>
+      {renderTable(rows2, page2, rowsPerPage2, columns2, setPage2, setRowsPerPage2)}
 
-                    <Paper elevation={10}>
-                        <TableContainer sx={{ maxHeight: 600 }}>
-                            <Table stickyHeader size='medium' padding="normal">
-                                <TableHead>
-                                    <TableRow>
-                                        {columns.map((column) => (
-                                            <TableCell style={{ backgroundColor: '#253A7D', color: 'white' }} key={column.id} sx={{ textAlign: 'left' }}><Typography fontFamily={'Sans-serif'}>{column.name}</Typography></TableCell>
-                                        ))}
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    {rows &&
-                                        rows
-                                            .slice(page * rowperpage, page * rowperpage + rowperpage)
-                                            .map((row, i) => {
-                                                return (
-                                                    <TableRow
-                                                        key={i}
-
-                                                        onMouseEnter={() => handleRowMouseEnter(row)}
-                                                        onMouseLeave={handleRowMouseLeave}
-                                                        sx={
-                                                            highlightedRow === row
-                                                                ? { backgroundColor: '#F4C22E' }
-                                                                : {}
-                                                        }
-                                                    >
-                                                        {columns.map((column) => (
-                                                            <TableCell key={column.id} sx={{ textAlign: 'left' }}>
-                                                                {row[column.id]}
-                                                            </TableCell>
-                                                        ))}
-                                                    </TableRow>
-                                                );
-                                            })}
-                                </TableBody>
-                            </Table>
-                        </TableContainer>
-                        <TablePagination
-                        sx={{color:'#253A7D'}}
-                            rowsPerPageOptions={[5, 10, 25]}
-                            rowsPerPage={rowperpage}
-                            page={page}
-                            count={rows.length}
-                            component="div"
-                            onPageChange={handlechangepage}
-                            onRowsPerPageChange={handleRowsPerPage}
-                        />
-
-                    </Paper>
-
-                    <Box sx={{ paddingLeft: '16px', paddingBottom: '16px', paddingTop: '14px', display: 'flex', gap: '16px' }}>
-                        {/* <Button variant="contained" backgroundColor="#6471B5" onClick={handleButtonClick}>
-                            ADD NEW
-                        </Button>
-
-                        <Button variant="contained" backgroundColor="#6471B5" onClick={e=>navigate('/showCommison')} sx={{ marginLeft: '16px' }}>
-                            SHOW COMMISSIONS
-                        </Button> */}
-                    </Box>
-                </Box>
-            </Box>
-            <Box sx={{ paddingLeft: 1, paddingTop: 6.2 }} >
-
-            </Box>
-
-
-        </Box>
-    )
-};
+      <Typography variant="h5" gutterBottom>
+        All Assigned Devices
+      </Typography>
+      {renderTable(rows3, page3, rowsPerPage3, columns3, setPage3, setRowsPerPage3)}
+    </Box>
+  );
+}

@@ -20,10 +20,9 @@ import dayjs from 'dayjs';
 import FourG from '../../assets/FourG.png';
 import FiveG from '../../assets/FiveG.png';
 import CPE from '../../assets/CPE.png';
-// import FourGone  '../../assets/FourGone.png';
 import FourGone from '../../assets/FourGone.png';
-import RouterIcon from '@mui/icons-material/Router';
 import wifiRouter from '../../assets/wifiRouter.png';
+
 const Riple = ({ color, size, text, textColor }) => (
   <Box
     sx={{
@@ -67,13 +66,15 @@ export default function SessionsOverview() {
     CPE: { active: 0, inactive: 0, total: 0 },
   });
   const [loading, setLoading] = useState(false);
-  const [countdown, setCountdown] = useState(120); // Countdown in seconds
+  const [countdown, setCountdown] = useState(120);
 
   const fetchData = async (ratType) => {
     try {
-      const [activeRes, inactiveRes] = await Promise.all([
-        axios.get(
-          `https://bssproxy01.neotel.nr/udrs/api/udr/subscriber/session/registrations/${date}/${ratType}/REG`,
+      let activeRes, inactiveRes;
+
+      if (ratType === 'CPE') {
+        activeRes = await axios.get(
+          `https://bssproxy01.neotel.nr/ftth/api/aaa/subscriber/session/registrations/active/${date}`,
           {
             headers: {
               Authorization: `Bearer ${tokenValue}`,
@@ -81,9 +82,10 @@ export default function SessionsOverview() {
               'Content-Type': 'application/json',
             },
           }
-        ),
-        axios.get(
-          `https://bssproxy01.neotel.nr/udrs/api/udr/subscriber/session/registrations/${date}/${ratType}/UNREG`,
+        );
+
+        inactiveRes = await axios.get(
+          `https://bssproxy01.neotel.nr/ftth/api/aaa/subscriber/session/registrations/inactive/${date}`,
           {
             headers: {
               Authorization: `Bearer ${tokenValue}`,
@@ -91,8 +93,31 @@ export default function SessionsOverview() {
               'Content-Type': 'application/json',
             },
           }
-        ),
-      ]);
+        );
+      } else {
+        [activeRes, inactiveRes] = await Promise.all([
+          axios.get(
+            `https://bssproxy01.neotel.nr/udrs/api/udr/subscriber/session/registrations/${date}/${ratType}/REG`,
+            {
+              headers: {
+                Authorization: `Bearer ${tokenValue}`,
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+              },
+            }
+          ),
+          axios.get(
+            `https://bssproxy01.neotel.nr/udrs/api/udr/subscriber/session/registrations/${date}/${ratType}/UNREG`,
+            {
+              headers: {
+                Authorization: `Bearer ${tokenValue}`,
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+              },
+            }
+          ),
+        ]);
+      }
 
       const activeCount = activeRes.data?.length || 0;
       const inactiveCount = inactiveRes.data?.length || 0;
@@ -119,18 +144,17 @@ export default function SessionsOverview() {
 
     loadAllData();
 
-    // Countdown logic
     const timer = setInterval(() => {
       setCountdown((prev) => {
         if (prev <= 1) {
-          loadAllData(); // Refresh data when countdown ends
-          return 120; // Reset the countdown
+          loadAllData();
+          return 120;
         }
         return prev - 1;
       });
-    }, 1000); // Countdown updates every second
+    }, 1000);
 
-    return () => clearInterval(timer); // Cleanup interval on component unmount
+    return () => clearInterval(timer);
   }, [date]);
 
   const handleNavigate = (ratType) => {
@@ -157,12 +181,7 @@ export default function SessionsOverview() {
         alignItems="center"
         style={{ height: '60vh' }}
       >
-        <Riple
-          color="#FAC22E"
-          size="large"
-          text="Loading..."
-          textColor="#253A7D"
-        />
+        <Riple color="#FAC22E" size="large" text="Loading..." textColor="#253A7D" />
       </Grid>
     );
   }
@@ -226,10 +245,7 @@ export default function SessionsOverview() {
                   </TableCell>
                   <TableCell>
                     <Tooltip title="View Details">
-                      <IconButton
-                        color="primary"
-                        onClick={() => handleNavigate(row.key)}
-                      >
+                      <IconButton color="primary" onClick={() => handleNavigate(row.key)}>
                         <Visibility />
                       </IconButton>
                     </Tooltip>

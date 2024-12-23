@@ -156,6 +156,7 @@ import CoreBalanceMgmt from '../pages/Agent/CoreBalanceMgmt';
 import AllTransaction from '../pages/Agent/AllTransaction';
 import AddBroadbandPlan from '../pages/BroadbandPlan/AddBroadbandPlan';
 import AssignProducts from '../pages/Agent/AssignProducts';
+import ShowProductsPage from '../pages/Agent/ShowProductPage';
 
 export const Routers = () => {
     return (
@@ -196,6 +197,7 @@ export const Routers = () => {
                         <Route path='/partner/coreBalanceManagment' element={<CoreBalanceMgmt />} />
                         <Route path='/partner/allTransation' element={<AllTransaction />} />
                         <Route path='/partner/AssignProducts' element={<AssignProducts />} />
+                        <Route path='/partner/showProductPage' element={<ShowProductsPage />} />
 
 
                         {/*Add  Payment */}

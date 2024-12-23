@@ -19,19 +19,20 @@ import { Riple } from 'react-loading-indicators';
 
 export default function SessionDetails() {
   const location = useLocation();
-  const { date } = location.state || {}; // Extract date from navigation state
-  const ratType = location.pathname.split('/').pop(); // Extract RAT type from URL
+  const { date } = location.state || {};
+  const ratType = location.pathname.split('/').pop();
 
   const tokenValue = localStorage.getItem('token');
 
   const [rows, setRows] = useState([]);
-  const [filteredRows, setFilteredRows] = useState([]); // For storing REG/UNREG filtered rows
+  const [filteredRows, setFilteredRows] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [viewType, setViewType] = useState('REG'); // Default to REG sessions
+  const [viewType, setViewType] = useState('REG');
+  const [columns, setColumns] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
-  // Updated columns for displaying only required fields
-  const columns = [
+  const UTRA_NR_COLUMNS = [
     { id: 'supi', name: 'IMSI' },
     { id: 'gpsi', name: 'MSISDN' },
     { id: 'attachStatus', name: 'Status' },
@@ -39,10 +40,27 @@ export default function SessionDetails() {
     { id: 'smfPolicyId', name: 'Policy ID' },
   ];
 
+  const CPE_COLUMNS = [
+    { id: 'sessionId', name: 'Session ID' },
+    { id: 'user', name: 'User' },
+    { id: 'deviceId', name: 'Device ID' },
+    { id: 'startTimeTs', name: 'Start Time' },
+    { id: 'sessionStatus', name: 'Status' },
+    { id: 'framedIp', name: 'IP Address' },
+  ];
+
   const fetchData = async () => {
+    setIsLoading(true);
     try {
-      const url = `https://bssproxy01.neotel.nr/udrs/api/udr/subscriber/session/registrations/${date}/${ratType}/${viewType.toUpperCase()}`;
-      const response = await axios.get(url, {
+      const isCPE = ratType === 'CPE';
+      const baseUrl = isCPE
+        ? `https://bssproxy01.neotel.nr/ftth/api/aaa/subscriber/session/registrations`
+        : `https://bssproxy01.neotel.nr/udrs/api/udr/subscriber/session/registrations`;
+      const endpoint = isCPE
+        ? `${baseUrl}/${viewType === 'REG' ? 'active' : 'inactive'}/${date}`
+        : `${baseUrl}/${date}/${ratType}/${viewType.toUpperCase()}`;
+
+      const response = await axios.get(endpoint, {
         headers: {
           Authorization: `Bearer ${tokenValue}`,
           Accept: 'application/json',
@@ -50,12 +68,20 @@ export default function SessionDetails() {
         },
       });
 
-      setRows(response.data || []);
+      const data = response.data || [];
+      setRows(data);
       setFilteredRows(
-        response.data.filter((row) => row.attachStatus === viewType.toUpperCase())
+        data.filter((row) =>
+          isCPE ? true : row.attachStatus === viewType.toUpperCase()
+        )
       );
+      setColumns(isCPE ? CPE_COLUMNS : UTRA_NR_COLUMNS);
     } catch (error) {
       console.error('Error fetching session details:', error);
+      setRows([]);
+      setFilteredRows([]);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -63,7 +89,7 @@ export default function SessionDetails() {
     if (date && ratType) {
       fetchData();
     }
-  }, [date, ratType, viewType]); // Re-fetch data when viewType changes
+  }, [date, ratType, viewType]);
 
   const handlePageChange = (event, newPage) => {
     setPage(newPage);
@@ -118,7 +144,18 @@ export default function SessionDetails() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {filteredRows.length > 0 ? (
+              {isLoading ? (
+                <TableRow>
+                  <TableCell colSpan={columns.length} align="center">
+                    <Riple
+                      color="#FAC22E"
+                      size="large"
+                      text="Loading..."
+                      textColor="#253A7D"
+                    />
+                  </TableCell>
+                </TableRow>
+              ) : filteredRows.length > 0 ? (
                 filteredRows
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row, index) => (
@@ -133,15 +170,7 @@ export default function SessionDetails() {
               ) : (
                 <TableRow>
                   <TableCell colSpan={columns.length} align="center">
-                  <Grid
-                    container
-                    justifyContent="center"
-                    alignItems="center"
-                    style={{ height: '60vh' }}
-
-                >
-                    <Riple color="#FAC22E" size="large" text="Loading..." textColor="#253A7D" />
-                </Grid>
+                    No records present
                   </TableCell>
                 </TableRow>
               )}
@@ -153,7 +182,7 @@ export default function SessionDetails() {
           rowsPerPageOptions={[5, 10, 25]}
           rowsPerPage={rowsPerPage}
           page={page}
-          count={filteredRows.length}
+          count={filteredRows.length || 0}
           component="div"
           onPageChange={handlePageChange}
           onRowsPerPageChange={handleRowsPerPageChange}

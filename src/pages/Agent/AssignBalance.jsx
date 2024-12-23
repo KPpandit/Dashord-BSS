@@ -109,6 +109,28 @@ export default function AssignBalance() {
     }
   };
 
+  const validateTotalUnits = (value) => {
+    if (/^\d{0,4}$/.test(value)) {
+      setTotalUnits(value);
+    }
+  };
+
+  const validateOfferedDiscount = (value) => {
+    if (/^\d{0,3}$/.test(value)) {
+      setOfferedDiscount(value);
+    }
+  };
+
+  const handleChange = (setter, maxDigits) => (event) => {
+    const value = event.target.value.replace(/\D/g, ""); // Remove all non-digits
+    const numericValue = parseInt(value, 10);
+    if (!isNaN(numericValue) && numericValue >= 0) {
+      setter(value.slice(0, maxDigits)); // Limit to max digits
+    } else {
+      setter(""); // Clear invalid or negative input
+    }
+  };
+
   return (
     <Box
       sx={{
@@ -143,6 +165,7 @@ export default function AssignBalance() {
             </Typography>
             <TextField
               label="Partner ID"
+              disabled
               type="number"
               value={partnerId}
               onChange={(e) => setPartnerId(e.target.value)}
@@ -151,6 +174,7 @@ export default function AssignBalance() {
             />
             <TextField
               label="Product"
+              disabled
               value={product}
               onChange={(e) => setProduct(e.target.value)}
               fullWidth
@@ -158,26 +182,27 @@ export default function AssignBalance() {
             />
             <TextField
               label="Product Type"
+              disabled
               value={productType}
               onChange={(e) => setProductType(e.target.value)}
               fullWidth
               margin="normal"
             />
             <TextField
-              label="Total Units"
-              type="number"
+              label="Total $ AUD "
               value={totalUnits}
-              onChange={(e) => setTotalUnits(e.target.value)}
+              onChange={handleChange(setTotalUnits, 5)}
               fullWidth
               margin="normal"
+              helperText="Max 5 digits"
             />
             <TextField
               label="Offered Discount (%)"
-              type="number"
               value={offeredDiscount}
-              onChange={(e) => setOfferedDiscount(e.target.value)}
+              onChange={handleChange(setOfferedDiscount, 3)}
               fullWidth
               margin="normal"
+              // helperText="Max 3 digits"
             />
             <Button
               variant="contained"

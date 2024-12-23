@@ -17,13 +17,19 @@ export default function AllTransaction() {
     const columns = [
         { id: 'crmPartnerId', name: 'Partner ID' },
         { id: 'txnDate', name: 'Date' },
-        { id: 'txn_reference', name: 'Refrence' },
-        { id: 'amount', name: 'Core Balance' },
+        { id: 'txn_reference', name: 'Reference' },
+        { id: 'coreBalance', name: 'Core Balance' }, // New Column
+        { id: 'amount', name: 'Amount' },
         { id: 'discountApplied', name: 'Discount' },
         { id: 'txn_type', name: 'Type' },
         { id: 'direction', name: 'Direction' },
-    ];
 
+    ];
+    const calculateCoreBalance = (amount, discount) => {
+        const discountPercentage = parseFloat(discount) || 0;
+        const coreBalance = amount / (1 - discountPercentage / 100);
+        return Math.round(coreBalance); // Round to the nearest integer
+    };
     const getCurrentDate = () => {
         const today = new Date();
         const year = today.getFullYear();
@@ -180,19 +186,22 @@ export default function AllTransaction() {
                                                     <TableCell key={column.id} sx={{ textAlign: 'left' }}>
                                                         {column.id === 'direction' ? (
                                                             <>
-                                                                {row[column.id] === 'INWARD' ? (
-                                                                    <>
-                                                                          <ArrowDownwardIcon style={{ color: 'green', marginRight: 5 }} sx={{ paddingTop: 0 }} />
-                                                                        {row[column.id]}
-                                                                    </>
-                                                                ) : (
-                                                                    <>
-                                                                      
-                                                                        <ArrowUpwardIcon style={{ color: 'red', marginRight: 5 }} sx={{ paddingTop: 0 }} />
-                                                                        {row[column.id]}
-                                                                    </>
-                                                                )}
+                                                                <Stack direction="row" alignItems="center" spacing={1}>
+                                                                    {row[column.id] === 'INWARD' ? (
+                                                                        <>
+                                                                            <ArrowDownwardIcon style={{ color: 'green' }} />
+                                                                            <Typography>{row[column.id]}</Typography>
+                                                                        </>
+                                                                    ) : (
+                                                                        <>
+                                                                            <ArrowUpwardIcon style={{ color: 'red' }} />
+                                                                            <Typography>{row[column.id]}</Typography>
+                                                                        </>
+                                                                    )}
+                                                                </Stack>
                                                             </>
+                                                        ) : column.id === 'coreBalance' ? (
+                                                            calculateCoreBalance(row.amount, row.discountApplied) // Calculate core balance
                                                         ) : (
                                                             row[column.id]
                                                         )}
@@ -222,9 +231,10 @@ export default function AllTransaction() {
                     aria-controls="simple-menu"
                     aria-haspopup="true"
                     onClick={handleMenuClick}
-                    sx={{ marginTop: 2, marginLeft: 0 ,boxShadow:24,
-                        backgroundColor:'white',
-                        color:'#253A7D',
+                    sx={{
+                        marginTop: 2, marginLeft: 0, boxShadow: 24,
+                        backgroundColor: 'white',
+                        color: '#253A7D',
                         border: '2px solid #253A7D',
                         '&:hover': {
                             backgroundColor: '#f1f1f1',
