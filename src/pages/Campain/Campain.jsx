@@ -173,7 +173,7 @@ export default function Campaign() {
                 size="large"
                 startIcon={<SendIcon />}
                 fullWidth
-                sx={{ py: 2,bgcolor:"#253A7D"
+                sx={{ py: 1,bgcolor:"#253A7D"
                  }}
               >
                 Send SMS
