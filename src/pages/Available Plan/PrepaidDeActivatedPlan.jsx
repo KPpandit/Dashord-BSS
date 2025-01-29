@@ -21,7 +21,7 @@ export default function PrepaidDeActivatedPlan() {
 
     useEffect(() => {
         // Fetch category names and associated plans from the API in a single effect
-        fetch('https://bssproxy01.neotel.nr/abmf-prepaid-s/api/prepaid/packs?pack_status=Rejected')
+        fetch('https://bssproxy01.neotel.nr/abmf-prepaid/api/prepaid/packs?pack_status=Rejected')
             .then(response => response.json())
             .then(data => {
                 // Extract unique category names from the data
@@ -108,7 +108,7 @@ export default function PrepaidDeActivatedPlan() {
                         padding: 1,
                         paddingLeft: 2,
                     }}>
-                       Prepaid Un-Approved Plan
+                        Unapproved Packs
                     </Typography>
                 </Paper>
 
@@ -152,7 +152,7 @@ export default function PrepaidDeActivatedPlan() {
                     overflowY: 'auto',
                     position: 'relative',
                     minHeight: 'calc(100vh - 144px)',
-                    margin:'-45px'
+                    margin: '-45px'
                 }}
             >
                 {selectedCategory && (
@@ -181,7 +181,7 @@ export default function PrepaidDeActivatedPlan() {
                                                     margin: '8px',
                                                     border: '4px solid #e0e0e0',
                                                     backgroundColor: '#253A7D',
-                                                    
+
                                                     flex: '1 0 auto',
                                                     // height: '270px',
                                                     borderRadius: '40px',
@@ -221,44 +221,22 @@ export default function PrepaidDeActivatedPlan() {
                                                             </Grid>
                                                         </Grid>
                                                         <Grid item xs={6} sx={{ marginTop: 2 }}>
-                                                            <Grid container spacing={1}>
-                                                                <Grid item xs={12}>
-                                                                    <Typography>Validity :</Typography>
-                                                                </Grid>
-                                                                <Grid item xs={12}>
-                                                                    <Typography>{plan.price} Days</Typography>
-                                                                </Grid>
-                                                            </Grid>
+                                                            <Typography>Validity: {plan.validity ?? 0} Days</Typography>
                                                         </Grid>
-                                                         <Grid item xs={6} sx={{ marginTop: 2 }}>
-                                                            <Grid container spacing={1}>
-                                                                <Grid item xs={12}>
-                                                                    <Typography>Data :</Typography>
-                                                                </Grid>
-                                                                <Grid item xs={12}>
-                                                                    <Typography>{plan.data_balance} {plan.data_balance_parameter}</Typography>
-                                                                </Grid>
-                                                            </Grid>
+                                                        <Grid item xs={6} sx={{ marginTop: 2 }}>
+                                                            <Typography>
+                                                                Data: {plan.data_balance === 931 ? 'Unlimited' : `${plan.data_balance ?? 0} ${plan.data_balance_parameter ?? ''}`}
+                                                            </Typography>
                                                         </Grid>
                                                         <Grid item xs={6} sx={{ marginTop: 1 }}>
-                                                            <Grid container spacing={1}>
-                                                                <Grid item xs={12}>
-                                                                    <Typography>Voice :</Typography>
-                                                                </Grid>
-                                                                <Grid item xs={12}>
-                                                                    <Typography>{plan.onn_call_balance} mins</Typography>
-                                                                </Grid>
-                                                            </Grid>
+                                                            <Typography>
+                                                                Voice: {plan.onn_call_balance === 1666 ? 'Unlimited' : `${plan.onn_call_balance ?? 0} mins`}
+                                                            </Typography>
                                                         </Grid>
                                                         <Grid item xs={6} sx={{ marginTop: 1 }}>
-                                                            <Grid container spacing={1}>
-                                                                <Grid item xs={12}>
-                                                                    <Typography>SMS :</Typography>
-                                                                </Grid>
-                                                                <Grid item xs={12}>
-                                                                    <Typography>{plan.onn_sms_balance}</Typography>
-                                                                </Grid>
-                                                            </Grid>
+                                                            <Typography>
+                                                                SMS: {plan.onn_sms_balance === 99999 ? 'Unlimited' : plan.onn_sms_balance ?? 0}
+                                                            </Typography>
                                                         </Grid>
                                                         <Grid item xs={12} sx={{ marginTop: 3 }}>
                                                             <Typography style={{ fontSize: '15px', fontFamily: 'Roboto' }}>Additional Benefits(s)</Typography>

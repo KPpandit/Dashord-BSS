@@ -9,7 +9,7 @@ import AddCategory from './AddCategory';
 import EditCategory from './EditCategory';
 export default function Category1() {
     const columns = [
-        { id: 'name', name: 'Name' },
+        { id: 'name', name: 'Category Name' },
     ];
     const [rows, setRows] = useState([]);
     const tokenValue = localStorage.getItem('token');
@@ -329,13 +329,13 @@ export default function Category1() {
                         variant="contained" backgroundColor="#253A7D" onClick={(e) => {
                             setOpenPopup(true);
                         }}>
-                        Add New
+                        Create New
                     </Button>
                 </Box>
             </Box>
 
             <Box sx={{ paddingLeft: 3, paddingTop: 1.5 }} >
-                <SelectedRecordDetails />
+                {/* <SelectedRecordDetails /> */}
             </Box>
             <Popup
                 title="Add Category"

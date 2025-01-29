@@ -82,7 +82,7 @@ export default function PackDetails(selectedRecordId) {
 
     const fetchAvailableBalance = async () => {
       try {
-        const response = await fetch(`https://bssproxy01.neotel.nr/abmf-prepaid-s/api/prepaid/customer/get/available/with/offered/balance?imsi=&msisdn=${id}`);
+        const response = await fetch(`https://bssproxy01.neotel.nr/abmf-prepaid/api/prepaid/customer/get/available/with/offered/balance?imsi=&msisdn=${id}`);
         const result = await response.json();
         setResult(result);
         formik.setValues({
@@ -100,7 +100,8 @@ export default function PackDetails(selectedRecordId) {
   }, [id, record]);
 
   const togglePaper = () => setShowPaper(!showPaper);
-
+  const formatValue = (value, divisor, suffix, unlimitedCheck = 999999999999) =>
+    value === unlimitedCheck ? 'Unlimited' : value ? Math.floor(value / divisor) + suffix : '';
   const defaultTheme = createTheme();
 
   return (
@@ -111,152 +112,29 @@ export default function PackDetails(selectedRecordId) {
         <Box sx={{ marginTop: 2, display: 'flex', flexDirection: 'column' }}>
           <Box component="form" onSubmit={formik.handleSubmit} noValidate>
             <Grid container spacing={2}>
-              {/* MSISDN and IMSI */}
-              <Grid item xs={4}>
-                <TextField
-                  label="MSISDN" fullWidth disabled value={formik.values.msisdn}
-                  InputLabelProps={{ shrink: true }}
-                />
-              </Grid>
-              <Grid item xs={4}>
-                <TextField
-                  label="IMSI" fullWidth disabled value={formik.values.imsi}
-                  InputLabelProps={{ shrink: true }}
-                />
-              </Grid>
-              {/* Customer Data */}
-              <Grid item xs={4}>
-                <TextField
-                  label="Customer Id" fullWidth disabled value={formik.values.customer_id}
-                  InputLabelProps={{ shrink: true }}
-                />
-              </Grid>
-              <Grid item xs={4}>
-                <TextField label="Pack Name" fullWidth disabled value={result.pack_name || ''} InputLabelProps={{ shrink: true }} />
-              </Grid>
-              <Grid item xs={4}>
-                <TextField
-                  label="Data Available"
-                  fullWidth
-                  disabled
-                  value={result.total_data_available ? Math.floor(result.total_data_available / (1024 * 1024 * 1024)) + ' GB' : ''}
-                  InputLabelProps={{ shrink: true }}
-                />
-              </Grid>
-              <Grid item xs={4}>
-                <TextField
-                  label="Data Offered"
-                  fullWidth
-                  disabled
-                  value={result.offered_data ? Math.floor(result.offered_data / (1024 * 1024 * 1024)) + ' GB' : ''}
-                  InputLabelProps={{ shrink: true }}
-                />
-              </Grid>
-              <Grid item xs={4}>
-                <TextField
-                  label="Voice ON NET Available"
-                  fullWidth
-                  disabled
-                  value={result.total_onn_calls_available ? Math.floor(result.total_onn_calls_available / 60) + ' min' : ''}
-                  InputLabelProps={{ shrink: true }}
-                />
-              </Grid>
-              <Grid item xs={4}>
-                <TextField
-                  label="Voice Off NET Available"
-                  fullWidth
-                  disabled
-                  value={result.total_ofn_calls_available ? Math.floor(result.total_ofn_calls_available / 60) + ' min' : ''}
-                  InputLabelProps={{ shrink: true }}
-                />
-              </Grid>
-              <Grid item xs={4}>
-                <TextField
-                  label="Voice ON NET Offered"
-                  fullWidth
-                  disabled
-                  value={result.offered_onn_calls ? Math.floor(result.offered_onn_calls / 60) + ' min' : ''}
-                  InputLabelProps={{ shrink: true }}
-                />
-              </Grid>
-              <Grid item xs={4}>
-                <TextField
-                  label="Voice OFF NET Offered"
-                  fullWidth
-                  disabled
-                  value={result.offered_ofn_calls ? Math.floor(result.offered_ofn_calls / 60) + ' min' : ''}
-                  InputLabelProps={{ shrink: true }}
-                />
-              </Grid>
-
-
-              <Grid item xs={4}>
-                <TextField label="SMS ON NET Available" fullWidth disabled value={result.total_onn_sms_available || ''} InputLabelProps={{ shrink: true }} />
-              </Grid>
-              <Grid item xs={4}>
-                <TextField label="SMS OFF NET Available" fullWidth disabled value={result.total_ofn_sms_available || ''} InputLabelProps={{ shrink: true }} />
-              </Grid>
-              <Grid item xs={4}>
-                <TextField label="SMS ON NET Offered" fullWidth disabled value={result.offered_onn_sms || ''} InputLabelProps={{ shrink: true }} />
-              </Grid>
-              <Grid item xs={4}>
-                <TextField label="SMS OFF NET Offered" fullWidth disabled value={result.offered_ofn_sms || ''} InputLabelProps={{ shrink: true }} />
-              </Grid>
-              <Grid item xs={4}>
-                <TextField label="Validity" fullWidth disabled value={result.pack_valid_for || ''} InputLabelProps={{ shrink: true }} />
-              </Grid>
-              <Grid item xs={4}>
-                <TextField label="Expiration Date" fullWidth disabled value={result.expiration_date || ''} InputLabelProps={{ shrink: true }} />
-              </Grid>
+              {[
+                { label: 'MSISDN', value: formik.values.msisdn },
+                { label: 'IMSI', value: formik.values.imsi },
+                { label: 'Customer Id', value: formik.values.customer_id },
+                { label: 'Pack Name', value: result.pack_name },
+                { label: 'Data Available', value: formatValue(result.total_data_available, 1024 ** 3, ' GB') },
+                { label: 'Data Offered', value: formatValue(result.offered_data, 1024 ** 3, ' GB') },
+                { label: 'Voice ON NET Available', value: formatValue(result.total_onn_calls_available, 60, ' min') },
+                { label: 'Voice Off NET Available', value: formatValue(result.total_ofn_calls_available, 60, ' min') },
+                { label: 'Voice ON NET Offered', value: formatValue(result.offered_onn_calls, 60, ' min') },
+                { label: 'Voice OFF NET Offered', value: formatValue(result.offered_ofn_calls, 60, ' min') },
+                { label: 'SMS ON NET Available', value: result.total_onn_sms_available },
+                { label: 'SMS OFF NET Available', value: result.total_ofn_sms_available },
+                { label: 'SMS ON NET Offered', value: result.offered_onn_sms },
+                { label: 'SMS OFF NET Offered', value: result.offered_ofn_sms },
+                { label: 'Validity', value: result.pack_valid_for },
+                { label: 'Expiration Date', value: result.expiration_date }
+              ].map(({ label, value }, index) => (
+                <Grid item xs={4} key={index}>
+                  <TextField label={label} fullWidth disabled value={value || ''} InputLabelProps={{ shrink: true }} />
+                </Grid>
+              ))}
             </Grid>
-
-            {/* Change Pack Section */}
-            {/* <Box sx={{ marginTop: 2 }}>
-              <Box sx={{ backgroundColor: '#253A7D' }}>
-                <Button onClick={togglePaper}>
-                  <Typography variant="body1" sx={{ marginRight: 1, color: 'white' }}>Change Pack</Typography>
-                  {showPaper ? <RemoveIcon sx={{ color: 'white' }} /> : <AddIcon sx={{ color: 'white' }} />}
-                </Button>
-              </Box>
-
-              {showPaper && (
-                <Paper sx={{ padding: 2, marginTop: 2 }}>
-                  <Grid container spacing={2}>
-                    <Grid item xs={12}>
-                      <FormControl fullWidth>
-                        <TextField
-                          select label="Select Pack" required value={packId}
-                          onChange={(event) => {
-                            const selected = data.find(pack => pack.rating_profile_id === event.target.value);
-                            setPackId(event.target.value);
-                            setSelectedPack({
-                              pack_name: selected.pack_name,
-                              rates_offer: selected.rates_offer
-                            });
-                          }}
-                        >
-                          {data.map(pack => (
-                            <MenuItem key={pack.rating_profile_id} value={pack.rating_profile_id}>
-                              {`${pack.pack_name} - ${pack.rates_offer}`}
-                            </MenuItem>
-                          ))}
-                        </TextField>
-                      </FormControl>
-                    </Grid>
-                  </Grid>
-                  <Grid item xs={12} sx={{ marginTop: 2 }}>
-                    <Button
-                      style={{ backgroundColor: '#F6B625' }}
-                      fullWidth variant="contained"
-                      disabled={!packId}
-                      onClick={formik.handleSubmit}
-                    >
-                      Submit
-                    </Button>
-                  </Grid>
-                </Paper>
-              )}
-            </Box> */}
           </Box>
         </Box>
       </Container>

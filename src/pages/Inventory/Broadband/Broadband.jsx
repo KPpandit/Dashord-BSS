@@ -146,186 +146,95 @@ export default function Broadband(props) {
     };
 
     const SelectedRecordDetails = () => {
-
-
-        if (selectedRecord) {
-            return (
-                <Grid>
-                    <Paper elevation={10}>
-
-
-                        <Card variant="outlined" sx={{ width: 380, fontFamily: "Roboto" }}>
-
-                            <Box sx={{ p: 1, }}>
-
-                                <Grid sx={{ padding: 1, backgroundColor: '#253A7D' }}>
-                                    <Stack direction="row"
-                                        sx={{ borderRadius: '30%', }}
-                                        justifyContent="space-between" alignItems="center">
-                                        <Typography
-                                            style={{
-                                                fontSize: '17px',
-
-                                                color: 'white',
-                                                marginBottom: '2px',
-
-                                                // Add this line for circular border
-                                                backgroundColor: '#253A7D',  // Add this line for background color
-                                                padding: '2px',  // Add this line for padding
-                                                display: 'inline-block',
-
-                                            }}
-                                            gutterBottom component="div">
-                                            Manufactorer : {selectedRecord.deviceManufactorer}
-                                        </Typography>
-
-                                    </Stack>
-                                </Grid>
-
-                            </Box>
-                            <Grid container>
-                                <Grid item xs={12} paddingLeft={1}>
-                                    <Divider light />
-                                    <Box sx={{ p: 1 }}>
-                                        <Grid container>
-                                            <Grid item xs={6}>
-                                                <Typography sx={{ fontWeight: '480', fontSize: '17px', textAlign: 'left' }}>
-                                                    Serial Number :</Typography>
-                                            </Grid>
-                                            <Grid item xs={6} alignItems={'left'} sx={{ marginLeft: 0 }} >
-                                                <Typography
-                                                    sx={{ fontSize: '17px', textAlign: 'left' }}
-                                                    gutterBottom variant="body2">
-                                                    {selectedRecord.serialNumber}
-                                                </Typography>
-                                            </Grid>
+        if (!selectedRecord) return null;
+    
+        const displayValue = (value) => value || "N/A";
+    
+        const details = [
+            { label: "Serial Number", value: selectedRecord.serialNumber },
+            { label: "Brand", value: selectedRecord.brand },
+            { label: "Allocation Date", value: selectedRecord.allocationDate },
+            { label: "Create Date Time", value: selectedRecord.creationTime },
+            { label: "Device Static IP", value: selectedRecord.deviceStaticIp },
+            { label: "Device Status", value: selectedRecord.deviceStatus },
+        ];
+    
+        return (
+            <Grid container justifyContent="center">
+                <Paper elevation={10} sx={{ borderRadius: "16px", overflow: "hidden", width: 400 }}>
+                    <Card
+                        sx={{
+                            fontFamily: "Roboto",
+                            backgroundColor: "#F7F9FC",
+                            border: "1px solid #E0E3E7",
+                        }}
+                    >
+                        {/* Header Section */}
+                        <Box
+                            sx={{
+                                padding: 2,
+                                backgroundColor: "#253A7D",
+                                color: "white",
+                                textAlign: "left",
+                            }}
+                        >
+                            <Typography
+                                sx={{
+                                    fontSize: "18px",
+                                    fontWeight: "600",
+                                    textTransform: "uppercase",
+                                }}
+                            >
+                                Manufacturer: {displayValue(selectedRecord.deviceManufactorer)}
+                            </Typography>
+                        </Box>
+    
+                        {/* Details Section */}
+                        <Box sx={{ padding: 2 }}>
+                            {details.map(({ label, value }, index) => (
+                                <React.Fragment key={label}>
+                                    <Grid container sx={{ alignItems: "center", marginY: 1 }}>
+                                        <Grid item xs={5}>
+                                            <Typography
+                                                sx={{
+                                                    fontSize: "16px",
+                                                    fontWeight: 500,
+                                                    color: "#4A5568",
+                                                    textAlign: "left",
+                                                    paddingRight: 1,
+                                                }}
+                                            >
+                                                {label}:
+                                            </Typography>
                                         </Grid>
-
-                                    </Box>
-                                    <Divider />
-                                    <Box sx={{ p: 1 }}>
-                                        <Grid container>
-                                            <Grid item xs={3}>
-                                                <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
-                                                    Brand :
-                                                </Typography>
-                                            </Grid>
-                                            <Grid item xs={8} alignItems={'left'} sx={{ marginLeft: 0 }} >
-                                                <Typography
-                                                    sx={{ fontSize: '17px', textAlign: 'left' }}
-                                                    gutterBottom variant="body2">
-                                                    {selectedRecord.brand}
-                                                </Typography>
-                                            </Grid>
+                                        <Grid item xs={7}>
+                                            <Typography
+                                                sx={{
+                                                    fontSize: "16px",
+                                                    fontWeight: 400,
+                                                    color: "#2D3748",
+                                                    textAlign: "left",
+                                                }}
+                                            >
+                                                {displayValue(value)}
+                                            </Typography>
                                         </Grid>
-                                    </Box>
-                                    <Divider light />
-                                    <Box sx={{ p: 1 }}>
-                                        <Grid container>
-                                            <Grid item xs={4}>
-                                                <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
-                                                    Allocation :
-                                                </Typography>
-                                            </Grid>
-                                            <Grid item xs={6} alignItems={'left'} sx={{ marginLeft: 0 }} >
-                                                <Typography
-                                                    sx={{ fontSize: '17px', textAlign: 'left' }}
-                                                    gutterBottom variant="body2">
-                                                    {selectedRecord.allocationDate}
-                                                </Typography>
-                                            </Grid>
-                                        </Grid>
-                                    </Box>
-                                    <Divider light />
-                                    <Box sx={{ p: 1 }}>
-                                        <Grid container>
-                                            <Grid item xs={5}>
-                                                <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
-                                                    Creation Time:
-                                                </Typography>
-                                            </Grid>
-                                            <Grid item xs={6} alignItems={'left'} sx={{ marginLeft: 0 }} >
-                                                <Typography
-                                                    sx={{ fontSize: '17px', textAlign: 'left' }}
-                                                    gutterBottom variant="body2">
-                                                    {selectedRecord.creationTime}
-                                                </Typography>
-                                            </Grid>
-                                        </Grid>
-                                    </Box>
-                                    <Divider light />
-                                    <Box sx={{ p: 1 }}>
-                                        <Grid container>
-                                            <Grid item xs={5}>
-                                                <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
-                                                    Device Static IP :
-                                                </Typography>
-                                            </Grid>
-                                            <Grid item xs={6} alignItems={'left'} sx={{ marginLeft: 0 }} >
-                                                <Typography
-                                                    sx={{ fontSize: '17px', textAlign: 'left' }}
-                                                    gutterBottom variant="body2">
-                                                    {selectedRecord.deviceStaticIp}
-                                                </Typography>
-                                            </Grid>
-                                        </Grid>
-                                    </Box>
-                                    <Divider light />
-
-                                    <Box sx={{ p: 1 }}>
-                                        <Grid container>
-                                            <Grid item xs={5}>
-                                                <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
-                                                    Device Status :
-                                                </Typography>
-                                            </Grid>
-                                            <Grid item xs={6} alignItems={'left'} sx={{ marginLeft: 0 }}>
-                                                <Typography
-                                                    sx={{ fontSize: '17px', textAlign: 'left' }}
-                                                    gutterBottom variant="body2">
-                                                    {selectedRecord.deviceStatus}
-                                                </Typography>
-                                            </Grid>
-                                        </Grid>
-                                    </Box>
-                                    <Divider light />
-                                </Grid>
-                            </Grid>
-
-                            <Grid container spacing={1} padding={1}>
-                                {/* <Grid item xs={12}>
-                                    <Button variant="contained"
-                                        sx={{ backgroundColor: '#253A7D', width:'100%',boxShadow: 20}}
-                                        onClick={() => {
-                                            navigate('/EditVendorManagement', { state: { selectObj: selectedRecord } })
-                                        }}
-                                    >Edit Record</Button>
-                                </Grid> */}
-                                <Grid item xs={12}>
-                                    <Button
-                                        onClick={() => {
-                                            handleOpenConfirmationDialog(selectedRecord.id)
-                                            console.log("From teh Customer Delete Button")
-                                        }}
-                                        sx={{ backgroundColor: '#253A7D', width: '100%', boxShadow: 20, marginY: 1 }}
-                                        variant="contained">Assign Broadband</Button>
-                                </Grid>
-
-
-
-
-                            </Grid>
-                        </Card>
-
-                    </Paper>
-
-                </Grid>
-            )
-        } else {
-            return
-            <></>
-        }
+                                    </Grid>
+                                    {index < details.length - 1 && (
+                                        <Divider light sx={{ marginY: 1 }} />
+                                    )}
+                                </React.Fragment>
+                            ))}
+                        </Box>
+    
+                        {/* Footer Section */}
+                       
+                    </Card>
+                </Paper>
+            </Grid>
+        );
     };
+    
 
     const handleSerch = async (e) => {
         e.preventDefault();
@@ -365,12 +274,12 @@ export default function Broadband(props) {
 
 
                                 }}
-                            >Broad Band</Typography>
+                            >Broadband</Typography>
                         </Grid>
                     </Paper>
                 </Box>
                 <Grid container padding={2}>
-                    <Grid item xs={4} sx={{ textAlign: 'right', marginY: -0.5 }} >
+                    <Grid item xs={12} sx={{ textAlign: 'right', marginY: -0.5 }} >
                         <form onSubmit={handleSerch}>
                             <Paper elevation={10} sx={{ marginBottom: 2 }}>
                                 <TextField
@@ -396,11 +305,11 @@ export default function Broadband(props) {
                             </Paper>
                         </form>
                     </Grid>
-                    <Grid item xs={8} sx={{ marginY: 1 }}>
+                    {/* <Grid item xs={8} sx={{ marginY: 1 }}>
                         <Button style={{ backgroundColor: '#FBB716', color: 'black' }} sx={{ marginX: 1, boxShadow: 20 }}>Export to PDF</Button>
                         <Button style={{ backgroundColor: '#FBB716', color: 'black' }} sx={{ marginX: 1, boxShadow: 20 }}>Export to CSV</Button>
                         <Button style={{ backgroundColor: '#FBB716', color: 'black' }} sx={{ boxShadow: 20 }}>Export to Excel</Button>
-                    </Grid>
+                    </Grid> */}
 
 
 
@@ -419,43 +328,37 @@ export default function Broadband(props) {
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                    {rows &&
-                                        rows
-                                            .slice(page * rowperpage, page * rowperpage + rowperpage)
-                                            .map((row, i) => {
-                                                return (
-                                                    <TableRow
-                                                        key={i}
-                                                        onClick={() => handleRowClick(row)}
-                                                        onMouseEnter={() => handleRowMouseEnter(row)}
-                                                        onMouseLeave={handleRowMouseLeave}
-                                                        sx={
-                                                            highlightedRow === row
-                                                                ? { backgroundColor: '#F6B625' }
-                                                                : {}
-                                                        }
-                                                    >
-                                                        {columns.map((column) => (
-                                                            console.log(column.id + "from customer row"),
+    {rows &&
+        rows
+            .slice(page * rowperpage, page * rowperpage + rowperpage)
+            .map((row, i) => (
+                <TableRow
+                    key={i}
+                    onClick={() => handleRowClick(row)}
+                    onMouseEnter={() => handleRowMouseEnter(row)}
+                    onMouseLeave={handleRowMouseLeave}
+                    sx={
+                        highlightedRow === row
+                            ? { backgroundColor: '#F6B625' }
+                            : {}
+                    }
+                >
+                    {columns.map((column) => {
+                        const value = row[column.id] ? String(row[column.id]) : 'N/A';
+                        return (
+                            <TableCell key={column.id} sx={{ textAlign: 'left', fontSize: '17px' }}>
+                                {column.id === 'allocationDate' ? (
+                                    <>{value}</>
+                                ) : (
+                                    <>{value}</>
+                                )}
+                            </TableCell>
+                        );
+                    })}
+                </TableRow>
+            ))}
+</TableBody>
 
-                                                            <TableCell key={column.id} sx={{ textAlign: 'left', fontSize: '17px' }}>
-
-                                                                {column.id === 'ekycDate' ? (
-                                                                    // Render this content if the condition is true
-                                                                    <>{
-                                                                        // new Date(row[column.id]).toISOString().split('T')[0]
-
-                                                                    }</>
-                                                                ) : (
-                                                                    // Render this content if the condition is false
-                                                                    <>{String(row[column.id])}</>
-                                                                )}
-                                                            </TableCell>
-                                                        ))}
-                                                    </TableRow>
-                                                );
-                                            })}
-                                </TableBody>
                             </Table>
                         </TableContainer>
                         <TablePagination
@@ -473,11 +376,11 @@ export default function Broadband(props) {
                 </Box>
 
                 <Box sx={{ paddingLeft: '16px', paddingBottom: '16px', paddingTop: '14px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <Button
+                    {/* <Button
                         sx={{ backgroundColor: '#253A7D', boxShadow: 20 }}
                         variant="contained" backgroundColor="#253A7D" onClick={handleButtonClick}>
                         Add New SIM
-                    </Button>
+                    </Button> */}
                     <Grid item xs={8} sx={{ marginY: 1 }}>
                         <Box sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
                             <TextField type="file"

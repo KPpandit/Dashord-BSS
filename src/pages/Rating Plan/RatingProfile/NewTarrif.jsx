@@ -14,9 +14,11 @@ import UsageCharges from "./UsageCharges";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const NewTarrif = () => {
   const [activeStep, setActiveStep] = useState(0);
+  const navigate = useNavigate();
 
   const validationSchema = Yup.object({
     tariff_type: Yup.string().required("Tariff type is required"),
@@ -43,6 +45,8 @@ const NewTarrif = () => {
       description: "",
       pricing_model: "",
       category_name: "",
+      cug_mins: '',
+      cug_sms: '',
       base_pack: {
         onn_sms_charges: "",
         onn_call_charges: "",
@@ -61,8 +65,8 @@ const NewTarrif = () => {
     onSubmit: async (values) => {
       const isPrepaid = values.tariff_type === "Prepaid";
       const apiUrl = isPrepaid
-        ? "https://bssproxy01.neotel.nr/abmf-prepaid-s/api/prepaid/packs/create"
-        : "https://bssproxy01.neotel.nr/abmf-postpaid-s/api/postpaid/packs/create";
+        ? "https://bssproxy01.neotel.nr1/abmf-prepaid/api/prepaid/packs/create"
+        : "https://bssproxy01.neotel.nr1/abmf-postpaid/api/postpaid/packs/create";
 
       const submittedValues = {
         ...values,
@@ -82,9 +86,15 @@ const NewTarrif = () => {
 
         if (response.status === 200) {
           toast.success(`Tariff Plan Added Successfully for ${values.tariff_type}`, {
-            autoClose: 2000,
+            autoClose: 2000, // Ensures the toast auto-closes after 2 seconds
           });
+
+          // Delay navigation for 2 seconds to allow the toast to display
+          setTimeout(() => {
+            navigate("/ratingProfile");
+          }, 2000);
         }
+
       } catch (e) {
         toast.error(e.response?.data?.message || "An error occurred", {
           autoClose: 2000,

@@ -54,7 +54,7 @@ export default function AddVendor() {
             companyName: '',
             createDate: '',
             token: '',
-            userId: '',
+            userId: 1,
 
 
         },
@@ -62,7 +62,7 @@ export default function AddVendor() {
           
             try {
                 const res = await axios.post(
-                  `http://172.5.10.2:9090/api/save/vendor`,
+                  `https://bssproxy01.neotel.nr/crm/api/save/vendor`,
                   { ...values },
                   {
                     headers: {
@@ -160,8 +160,9 @@ export default function AddVendor() {
                                 <Grid container spacing={2}>
                                     <Grid item lg={4} md={4} sm={6} xs={12} > {/* Padding for individual items */}
                                         <TextField
-                                            label="firstName"
+                                            label="First Name"
                                             fullWidth
+                                            required
                                             name='firstName'
                                             value={values.firstName}
                                             onChange={handleChange}
@@ -170,21 +171,10 @@ export default function AddVendor() {
                                         />
 
                                     </Grid>
+                                   
                                     <Grid item lg={4} md={4} sm={6} xs={12} > {/* Padding for individual items */}
                                         <TextField
-                                            label="maidenName"
-                                            fullWidth
-                                            name='maidenName'
-                                            value={values.maidenName}
-                                            onChange={handleChange}
-                                            onBlur={handleBlur}
-
-                                        />
-
-                                    </Grid>
-                                    <Grid item lg={4} md={4} sm={6} xs={12} > {/* Padding for individual items */}
-                                        <TextField
-                                            label="lastName"
+                                            label="Last Name"
                                             fullWidth
                                             name='lastName'
                                             value={values.lastName}
@@ -198,7 +188,7 @@ export default function AddVendor() {
                                         <TextField
                                             label="Email"
                                             type='email'
-                                            required
+                                           
                                             fullWidth
                                             name='email'
                                             value={values.email}
@@ -236,7 +226,7 @@ export default function AddVendor() {
                                     </Grid>
                                     <Grid item lg={4} md={4} sm={6} xs={12} >
                                         <TextField
-                                            label="companyName"
+                                            label="Company Name"
                                             required
                                             type="text"
                                             fullWidth
@@ -247,9 +237,9 @@ export default function AddVendor() {
 
                                         />
                                     </Grid>
-                                    <Grid item lg={4} md={4} sm={6} xs={12} >
+                                    {/* <Grid item lg={4} md={4} sm={6} xs={12} >
                                         <TextField
-                                            label="create Date"
+                                            label="Create Date"
                                             required
                                             type="date"
                                             name='createDate'
@@ -259,10 +249,10 @@ export default function AddVendor() {
                                             onBlur={handleBlur}
 
                                         />
-                                    </Grid>
-                                    <Grid item lg={4} md={4} sm={6} xs={12} >
+                                    </Grid> */}
+                                    {/* <Grid item lg={4} md={4} sm={6} xs={12} >
                                         <TextField
-                                            label="token"
+                                            label="Token"
                                             required
                                             type="text"
                                             name='token'
@@ -272,10 +262,10 @@ export default function AddVendor() {
                                             onBlur={handleBlur}
 
                                         />
-                                    </Grid>
-                                    <Grid item lg={4} md={4} sm={6} xs={12} >
+                                    </Grid> */}
+                                    {/* <Grid item lg={4} md={4} sm={6} xs={12} >
                                         <TextField
-                                            label="userId"
+                                            label="User Id"
                                             required
                                             type="number"
                                             name='userId'
@@ -285,7 +275,7 @@ export default function AddVendor() {
                                             onBlur={handleBlur}
 
                                         />
-                                    </Grid>
+                                    </Grid> */}
                                 </Grid>
                             </Grid>
 

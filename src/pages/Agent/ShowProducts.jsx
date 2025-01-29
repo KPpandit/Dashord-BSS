@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
 import {
+  Grid,
   Table,
   TableBody,
   TableCell,
@@ -17,165 +18,187 @@ import {
 export default function ShowProduct() {
   const location = useLocation();
   const { record } = location.state || {};
-  console.log(record, "record");
-
   const tokenValue = localStorage.getItem("token");
 
-  // Columns for each table
-  const columns1 = [
-    { id: "msisdn", name: "MSISDN" },
-    { id: "imsi", name: "IMSI" },
-    { id: "category", name: "Category" },
-    { id: "simType", name: "SIM Type" },
-    { id: "amount", name: "Amount" },
-  ];
+  // Column definitions
+  const columns = {
+    sim: [
+      { id: "msisdn", name: "MSISDN" },
+      { id: "imsi", name: "IMSI" },
+      { id: "category", name: "Category" },
+      { id: "simType", name: "SIM Type" },
+      { id: "amount", name: "Amount" },
+    ],
+    router: [
+      { id: "serialNumber", name: "Serial Number" },
+      { id: "macAddress", name: "MAC Address" },
+      { id: "type", name: "Type" },
+      { id: "brand", name: "Brand" },
+      { id: "allocationDate", name: "Allocation Date" },
+    ],
+    device: [
+      { id: "deviceModel", name: "Device Model" },
+      { id: "deviceType", name: "Device Type" },
+      { id: "osType", name: "OS Type" },
+      { id: "buyingPriceUsd", name: "Buying Price (USD)" },
+      { id: "sellingPriceUsd", name: "Selling Price (USD)" },
+    ],
+  };
 
-  const columns2 = [
-    { id: "SerialNumber", name: "Serial Number" },
-    { id: "MacAddress", name: "Mac Address" },
-    { id: "type", name: "Type" },
-    { id: "AccountNumber", name: "Account No" },
-    { id: "Password", name: "Password" },
-  ];
+  const [data, setData] = useState({
+    sim: { inStock: [], outStock: [] },
+    router: { inStock: [], outStock: [] },
+    device: { inStock: [], outStock: [] },
+  });
 
-  const columns3 = [
-    { id: "deviceId", name: "Device ID" },
-    { id: "deviceModel", name: "Model" },
-    { id: "deviceType", name: "Type" },
-    { id: "osType", name: "OS Type" },
-    { id: "price", name: "Price" },
-  ];
+  const [pagination, setPagination] = useState({
+    sim: { inStock: { page: 0, rowsPerPage: 5 }, outStock: { page: 0, rowsPerPage: 5 } },
+    router: { inStock: { page: 0, rowsPerPage: 5 }, outStock: { page: 0, rowsPerPage: 5 } },
+    device: { inStock: { page: 0, rowsPerPage: 5 }, outStock: { page: 0, rowsPerPage: 5 } },
+  });
 
-  // States for Table 1
-  const [rows1, setRows1] = useState([]);
-  const [page1, setPage1] = useState(0);
-  const [rowsPerPage1, setRowsPerPage1] = useState(5);
-
-  // States for Table 2
-  const [rows2, setRows2] = useState([]);
-  const [page2, setPage2] = useState(0);
-  const [rowsPerPage2, setRowsPerPage2] = useState(5);
-
-  // States for Table 3
-  const [rows3, setRows3] = useState([]);
-  const [page3, setPage3] = useState(0);
-  const [rowsPerPage3, setRowsPerPage3] = useState(5);
-
-  // Fetch data for each table
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // API 1
-        const response1 = await axios.get(
-          `https://bssproxy01.neotel.nr/crm/api/assigned/sim/partner/${record}`,
+        const simResponse = await axios.get(
+          `https://bssproxy01.neotel.nr/crm/api/sim/stock/partner/${record}`,
           {
             headers: {
               Authorization: `Bearer ${tokenValue}`,
-              Accept: "application/json",
-              "Content-Type": "application/json",
             },
           }
         );
-        setRows1(response1.data);
+        const routerResponse = await axios.get(
+          `https://bssproxy01.neotel.nr/crm/api/router/stock/partner/${record}`,
+          {
+            headers: {
+              Authorization: `Bearer ${tokenValue}`,
+            },
+          }
+        );
+        const deviceResponse = await axios.get(
+          `https://bssproxy01.neotel.nr/crm/api/device/stock/partner/${record}`,
+          {
+            headers: {
+              Authorization: `Bearer ${tokenValue}`,
+            },
+          }
+        );
 
-        // API 2
-        const response2 = await axios.get(
-          `https://bssproxy01.neotel.nr/crm/api/assigned/router/partner/${record}`,
-          {
-            headers: {
-              Authorization: `Bearer ${tokenValue}`,
-              Accept: "application/json",
-              "Content-Type": "application/json",
-            },
-          }
-        );
-        setRows2(response2.data);
-
-        // API 3
-        const response3 = await axios.get(
-          `https://bssproxy01.neotel.nr/crm/api/assigned/device/partner/${record}`,
-          {
-            headers: {
-              Authorization: `Bearer ${tokenValue}`,
-              Accept: "application/json",
-              "Content-Type": "application/json",
-            },
-          }
-        );
-        setRows3(response3.data);
+        setData({
+          sim: {
+            inStock: simResponse.data.inStockSim || [],
+            outStock: simResponse.data.outStockSim || [],
+          },
+          router: {
+            inStock: routerResponse.data.inStockRouters || [],
+            outStock: routerResponse.data.outStockRouters || [],
+          },
+          device: {
+            inStock: deviceResponse.data.inStockDevice || [],
+            outStock: deviceResponse.data.outStockDevice || [],
+          },
+        });
       } catch (error) {
-        console.error("Error fetching data from API:", error);
+        console.error("Error fetching data:", error);
       }
     };
 
     fetchData();
   }, [record, tokenValue]);
 
-  // Handlers for Table Pagination
-  const handlePageChange = (setPage) => (event, newPage) => setPage(newPage);
-  const handleRowsPerPageChange = (setRowsPerPage, setPage) => (event) => {
-    setRowsPerPage(+event.target.value);
-    setPage(0);
+  const handlePageChange = (category, type) => (event, newPage) => {
+    setPagination((prev) => ({
+      ...prev,
+      [category]: {
+        ...prev[category],
+        [type]: { ...prev[category][type], page: newPage },
+      },
+    }));
   };
 
-  // Render Table
-  const renderTable = (rows, page, rowsPerPage, columns, setPage, setRowsPerPage) => (
-    <Paper elevation={10} sx={{ marginBottom: 2 }}>
-      <TableContainer sx={{ maxHeight: 600 }}>
-        <Table stickyHeader>
-          <TableHead>
-            <TableRow>
-              {columns.map((column) => (
-                <TableCell
-                  key={column.id}
-                  style={{ backgroundColor: "#253A7D", color: "white" }}
-                >
-                  <Typography>{column.name}</Typography>
-                </TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {rows
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((row, i) => (
-                <TableRow key={i}>
-                  {columns.map((column) => (
-                    <TableCell key={column.id}>{row[column.id]}</TableCell>
-                  ))}
-                </TableRow>
-              ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      <TablePagination
-        rowsPerPageOptions={[5, 10, 25]}
-        component="div"
-        count={rows.length}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onPageChange={handlePageChange(setPage)}
-        onRowsPerPageChange={handleRowsPerPageChange(setRowsPerPage, setPage)}
-      />
-    </Paper>
-  );
+  const handleRowsPerPageChange = (category, type) => (event) => {
+    setPagination((prev) => ({
+      ...prev,
+      [category]: {
+        ...prev[category],
+        [type]: {
+          ...prev[category][type],
+          rowsPerPage: +event.target.value,
+          page: 0,
+        },
+      },
+    }));
+  };
+
+  const renderTable = (category, type) => {
+    const rows = data[category][type];
+    const { page, rowsPerPage } = pagination[category][type];
+    const currentColumns = columns[category];
+
+    return (
+      <Paper elevation={10} sx={{ marginBottom: 2 }}>
+        <TableContainer sx={{ maxHeight: 600 }}>
+          <Table stickyHeader>
+            <TableHead>
+              <TableRow>
+                {currentColumns.map((column) => (
+                  <TableCell
+                    key={column.id}
+                    style={{ backgroundColor: "#253A7D", color: "white" }}
+                  >
+                    <Typography>{column.name}</Typography>
+                  </TableCell>
+                ))}
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {rows
+                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                .map((row, i) => (
+                  <TableRow key={i}>
+                    {currentColumns.map((column) => (
+                      <TableCell key={column.id}>
+                        {row[column.id] || "N/A"}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+        <TablePagination
+          rowsPerPageOptions={[5, 10, 25]}
+          component="div"
+          count={rows.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handlePageChange(category, type)}
+          onRowsPerPageChange={handleRowsPerPageChange(category, type)}
+        />
+      </Paper>
+    );
+  };
 
   return (
     <Box sx={{ padding: 2 }}>
-      <Typography variant="h5" gutterBottom>
-        All Assigned SIMs
-      </Typography>
-      {renderTable(rows1, page1, rowsPerPage1, columns1, setPage1, setRowsPerPage1)}
-
-      <Typography variant="h5" gutterBottom>
-        All Assigned CPE
-      </Typography>
-      {renderTable(rows2, page2, rowsPerPage2, columns2, setPage2, setRowsPerPage2)}
-
-      <Typography variant="h5" gutterBottom>
-        All Assigned Devices
-      </Typography>
-      {renderTable(rows3, page3, rowsPerPage3, columns3, setPage3, setRowsPerPage3)}
+      {["sim", "router", "device"].map((category) => (
+        <Box key={category} sx={{ marginBottom: 4 }}>
+          <Typography variant="h5" gutterBottom>
+            {category.toUpperCase()}
+          </Typography>
+          <Grid container spacing={2}>
+            <Grid item xs={12} md={6}>
+              <Typography variant="h6">In-Stock</Typography>
+              {renderTable(category, "inStock")}
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <Typography variant="h6">Sold</Typography>
+              {renderTable(category, "outStock")}
+            </Grid>
+          </Grid>
+        </Box>
+      ))}
     </Box>
   );
 }

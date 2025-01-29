@@ -20,7 +20,7 @@ export default function PrepaidInProgressPlan() {
     const [checkedPlan, setCheckedPlan] = useState(null); // State to track the checked plan
 
     useEffect(() => {
-        fetch('https://bssproxy01.neotel.nr/abmf-prepaid-s/api/prepaid/packs?pack_status=Pending')
+        fetch('https://bssproxy01.neotel.nr/abmf-prepaid/api/prepaid/packs?pack_status=Pending')
             .then(response => response.json())
             .then(data => {
                 const uniqueTabList = [...new Set(data.map(item => item.category_name))];
@@ -57,14 +57,14 @@ export default function PrepaidInProgressPlan() {
     const handleApprove = async (name) => {
         // console.log(name,'  hello how are you')
         try {
-            await axios.post('https://bssproxy01.neotel.nr/abmf-prepaid-s/api/prepaid/packs/update/detail', {
+            await axios.post('https://bssproxy01.neotel.nr/abmf-prepaid/api/prepaid/packs/update/detail', {
                 pack_name: name,
                 approver_user_id: localStorage.getItem("customer_id"),
                 approver_name: localStorage.getItem("userName"),
                 approver_rejection_remark: "",
                 pack_status: "Approved",
             }, { headers: { 'Content-Type': 'application/json' } });
-            toast.success('Plan Approved', { autoClose: 2000 });
+            toast.success('Pack Approved', { autoClose: 2000 });
         } catch (error) {
             console.error("Error while approving the pack:", error);
         }
@@ -72,7 +72,7 @@ export default function PrepaidInProgressPlan() {
 
     const handleRejectSubmit = async () => {
         try {
-            await axios.post('https://bssproxy01.neotel.nr/abmf-prepaid-s/api/prepaid/packs/update/detail', {
+            await axios.post('https://bssproxy01.neotel.nr/abmf-prepaid/api/prepaid/packs/update/detail', {
                 pack_name: selectedPlanName,
                 approver_user_id: localStorage.getItem("customer_id"),
                 approver_name: localStorage.getItem("userName"),
@@ -91,7 +91,7 @@ export default function PrepaidInProgressPlan() {
             <ToastContainer position="bottom-left" />
             <Box sx={{ position: 'fixed', width: '100%', zIndex: 1, backgroundColor: 'white', borderBottom: '1px solid #ddd', top: '48px', marginTop: 3 }}>
                 <Paper elevation={20} sx={{ marginBottom: 2, padding: 0.5 }}>
-                    <Typography sx={{ color: "#253A7D", fontSize: '20px', fontWeight: 'Bold', marginLeft: 2, marginBottom: 0.7 }}>Prepaid In-Process Plan</Typography>
+                    <Typography sx={{ color: "#253A7D", fontSize: '20px', fontWeight: 'Bold', marginLeft: 2, marginBottom: 0.7 }}>Packs Under Process</Typography>
                 </Paper>
                 <Paper elevation={20}>
                     <Tabs value={value} onChange={handleChange} indicatorColor="primary" textColor="primary" sx={{ backgroundColor: '#FAC22E' }}>
@@ -124,13 +124,19 @@ export default function PrepaidInProgressPlan() {
                                                     <Typography>Validity: {plan.validity ?? 0} Days</Typography>
                                                 </Grid>
                                                 <Grid item xs={6} sx={{ marginTop: 2 }}>
-                                                    <Typography>Data: {plan.data_balance ?? 0} {plan.data_balance_parameter ?? ''}</Typography>
+                                                    <Typography>
+                                                        Data: {plan.data_balance === 931 ? 'Unlimited' : `${plan.data_balance ?? 0} ${plan.data_balance_parameter ?? ''}`}
+                                                    </Typography>
                                                 </Grid>
                                                 <Grid item xs={6} sx={{ marginTop: 1 }}>
-                                                    <Typography>Voice: {plan.onn_call_balance ?? 0} mins</Typography>
+                                                    <Typography>
+                                                        Voice: {plan.onn_call_balance === 1666 ? 'Unlimited' : `${plan.onn_call_balance ?? 0} mins`}
+                                                    </Typography>
                                                 </Grid>
                                                 <Grid item xs={6} sx={{ marginTop: 1 }}>
-                                                    <Typography>SMS: {plan.onn_sms_balance ?? 0}</Typography>
+                                                    <Typography>
+                                                        SMS: {plan.onn_sms_balance === 99999 ? 'Unlimited' : plan.onn_sms_balance ?? 0}
+                                                    </Typography>
                                                 </Grid>
                                                 <Grid item xs={12} sx={{ marginTop: 1 }}>
                                                     <Typography style={{ fontSize: '15px', fontFamily: 'Roboto' }}>Additional Benefits(s)</Typography>
@@ -139,40 +145,49 @@ export default function PrepaidInProgressPlan() {
                                         </CardContent>
                                     </Card>
 
-                                    <Grid item xs={12} sx={{ marginTop: 1, paddingLeft: 2 }}>
+                                    <Grid item xs={12} sx={{ marginTop: 1, paddingLeft: 2,paddingBottom:5 }}>
                                         <Grid container spacing={2}>
                                             <Grid item xs={6} textAlign={'left'}>
-                                                <FormControlLabel 
+                                                <FormControlLabel
                                                     control={
-                                                        <Checkbox 
-                                                            sx={{ color: '#FAC22E', '& .MuiSvgIcon-root': { fontSize: 40 } }} 
-                                                            checked={checkedPlan === plan.plan_name}
+                                                        <Checkbox
+                                                            sx={{ color: '#FAC22E', '& .MuiSvgIcon-root': { fontSize: 40 } }}
+                                                            checked={checkedPlan === plan.pack_name}
                                                             onChange={() => {
-                                                                setCheckedPlan(checkedPlan === plan.plan_name ? null : plan.plan_name);
-                                                                handleApprove(plan.plan_name);
-                                                            }} 
+                                                                if (checkedPlan === plan.pack_name) {
+                                                                    setCheckedPlan(null); // Unselect the current plan
+                                                                } else {
+                                                                    setCheckedPlan(plan.pack_name); // Select this plan for approval
+                                                                    handleApprove(plan.pack_name);
+                                                                }
+                                                            }}
                                                         />
-                                                    } 
-                                                    label="Approve" 
+                                                    }
+                                                    label="Approve"
                                                 />
                                             </Grid>
                                             <Grid item xs={6} textAlign={'right'}>
-                                                <FormControlLabel 
+                                                <FormControlLabel
                                                     control={
-                                                        <Checkbox 
-                                                            sx={{ color: 'Red', '& .MuiSvgIcon-root': { fontSize: 40 } }} 
-                                                            checked={checkedPlan === `reject_${plan.plan_name}`} 
+                                                        <Checkbox
+                                                            sx={{ color: 'Red', '& .MuiSvgIcon-root': { fontSize: 40 } }}
+                                                            checked={checkedPlan === `reject_${plan.pack_name}`}
                                                             onChange={() => {
-                                                                setCheckedPlan(checkedPlan === `reject_${plan.plan_name}` ? null : `reject_${plan.plan_name}`);
-                                                                handleReject(plan.plan_name);
-                                                            }} 
+                                                                if (checkedPlan === `reject_${plan.pack_name}`) {
+                                                                    setCheckedPlan(null); // Unselect the current plan
+                                                                } else {
+                                                                    setCheckedPlan(`reject_${plan.pack_name}`); // Select this plan for rejection
+                                                                    handleReject(plan.pack_name);
+                                                                }
+                                                            }}
                                                         />
-                                                    } 
-                                                    label="Reject" 
+                                                    }
+                                                    label="Reject"
                                                 />
                                             </Grid>
                                         </Grid>
                                     </Grid>
+
                                 </Grid>
                             ))}
                         </Grid>
@@ -182,29 +197,29 @@ export default function PrepaidInProgressPlan() {
             <PlanDetailsModal open={openModal} onClose={() => setOpenModal(false)} planDetails={selectedPlan} />
 
             <Dialog open={open} onClose={() => { setOpen(false); setCheckedPlan(null); }}>
-                <Grid sx={{backgroundColor:'#FAC22E',width:450}}>
-                <DialogTitle>Reason for Rejection</DialogTitle>
-                <DialogContent>
-                    <TextField
-                        autoFocus
-                        margin="dense"
-                        id="remark"
-                        // label="Enter reason"
-                        fullWidth
-                        sx={{backgroundColor:'white'}}
-                        multiline
-                        rows={3}
-                        variant="standard"
-                        value={remark}
-                        onChange={(e) => setRemark(e.target.value)}
-                    />
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={() => { setOpen(false); setRemark(''); setCheckedPlan(null); }} color="primary">Cancel</Button>
-                    <Button onClick={handleRejectSubmit} color="primary">Submit</Button>
-                </DialogActions>
+                <Grid sx={{ backgroundColor: '#FAC22E', width: 450 }}>
+                    <DialogTitle>Reason for Rejection</DialogTitle>
+                    <DialogContent>
+                        <TextField
+                            autoFocus
+                            margin="dense"
+                            id="remark"
+                            // label="Enter reason"
+                            fullWidth
+                            sx={{ backgroundColor: 'white' }}
+                            multiline
+                            rows={3}
+                            variant="standard"
+                            value={remark}
+                            onChange={(e) => setRemark(e.target.value)}
+                        />
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={() => { setOpen(false); setRemark(''); setCheckedPlan(null); }} color="primary">Cancel</Button>
+                        <Button onClick={handleRejectSubmit} color="primary">Submit</Button>
+                    </DialogActions>
                 </Grid>
-                
+
             </Dialog>
         </Box>
     );

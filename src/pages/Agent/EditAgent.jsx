@@ -2,36 +2,34 @@ import React, { useEffect, useState } from 'react';
 import {
     Box,
     Button,
-    Checkbox,
-    Divider,
     FormControl,
-    FormControlLabel,
     Grid,
     InputLabel,
     MenuItem,
     Paper,
     Select,
-    Snackbar,
     TextField,
-    Typography
+    Typography,
 } from '@mui/material';
 import { useFormik } from 'formik';
+import * as Yup from 'yup';
 import axios from 'axios';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 export default function EditAgent() {
     const location = useLocation();
+    const navigate = useNavigate();
     const { id } = location.state || {};
     const tokenValue = localStorage.getItem('token');
 
     const [localityOptions] = useState([
         "Aiwo", "Anabar", "Anetan", "Anibare", "Baitsi", "Boe", "Buada",
-        "Denigomodu", "Ewa", "Ijuw", "Meneng", "Nibok", "Uaboe", "Yaren"
+        "Denigomodu", "Ewa", "Ijuw", "Meneng", "Nibok", "Uaboe", "Yaren",
     ]);
 
-    const { handleChange, handleSubmit, handleBlur, values, setValues } = useFormik({
+    const { handleChange, handleSubmit, handleBlur, values, setValues, errors, touched } = useFormik({
         initialValues: {
             fristName: '',
             lastName: '',
@@ -44,8 +42,21 @@ export default function EditAgent() {
             token: '',
             locallity: '',
             reasonStatus: '',
-            isActive: ''
+            isActive: '',
         },
+        validationSchema: Yup.object({
+            fristName: Yup.string().required('First Name is required'),
+            email: Yup.string()
+            .email('Invalid email format') // This checks for general email format
+            .matches(/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/, 'Invalid email format. Please include a valid domain.') 
+            .notRequired(),
+            contact: Yup.string()
+                .matches(/^\d{10}$/, 'Contact must be a 10-digit number')
+                .required('Contact is required'),
+            token: Yup.string()
+                .matches(/^[a-zA-Z0-9]{6,20}$/, 'Token must be alphanumeric (6-20 characters)')
+                .required('EKYC Token is required'),
+        }),
         onSubmit: async (formData) => {
             try {
                 const response = await axios.put(
@@ -67,7 +78,7 @@ export default function EditAgent() {
             } catch (error) {
                 toast.error('Error! Please try again later', { autoClose: 2000 });
             }
-        }
+        },
     });
 
     useEffect(() => {
@@ -123,38 +134,51 @@ export default function EditAgent() {
                     </Paper>
                 </Grid>
 
-                <Paper elevation={20} sx={{ paddingLeft: 5, paddingRight: 5, marginTop: 3,paddingTop:3,paddingBottom:5 }}>
+                <Paper
+                    elevation={20}
+                    sx={{ paddingLeft: 5, paddingRight: 5, marginTop: 3, paddingTop: 3, paddingBottom: 5 }}
+                >
                     <Box sx={{ marginTop: 2, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                         <Grid container spacing={2} padding={2}>
-                            {[{ label: 'First Name', name: 'fristName' },
-                            { label: 'Last Name', name: 'lastName' },
-                            
-                            { label: "Email", name: "email" },
-                            { label: "Business Address", name: "businessAddress" },
-                            { label: "Contact", name: "contact" },
-                            { label: "Document ID", name: "documentId" },
-                            { label: "Document Type", name: "documentType" },
-                            { label: "EKYC Token", name: "token" },
-                           ].map((field) => (
+                            {[
+                                { label: 'First Name', name: 'fristName', editable: false },
+                                { label: 'Last Name', name: 'lastName', editable: false },
+                                { label: 'Email', name: 'email', editable: true },
+                                { label: 'Business Address', name: 'businessAddress', editable: false },
+                                { label: 'Contact', name: 'contact', editable: true },
+                                { label: 'Document ID', name: 'documentId', editable: false },
+                                { label: 'Document Type', name: 'documentType', editable: false },
+                                { label: 'EKYC Token', name: 'token', editable: false },
+                            ].map((field) => (
                                 <Grid item lg={4} md={6} sm={6} xs={12} key={field.name}>
                                     <TextField
                                         fullWidth
+                                        required={field.editable} 
                                         label={field.label}
                                         name={field.name}
                                         value={values[field.name]}
-                                        onChange={handleChange}
-                                        onBlur={handleBlur}
+                                        disabled={!field.editable} 
+                                        onChange={field.editable ? handleChange : undefined}
+                                        onBlur={field.editable ? handleBlur : undefined}
+                                        InputProps={{
+                                            readOnly: !field.editable,
+                                        }}
+                                        error={touched[field.name] && Boolean(errors[field.name])}
+                                        helperText={touched[field.name] && errors[field.name]}
                                     />
                                 </Grid>
                             ))}
 
+                            {/* Locality Field */}
                             <Grid item lg={4} md={6} sm={6} xs={12}>
                                 <FormControl fullWidth>
-                                    <InputLabel>Locality</InputLabel>
+                                    <InputLabel>Locality *</InputLabel>
                                     <Select
                                         name="locallity"
                                         value={values.locallity}
+                                        label="Locality"
                                         onChange={handleChange}
+                                        disabled
                                     >
                                         {localityOptions.map((option) => (
                                             <MenuItem value={option} key={option}>
@@ -165,13 +189,26 @@ export default function EditAgent() {
                                 </FormControl>
                             </Grid>
                         </Grid>
+
                     </Box>
                 </Paper>
 
-                <Grid container justifyContent="center" marginTop={3}>
-                    <Button type="submit" variant="contained" color="primary">
-                        Submit
-                    </Button>
+                <Grid container justifyContent="center" spacing={2} marginTop={3}>
+                    <Grid item>
+                        <Button type="submit" sx={{ backgroundColor: '#253A7D' }} variant="contained" color="primary">
+                            Submit
+                        </Button>
+                    </Grid>
+                    <Grid item>
+                        <Button
+                            variant="outlined"
+                            color="secondary"
+                            sx={{ backgroundColor: '#FBB716', color: 'black' }}
+                            onClick={() => navigate(-1)}
+                        >
+                            Cancel
+                        </Button>
+                    </Grid>
                 </Grid>
             </form>
         </Box>

@@ -97,7 +97,7 @@ export default function Loginform({ children }) {
             // Save the authentication token or user data as needed
             localStorage.setItem('token', jwtToken);
             localStorage.setItem('auth', 'super');
-            localStorage.setItem('userName', username.email);
+            localStorage.setItem('userName', username.name);
             localStorage.setItem('auth', "super");
             localStorage.setItem('customer_id', username.id);
 

@@ -1,12 +1,10 @@
-import { Box, Button, Card, Checkbox, Chip, Divider, FormControl, Grid, IconButton, InputAdornment, InputLabel, ListItemText, Menu, MenuItem, OutlinedInput, Paper, Select, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TextField, Typography, CircularProgress } from '@mui/material';
+import { Box, Button, Paper, Grid, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TextField, Typography, CircularProgress } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import SearchIcon from '@mui/icons-material/Search';
 import axios from 'axios';
-import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
-import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
-import jsPDF from 'jspdf';
-import * as XLSX from 'xlsx';
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
+import White_logo from "../../assets/White_logo.jpg";
 
 export default function AllTransaction() {
     const location = useLocation();
@@ -15,45 +13,46 @@ export default function AllTransaction() {
     const tokenValue = localStorage.getItem('token');
 
     const columns = [
-        { id: 'crmPartnerId', name: 'Partner ID' },
+        { id: 'crmPartnerId', name: 'Reseller ID' },
         { id: 'txnDate', name: 'Date' },
         { id: 'txn_reference', name: 'Reference' },
-        { id: 'coreBalance', name: 'Core Balance' }, // New Column
-        { id: 'amount', name: 'Amount' },
-        { id: 'discountApplied', name: 'Discount' },
-        { id: 'txn_type', name: 'Type' },
-        { id: 'direction', name: 'Direction' },
-
+        { id: 'coreBalance', name: 'Core Balance' },
+        { id: 'amount', name: 'Amount Paid' },
+        { id: 'discountApplied', name: 'Discount %' },
+        { id: 'txn_type', name: 'TXN Type' },
+        { id: 'paymentMode', name: 'Payment Mode' },
+        { id: 'direction', name: 'Payment Type' },
     ];
-    const calculateCoreBalance = (amount, discount) => {
-        const discountPercentage = parseFloat(discount) || 0;
-        const coreBalance = amount / (1 - discountPercentage / 100);
-        return Math.round(coreBalance); // Round to the nearest integer
-    };
-    const getCurrentDate = () => {
-        const today = new Date();
-        const year = today.getFullYear();
-        const month = String(today.getMonth() + 1).padStart(2, '0');
-        const day = String(today.getDate()).padStart(2, '0');
-        return `${year}-${month}-${day}`;
+
+    const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        return date.toISOString().split('T')[0];
     };
 
+    const getTodayAndTomorrow = () => {
+        const today = new Date();
+        const tomorrow = new Date();
+        tomorrow.setDate(today.getDate() + 1);
+        return {
+            today: formatDate(today),
+            tomorrow: formatDate(tomorrow),
+        };
+    };
+
+    const { today, tomorrow } = getTodayAndTomorrow();
+    const [startDate, setStartDate] = useState(today);
+    const [endDate, setEndDate] = useState(tomorrow);
     const [rows, setRows] = useState([]);
-    const [page, pagechange] = useState(0);
-    const [rowperpage, rowperpagechange] = useState(5);
-    const [highlightedRow, setHighlightedRow] = useState(null);
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(5);
     const [loading, setLoading] = useState(false);
-    const [selectedDate, setSelectedDate] = useState(getCurrentDate());
-    const [anchorEl, setAnchorEl] = useState(null);  // State for dropdown menu
-    const open = Boolean(anchorEl);  // Check if dropdown is open
 
     useEffect(() => {
         const fetchData = async () => {
             setLoading(true);
             try {
-                const currentDate = selectedDate;
                 const response = await axios.get(
-                    `https://bssproxy01.neotel.nr/cbms/cbm/api/v1/partner/${agentId}/txns/${currentDate}`,
+                    `https://bssproxy01.neotel.nr/cbms/cbm/api/v1/partner/${agentId}/txns/${startDate}/${endDate}`,
                     {
                         headers: {
                             Authorization: `Bearer ${tokenValue}`,
@@ -62,11 +61,7 @@ export default function AllTransaction() {
                         },
                     }
                 );
-                if (response.data.length === 0) {
-                    setRows([]);
-                } else {
-                    setRows(response.data);
-                }
+                setRows(response.data || []);
             } catch (error) {
                 console.error('Error fetching data from API:', error);
                 setRows([]);
@@ -76,181 +71,159 @@ export default function AllTransaction() {
         };
 
         fetchData();
-    }, [agentId, selectedDate]);
+    }, [agentId, startDate, endDate]);
 
-    const handlechangepage = (event, newpage) => {
-        pagechange(newpage);
+    const handleChangePage = (event, newPage) => {
+        setPage(newPage);
     };
 
-    const handleRowsPerPage = (event) => {
-        rowperpagechange(+event.target.value);
-        pagechange(0);
-    };
-
-    const handleRowMouseEnter = (row) => {
-        setHighlightedRow(row);
-    };
-
-    const handleRowMouseLeave = () => {
-        setHighlightedRow(null);
+    const handleChangeRowsPerPage = (event) => {
+        setRowsPerPage(+event.target.value);
+        setPage(0);
     };
 
     const handleDateChange = (event) => {
-        setSelectedDate(event.target.value);
+        const { name, value } = event.target;
+        if (name === "startDate") {
+            setStartDate(value);
+        } else {
+            setEndDate(value);
+        }
     };
 
-    // Function to download data as PDF
     const downloadPDF = () => {
         const doc = new jsPDF();
-        doc.text("All Transactions", 20, 10);
-        let y = 20;
-        rows.forEach((row, index) => {
-            y += 10;
-            doc.text(`Transaction ${index + 1}: ${row.txn_reference} - ${row.amount}`, 20, y);
+        doc.addImage(White_logo, 'PNG', 10, 10, 30, 30);
+        doc.setFontSize(10);
+        const headers = columns.map((column) => column.name);
+        const paginatedRows = rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+        const data = paginatedRows.map((row) =>
+            columns.map((column) =>
+                column.id === "direction"
+                    ? row[column.id] === "INWARD" ? "Inward" : "Outward"
+                    : column.id === "coreBalance"
+                        ? `AUD $${(row.amount / (1 - (parseFloat(row.discountApplied) || 0) / 100)).toFixed(2)}`
+                        : column.id === "amount"
+                            ? `AUD $${row[column.id]}`
+                            : row[column.id]
+            )
+        );
+
+        autoTable(doc, {
+            head: [headers],
+            body: data,
+            startY: 50,
+            styles: { halign: "center", fontSize: 8, fillColor: '#253A7D', textColor: 'white' },
+            theme: "grid",
         });
-        doc.save("transactions.pdf");
-    };
 
-    // Function to download data as Excel
-    const downloadExcel = () => {
-        const ws = XLSX.utils.json_to_sheet(rows);
-        const wb = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(wb, ws, "Transactions");
-        XLSX.writeFile(wb, "transactions.xlsx");
-    };
-
-    const handleMenuClick = (event) => {
-        setAnchorEl(event.currentTarget);
-    };
-
-    const handleMenuClose = () => {
-        setAnchorEl(null);
+        doc.save("transactions_paginated.pdf");
     };
 
     return (
         <Box sx={{ display: 'container', marginTop: -3 }}>
-            <Box sx={{ width: '80%' }}>
-                <Box component="main" sx={{ flexGrow: 1, p: 1, width: '100%' }}>
-                    <Paper elevation={10} sx={{ padding: 1, margin: 1, backgroundColor: 'white', color: '#253A7D', marginLeft: -1 }}>
-                        <Grid container justifyContent="space-between" alignItems="center">
-                            <Typography style={{ fontFamily: 'Roboto', fontSize: '20px', paddingLeft: 5, fontWeight: 'bold' }}>
-                                All Transactions
-                            </Typography>
-                            <TextField
-                                label="Select Datewise Transaction"
-                                type="date"
-                                value={selectedDate}
-                                onChange={handleDateChange}
-                                InputLabelProps={{ shrink: true }}
-                                sx={{ width: 200 }}
-                            />
-                        </Grid>
-                    </Paper>
-                </Box>
+            <Box sx={{ width: '100%' }}>
+                <Paper elevation={10} sx={{ padding: 1, margin: 1, backgroundColor: 'white', color: '#253A7D' }}>
+                    <Grid container justifyContent="space-between" alignItems="center">
 
-                <Box component="main" sx={{ flexGrow: 1, paddingTop: "1%", width: '100%' }}>
-                    <Paper elevation={10}>
-                        {loading ? (
-                            <Box sx={{ display: 'flex', justifyContent: 'center', padding: 3 }}>
-                                <CircularProgress sx={{ color: '#FFC50D' }} />
-                            </Box>
-                        ) : rows.length === 0 ? (
-                            <Box sx={{ display: 'flex', justifyContent: 'center', padding: 3 }}>
-                                <Typography>No Transactions Available</Typography>
-                            </Box>
-                        ) : (
-                            <TableContainer sx={{ maxHeight: 600 }}>
-                                <Table stickyHeader size="medium" padding="normal">
-                                    <TableHead>
-                                        <TableRow>
+                        <Grid container spacing={2} alignItems="center" justifyContent="space-between">
+                            {/* Left-aligned heading */}
+                            <Grid item xs={6}>
+                                <Typography
+                                    style={{
+                                        fontFamily: 'Roboto',
+                                        fontSize: '20px',
+                                        fontWeight: 'bold',
+                                    }}
+                                >
+                                    All Transactions
+                                </Typography>
+                            </Grid>
+
+                            {/* Right-aligned date fields */}
+                            <Grid
+                                item
+                                container
+                                xs={6}
+                                spacing={2}
+                                justifyContent="flex-end"
+                                alignItems="center"
+                            >
+                                <Grid item>
+                                    <TextField
+                                        name="startDate"
+                                        label="Start Date"
+                                        type="date"
+                                        value={startDate}
+                                        onChange={handleDateChange}
+                                        InputLabelProps={{ shrink: true }}
+                                    />
+                                </Grid>
+                                <Grid item>
+                                    <TextField
+                                        name="endDate"
+                                        label="End Date"
+                                        type="date"
+                                        value={endDate}
+                                        onChange={handleDateChange}
+                                        InputLabelProps={{ shrink: true }}
+                                    />
+                                </Grid>
+                            </Grid>
+                        </Grid>
+
+                    </Grid>
+                </Paper>
+
+                <Paper elevation={10}>
+                    {loading ? (
+                        <Box sx={{ display: 'flex', justifyContent: 'center', padding: 3 }}>
+                            <CircularProgress sx={{ color: '#FFC50D' }} />
+                        </Box>
+                    ) : rows.length === 0 ? (
+                        <Box sx={{ display: 'flex', justifyContent: 'center', padding: 3 }}>
+                            <Typography>No Transactions Available</Typography>
+                        </Box>
+                    ) : (
+                        <TableContainer sx={{ maxHeight: 600, marginBottom: '20px' }}>
+                            <Table stickyHeader>
+                                <TableHead>
+                                    <TableRow>
+                                        {columns.map((column) => (
+                                            <TableCell key={column.id} sx={{ backgroundColor: '#253A7D', color: 'white' }}>
+                                                {column.name}
+                                            </TableCell>
+                                        ))}
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, i) => (
+                                        <TableRow key={i}>
                                             {columns.map((column) => (
-                                                <TableCell
-                                                    style={{ backgroundColor: '#253A7D', color: 'white' }}
-                                                    key={column.id}
-                                                    sx={{ textAlign: 'left' }}
-                                                >
-                                                    <Typography fontFamily={'Sans-serif'}>{column.name}</Typography>
+                                                <TableCell key={column.id}>
+                                                    {row[column.id]}
                                                 </TableCell>
                                             ))}
                                         </TableRow>
-                                    </TableHead>
-                                    <TableBody>
-                                        {rows.slice(page * rowperpage, page * rowperpage + rowperpage).map((row, i) => (
-                                            <TableRow
-                                                key={i}
-                                                onMouseEnter={() => handleRowMouseEnter(row)}
-                                                onMouseLeave={handleRowMouseLeave}
-                                                sx={highlightedRow === row ? { backgroundColor: '#F4C22E' } : {}}
-                                            >
-                                                {columns.map((column) => (
-                                                    <TableCell key={column.id} sx={{ textAlign: 'left' }}>
-                                                        {column.id === 'direction' ? (
-                                                            <>
-                                                                <Stack direction="row" alignItems="center" spacing={1}>
-                                                                    {row[column.id] === 'INWARD' ? (
-                                                                        <>
-                                                                            <ArrowDownwardIcon style={{ color: 'green' }} />
-                                                                            <Typography>{row[column.id]}</Typography>
-                                                                        </>
-                                                                    ) : (
-                                                                        <>
-                                                                            <ArrowUpwardIcon style={{ color: 'red' }} />
-                                                                            <Typography>{row[column.id]}</Typography>
-                                                                        </>
-                                                                    )}
-                                                                </Stack>
-                                                            </>
-                                                        ) : column.id === 'coreBalance' ? (
-                                                            calculateCoreBalance(row.amount, row.discountApplied) // Calculate core balance
-                                                        ) : (
-                                                            row[column.id]
-                                                        )}
-                                                    </TableCell>
-                                                ))}
-                                            </TableRow>
-                                        ))}
-                                    </TableBody>
-                                </Table>
-                            </TableContainer>
-                        )}
-                        <TablePagination
-                            sx={{ color: '#253A7D' }}
-                            rowsPerPageOptions={[5, 10, 25]}
-                            rowsPerPage={rowperpage}
-                            page={page}
-                            count={rows.length}
-                            component="div"
-                            onPageChange={handlechangepage}
-                            onRowsPerPageChange={handleRowsPerPage}
-                        />
-                        {/* Download Menu */}
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+                    )}
+                    <TablePagination
+                        rowsPerPageOptions={[5, 10, 25]}
+                        rowsPerPage={rowsPerPage}
+                        page={page}
+                        count={rows.length}
+                        component="div"
+                        onPageChange={handleChangePage}
+                        onRowsPerPageChange={handleChangeRowsPerPage}
+                    />
+                </Paper>
 
-                    </Paper>
-                </Box>
-                <Button
-                    aria-controls="simple-menu"
-                    aria-haspopup="true"
-                    onClick={handleMenuClick}
-                    sx={{
-                        marginTop: 2, marginLeft: 0, boxShadow: 24,
-                        backgroundColor: 'white',
-                        color: '#253A7D',
-                        border: '2px solid #253A7D',
-                        '&:hover': {
-                            backgroundColor: '#f1f1f1',
-                        },
-                    }}
-                >
-                    Download Data
+                <Button sx={{ mt: 2, backgroundColor: '#253A7D', color: 'white', fontWeight: 'bold' }} onClick={downloadPDF}>
+                    Download PDF
                 </Button>
-                <Menu
-                    anchorEl={anchorEl}
-                    open={open}
-                    onClose={handleMenuClose}
-                >
-                    <MenuItem onClick={downloadPDF}>Download as PDF</MenuItem>
-                    <MenuItem onClick={downloadExcel}>Download as Excel</MenuItem>
-                </Menu>
             </Box>
         </Box>
     );

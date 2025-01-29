@@ -26,7 +26,8 @@ const Customer = (props) => {
         { id: 'serviceType', name: 'Service Type' },
         { id: 'customerType', name: 'Customer Type' },
         { id: 'simInventory.msisdn', name: 'MSISDN' },
-        { id: 'ekycStatus', name: 'eKYC Status' },
+        { id: 'simInventory.imsi', name: 'IMSI' },
+        // { id: 'ekycStatus', name: 'eKYC Status' },
         // { id: 'ekycToken', name: 'Ekyc Token' },
         { id: 'vip', name: 'VIP' },
 
@@ -53,7 +54,7 @@ const Customer = (props) => {
 
         axios.delete(`https://bssproxy01.neotel.nr/crm/api/deletecustomer/${recordIdToDelete}`, {
             headers: {
-                Authorization: `Bearer ${token}`,
+                Authorization: `Bearer ${tokenValue}`,
                 "Accept": "application/json",
                 "Content-Type": "application/json"
             }
@@ -105,16 +106,19 @@ const Customer = (props) => {
     const handleButtonClick = () => {
         navigate('/subscriber/newSubscriber');
     };
+    const handleButtonActivate = () => {
+        navigate('/subscriber/bulkPackActivation');
+    };
     const [selectedPhoto, setSelectedPhoto] = useState(null);
     const [selectedRecord, setSelectedRecord] = useState(null);
     const [openPopup, setOpenPopup] = useState(false);
     const [openPopup1, setOpenPopup1] = useState(false);
     const [openPopup2, setOpenPopup2] = useState(false);
     useEffect(() => {
-       
+
 
         fetchData(); // Invoke the fetchData function when the component mounts
-    }, [tokenValue, delete1,value]);
+    }, [tokenValue, delete1, value]);
 
     const fetchData = async () => {
         try {
@@ -137,7 +141,7 @@ const Customer = (props) => {
             // Handle error as needed
         }
     };
-    
+
 
     const handleRowClick = (row) => {
         setSelectedRecord(row);
@@ -236,25 +240,22 @@ const Customer = (props) => {
         console.log(selectedRecord)
         if (selectedRecord) {
             const handleAddPhoto = async (event) => {
-                console.log('   handle add phto ')
                 try {
                     const file = event.target.files[0];
                     if (!file) return;
+
+                    // Validate file type
+                    const allowedTypes = ['image/jpeg', 'image/png'];
+                    if (!allowedTypes.includes(file.type)) {
+                        toast.error('Only JPG and PNG files are allowed.');
+                        return;
+                    }
 
                     // Create an object URL to preview the image
                     const imageUrl = URL.createObjectURL(file);
                     setSelectedPhoto(imageUrl);
 
                     // Create FormData to send the file via API
-                    const fileInput = document.getElementById('upload-photo');
-
-
-                    if (!file) {
-                        toast.error('Please select a file before uploading.');
-                        return;
-                    }
-
-                    // Step 2: Create FormData and append the file
                     const formData = new FormData();
                     formData.append('customerImage', file);
 
@@ -264,16 +265,14 @@ const Customer = (props) => {
                         formData,
                         {
                             headers: {
-                                Authorization: `Bearer ${tokenValue}`,  // Ensure tokenValue is correct
-                                "Accept": "application/json",
-                                "Content-Type": "multipart/form-data",  // For file uploads
+                                Authorization: `Bearer ${tokenValue}`, // Ensure tokenValue is correct
+                                Accept: 'application/json',
+                                'Content-Type': 'multipart/form-data', // For file uploads
                             },
                         }
                     );
 
-
                     toast.success('Photo uploaded successfully!', { autoClose: 2000 });
-
                 } catch (error) {
                     console.error('Error saving photo:', error);
                     if (error.response) {
@@ -282,6 +281,7 @@ const Customer = (props) => {
                     }
                 }
             };
+
             console.log(selectedRecord.originalPhotoUrl, '  photo url')
             return (
                 <Grid>
@@ -325,7 +325,7 @@ const Customer = (props) => {
                                             <Grid container>
                                                 <Grid item xs={7.3} >
                                                     <Grid container spacing={1.5} >
-                                                       
+
                                                         <Grid item xs={3.6} sx={{ fontWeight: '480', fontSize: '17px', textAlign: 'right' }}>
                                                             Name :
                                                         </Grid>
@@ -338,7 +338,7 @@ const Customer = (props) => {
                                                         </Grid>
                                                         <Grid item xs={7}>
                                                             <Typography sx={{ textAlign: 'left' }}>
-                                                                {selectedRecord.gender}
+                                                                {selectedRecord.gender ? selectedRecord.gender : "N/A"}
                                                             </Typography>
 
                                                         </Grid>
@@ -350,7 +350,7 @@ const Customer = (props) => {
                                                             <Typography sx={{ textAlign: 'left' }}>
                                                                 {selectedRecord
                                                                     && selectedRecord.partner &&
-                                                                    selectedRecord.partner.id ? String(selectedRecord.partner.id) : "Not Available"}
+                                                                    selectedRecord.partner.id ? String(selectedRecord.partner.id) : "N/A"}
                                                             </Typography>
                                                         </Grid>
 
@@ -359,7 +359,7 @@ const Customer = (props) => {
                                                         </Grid>
                                                         <Grid item xs={8} sx={{ textAlign: 'left' }}>
                                                             <Typography sx={{ textAlign: 'left' }} gutterBottom >
-                                                                {selectedRecord.email}
+                                                                {selectedRecord.email ? selectedRecord.email : "N/A"}
                                                             </Typography>
                                                         </Grid>
                                                         <Divider light />
@@ -455,9 +455,25 @@ const Customer = (props) => {
                                                     >
                                                         {/* {new Date(selectedRecord.createDateTime).toISOString().split('T')[0]} */}
                                                         {/* {selectedRecord.createDateTime} */}
-                                                        {selectedRecord.electricityMeterId}
+                                                        {selectedRecord.electricityMeterId ? selectedRecord.electricityMeterId : "N/A"}
                                                     </Typography>
                                                 </Grid>
+                                            </Grid>
+                                        </Box> <Box sx={{ p: 1 }}>
+                                            <Grid container>
+                                                <Grid item xs={6}>
+                                                    <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
+                                                        eKYC Token :
+                                                    </Typography>
+                                                </Grid>
+                                                <Grid item xs={6} alignItems={'left'}>
+                                                    <Typography
+                                                        sx={{ fontSize: '17px', textAlign: 'left' }}
+                                                        gutterBottom variant="body2">
+                                                        {selectedRecord.ekycToken}
+                                                    </Typography>
+                                                </Grid>
+
                                             </Grid>
                                         </Box>
 
@@ -465,18 +481,7 @@ const Customer = (props) => {
                                         {(selectedRecord.payment === null || selectedRecord.payment === "") ?
                                             <Box sx={{ p: 1 }}>
                                                 <Grid container>
-                                                    <Grid item xs={6}>
-                                                        <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
-                                                            eKYC Token :
-                                                        </Typography>
-                                                    </Grid>
-                                                    <Grid item xs={6} alignItems={'left'}>
-                                                        <Typography
-                                                            sx={{ fontSize: '17px', textAlign: 'left' }}
-                                                            gutterBottom variant="body2">
-                                                            {selectedRecord.ekycToken}
-                                                        </Typography>
-                                                    </Grid>
+
                                                     <Grid item xs={12} alignItems={'right'}>
                                                         <Button variant="contained"
                                                             sx={{ backgroundColor: '#253A7D' }}
@@ -492,7 +497,7 @@ const Customer = (props) => {
                                             : null}
 
                                         <Divider light />
-                                       
+
                                         {selectedRecord.customerType === "Post-Paid" || selectedRecord.customerType === "postpaid" ?
                                             <>
                                                 <Divider light />
@@ -509,7 +514,7 @@ const Customer = (props) => {
                                                             <Typography
                                                                 sx={{ fontSize: '17px', textAlign: 'left' }}
                                                                 gutterBottom variant="body2">
-                                                                {selectedRecord.serviceStatus}
+                                                                {selectedRecord.serviceStatus ? selectedRecord.serviceStatus : "N/A"}
                                                             </Typography>
                                                         </Grid>
                                                     </Grid>
@@ -520,7 +525,7 @@ const Customer = (props) => {
 
 
                                         <Divider light />
-                                       
+
 
                                         {selectedRecord.customerType === "Post-Paid" || selectedRecord.customerType === "postpaid" ?
                                             <>
@@ -538,7 +543,7 @@ const Customer = (props) => {
                                                             <Typography
                                                                 sx={{ fontSize: '17px', textAlign: 'left' }}
                                                                 gutterBottom variant="body2">
-                                                               {selectedRecord.currentMonthlyAmount ? selectedRecord.currentMonthlyAmount : 'N/A'}
+                                                                {selectedRecord.currentMonthlyAmount ? selectedRecord.currentMonthlyAmount : 'N/A'}
                                                             </Typography>
                                                         </Grid>
                                                     </Grid>
@@ -558,7 +563,24 @@ const Customer = (props) => {
                                                     <Typography
                                                         sx={{ fontSize: '17px' }}
                                                         gutterBottom variant="body2">
-                                                        {formatDate(selectedRecord.ekycDate)}
+                                                        {formatDate(selectedRecord.ekycDate) ? formatDate(selectedRecord.ekycDate) : "N/A"}
+                                                    </Typography>
+                                                </Grid>
+                                            </Grid>
+                                        </Box>
+                                        <Divider light />
+                                        <Box sx={{ p: 1 }}>
+                                            <Grid container>
+                                                <Grid item xs={4}>
+                                                    <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
+                                                        eKYC Status :
+                                                    </Typography>
+                                                </Grid>
+                                                <Grid item xs={8} alignItems={'left'} sx={{ marginLeft: -2 }}>
+                                                    <Typography
+                                                        sx={{ fontSize: '17px' }}
+                                                        gutterBottom variant="body2">
+                                                        {selectedRecord.ekycStatus ? selectedRecord.ekycStatus : "N/A"}
                                                     </Typography>
                                                 </Grid>
                                             </Grid>
@@ -577,7 +599,7 @@ const Customer = (props) => {
                                             }}
                                         >Edit</Button>
                                     </Grid>
-                                    <Grid item sx={6}>
+                                    {/* <Grid item sx={6}>
                                         <Button
                                             onClick={() => {
                                                 handleOpenConfirmationDialog(selectedRecord.id)
@@ -585,7 +607,7 @@ const Customer = (props) => {
                                             }}
                                             sx={{ backgroundColor: '#253A7D' }}
                                             variant="contained">Delete</Button>
-                                    </Grid>
+                                    </Grid> */}
                                     {console.log(selectedRecord.customerType + "account type")}
                                     {["post-paid", "postpaid"].includes(selectedRecord?.customerType?.toLowerCase()) && (
                                         <>
@@ -717,7 +739,7 @@ const Customer = (props) => {
             <></>
         }
     };
-  
+
     const handleSearch = async (e) => {
         e.preventDefault();
         console.log("From the handle search");
@@ -748,7 +770,7 @@ const Customer = (props) => {
     };
 
 
-    const [selectedOption, setSelectedOption] = useState('');
+
     const [highlightedRow, setHighlightedRow] = useState(null);
 
     const handleRowMouseEnter = (row) => {
@@ -759,7 +781,54 @@ const Customer = (props) => {
         return str.replace(/\b\w/g, (char) => char.toUpperCase());
     };
 
+    const [selectedFile, setSelectedFile] = useState(null);
+    const [inputId, setInputId] = useState('');
+    // const token = localStorage.getItem('token'); // Assuming the token is stored in localStorage
 
+    const handleFileUpload = () => {
+        if (!selectedFile || !inputId) {
+            toast.error('Please provide all required inputs.');
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('file', selectedFile);
+
+        axios
+            .post(
+                `https://bssproxy01.neotel.nr/erp/api/bulk/upload/customer/by/excel/partner/${inputId}`,
+                formData,
+                {
+                    headers: {
+                        Authorization: `Bearer ${tokenValue}`,
+                        'Content-Type': 'multipart/form-data',
+                    },
+                }
+            )
+            .then(() => toast.success('File uploaded successfully'))
+            .catch((error) => {
+                toast.error(
+                    error.response?.data?.message || 'Upload error'
+                )
+                console.log(error, '  ----error')
+            }
+                // console.log(error,'----'),
+
+            );
+    };
+
+    const handleFileChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const fileExtension = file.name.split('.').pop();
+            if (fileExtension === 'xlsx') {
+                setSelectedFile(file);
+            } else {
+                toast.error('Only .xlsx files are allowed.');
+                setSelectedFile(null); // Reset invalid file
+            }
+        }
+    };
     return (
         <Box >
             {isLoading ? (
@@ -861,11 +930,11 @@ const Customer = (props) => {
                                                                             {capitalizeFirstLetterOfEachWord(String(row.lastName || ''))}
                                                                         </>
                                                                     ) : column.id === 'simInventory.msisdn' ? (
-                                                                        getNestedValue(row, column.id)
-                                                                    ) : column.id === 'ekycStatus' ? (
-                                                                        row[column.id] === '' || row[column.id] === null
-                                                                            ? 'N/A'
-                                                                            : capitalizeFirstLetterOfEachWord(String(row[column.id]))
+                                                                        // Check if MSISDN is empty or not and display 'N/A' if true
+                                                                        getNestedValue(row, column.id) || 'N/A'
+                                                                    ) : column.id === 'simInventory.imsi' ? (
+                                                                        // Check if MSISDN is empty or not and display 'N/A' if true
+                                                                        getNestedValue(row, column.id) || 'N/A'
                                                                     ) : column.id === 'customerType' ? (
                                                                         row[column.id] === '' || row[column.id] === null
                                                                             ? 'N/A'
@@ -878,6 +947,7 @@ const Customer = (props) => {
                                                         </TableRow>
                                                     ))}
                                             </TableBody>
+
                                         </Table>
                                     ) : (
                                         // Message when no rows exist
@@ -911,18 +981,102 @@ const Customer = (props) => {
                                 )}
                             </Paper>
                         </Box>
+                        <Grid container spacing={2} alignItems="center" sx={{ paddingTop: 2 ,paddingBottom:2}}>
+                            {/* Row 1: Create Subscriber and Bulk Pack Activate Buttons */}
+                            <Grid item xs={12}>
+                                <Button
+                                    sx={{ backgroundColor: '#253A7D', boxShadow: 24 }}
+                                    variant="contained"
+                                    onClick={handleButtonClick}
+                                >
+                                    Create Subscriber
+                                </Button>
+                            </Grid>
+                            
+
+                            {/* Row 2: Add Bulk Subscriber Heading */}
+                            <Grid item xs={12}>
+                                <Typography
+                                    variant="h6"
+                                    sx={{ fontWeight: 'bold', color: '#253A7D', paddingTop: 2 }}
+                                >
+                                    Add Bulk Subscriber : 
+                                </Typography>
+                            </Grid>
+
+                            {/* Row 3: Partner ID, File Input, and Save Button */}
+                            <Grid item xs={4}>
+                                <TextField
+                                    label="Partner ID"
+                                    variant="outlined"
+                                    value={inputId}
+                                    onChange={(e) => {
+                                        // Allow only numeric input
+                                        const value = e.target.value;
+                                        if (!isNaN(value) && Number(value) >= 0) {
+                                            setInputId(value);
+                                        }
+                                    }}
+                                    onKeyDown={(e) => {
+                                        // Prevent invalid characters
+                                        if (e.key === '-' || e.key === 'e' || e.key === 'E' || e.key === '.') {
+                                            e.preventDefault();
+                                        }
+                                    }}
+                                    fullWidth
+                                />
+                            </Grid>
+
+                            <Grid item xs={5}>
+                                <Box
+                                    sx={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: '16px', // Spacing between elements
+                                    }}
+                                >
+                                    <TextField
+                                        type="file"
+                                        inputProps={{ accept: '.xlsx' }}
+                                        onChange={handleFileChange}
+                                    />
+                                    <Button
+                                        style={{
+                                            backgroundColor: selectedFile && inputId ? '#FBB716' : 'grey',
+                                            color: selectedFile && inputId ? 'black' : 'white',
+                                            cursor: selectedFile && inputId ? 'pointer' : 'not-allowed',
+                                        }}
+                                        sx={{ boxShadow: 20 }}
+                                        onClick={handleFileUpload}
+                                        disabled={!selectedFile || !inputId} // Disable if no file or text input
+                                    >
+                                        Save File
+                                    </Button>
+                                </Box>
+                            </Grid>
+                            <Grid item xs={3} sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                                <Button
+                                    sx={{ backgroundColor: '#253A7D', boxShadow: 24 }}
+                                    variant="contained"
+                                    onClick={handleButtonActivate}
+                                >
+                                    Bulk Pack Activate
+                                </Button>
+                            </Grid>
+                        </Grid>
 
 
-                        <Box sx={{
+
+                        {/* <Box sx={{
                             paddingLeft: '16px', paddingBottom: '16px', paddingTop: '14px',
 
                         }}>
                             <Button
                                 sx={{ backgroundColor: '#253A7D', boxShadow: 24 }}
                                 variant="contained" backgroundColor="#253A7D" onClick={handleButtonClick}>
-                                Add New
+                                Create Subscriber
                             </Button>
-                        </Box>
+                        </Box> */}
                     </Box>
 
                     <Box sx={{ paddingLeft: 3, paddingTop: 1.5 }} >

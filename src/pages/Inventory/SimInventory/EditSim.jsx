@@ -44,15 +44,26 @@ export default function EditSim() {
     const { handleChange, handleSubmit, handleBlur, values, setValues } = useFormik({
         initialValues: {
 
+            msisdn: "",
+            category: "",
+            specialNumber: "",
             imsi: "",
-            batch_no: "",
-            batch_date: "",
-            allocation_date: "",
-            sim_type: '',
-            key_id: '',
-            auth_id: '',
-            vendor_name: '',
-            status: '',
+            pimsi: "",
+            batchId: "",
+            vendorId: "",
+            status: "",
+            provStatus: "",
+            vendorName: "",
+            vendorContact: "",
+            vendorAddress: "",
+            simType: "",
+            buyingPriceUsd: "",
+            sellingPriceUsd: "",
+            vat: "",
+            otherTaxes: "",
+            minCommision: "",
+            maxCommision: "",
+            avgCommision: "",
 
         },
 
@@ -104,7 +115,8 @@ export default function EditSim() {
                 ...prevValues,
 
                 imsi: selectObj.imsi || '',
-                batch_no: selectObj.batch_no || '',
+                msisdn: selectObj.msisdn || '',
+                batch_no: selectObj.batchId || '',
                 batch_date: selectObj.batch_date || '',
                 allocation_date: selectObj.allocation_date || '',
                 sim_type: selectObj.sim_type || '',
@@ -169,6 +181,18 @@ export default function EditSim() {
                         >
                             <Grid item lg={12} >
                                 <Grid container spacing={2}>
+                                <Grid item lg={4} md={4} sm={6} xs={12} > {/* Padding for individual items */}
+                                        <TextField
+                                            label="MSISDN"
+                                            name='msisdn'
+                                            type='text'
+                                            value={values.msisdn}
+                                            fullWidth
+                                            required
+                                            onChange={handleChange}
+                                        />
+
+                                    </Grid>
                                     <Grid item lg={4} md={4} sm={6} xs={12} > {/* Padding for individual items */}
                                         <TextField
                                             label="IMSI"
@@ -232,22 +256,7 @@ export default function EditSim() {
                                         />
                                     </Grid>
 
-                                    <Grid item lg={4} md={4} sm={4} xs={6}>
-                                        <FormControl fullWidth>
-                                            <InputLabel >SIM Type</InputLabel>
-                                            <Select
-                                                fullWidth
-                                                label="sim_type"
-                                                name='sim_type'
-                                                value={values.sim_type}
-                                                onChange={handleChange}
-                                            >
-                                                <MenuItem value={"prepaid"}>Prepaid</MenuItem>
-                                                <MenuItem value={"postpaid"}>postpaid</MenuItem>
-
-                                            </Select>
-                                        </FormControl>
-                                    </Grid>
+                                  
                                     <Grid item lg={4} md={4} sm={4} xs={6}>
                                         <FormControl fullWidth>
                                             <InputLabel >Status</InputLabel>

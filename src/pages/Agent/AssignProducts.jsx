@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
-import { TextField, Button, Grid, Typography, Box, Paper } from "@mui/material";
+import { TextField, Button, Grid, Typography, Box, Paper, MenuItem, Select, InputLabel, FormControl } from "@mui/material";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
@@ -22,6 +22,12 @@ export default function AssignProducts() {
     const [paymentMode] = useState("CASH");
 
     const [isProductAssigned, setIsProductAssigned] = useState(false);
+
+    const productTypeOptions = {
+        SIM: ["Micro-SIM", "e-SIM"],
+        "Mobile device": ["Smartphone", "Tablet"],
+        Broadband: ["FTTH", "FWA"],
+    };
 
     const validateAssignProductFields = () => {
         if (!productType || !totalUnits || (product !== "Broadband" && !offeredDiscount)) {
@@ -64,8 +70,6 @@ export default function AssignProducts() {
                 setIsProductAssigned(true);
             }
 
-
-            // setIsProductAssigned(true);
             toast.success("Product Assigned Successfully", { autoClose: 2000 });
         } catch (error) {
             console.error("Error assigning product:", error);
@@ -104,6 +108,35 @@ export default function AssignProducts() {
         }
     };
 
+    useEffect(() => {
+        // Auto calculate total units when starting or ending number changes
+        if (startingNumber && endingNumber) {
+            const startingNum = parseInt(startingNumber);
+            const endingNum = parseInt(endingNumber);
+            if (!isNaN(startingNum) && !isNaN(endingNum)) {
+                const total = endingNum - startingNum + 1;
+                setTotalUnits(total);
+            }
+        }
+    }, [startingNumber, endingNumber]);
+
+    const handleStartingNumberChange = (e) => {
+        const value = e.target.value;
+        if (!/^\d{0,10}$/.test(value)) {
+            toast.error("Please enter a valid number up to 10 digits.", { autoClose: 2000 });
+            return;
+        }
+        setStartingNumber(value);
+    };
+
+    const handleEndingNumberChange = (e) => {
+        const value = e.target.value;
+        if (!/^\d{0,10}$/.test(value)) {
+            toast.error("Please enter a valid number up to 10 digits.", { autoClose: 2000 });
+            return;
+        }
+        setEndingNumber(value);
+    };
 
     return (
         <Box p={2}>
@@ -116,7 +149,7 @@ export default function AssignProducts() {
                     marginBottom: "20px",
                 }}
             >
-                Assign {product} to Partner (ID: {record})
+                Assign {product} to Reseller (ID: {record})
             </Typography>
             <ToastContainer position="bottom-left" />
             <Paper
@@ -199,7 +232,7 @@ export default function AssignProducts() {
                                             fullWidth
                                             label="Starting Number"
                                             value={startingNumber}
-                                            onChange={(e) => setStartingNumber(e.target.value)}
+                                            onChange={handleStartingNumberChange}
                                         />
                                     </Grid>
                                     <Grid item xs={6}>
@@ -207,25 +240,34 @@ export default function AssignProducts() {
                                             fullWidth
                                             label="Ending Number"
                                             value={endingNumber}
-                                            onChange={(e) => setEndingNumber(e.target.value)}
+                                            onChange={handleEndingNumberChange}
                                         />
                                     </Grid>
                                 </>
                             )}
 
                             <Grid item xs={6}>
-                                <TextField
-                                    fullWidth
-                                    label="Product Type"
-                                    value={productType}
-                                    onChange={(e) => setProductType(e.target.value)}
-                                />
+                                <FormControl fullWidth>
+                                    <InputLabel>Product Type</InputLabel>
+                                    <Select
+                                        value={productType}
+                                        onChange={(e) => setProductType(e.target.value)}
+                                        label={"Product Type"}
+                                    >
+                                        {productTypeOptions[product].map((option, index) => (
+                                            <MenuItem key={index} value={option}>
+                                                {option}
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                                </FormControl>
                             </Grid>
                             <Grid item xs={6}>
                                 <TextField
                                     fullWidth
                                     label="Total Units"
                                     value={totalUnits}
+                                    disabled
                                     type="number"
                                     onChange={(e) => setTotalUnits(e.target.value)}
                                 />
@@ -293,7 +335,7 @@ export default function AssignProducts() {
                                         }}
                                         onClick={handlePayment}
                                     >
-                                        Make Payment
+                                        Confirm Payment
                                     </Button>
                                 </Grid>
                             </>

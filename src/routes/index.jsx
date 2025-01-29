@@ -3,7 +3,6 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import { ProtectedRoute, PublicRoute } from '../helper';
 import Loginform from '../Loginform';
 import Sidenavbar from '../SidenaveBar/Sidenavbar';
-
 import Agent from '../pages/Agent/Agent';
 import Invoice from '../pages/INVOICE/Invoice';
 import Orders from '../pages/ORDERS/Orders';
@@ -51,7 +50,6 @@ import RatingProfile from '../pages/Rating Plan/RatingProfile/RatingProfile';
 import AddRatingProfile from '../pages/Rating Plan/RatingProfile/AddRatingProfile';
 import EditRatingProfile from '../pages/Rating Plan/RatingProfile/EditRatingProfile';
 import AccountMang from '../pages/Account Management/AccountMang';
-import Category from '../pages/Rating Plan/Category/Category';
 import PrePaidAccount from '../pages/Account Management/PrepaidAccount.jsx/PrePaidAccount';
 import PrePaidRoaming from '../pages/Account Management/PrePaidRoamingAccount/PrePaidRoaming';
 
@@ -157,7 +155,15 @@ import AllTransaction from '../pages/Agent/AllTransaction';
 import AddBroadbandPlan from '../pages/BroadbandPlan/AddBroadbandPlan';
 import AssignProducts from '../pages/Agent/AssignProducts';
 import ShowProductsPage from '../pages/Agent/ShowProductPage';
-
+import InternationalTarrif from '../pages/Rating Plan/RatingProfile/International Tarrif/InternationalTarrif';
+import AddInternationalTarrif from '../pages/Rating Plan/RatingProfile/International Tarrif/AddInternationalTarrif';
+import AddCustomerCareAgent from '../pages/Complaint Management/AddCustomerCareAgent';
+import CustomerCareAgentConfig from '../pages/Complaint Management/CustomerCareAgentConfig';
+import CustomerCareAgentList from '../pages/Complaint Management/CustomerCareAgentList';
+import TicketManagment from '../pages/Complaint Management/Ticket/TicketManagment';
+import NewTicket from '../pages/Complaint Management/Ticket/NewTicket';
+import BulkPackActivate from '../pages/Customer/BulkPackActivate';
+import Campain from '../pages/Campain/Campain';
 export const Routers = () => {
     return (
         <>
@@ -178,10 +184,11 @@ export const Routers = () => {
                         <Route path='/subscriber/newSubscriber/addSubscriberDetails' element={<AddCustomerDetails />} />
                         <Route path='/subscriber/editSubscriber' element={<EditCustomerDetails />} />
                         <Route path='/createOrder' element={<CreateOrder />} />
-                        <Route path='/custInvoice' element={<CustomerInvoice/>}/>
-                        <Route path='/showFamily' element={<ShowFamily/>}/>
-                        <Route path='/subscriber/createChild' element={<CreateChild/>}/>
-                        <Route path='/subscriber/productPayment' element={<ProductPayment/>}/>
+                        <Route path='/custInvoice' element={<CustomerInvoice />} />
+                        <Route path='/showFamily' element={<ShowFamily />} />
+                        <Route path='/subscriber/createChild' element={<CreateChild />} />
+                        <Route path='/subscriber/productPayment' element={<ProductPayment />} />
+                        <Route path='/subscriber/bulkPackActivation' element={<BulkPackActivate />} />
                         {/* Agent */}
                         <Route path='/partner' element={<Agent />} />
                         <Route path='/partner/newPartner' element={<AddAgent />} />
@@ -255,6 +262,8 @@ export const Routers = () => {
                         {/* Add Payment Method */}
                         <Route path='/addPaymentMethod' element={<AddPaymentMethod />} />
 
+                            {/* Campaign */}
+                        <Route path='/campain' element={<Campain />} />
 
                         {/* Available Plan */}
                         <Route path='/availablePlan' element={<AvailablePlan />} />
@@ -263,15 +272,15 @@ export const Routers = () => {
                         <Route path='/prepaidDeActivatedPlan' element={<PrepaidDeActivatedPlan />} />
                         <Route path='/prepaidInProgressPack' element={<PrepaidInProgressPlan />} />
                         <Route path='/postPaidActivatedPlan' element={<PostpaidActivatedPlan />} />
-                        <Route path='/postpaidDeActivatedPlan' element={<PostpaidDeActivatedPlan/>} />
+                        <Route path='/postpaidDeActivatedPlan' element={<PostpaidDeActivatedPlan />} />
                         <Route path='/postpaidInProgressPack' element={<PostpaidInProgressPlan />} />
                         {/* Payment */}
                         <Route path='/packpayment' element={<PackPayment />} />
                         <Route path='/cardDetails' element={<CardDetails />} />
-                         {/* Voucher */}
-                         <Route path='/specialOffers' element={<Specialoffers />} />
-                         <Route path='/addNewVoucher' element={<AddNewVoucher />} />
-                         <Route path='/voucherPayment' element={<VoucherPayment />} />
+                        {/* Voucher */}
+                        <Route path='/specialOffers' element={<Specialoffers />} />
+                        <Route path='/addNewVoucher' element={<AddNewVoucher />} />
+                        <Route path='/voucherPayment' element={<VoucherPayment />} />
 
                         {/* Rating Plan */}
                         <Route path='/ratingPlan' element={<RatingPlan />} />
@@ -279,7 +288,7 @@ export const Routers = () => {
                         {/* Category */}
                         {/* <Route path='/category' element={<Category />} /> */}
                         <Route path='/category' element={<Category1 />} />
-                        
+
 
                         {/* Rates Offer */}
                         <Route path='/ratesOffer' element={<RatesOffer />} />
@@ -293,6 +302,9 @@ export const Routers = () => {
                         <Route path='/newTarrif' element={<NewTarrif />} />
                         <Route path='/editTarrif' element={<EditTarrif />} />
 
+                        <Route path='/ratingProfile/internationalTarrif' element={<InternationalTarrif />} />
+                        <Route path='/ratingProfile/internationalTarrif/add' element={<AddInternationalTarrif />} />
+
                         {/* Account Mangement */}
                         <Route path='/accountMnagment' element={<AccountMang />} />
                         <Route path='/pre-paidAccount' element={<PrePaidAccount />} />
@@ -303,12 +315,12 @@ export const Routers = () => {
                         <Route path='/dataSession' element={<DataSession />} />
                         <Route path='/volte' element={<Volte />} />
                         <Route path='/lu' element={<LU />} />
-                        <Route path='/pcrf' element={<PCRF/>} />
-                        <Route path='/individualinterfaceRecords' element={<InterfaceRecords/>} />
-                        <Route path='/IMSSession' element={<IMSSession/>} />
-                        <Route path='/AudioCallSession' element={<AudioCallSession/>} />
-                        <Route path='/videoCallSession' element={<VideoCallSession/>} />
-                        <Route path='/session' element={<FourGSession/>} />
+                        <Route path='/pcrf' element={<PCRF />} />
+                        <Route path='/individualinterfaceRecords' element={<InterfaceRecords />} />
+                        <Route path='/IMSSession' element={<IMSSession />} />
+                        <Route path='/AudioCallSession' element={<AudioCallSession />} />
+                        <Route path='/videoCallSession' element={<VideoCallSession />} />
+                        <Route path='/session' element={<FourGSession />} />
                         <Route path="/session/:ratType" element={<SessionDetails />} />
                         <Route path="/callSession" element={<CallSession />} />
                         <Route path="/call-session-details" element={<CallSessionDetails />} />
@@ -319,81 +331,89 @@ export const Routers = () => {
                         <Route path='/edithss' element={<Edithss />} />
                         <Route path='/addHssSubscriber' element={<AdddHssSubscriber />} />
                         <Route path='/simFap' element={<SimFap />} />
-                        <Route path='/deleteSubscriber' element={<DeleteSubscriber/>} />
-                        <Route path='/subscriberServiceCapability' element={<SubscriberServiceCapability/>} />
-                        <Route path='/blockingSubscriber' element={<BlockingSubscriber/>} />
-                        <Route path='/UnblockingSubscriber' element={<UnBlockingSubscriber/>} />
+                        <Route path='/deleteSubscriber' element={<DeleteSubscriber />} />
+                        <Route path='/subscriberServiceCapability' element={<SubscriberServiceCapability />} />
+                        <Route path='/blockingSubscriber' element={<BlockingSubscriber />} />
+                        <Route path='/UnblockingSubscriber' element={<UnBlockingSubscriber />} />
                         {/* Inventory */}
                         <Route path='/inventory' element={<InventoryData />} />
                         <Route path='/addinventory' element={<AddInventory />} />
                         <Route path='/editinventory' element={<Editinventory />} />
 
                         {/* simINventory */}
-                        <Route path='/simManagement' element={<Sim_manage/>}/>
-                        <Route path='/addsim_management' element={<AddSim/>}/>
-                        <Route path='/editSim' element={<EditSim/>}/>
+                        <Route path='/simManagement' element={<Sim_manage />} />
+                        <Route path='/addsim_management' element={<AddSim />} />
+                        <Route path='/editSim' element={<EditSim />} />
                         {/* Msisdn Inventoty */}
-                        <Route path='/msisdnmanagement' element={<MSISDN_manage/>}/>
-                        <Route path='/addmsisdn' element={<AddMSISDN/>}/>
-                        <Route path='/editmsisdn' element={<EditMSISDN/>}/>
-                            {/* Device Inventory */}
-                        <Route path='/devicemanagement' element={<DeviceManagement/>}/>
-                        <Route path='/adddevicemanagement' element={<AddDevice/>}/>
-                        <Route path='/Editdevicemanagement' element={<EditDevice/>}/>
-                            {/* Vendor Inventory */}
-                        <Route path='/vendormanagement' element={<VendorManagement/>}/>
-                        <Route path='/EditVendorManagement' element={<EditVendor/>}/>
-                        <Route path='/addVendor' element={<AddVendor/>}/>
+                        <Route path='/msisdnmanagement' element={<MSISDN_manage />} />
+                        <Route path='/addmsisdn' element={<AddMSISDN />} />
+                        <Route path='/editmsisdn' element={<EditMSISDN />} />
+                        {/* Device Inventory */}
+                        <Route path='/devicemanagement' element={<DeviceManagement />} />
+                        <Route path='/adddevicemanagement' element={<AddDevice />} />
+                        <Route path='/Editdevicemanagement' element={<EditDevice />} />
+                        {/* Vendor Inventory */}
+                        <Route path='/vendormanagement' element={<VendorManagement />} />
+                        <Route path='/EditVendorManagement' element={<EditVendor />} />
+                        <Route path='/addVendor' element={<AddVendor />} />
 
                         {/* BroadBand */}
-                        <Route path='/broadband' element={<Broadband/>}/>
-                        <Route path='/broadband-plan' element={<BroadbandPlan/>}/>
-                        <Route path='/broadband-plan/addBroadbandPlan' element={<AddBroadbandPlan/>}/>
+                        <Route path='/broadband' element={<Broadband />} />
+                        <Route path='/broadband-plan' element={<BroadbandPlan />} />
+                        <Route path='/broadband-plan/addBroadbandPlan' element={<AddBroadbandPlan />} />
 
 
                         {/* Test */}
-                           {/* <Route path='/test' element={<AllCustomerReport/>}/> */}
-                           <Route path='/invoiceDesign' element={<InvoiceSample/>}/>
-                           <Route path='/test' element={<Test/>}/>
-                           <Route path="/invoice-payment" element={<InvoicePayment />} />
-                           <Route path="/payment-confirmation" element={<PaymentConfirmation />} />
+                        {/* <Route path='/test' element={<AllCustomerReport/>}/> */}
+                        <Route path='/invoiceDesign' element={<InvoiceSample />} />
+                        <Route path='/test' element={<Test />} />
+                        <Route path="/invoice-payment" element={<InvoicePayment />} />
+                        <Route path="/payment-confirmation" element={<PaymentConfirmation />} />
 
-                           {/* Reports */}
-                           <Route path='/allcustomerReport' element={<AllCustomerReport/>}/>
-                           <Route path='/allagentreport' element={<AllAgentReport/>}/>
-                           <Route path='/agentComission' element={<AgentComission/>}/>
-                           <Route path='/prepaidcustomerReport' element={<PrepaidCustomerReport/>}/>
-                           <Route path='/postpaidcustomerReport' element={<PostpaidCustomerReport/>}/>
-                           <Route path='/activecustomerReport' element={<ActiveCustomerReport/>}/>
-                           <Route path='/inactivecustomerReport' element={<InactiveCustomerReport/>}/>
-                           <Route path='/individualReport' element={<Individualreport/>}/>
-                           <Route path='/individualagentreport' element={<IndividualAgentReport/>}/>
-                           <Route path='/customerSignUp' element={<CustomerSignUp/>}/>
-                           <Route path='/topCustomerReport' element={<TopCustomerReport/>}/>
-                           <Route path='/prepaidDataUsage' element={<PrePaidCustomerDataAvailable/>}/>
-                           <Route path='/onBoardCustomers' element={<OnBoardCustomerReports/>}/>
-                           <Route path='/topPostPaidCallUsage' element={<TopPostPaidCallUsageReport/>}/>
-                           <Route path='/topPostPaidSMSUsage' element={<TopPostpaidSMSUsageReport/>}/>
-                           <Route path='/agentReportByPayment' element={<AgentReportByPayment/>}/>
-                           <Route path='/agentReportByProduct' element={<AgentReportByProduct/>}/>
-                           <Route path='/prepaidUsageReport' element={<PrepaidCustomerUsageReport/>}/>
+                        {/* Reports */}
+                        <Route path='/allcustomerReport' element={<AllCustomerReport />} />
+                        <Route path='/allagentreport' element={<AllAgentReport />} />
+                        <Route path='/agentComission' element={<AgentComission />} />
+                        <Route path='/prepaidcustomerReport' element={<PrepaidCustomerReport />} />
+                        <Route path='/postpaidcustomerReport' element={<PostpaidCustomerReport />} />
+                        <Route path='/activecustomerReport' element={<ActiveCustomerReport />} />
+                        <Route path='/inactivecustomerReport' element={<InactiveCustomerReport />} />
+                        <Route path='/individualReport' element={<Individualreport />} />
+                        <Route path='/individualagentreport' element={<IndividualAgentReport />} />
+                        <Route path='/customerSignUp' element={<CustomerSignUp />} />
+                        <Route path='/topCustomerReport' element={<TopCustomerReport />} />
+                        <Route path='/prepaidDataUsage' element={<PrePaidCustomerDataAvailable />} />
+                        <Route path='/onBoardCustomers' element={<OnBoardCustomerReports />} />
+                        <Route path='/topPostPaidCallUsage' element={<TopPostPaidCallUsageReport />} />
+                        <Route path='/topPostPaidSMSUsage' element={<TopPostpaidSMSUsageReport />} />
+                        <Route path='/agentReportByPayment' element={<AgentReportByPayment />} />
+                        <Route path='/agentReportByProduct' element={<AgentReportByProduct />} />
+                        <Route path='/prepaidUsageReport' element={<PrepaidCustomerUsageReport />} />
 
 
-                           {/* Sim Invrntory Reports */}
-                           <Route path='/simBysellingPrice' element={<SimBySellingPrice/>}/>
-                           <Route path='/simByActivation' element={<SimByActivation/>}/>
-                           <Route path='/simReports' element={<SimReports/>}/>
-                           <Route path='/simByVendor' element={<SimByVendor/>}/>
-                           <Route path='/simByAgent' element={<SimByAgent/>}/>
-                           <Route path='/simByStatus' element={<SimByStatus/>}/>
+                        {/* Sim Invrntory Reports */}
+                        <Route path='/simBysellingPrice' element={<SimBySellingPrice />} />
+                        <Route path='/simByActivation' element={<SimByActivation />} />
+                        <Route path='/simReports' element={<SimReports />} />
+                        <Route path='/simByVendor' element={<SimByVendor />} />
+                        <Route path='/simByAgent' element={<SimByAgent />} />
+                        <Route path='/simByStatus' element={<SimByStatus />} />
 
-                           {/* Device INventory Reports */}
-                           <Route path='/deviceSellingReports' element={<DeviceBySellingRates/>}/>
-                           <Route path='/deviceByAgent' element={<DeviceByAgent/>}/>
-                           <Route path='/deviceByVendor' element={<DeviceByVendor/>}/>
+                        {/* Device INventory Reports */}
+                        <Route path='/deviceSellingReports' element={<DeviceBySellingRates />} />
+                        <Route path='/deviceByAgent' element={<DeviceByAgent />} />
+                        <Route path='/deviceByVendor' element={<DeviceByVendor />} />
 
-                           {/* Pack  */}
-                           <Route path='/packDetails' element={<PackDetails/>}/>
+                        {/* Pack  */}
+                        <Route path='/packDetails' element={<PackDetails />} />
+
+                        {/* Complaint management  */}
+                        <Route path='/CustomerCareAgentList' element={<CustomerCareAgentList />} />
+                        <Route path='/addNewCustomerCareAgent' element={<AddCustomerCareAgent />} />
+                        <Route path='/CustomerCareAgentList/CustomerCareAgentConfig' element={<CustomerCareAgentConfig />} />
+                        <Route path='/ticket' element={<TicketManagment />} />
+                        <Route path='/ticket/newTicket' element={<NewTicket />} />
+
                         {/* <Route path='/add-Noc-sub' element={<AddNoc />} />
                         <Route path='/all-Noc-sub' element={<AllNoc />} />
                         <Route path='/all-Noc-query' element={<NOCQuery />} />

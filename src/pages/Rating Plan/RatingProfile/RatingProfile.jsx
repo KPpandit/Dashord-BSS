@@ -316,6 +316,21 @@ export default function RatingProfile() {
                         Add tarrif
                     </Button>
                 </Box>
+                <Box sx={{
+                    paddingLeft: '16px', paddingBottom: '16px', paddingTop: '14px',
+
+                }}>
+                    {/* <Button
+                        sx={{ backgroundColor: '#253A7D', boxShadow: 24 }}
+                        variant="contained" backgroundColor="#253A7D" onClick={handleButtonClick}>
+                        Add New
+                    </Button> */}
+                    <Button
+                        sx={{ backgroundColor: '#253A7D', boxShadow: 24 }}
+                        variant="contained" backgroundColor="#253A7D" onClick={() => { navigate('/ratingProfile/internationalTarrif') }}>
+                        International Tarrif
+                    </Button>
+                </Box>
             </Box>
 
             <Box sx={{ paddingLeft: 3, paddingTop: 1.5 }} >

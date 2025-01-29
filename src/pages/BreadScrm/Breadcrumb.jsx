@@ -18,7 +18,19 @@ const Breadcrumb = ({ onRootMarginChange }) => {
     "/prepaidActivatedPlan": "Prepaid Approved Plans",
     "/subscriber":"Subsriber ",
     "/subscriber/newSubscriber":"New Subscriber",
-    "/subscriber/newSubscriber/addSubscriberDetails":"Add Subscriber Details"
+    "/subscriber/newSubscriber/addSubscriberDetails":"Add Subscriber Details",
+     "/partner":"Reseller",
+    "/partner/newPartner":"Create Reseller",
+    "/partner/assignBalance":"Assign Balance",
+     "/partner/allTransation":"All Transactions",
+      "/partner/coreBalanceManagment":"Core Balance Managment",
+      "/subscriber/editSubscriber":"Edit Subscriber",
+      "/partner/editPartner":"Edit Reseller",
+      "/partner/showProducts":"Show Products",
+      "/subscriber/productPayment":"Product Payment",
+      "/ratingProfile/internationalTarrif":"International Tarrif",
+      "/ratingProfile/internationalTarrif/add":"Add International Tarrif",
+      "/ticket/newTicket":"New Ticket"
   };
 
   // Split the pathname into parts for breadcrumb navigation

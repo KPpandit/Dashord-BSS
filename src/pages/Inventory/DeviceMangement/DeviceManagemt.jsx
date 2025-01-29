@@ -7,13 +7,13 @@ import axios from "axios";
 
 const DeviceManagement = (props) => {
     const columns = [
-        { id: 'id', name: 'Device id' },
+        { id: 'id', name: 'Device Id' },
         { id: 'deviceModel', name: 'Device Model' },
         { id: 'deviceMake', name: 'Device Make' },
-        { id: 'manufacturer', name: 'Manufactured' },
+        { id: 'manufacturer', name: 'Manufacturer' },
         // { id: 'manufactureDate', name: 'Manufactured Date' },
         { id: 'deviceType', name: 'Device Type' },
-        { id: 'sellingPriceUsd', name: 'Selling Price' },
+        // { id: 'sellingPriceUsd', name: 'Selling Price' },
     ];
     const [rows, setRows] = useState([]);
     const tokenValue = localStorage.getItem('token');
@@ -190,44 +190,28 @@ const DeviceManagement = (props) => {
 
                         <Grid container>
                             <Grid item xs={12} paddingLeft={1}>
+                            <Divider light />
+                            <DetailRow label="IMI:" value={selectedRecord.imi} />
                                 <Divider light />
                                 <DetailRow label="Device Make:" value={selectedRecord.deviceMake} />
                                 <Divider light />
                                 <DetailRow label="Batch ID:" value={selectedRecord.batchId} />
                                 <Divider light />
                                 <DetailRow label="OS Type:" value={selectedRecord.ostype} />
-                                <Divider light />
-                                <DetailRow label="Vendor Name:" value={selectedRecord.vendorName} />
-                                <Divider light />
-                                <DetailRow
-                                    label="Vendor Contact:"
-                                    value={String(selectedRecord.vendorContact)}
-                                />
+                               
+                               
                                 <Divider light />
                                 <DetailRow
-                                    label="Vendor Address:"
-                                    value={String(selectedRecord.vendorAddress)}
-                                />
-                                <Divider light />
-                                <DetailRow
-                                    label="Buying Price:"
+                                    label="Buying Price AUD:"
                                     value={String(selectedRecord.buyingPriceUsd)}
                                 />
                                 <Divider light />
                                 <DetailRow
-                                    label="Selling Price:"
+                                    label="Selling Price AUD:"
                                     value={String(selectedRecord.sellingPriceUsd)}
                                 />
                                 <Divider light />
-                                <DetailRow label="VAT:" value={selectedRecord.vat} xsLabel={2} xsValue={4} />
-                                <Divider light />
-                                <DetailRow
-                                    label="Other Taxes:"
-                                    value={String(selectedRecord.otherTaxes)}
-                                    xsLabel={4}
-                                    xsValue={6}
-                                />
-                                <Divider light />
+                               
                             </Grid>
                         </Grid>
 
@@ -296,12 +280,11 @@ const DeviceManagement = (props) => {
     };
     const handleSaveFile = () => {
         if (selectedFile) {
-            // Perform logic to set the file name
-            const fileName = selectedFile.name; // Using the selected file name
+            
+            const fileName = selectedFile.name; 
             setSaveFileName(fileName);
 
-            // Depending on your requirement, you can perform additional actions such as saving the file
-            // Here, I'm just logging the selected file details
+           
             console.log('Selected File:', selectedFile);
 
             // Assuming you want to upload the file using axios
@@ -346,7 +329,7 @@ const DeviceManagement = (props) => {
                     </Paper>
                 </Box>
                 <Grid container padding={2}>
-                    <Grid item xs={4} sx={{ textAlign: 'right', marginY: -0.5 }} >
+                    <Grid item xs={12} sx={{ textAlign: 'right', marginY: -0.5 }} >
                         <form onSubmit={handleSearch}>
                             <Paper elevation={10} sx={{ marginBottom: 2 }}>
                                 <TextField
@@ -372,11 +355,7 @@ const DeviceManagement = (props) => {
                             </Paper>
                         </form>
                     </Grid>
-                    <Grid item xs={8} sx={{ marginY: 1 }}>
-                        <Button style={{ backgroundColor: '#FBB716', color: 'black' }} sx={{ marginX: 1, boxShadow: 20 }}>Export to PDF</Button>
-                        <Button style={{ backgroundColor: '#FBB716', color: 'black' }} sx={{ marginX: 1, boxShadow: 20 }}>Export to CSV</Button>
-                        <Button style={{ backgroundColor: '#FBB716', color: 'black' }} sx={{ boxShadow: 20 }}>Export to Excel</Button>
-                    </Grid>
+                   
 
 
 
@@ -440,11 +419,11 @@ const DeviceManagement = (props) => {
                 </Box>
 
                 <Box sx={{ paddingLeft: '16px', paddingBottom: '16px', paddingTop: '14px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <Button
+                    {/* <Button
                         sx={{ backgroundColor: '#253A7D', boxShadow: 20 }}
                         variant="contained" backgroundColor="#253A7D" onClick={handleButtonClick}>
                         Add New
-                    </Button>
+                    </Button> */}
                     <Grid item xs={8} sx={{ marginY: 1 }}>
                         <Box sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
                             <TextField type="file" onChange={handleFileChange} />

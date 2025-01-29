@@ -14,6 +14,7 @@ import {
 import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
 import React from 'react';
 import { useFormik } from 'formik';
+import * as Yup from 'yup'; // For validation schema
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -24,18 +25,36 @@ export default function AddAgent() {
     const navigate = useNavigate();
     const tokenValue = localStorage.getItem('token');
 
+    const validationSchema = Yup.object({
+        fristName: Yup.string().required('First Name is required'),
+        contact: Yup.string()
+            .matches(/^674\d{7}$/, 'Contact must start with "674" and be 10 digits')
+            .required('Contact is required'),
+        token: Yup.string()
+            .matches(/^\d{10}$/, 'eKYC Token must be exactly 10 digits')
+            .required('eKYC Token is required'),
+        businessName: Yup.string().required('Business Name is required'),
+        locallity: Yup.string().required('Locality is required'),
+        email: Yup.string()
+            .email('Invalid email format') // This checks for general email format
+            .matches(/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/, 'Invalid email format. Please include a valid domain.') 
+            .notRequired(),
+    });
+
     const { handleChange, handleSubmit, handleBlur, values, touched, errors } = useFormik({
         initialValues: {
             fristName: "",
             lastName: "",
             email: "",
             businessAddress: "",
-            contact: "674",
+            contact: "674 ",
             documentId: "",
             documentType: "",
             token: "",
             locallity: "",
+            businessName: ""
         },
+        validationSchema,
         onSubmit: async (values) => {
             try {
                 const res = await axios.post(
@@ -59,7 +78,6 @@ export default function AddAgent() {
                 console.error("Error during API request:", error);
 
                 if (error.response && error.response.status === 401) {
-                    console.log("Unauthorized. Redirect or perform necessary actions.");
                     localStorage.removeItem("token");
                     navigate("/");
                 }
@@ -68,6 +86,22 @@ export default function AddAgent() {
             }
         },
     });
+
+    const handleNumericInput = (e, fieldName, maxLength) => {
+        let value = e.target.value.replace(/\D/g, ''); // Allow only digits
+        if (fieldName === 'contact' && !value.startsWith('674')) {
+            value = '674'; // Ensure it starts with "674"
+        }
+        if (value.length > maxLength) {
+            value = value.slice(0, maxLength); // Restrict length
+        }
+        handleChange({ target: { name: fieldName, value } });
+    };
+
+    const getFieldLabel = (fieldName) => {
+        const requiredFields = ['fristName', 'contact', 'token', 'businessName', 'locallity'];
+        return requiredFields.includes(fieldName) ? `${fieldName.charAt(0).toUpperCase() + fieldName.slice(1)} *` : fieldName.charAt(0).toUpperCase() + fieldName.slice(1);
+    };
 
     return (
         <Box sx={{ marginTop: -1 }}>
@@ -108,84 +142,69 @@ export default function AddAgent() {
                                 alignItems="center"
                             >
                                 {[
-                                    { label: "First Name", name: "fristName", type: "text", value: values.fristName },
-                                    { label: "Last Name", name: "lastName", type: "text", value: values.lastName },
-                                    { label: "Email", name: "email", type: "email", value: values.email },
-                                    { label: "Business Address", name: "businessAddress", type: "text", value: values.businessAddress },
-                                    { label: "Contact", name: "contact", type: "text", value: values.contact },
-                                    { label: "Document ID", name: "documentId", type: "text", value: values.documentId },
-                                    { label: "Document Type", name: "documentType", type: "text", value: values.documentType },
-                                    { label: "EKYC Token", name: "token", type: "text", value: values.token },
+                                    { label: "First Name *", name: "fristName", type: "text" },
+                                    { label: "Last Name", name: "lastName", type: "text" },
+                                    { label: "Email", name: "email", type: "email" },
+                                    { label: "Business Address", name: "businessAddress", type: "text" },
+                                    { label: "Contact *", name: "contact", type: "text", maxLength: 10 },
+                                    { label: "Document Id", name: "documentId", type: "text" },
+                                    { label: "Document Type", name: "documentType", type: "text" },
+                                    { label: "Business Name *", name: "businessName", type: "text" },
+                                    { label: "Token *", name: "token", type: "text", maxLength: 10 },
                                     {
-                                        label: "Locality",
+                                        label: "Locality *",
                                         name: "locallity",
                                         type: "select",
-                                        value: values.locallity,
                                         options: [
                                             "Aiwo", "Anabar", "Anetan", "Anibare", "Baitsi",
                                             "Boe", "Buada", "Denigomodu", "Ewa", "Ijuw",
                                             "Meneng", "Nibok", "Uaboe", "Yaren"
                                         ]
                                     },
-                                ].map((field, index) => {
-                                    const requiredFields = ["fristName", "lastName", "email", "businessAddress", "token", "locallity", "contact"];
-                                    const isRequired = requiredFields.includes(field.name);
-
-                                    return (
-                                        <Grid item lg={4} md={4} sm={6} xs={12} paddingBottom={2} key={index}>
-                                            {field.type === "select" ? (
-                                                <FormControl fullWidth required={isRequired}>
-                                                    <InputLabel>{field.label}</InputLabel>
-                                                    <Select
-                                                        name={field.name}
-                                                        label={field.name}
-                                                        value={field.value}
-                                                        onChange={handleChange}
-                                                        onBlur={handleBlur}
-                                                        error={isRequired && touched[field.name] && Boolean(errors[field.name])}
-                                                    >
-                                                        {field.options.map((option, idx) => (
-                                                            <MenuItem value={option} key={idx}>
-                                                                {option}
-                                                            </MenuItem>
-                                                        ))}
-                                                    </Select>
-                                                    {isRequired && touched[field.name] && (
-                                                        <Typography variant="caption" color="error">
-                                                            {errors[field.name]}
-                                                        </Typography>
-                                                    )}
-                                                </FormControl>
-                                            ) : (
-                                                <TextField
-                                                    label={field.label}
-                                                    type={field.type}
-                                                    fullWidth
-                                                    required={isRequired}
+                                ].map((field, index) => (
+                                    <Grid item lg={4} md={4} sm={6} xs={12} paddingBottom={2} key={index}>
+                                        {field.type === "select" ? (
+                                            <FormControl fullWidth>
+                                                <InputLabel>{getFieldLabel(field.label)}</InputLabel>
+                                                <Select
                                                     name={field.name}
-                                                    value={field.name === "contact" ? values.contact : field.value}
-                                                    onChange={(e) => {
-                                                        if (field.name === "contact") {
-                                                            const input = e.target.value.replace(/\D/g, ""); // Remove non-digit characters
-                                                            const formattedInput = `674 ${input.slice(3)}`; // Add a space after "674"
-                                                            if (formattedInput.length <= 12) {
-                                                                handleChange({
-                                                                    target: { name: "contact", value: formattedInput },
-                                                                });
-                                                            }
-                                                        } else {
-                                                            handleChange(e);
-                                                        }
-                                                    }}
+                                                    value={values[field.name]}
+                                                    onChange={handleChange}
                                                     onBlur={handleBlur}
-                                                    error={isRequired && touched[field.name] && Boolean(errors[field.name])}
-                                                    helperText={isRequired && touched[field.name] && errors[field.name]}
-                                                />
-
-                                            )}
-                                        </Grid>
-                                    );
-                                })}
+                                                    label={field.name}
+                                                    error={touched[field.name] && Boolean(errors[field.name])}
+                                                >
+                                                    {field.options.map((option, idx) => (
+                                                        <MenuItem value={option} key={idx}>
+                                                            {option}
+                                                        </MenuItem>
+                                                    ))}
+                                                </Select>
+                                                {touched[field.name] && (
+                                                    <Typography variant="caption" color="error">
+                                                        {errors[field.name]}
+                                                    </Typography>
+                                                )}
+                                            </FormControl>
+                                        ) : (
+                                            <TextField
+                                                label={getFieldLabel(field.label)}
+                                                type={field.type}
+                                                fullWidth
+                                                name={field.name}
+                                                value={values[field.name]}
+                                                onChange={(e) =>
+                                                    field.name === "contact" || field.name === "token"
+                                                        ? handleNumericInput(e, field.name, field.maxLength)
+                                                        : handleChange(e)
+                                                }
+                                                onBlur={handleBlur}
+                                                error={touched[field.name] && Boolean(errors[field.name])}
+                                                helperText={touched[field.name] && errors[field.name]}
+                                            />
+                                        )}
+                                    </Grid>
+                                ))}
                             </Grid>
                         </Grid2>
                     </Box>
@@ -197,16 +216,25 @@ export default function AddAgent() {
                     md={4}
                     sm={6}
                     xs={12}
-                    sx={{ textAlign: { lg: 'center', md: 'center', sm: 'center', xs: 'center' } }}
+                    sx={{ textAlign: 'center' }}
                 >
                     <Button
                         type="submit"
                         style={{ backgroundColor: '#253A7D', color: 'white' }}
-                        sx={{ mb: 5, boxShadow: 20 }}
+                        sx={{ mb: 5, boxShadow: 20, marginRight: 2 }}
                     >
                         Submit
                     </Button>
+                    <Button
+                        type="button"
+                        style={{ backgroundColor: '#F6B625', color: 'black' }}
+                        sx={{ mb: 5, boxShadow: 20 }}
+                        onClick={() => navigate(-1)} // Navigates to the previous page
+                    >
+                        Cancel
+                    </Button>
                 </Grid>
+
             </form>
         </Box>
     );

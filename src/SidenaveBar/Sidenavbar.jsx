@@ -13,39 +13,27 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
-import DashboardIcon from '@mui/icons-material/Dashboard';
-import PersonIcon from '@mui/icons-material/Person';
-import SettingsIcon from '@mui/icons-material/Settings';
-import ListAltTwoToneIcon from '@mui/icons-material/ListAltTwoTone';
-import InventoryIcon from '@mui/icons-material/Inventory';
-import StorageTwoToneIcon from '@mui/icons-material/StorageTwoTone';
-import NextPlanIcon from '@mui/icons-material/NextPlan';
+
 import DisplaySettingsIcon from '@mui/icons-material/DisplaySettings';
 import AppsIcon from '@mui/icons-material/Apps';
 import LogoutIcon from '@mui/icons-material/Logout';
-import AddCircleIcon from '@mui/icons-material/AddCircle';
-import AccountBalanceWalletTwoToneIcon from '@mui/icons-material/AccountBalanceWalletTwoTone';
-import Logout from '@mui/icons-material/Logout';
-import AccountBoxIcon from '@mui/icons-material/AccountBox';
-import { Dashboard, GraphicEq, ListAltTwoTone, Person } from '@mui/icons-material';
-import LogoutTwoToneIcon from '@mui/icons-material/LogoutTwoTone';
-import MediationTwoToneIcon from '@mui/icons-material/MediationTwoTone';
-import DiscountTwoToneIcon from '@mui/icons-material/DiscountTwoTone';
+
+import { Person } from '@mui/icons-material';
+
 import AssessmentTwoToneIcon from '@mui/icons-material/AssessmentTwoTone';
-import PaymentsTwoToneIcon from '@mui/icons-material/PaymentsTwoTone';
-import CategoryTwoToneIcon from '@mui/icons-material/CategoryTwoTone';
+
 import PaymentsIcon from '@mui/icons-material/Payments';
-import GraphicEqIcon from '@mui/icons-material/GraphicEq';
+
 import TimelineIcon from '@mui/icons-material/Timeline';
 import HandshakeIcon from '@mui/icons-material/Handshake';
-import LocalActivityIcon from '@mui/icons-material/LocalActivity';
+
 import SettingsCellIcon from '@mui/icons-material/SettingsCell';
 import LogoMo from '../assets/LogoMo.jpg'
 import Inventory2Icon from '@mui/icons-material/Inventory2';
 import SettingsApplicationsIcon from '@mui/icons-material/SettingsApplications';
 import Breadcrumb from '../pages/BreadScrm/Breadcrumb';
-const drawerWidth = 360;
-function Footer() {
+const drawerWidth = 358;
+function Footer({ open, drawerWidth }) {
   return (
     <Box
       component="footer"
@@ -57,15 +45,17 @@ function Footer() {
         position: 'fixed',
         bottom: 0,
         left: 0,
-        width: `calc(100% - ${drawerWidth}px)`, // Adjust width to exclude the drawer
-        marginLeft: `${drawerWidth}px`, // Push content to the right when drawer is open
+        width: open ? `calc(100% - ${drawerWidth}px)` : `calc(100% - 72px)`, // Adjust width based on drawer state
+        marginLeft: open ? `${drawerWidth}px` : '72px', // Match collapsed width (72px as example)
         zIndex: 1000, // Ensure it appears above other content
+        transition: 'width 0.3s ease, margin-left 0.3s ease', // Smooth transition
       }}
     >
-       &copy; {new Date().getFullYear()} Nauru Telikom Corporation. All rights reserved.
+      &copy; {new Date().getFullYear()} Nauru Telikom Corporation. All rights reserved.
     </Box>
   );
 }
+
 const openedMixin = (theme) => ({
   width: drawerWidth,
   transition: theme.transitions.create('width', {
@@ -146,7 +136,7 @@ export default function Sidenavbar() {
   };
   let Links;
   const handleDrawerClose = () => {
-    setOpen(true);
+    setOpen(false);
   };
   const data = localStorage.getItem('auth')
   const [openSections, setOpenSections] = React.useState({}); // Manage open state of sections
@@ -176,17 +166,18 @@ export default function Sidenavbar() {
         label: 'Reseller Management',
         route: '/partner',
         icon: <HandshakeIcon />,
-        subRoute:[
-          {label:'Certified Reseller',route: '/partner'},
+        subRoute: [
+          { label: 'Certified Reseller', route: '/partner' },
           // {label:'Buy Core Balance',route: '#'},
-          {label:'Reseller Product Management',
-            subRoute:[
-             { label:'Core Balance Management',route:'/partner/coreBalanceManagment'},
-            //  { label:'UDM',route:'/hss'},
+          {
+            label: 'Reseller Product Management',
+            subRoute: [
+              { label: 'Core Balance Management', route: '/partner/coreBalanceManagment' },
+              //  { label:'UDM',route:'/hss'},
             ]
 
           },
-          
+
 
         ]
       },
@@ -206,7 +197,7 @@ export default function Sidenavbar() {
         icon: <AppsIcon />,
         subRoute: [
           {
-            label: 'Create tarrif',
+            label: 'Create Tarrif',
             subRoute: [
               { label: 'Category', route: '/category' },
               { label: 'Tariff Creation', route: '/ratingProfile' },
@@ -224,11 +215,11 @@ export default function Sidenavbar() {
                     route: '/prepaidActivatedPlan'
                   },
                   {
-                    label: 'Processing Packs',
+                    label: 'Packs Under Process',
                     route: '/prepaidInProgressPack'
                   },
                   {
-                    label: 'UnApproved Packs',
+                    label: 'Unapproved Packs',
                     route: '/prepaidDeActivatedPlan'
                   },
                 ]
@@ -250,7 +241,7 @@ export default function Sidenavbar() {
                   },
                 ]
               },
-              
+
             ],
           },
           { label: 'BroadBand Plan', route: '/broadband-plan' },
@@ -332,16 +323,34 @@ export default function Sidenavbar() {
 
         ]
       },
-      {
-        label: 'Complaints Management',
-        // route: '/configuration',
-        icon: <DisplaySettingsIcon />,
-      },
+      // {
+      //   label: 'Complaints Management',
+      //   // route: '/configuration',
+      //   route: '#',
+      //   icon: <DisplaySettingsIcon />,
+      // },
       // {
       //   label: 'Payment',
       //   route: '/payment',
       //   icon: <PaymentsTwoToneIcon />,
       // },
+      {
+        label: 'Complaints Management',
+        // route: '/configuration',
+        // route: '#',
+        icon: <DisplaySettingsIcon />,
+        subRoute:[
+          {
+            label: 'CustomerCare AgentList',
+            route: '/CustomerCareAgentList',
+          },
+          {
+            label: 'All Tickets',
+            route: '/ticket',
+          }
+        ]
+      },
+ 
       {
         label: 'Settings',
         route: '/configuration',
@@ -361,49 +370,17 @@ export default function Sidenavbar() {
             label: 'Provisioning GateWay ',
             route: '/hss'
           },
+          {
+            label: 'Campaign',
+            route: '/campain'
+          },
 
 
         ]
       },
 
-      // {
-      //   label: 'Create Tariff Plan',
-      //   route: '/category',
-      //   icon: <CropLandscapeIcon />,
-      //   subRoute: [
-      //     { label: 'Category', route: '/category' },
-      //     { label: 'Tariff Creation', route: '/ratingProfile' },
-      //   ],
-      // },
-      // {
-      //   label: 'Account Config',
-      //   icon: <AccountBoxIcon />,
-      //   subRoute: [
-      //     { label: 'Pre-Paid Account', route: '/pre-paidAccount' },
-      //     { label: 'Pre-Paid Roaming Account', route: '/prepaidRoaming' },
-      //   ],
-      // },
-      // {
-      //   label: 'Session Management',
-      //   icon: <AnalyticsIcon />,
-      //   subRoute: [
-      //     { label: 'Audio Call Session', route: '/AudioCallSession' },
-      //     { label: 'ISD', route: '/isd' }, // Added ISD Sub-route
-      //   ],
-      // },
-      // {
-      //   label: 'Voucher',
-      //   route: '/specialOffers',
-      //   icon: <LocalActivityIcon />,
-      // },
-      // {
-      //   label: 'Provisioning Gateway',
-      //   route: '/hss',
-      //   icon: <StorageIcon />,
-      //   subRoute: [
-      //     { label: 'Add Subscriber', route: '/addHssSubscriber' },
-      //   ],
-      // },
+
+
       {
         label: 'MIS Reports',
         route: '/report',
@@ -501,16 +478,22 @@ export default function Sidenavbar() {
       </AppBar>
 
 
-      <Drawer variant="permanent" open={open} onMouseEnter={handleDrawerOpen} onMouseLeave={handleDrawerClose} >
+      <Drawer
+        variant="permanent"
+        open={open}
+        onMouseEnter={handleDrawerOpen}
+        onMouseLeave={handleDrawerClose}
+      >
         <Grid>
           <DrawerHeader sx={{ backgroundColor: '#253A7D' }}>
             <img src={LogoMo} alt='_blank' />
-            <IconButton onClick={handleDrawerClose}>{theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}</IconButton>
+            <IconButton onClick={handleDrawerClose}>
+              {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+            </IconButton>
           </DrawerHeader>
         </Grid>
         <Divider />
-        <List >
-
+        <List>
           {links.super.map(({ label, route, icon, subRoute }) => {
             const isActive = isActiveRoute(route) || (subRoute && isActiveSubRoute(subRoute));
             const isOpen = openSections[label] ?? isActive; // Use current state or default to active
@@ -521,7 +504,7 @@ export default function Sidenavbar() {
                   <ListItemButton
                     sx={{
                       justifyContent: open ? 'initial' : 'center',
-                      px: 2.5,
+                      px: open ? 2.5 : 0,
                       backgroundColor: (theme) =>
                         theme.palette.mode === 'light'
                           ? isActive
@@ -542,7 +525,8 @@ export default function Sidenavbar() {
                   >
                     <ListItemIcon
                       sx={{
-                        opacity: open ? 1 : 0,
+                        minWidth: 0,
+                        justifyContent: 'center',
                         color: (theme) =>
                           theme.palette.mode === 'light'
                             ? isActive
@@ -555,11 +539,20 @@ export default function Sidenavbar() {
                     >
                       {icon}
                     </ListItemIcon>
-                    <ListItemText primary={<Typography fontSize={18}>{label}</Typography>} />
-                    {subRoute && (isOpen ? <ExpandLess /> : <ExpandMore />)}
+                    {/* Hide text when the drawer is closed */}
+                    {open && (
+                      <ListItemText
+                        primary={<Typography fontSize={18}>{label}</Typography>}
+                        sx={{
+                          opacity: open ? 1 : 0,
+                          ml: open ? 2 : 0, // Add spacing when open
+                        }}
+                      />
+                    )}
+                    {subRoute && open && (isOpen ? <ExpandLess /> : <ExpandMore />)}
                   </ListItemButton>
                 </ListItem>
-                {subRoute && (
+                {subRoute && open && (
                   <Collapse in={isOpen} timeout="auto" unmountOnExit>
                     <NestedMenuItems subRoute={subRoute} />
                   </Collapse>
@@ -567,22 +560,16 @@ export default function Sidenavbar() {
               </React.Fragment>
             );
           })}
-
-
-
-
-
-
-
         </List>
         <Divider />
       </Drawer>
+
 
       <Box component="main" sx={{ flexGrow: 1, p: 1, marginBottom: '50px' }} >
         <DrawerHeader />
         <Breadcrumb />
         <Outlet />
-        <Footer />
+        <Footer open={open} drawerWidth={drawerWidth} />
       </Box>
 
     </Box >

@@ -353,7 +353,7 @@ const VendorManagement = (props) => {
                         </Paper>
                     </Box>
                     <Grid container padding={2}>
-                        <Grid item xs={4} sx={{textAlign: 'right', marginY: -0.5 }} >
+                        <Grid item xs={12} sx={{textAlign: 'right', marginY: -0.5 }} >
                             <form onSubmit={handleSerch}>
                                 <Paper elevation={10} sx={{ marginBottom: 2 }}>
                                     <TextField
@@ -379,12 +379,7 @@ const VendorManagement = (props) => {
                                 </Paper>                            
                             </form>
                         </Grid>
-                    <Grid item xs={8} sx={{marginY:1}}>
-                        <Button style={{backgroundColor: '#FBB716', color: 'black'}}sx={{marginX:1,boxShadow: 20}}>Export to PDF</Button>
-                        <Button style={{backgroundColor: '#FBB716', color: 'black'}}sx={{marginX:1,boxShadow: 20}}>Export to CSV</Button>
-                        <Button style={{backgroundColor: '#FBB716', color: 'black'}} sx={{boxShadow: 20}}>Export to Excel</Button>
-                    </Grid>
-
+                   
 
 
                         

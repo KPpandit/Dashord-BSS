@@ -234,7 +234,7 @@ export default function CoreBalanceMgmt(props) {
 
             <Box sx={{ width: '70%', }}>
                 <Box component="main" sx={{ flexGrow: 1, p: 1, width: '100%' }}>
-                    <Paper elevation={10} sx={{ padding: 1, margin: 1, backgroundColor: 'white', marginLeft: -0.8, marginRight: 1 }}>
+                    <Paper elevation={10} sx={{ padding: 1, margin: 1, backgroundColor: 'white', marginLeft: 0, marginRight: 0 }}>
                         <Grid>
                             <Typography
                                 style={{
@@ -251,9 +251,9 @@ export default function CoreBalanceMgmt(props) {
                     </Paper>
                 </Box>
                 <Grid container padding={2}>
-                    <Grid item xs={4} sx={{ textAlign: 'right', marginY: -0.5 }} >
+                    <Grid item xs={12} sx={{ textAlign: 'right' }} >
                         <form onSubmit={handleSerch}>
-                            <Paper elevation={10} sx={{ marginBottom: 2 }}>
+                            <Paper elevation={10} sx={{ marginBottom: 1}}>
                                 <TextField
                                     onClick={handleSerch}
                                     label="Search"
@@ -277,15 +277,6 @@ export default function CoreBalanceMgmt(props) {
                             </Paper>
                         </form>
                     </Grid>
-                    <Grid item xs={8} sx={{ marginY: 1 }}>
-                        <Button style={{ backgroundColor: '#FBB716', color: 'black' }} sx={{ marginX: 1, boxShadow: 20 }}>Export to PDF</Button>
-                        <Button style={{ backgroundColor: '#FBB716', color: 'black' }} sx={{ marginX: 1, boxShadow: 20 }}>Export to CSV</Button>
-                        <Button style={{ backgroundColor: '#FBB716', color: 'black' }} sx={{ boxShadow: 20 }}>Export to Excel</Button>
-                    </Grid>
-
-
-
-
                 </Grid>
 
                 <Box component="main" sx={{ flexGrow: 1, width: '100%' }}>

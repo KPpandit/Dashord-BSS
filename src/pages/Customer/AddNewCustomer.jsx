@@ -93,8 +93,8 @@ export default function AddNewCustomer() {
                   onBlur={handleBlur}
                   name="is_rates_active"
                 >
-                  <MenuItem value={'prepaid'}>PrePaid</MenuItem>
-                  <MenuItem value={'postpaid'}>PostPaid</MenuItem>
+                  <MenuItem value={'PrePaid'}>PrePaid</MenuItem>
+                  <MenuItem value={'PostPaid'}>PostPaid</MenuItem>
                   <MenuItem value={'Broadband'}>Broadband</MenuItem>
                 </Select>
               </FormControl>

@@ -92,7 +92,7 @@ const PlanDetailsForm = ({ formik, handleNext }) => {
     </Grid>
   );
 
-  return  (
+  return (
     <>
       <Typography
         variant="h6"
@@ -117,6 +117,7 @@ const PlanDetailsForm = ({ formik, handleNext }) => {
             <Select
               name="category_name"
               value={formik.values.category_name}
+              label={"Category Name"}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               disabled={loading || categories.length === 0}
@@ -138,7 +139,7 @@ const PlanDetailsForm = ({ formik, handleNext }) => {
           "Differential",
           "Tiered",
         ])}
-        {renderTextField("price", "Price", true, 4)}
+        {renderTextField("price", "Price in AUD", true, 4)}
         {renderTextField("validity", "Validity", true, 4)}
       </Grid>
       <Grid container spacing={2} style={{ marginTop: "20px", paddingLeft: 20 }}>
@@ -152,7 +153,7 @@ const PlanDetailsForm = ({ formik, handleNext }) => {
                 handleNext();
               }
             }}
-            disabled={!formik.isValid || loading}
+            disabled={!formik.dirty || !formik.isValid || loading} // Button disabled unless the form is dirty and valid
           >
             Next
           </Button>

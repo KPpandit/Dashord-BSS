@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import SearchIcon from '@mui/icons-material/Search';
 import axios from 'axios';
 import { Riple } from 'react-loading-indicators';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 export default function Agent(props) {
     const [isLoading, setIsLoading] = useState(true);
     const columns = [
@@ -11,14 +13,16 @@ export default function Agent(props) {
         { id: 'fristName', name: 'Name' },
         { id: 'creationDate', name: 'Creation Date' },
         { id: 'contact', name: 'Contact' },
+        { id: 'businessName', name: 'Business Name' },
         { id: 'locallity', name: 'Locality' },
         { id: 'isActive', name: 'Status' },
-        { id: 'documentId', name: 'Document ID' },
+
 
     ];
     const [confirmationDialogOpen, setConfirmationDialogOpen] = useState(false);
     const [recordIdToDelete, setRecordIdToDelete] = useState(null);
     const tokenValue = localStorage.getItem('token');
+    
     const handleOpenConfirmationDialog = (id) => {
         setRecordIdToDelete(id);
         setConfirmationDialogOpen(true);
@@ -29,7 +33,7 @@ export default function Agent(props) {
         setConfirmationDialogOpen(false);
     };
     const [forDelete, SetDelete] = useState(false);
-
+    const token = localStorage.getItem('token');
 
 
     const handleConfirmDelete = () => {
@@ -71,6 +75,7 @@ export default function Agent(props) {
                 },
             });
             setRows(response.data);
+            setFilteredRows(response.data);  
             setIsLoading(false);
         } catch (error) {
             console.log("response from Error");
@@ -81,10 +86,12 @@ export default function Agent(props) {
     // Generate sample data
 
 
-    const [rows, setRows] = useState('');
+    const [rows, setRows] = useState([]);
+    const [filteredRows, setFilteredRows] = useState([]);
     const [page, pagechange] = useState(0);
     const [rowperpage, rowperpagechange] = useState(5);
-
+    const [searchValue, setSearchValue] = useState('');
+    
     const handlechangepage = (event, newpage) => {
         pagechange(newpage);
     };
@@ -104,13 +111,27 @@ export default function Agent(props) {
 
     };
     const [sellingRecord, setSellingRecord] = useState(null);
+    const [selectedFile, setSelectedFile] = useState(null);
+    const handleFileUpload = () => {
+        if (!selectedFile) {
+            toast.error('No file selected.');
+            return;
+        }
+        const formData = new FormData();
+        formData.append('file', selectedFile);
 
+        axios.post('https://bssproxy01.neotel.nr/crm/api/upload/partners/by/excel/baseUser/1', formData, {
+            headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data' },
+        })
+            .then(() => toast.success('File uploaded successfully'))
+            .catch((error) => toast.error(error.response?.data?.Database_error || 'Upload error'));
+    };
     useEffect(() => {
 
 
         fetchData();
 
-    }, [tokenValue, sellingRecord]);
+    }, [tokenValue]);
     const fetchSellingData = async (row) => {
 
         try {
@@ -142,15 +163,13 @@ export default function Agent(props) {
             };
 
             const fields = [
-                // { label: "Total Commission", value: selectedRecord.partnerCommission?.amount || "no commission" },
                 { label: "Business Address", value: selectedRecord.businessAddress },
+                // { label: "Business Name", value: selectedRecord.businessName },
                 { label: "Document ID", value: String(selectedRecord.documentId) },
                 { label: "EKYC Token", value: String(selectedRecord.token) },
                 { label: "Document Type", value: String(selectedRecord.documentType) },
                 { label: "Email", value: String(selectedRecord.email) },
-                // { label: "Inactive Reason", value: String(selectedRecord.reasonStatus) },
             ];
-            console.log("Hello",sellingRecord)
 
             const assignedFields = [
                 { label: "All SIM", value: sellingRecord.SIM.totalSim },
@@ -164,10 +183,15 @@ export default function Agent(props) {
                 { label: "Router Sold", value: String(sellingRecord.Router.allocatedRouter) },
             ];
 
+            // Helper function to display N/A if the value is empty, null, or undefined
+            const displayValue = (value) => {
+                return value === undefined || value === null || value === "" ? "N/A" : value;
+            };
+
             return (
                 <Grid>
                     <Paper elevation={10}>
-                        <Card variant="outlined" sx={{ width: 400 }}>
+                        <Card variant="outlined" sx={{ width: 450 }}>
                             <Box sx={{ padding: 0.3 }}>
                                 <Grid sx={{ padding: 0.8, backgroundColor: "#253A7D" }}>
                                     <Stack direction="row" justifyContent="space-between" alignItems="center">
@@ -205,7 +229,9 @@ export default function Agent(props) {
                                                         </Typography>
                                                     </Grid>
                                                     <Grid item xs={6} sx={{ textAlign: "left" }}>
-                                                        <Typography sx={{ fontSize: "17px" }}>{item.value}</Typography>
+                                                        <Typography sx={{ fontSize: "17px" }}>
+                                                            {displayValue(item.value)}
+                                                        </Typography>
                                                     </Grid>
                                                 </Grid>
                                             </Box>
@@ -242,7 +268,9 @@ export default function Agent(props) {
                                                             </Typography>
                                                         </Grid>
                                                         <Grid item xs={6} sx={{ textAlign: "left" }}>
-                                                            <Typography sx={{ fontSize: "17px" }}>{item.value}</Typography>
+                                                            <Typography sx={{ fontSize: "17px" }}>
+                                                                {displayValue(item.value)}
+                                                            </Typography>
                                                         </Grid>
                                                     </Grid>
                                                 </Box>
@@ -251,7 +279,7 @@ export default function Agent(props) {
                                         ))}
                                 </Grid>
                             </Grid>
-                            <Box >
+                            <Box>
                                 <Grid container spacing={2} padding={2} justifyContent="space-between" alignItems="center">
                                     {/* Sell Core Balance Button */}
                                     <Grid item xs={6} sm={6} md={6}>
@@ -266,12 +294,12 @@ export default function Agent(props) {
                                                 navigate("/partner/assignBalance", { state: { record: selectedRecord.id } })
                                             }
                                         >
-                                            Sell Core Balance
+                                            Assign Core Balance
                                         </Button>
                                     </Grid>
 
                                     {/* Edit Button */}
-                                    <Grid item xs={6} sm={4} md={3}>
+                                    <Grid item xs={6} sm={6} md={6}>
                                         <Button
                                             variant="contained"
                                             fullWidth
@@ -286,9 +314,7 @@ export default function Agent(props) {
                                             Edit
                                         </Button>
                                     </Grid>
-
-                                    {/* Delete Button */}
-                                    <Grid item xs={6} sm={4} md={3}>
+                                    {/* <Grid item xs={6} sm={4} md={3}>
                                         <Button
                                             variant="contained"
                                             fullWidth
@@ -300,8 +326,7 @@ export default function Agent(props) {
                                         >
                                             Delete
                                         </Button>
-                                    </Grid>
-
+                                    </Grid> */}
                                     {/* Show Products Button */}
                                     <Grid item xs={6} sm={6} md={6}>
                                         <Button
@@ -311,15 +336,15 @@ export default function Agent(props) {
                                                 backgroundColor: "#253A7D",
                                                 boxShadow: 20,
                                             }}
-                                            
                                             onClick={() =>
                                                 navigate("/partner/showProducts", { state: { record: selectedRecord.id } })
-                                                
                                             }
                                         >
                                             Show Products
                                         </Button>
                                     </Grid>
+
+                                    {/* Assign Products Button */}
                                     <Grid item xs={6} sm={6} md={6}>
                                         <Button
                                             variant="contained"
@@ -329,7 +354,6 @@ export default function Agent(props) {
                                                 boxShadow: 20,
                                             }}
                                             onClick={() =>
-                                                // navigate("/partner/AssignProducts", { state: { record: selectedRecord.id } })
                                                 navigate("/partner/AssignProducts", { state: { record: selectedRecord.id } })
                                             }
                                         >
@@ -337,10 +361,6 @@ export default function Agent(props) {
                                         </Button>
                                     </Grid>
                                 </Grid>
-
-
-
-
                             </Box>
                         </Card>
                     </Paper>
@@ -350,30 +370,27 @@ export default function Agent(props) {
             return <></>;
         }
     };
-    const [value, setValue] = useState('');
-    const handleSerch = async (e) => {
-        e.preventDefault();
-        return await axios
-            .get(`https://bssproxy01.neotel.nr/crm/api/partner/contact/${value}`, {
-                headers: {
-                    Authorization: `Bearer ${tokenValue}`,
-                    Accept: "application/json",
-                    "Content-Type": "application/json",
-                },
-            })
-            .then((res) => {
-                setRows(res.data);
 
-                setPage(0);  // Reset pagination to the first page
-                rowchange(res.data);
-                setdata(res.data);
-                // console.log(value + "----value sech datas")
-                rowchange(res.data);
-                setValue(value);
-            })
-            .catch((error) => {
-                console.error("Error fetching data:", error);
-            });
+    const [value, setValue] = useState('');
+    const handleSearch = async (e) => {
+        e.preventDefault();
+
+        if (!searchValue) {
+            setFilteredRows(rows);  // If search is empty, show all rows
+            
+            return;
+        }
+
+           console.log("---- ")
+        const filteredData = rows.filter((row) =>
+            row.fristName.includes(searchValue) 
+        // ||
+            // row.imsi.includes(searchValue) ||
+            // row.category.includes(searchValue)
+        );
+        console.log(" fiolted data "+filteredData)
+        setFilteredRows(filteredData);  // Update filteredRows with search results
+        pagechange(0);  // Reset pagination to the first page
     };
 
 
@@ -402,6 +419,7 @@ export default function Agent(props) {
                 </Grid>
 
             ) : <Box sx={{ display: 'container', marginTop: -1.5 }}>
+                <ToastContainer position="bottom-left" />
                 <Box sx={{ width: '70%' }}>
                     <Box component="main" sx={{ flexGrow: 1, p: 1, width: '100%' }}>
                         <Paper elevation={10} sx={{ padding: 1, margin: 1, backgroundColor: 'white', color: '#253A7D', marginLeft: 0.2, marginRight: 0.2 }}>
@@ -421,24 +439,25 @@ export default function Agent(props) {
                     <Box component="main" sx={{ flexGrow: 1, p: 1, width: '100%' }} >
                         <Grid lg={6} sx={{ textAlign: 'right', marginY: -0.1 }}>
                             <form
-                                onSubmit={handleSerch}
+                                onSubmit={handleSearch}
                             >
 
                                 <Paper elevation={10} sx={{ marginBottom: 2 }}>
                                     <Grid lg={8}  >
                                         <TextField
-                                            onClick={handleSerch}
-                                            label="Search By Contact Number"
+                                            onClick={handleSearch}
+                                            label="Search By Name"
                                             type='text'
                                             fullWidth
+                                            value={searchValue}
                                             name='value'
-                                            onChange={(e) => setValue(e.target.value)}
+                                            onChange={(e) => setSearchValue(e.target.value)}
                                             required
                                             InputProps={{
                                                 endAdornment: (
                                                     <InputAdornment position='end'>
                                                         <IconButton
-                                                            onSubmit={handleSerch}
+                                                            onSubmit={handleSearch}
                                                         >
                                                             <SearchIcon />
                                                         </IconButton>
@@ -484,8 +503,7 @@ export default function Agent(props) {
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
-                                        {rows &&
-                                            rows
+                                        {filteredRows
                                                 .slice(page * rowperpage, page * rowperpage + rowperpage)
                                                 .map((row, i) => {
                                                     return (
@@ -514,7 +532,7 @@ export default function Agent(props) {
                                                                         </>
                                                                     ) : (
                                                                         // Render other column content
-                                                                        String(row[column.id])
+                                                                        String(row[column.id] ? row[column.id] : "N/A")
                                                                     )}
                                                                 </TableCell>
                                                             ))}
@@ -537,21 +555,33 @@ export default function Agent(props) {
 
                         </Paper>
 
-                        <Box sx={{ paddingLeft: '16px', paddingBottom: '16px', paddingTop: '14px', display: 'flex', gap: '16px' }}>
-                            <Button variant="contained"
-                                sx={{ backgroundColor: '#253A7D', boxShadow: 20 }}
-                                backgroundColor="#6471B5" onClick={handleButtonClick}>
-                                Create Partner
-                            </Button>
+                        <Grid container alignItems="center" justifyContent="space-between">
+                            <Grid item>
+                                <Button
+                                    variant="contained"
+                                    sx={{ backgroundColor: '#253A7D', boxShadow: 20 }}
+                                    onClick={handleButtonClick}
+                                >
+                                    Create Reseller
+                                </Button>
+                            </Grid>
 
-                            {/* <Button
+                            <Grid item>
+                                <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px',paddingTop:1 }}>
+                                    <TextField type="file" onChange={(e) => setSelectedFile(e.target.files[0])} />
+                                    <Button
+                                        style={{ backgroundColor: '#FBB716', color: 'black' }}
+                                        sx={{ boxShadow: 20 }}
+                                        onClick={handleFileUpload}
+                                    >
+                                        Save File
+                                    </Button>
+                                </Box>
+                            </Grid>
+                        </Grid>
 
-                                variant="contained"
 
-                                backgroundColor="#6471B5" onClick={e => navigate('/partner/showCommison')} sx={{ marginLeft: '16px', backgroundColor: '#253A7D', boxShadow: 20 }}>
-                                SHOW COMMISSIONS
-                            </Button> */}
-                        </Box>
+
                     </Box>
                 </Box>
 

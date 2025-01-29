@@ -20,7 +20,7 @@ export default function PostpaidDeActivatedPlan() {
     const [selectedPlan, setSelectedPlan] = useState(null);
 
     useEffect(() => {
-        fetch('https://bssproxy01.neotel.nr/abmf-postpaid-s/api/postpaid/packs?pack_status=Rejected')
+        fetch('https://bssproxy01.neotel.nr/abmf-postpaid/api/postpaid/packs?pack_status=Rejected')
             .then(response => response.json())
             .then(data => {
                 const uniqueTabList = [...new Set(data.map(item => item.category_name))];
@@ -94,7 +94,7 @@ export default function PostpaidDeActivatedPlan() {
                         padding: 1,
                         paddingLeft: 2,
                     }}>
-                        Postpaid DeActivated Plan
+                        Unapproved Plan
                     </Typography>
                 </Paper>
 
@@ -138,7 +138,7 @@ export default function PostpaidDeActivatedPlan() {
                     overflowY: 'auto',
                     position: 'relative',
                     minHeight: 'calc(100vh - 144px)',
-                    margin:'-45px'
+                    margin: '-45px'
                 }}
             >
                 {selectedCategory && (
@@ -161,7 +161,7 @@ export default function PostpaidDeActivatedPlan() {
                                 if (plan.category_name === selectedCategory) {
                                     return (
                                         <Grid item xs={4} key={plan.rating_profile_id}>
-                                           <Card elevation={10} sx={{ margin: '8px', border: '4px solid #e0e0e0', backgroundColor: '#253A7D', borderRadius: '40px', paddingLeft: 2, paddingTop: 2 }}>
+                                            <Card elevation={10} sx={{ margin: '8px', border: '4px solid #e0e0e0', backgroundColor: '#253A7D', borderRadius: '40px', paddingLeft: 2, paddingTop: 2 }}>
                                                 <CardContent sx={{ color: 'White' }}>
                                                     <Grid container spacing={2}>
                                                         <Grid item xs={12}>
@@ -177,14 +177,21 @@ export default function PostpaidDeActivatedPlan() {
                                                             <Typography>Validity: {plan.validity ?? 0} Days</Typography>
                                                         </Grid>
                                                         <Grid item xs={6} sx={{ marginTop: 2 }}>
-                                                            <Typography>Data: {plan.data_balance ?? 0} {plan.data_balance_parameter ?? ''}</Typography>
+                                                            <Typography>
+                                                                Data: {plan.data_balance === 931 ? 'Unlimited' : `${plan.data_balance ?? 0} ${plan.data_balance_parameter ?? ''}`}
+                                                            </Typography>
                                                         </Grid>
                                                         <Grid item xs={6} sx={{ marginTop: 1 }}>
-                                                            <Typography>Voice: {plan.onn_call_balance ?? 0} mins</Typography>
+                                                            <Typography>
+                                                                Voice: {plan.onn_call_balance === 1666 ? 'Unlimited' : `${plan.onn_call_balance ?? 0} mins`}
+                                                            </Typography>
                                                         </Grid>
                                                         <Grid item xs={6} sx={{ marginTop: 1 }}>
-                                                            <Typography>SMS: {plan.onn_sms_balance ?? 0}</Typography>
+                                                            <Typography>
+                                                                SMS: {plan.onn_sms_balance === 99999 ? 'Unlimited' : plan.onn_sms_balance ?? 0}
+                                                            </Typography>
                                                         </Grid>
+
                                                         <Grid item xs={12} sx={{ marginTop: 1 }}>
                                                             <Typography style={{ fontSize: '15px', fontFamily: 'Roboto' }}>Additional Benefits(s)</Typography>
                                                         </Grid>

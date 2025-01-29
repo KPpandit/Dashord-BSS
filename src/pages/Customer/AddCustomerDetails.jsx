@@ -9,7 +9,7 @@ import { Label } from '@mui/icons-material';
 import axios from "axios";
 import { toast } from 'react-toastify';
 import MuiAlert from '@mui/material/Alert';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import CancelIcon from '@mui/icons-material/Cancel';
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
@@ -19,6 +19,7 @@ export default function AddCustomerDetails() {
         message: '',
         severity: 'success', // 'success', 'error', 'warning', 'info'
     });
+    const navigate=useNavigate();
     const handleCloseNotification = (event, reason) => {
         if (reason === 'clickaway') {
             return;
@@ -26,35 +27,38 @@ export default function AddCustomerDetails() {
 
         setNotification({ ...notification, open: false });
     }
-
-
-
-    
-
-
-    const [billingCycle, setBillingCycle] = useState('');
-
-
-
+    const [loading, setLoading] = useState(false);
     const [selectedPhoto, setSelectedPhoto] = useState(null);
+
+    const [photoError, setPhotoError] = useState('');
 
     const handlePhotoChange = (event) => {
         const file = event.target.files[0];
-        setSelectedPhoto(file);
-        // You can perform additional actions with the file if needed
+
+        if (file) {
+            const fileType = file.type;
+            if (fileType === 'image/jpeg' || fileType === 'image/png') {
+                setSelectedPhoto(file); // Set the file if valid
+                setPhotoError(''); // Clear the error if valid
+            } else {
+                setPhotoError('Please select a valid format (jpg or png).'); // Set error message
+                setSelectedPhoto(null); // Clear any previously selected file
+            }
+        }
     };
+
 
     const location = useLocation();
     const accountType = location.state?.accountType;
-    const tokenValue = localStorage.getItem('token');
+    const tokenValue1 = localStorage.getItem('token');
 
     const [msisdn, setMsisdn] = useState('');
     const [partner, setpartner] = useState('');
     const [device, setDevice] = useState('');
     const [router, setRouter] = useState('');
     let photo_id;
-    
-    const isFirstRender = useRef(true);
+
+
 
     const savePhoto = async () => {
         try {
@@ -77,7 +81,7 @@ export default function AddCustomerDetails() {
                 formData,
                 {
                     headers: {
-                        Authorization: `Bearer ${tokenValue}`,
+                        Authorization: `Bearer ${tokenValue1}`,
                         "Accept": "application/json",
                         "Content-Type": "multipart/form-data"  // Ensure multipart/form-data for file uploads
                     }
@@ -96,24 +100,42 @@ export default function AddCustomerDetails() {
     };
 
 
-   
+
     const validationSchema = Yup.object({
-        email: Yup.string().email('Invalid email format').required('Email is required'),
+        email: Yup.string()
+            .email('Invalid email format') // This checks for general email format
+            .matches(/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/, 'Invalid email format. Please include a valid domain.')
+            .required(),
         postalCode: Yup.string()
-            .matches(/^[0-9]{5}$/, 'Postal Code must be exactly 5 digits')
-            .required('Postal Code is required'),
+            .matches(/^[0-9]{1,5}$/, 'Postal Code must be between 1 and 5 digits')
+            .notRequired(),
         ekycToken: Yup.string()
             .matches(/^[0-9]{10}$/, 'eKYC Token must be exactly 10 digits')
-            .required('eKYC Token is required'),
+            .notRequired(), // Optional field
         firstName: Yup.string().required('First Name is required'),
-        lastName: Yup.string().required('Last Name is required'),
+        streetAddres1: Yup.string().required('Address is Required is required'),
+        lastName: Yup.string().notRequired(),
         phonePhoneNumber: Yup.string()
             .matches(/^[0-9]{10}$/, 'Phone Number must be exactly 10 digits'),
-        dateOfBirth: Yup.date().required('Date of Birth is required'),
+        dateOfBirth: Yup.date()
+            .required('Date of Birth is required')
+            .max(new Date(), 'Date of Birth cannot be a future date')
+            .test('age', 'You must be at least 16 years old', value => {
+                const today = new Date();
+                const age = today.getFullYear() - value.getFullYear();
+                const month = today.getMonth() - value.getMonth();
+                return month > 0 || (month === 0 && today.getDate() >= value.getDate()) ? age >= 16 : age > 16;
+            }),
         gender: Yup.string().required('Gender is required'),
+        alternateNumber: Yup.string()
+            .matches(/^674\s\d{7,10}$/, "Alternate Number must start with '674' followed by a space and 7-10 digits.")
+            .required('Alternate Number is required'),
         maritalStatus: Yup.string(),
     });
-    const { handleChange, handleSubmit, handleBlur, values, touched, errors, submitForm: submitMainForm1, resetForm: resetForm1 } = useFormik({
+
+    const {
+        handleChange, handleSubmit, handleBlur, values, touched, errors, isValid, dirty, setFieldValue
+    } = useFormik({
         initialValues: {
             referralFeePaid: "",
             autoPaymentType: "",
@@ -158,7 +180,7 @@ export default function AddCustomerDetails() {
             customerType: accountType,
             gender: "",
             ekycStatus: "",
-            ekycToken: "",
+            ekycToken: "", // To be updated with the generated token
             alternateNumber: "",
             landlineNumber: "",
             dateOfBirth: "",
@@ -169,64 +191,73 @@ export default function AddCustomerDetails() {
             isVip: false
         },
         validationSchema,
-        onSubmit: async (values) => {
-            console.log(partner + "partner ID");
-            console.log(values);
-            console.log(msisdn + " Msisdn " + partner + " partner " + device);
-
-            // Define the base URL
-            let baseUrl = 'https://bssproxy01.neotel.nr/crm/api/savecustomer/account/1/invoice/2/baseuser/1/orderperiod/1?';
-
-            // Check conditions and add parameters accordingly
-            if (msisdn) {
-                baseUrl += `msisdn=${msisdn}`;
-                console.log("MSISDN WORK");
-            }
-
-            if (partner) {
-                baseUrl += `&partner=${partner}`;
-                console.log("partner WORK");
-            }
-
-            if (device) {
-                baseUrl += `&device=${device}`;
-                console.log("Device WORK");
-            }
-            if (router) {
-                baseUrl += `&router=${router}`;
-                console.log("Router  WORK");
-            }
-
-            console.log(device + " device ID" + partner + " partner ID" + msisdn + " Msisdn");
-
+        onSubmit: async (formValues) => {
             try {
-                const res1 = await axios.post(
-                    baseUrl,
-                    { ...values },
+                // Step 1: Generate eKYC Token
+                const kycPayload = {
+                    countryCode: "673",
+                    dob: formValues.dateOfBirth,
+                    firstName: formValues.firstName,
+                    gender: formValues.gender,
+                    id: "",
+                    lastName: formValues.lastName || "",
+                    address: `${formValues.streetAddres1} ${formValues.streetAddres2}`.trim(),
+                    email: formValues.email,
+                    alternateNumber: formValues.alternateNumber
+                };
+
+                const kycResponse = await axios.post(
+                    "https://bssproxy01.neotel.nr/kyc/api/processMinimalKYC/CRM",
+                    kycPayload,
                     {
                         headers: {
-                            Authorization: `Bearer ${tokenValue}`,
                             "Accept": "application/json",
                             "Content-Type": "application/json"
                         }
                     }
                 );
 
-                if (res1.status === 201) {
-                    toast.success('Customer Added successfully!', { autoClose: 2000 });
-                    console.log(res1.data.id, '   data value fomr respionse ')
-                    photo_id = res1.data.id;
-                    // Assuming the ID is returned in the response
-                    console.log('value in photo id ', photo_id);
-                    savePhoto();
-                }
+                if (kycResponse.data.httpCode === 200 && kycResponse.data.data.token) {
+                    const tokenValue = kycResponse.data.data.token;
+                    console.log("Token generated from API:", tokenValue);
 
-            } catch (e) {
-                console.log(e, " -----> e");
-                toast.error(e.response.data.message, { autoClose: 2000 });
+                    // Add the token directly to the values object
+                    const updatedValues = { ...formValues, ekycToken: tokenValue };
+                    let baseUrl = 'https://bssproxy01.neotel.nr/crm/api/savecustomer/account/1/invoice/2/baseuser/1/orderperiod/1?';
+
+                    if (msisdn) baseUrl += `msisdn=${msisdn}`;
+                    if (partner) baseUrl += `&partner=${partner}`;
+                    if (device) baseUrl += `&device=${device}`;
+                    if (router) baseUrl += `&router=${router}`;
+                    // Proceed with the next API call
+                    // const baseUrl = 'https://bssproxy01.neotel.nr/crm/api/savecustomer/account/1/invoice/2/baseuser/1/orderperiod/1?';
+                    const res1 = await axios.post(
+                        baseUrl,
+                        updatedValues, // Pass updated values
+                        {
+                            headers: {
+                                Authorization: `Bearer ${tokenValue1}`,
+                                "Accept": "application/json",
+                                "Content-Type": "application/json"
+                            }
+                        }
+                    );
+
+                    if (res1.status === 201) {
+                        toast.success('Customer Added successfully!', { autoClose: 2000 });
+                        savePhoto();
+                    }
+                } else {
+                    throw new Error("Failed to generate token");
+                }
+            } catch (error) {
+                console.error(error);
+                toast.error(error.response?.data?.message || "An error occurred", { autoClose: 2000 });
             }
         }
     });
+
+
 
 
 
@@ -242,81 +273,10 @@ export default function AddCustomerDetails() {
         }
     };
 
-    const { handleChange: handleChange2, handleSubmit: handleSubmit2, handleBlur: handleBlur2, values: values2, submitForm: submitMainForm2, setValues: setValues2, resetForm: resetForm2 } = useFormik({
-        initialValues: {
-            userId: "",
-            customerId: "",
-            msisdn: msisdn,
-            attempt: "",
-            amount: "",
-            deleted: "",
-            isRefund: "",
-            isPreauth: "",
-            payoutId: "",
-            balance: "",
-            paymentPeriod: "",
-            paymentNotes: "",
-            product: "",
-            paymentStatus: ""
-        },
-        onSubmit: async (values2) => {
-            // Check if billingCycle is 'cash'
-            if (billingCycle === 'cash') {
-                const res2 = await axios.post(`https://bssproxy01.neotel.nr/crm/api/savepayment/currency/1/paymentrsult/1/paymentmethod/1`, // Use different URL for cash
-                    { ...values2 }, {
-                    headers: {
-                        Authorization: `Bearer ${tokenValue}`,
-                        "Accept": "application/json",
-                        "Content-Type": "application/json"
-                    }
-                }).then(res => {
-                    if (res.status === 201) {
-                        toast.success('Customer  Added successfully!', { autoClose: 2000 });
 
-                    }
-                }).catch(e => {
-                    if (e.response.status === 401) {
-                        toast.error(e.response.data.message, { autoClose: 2000 });
-                    }
-                });
-            } else {
-                const res2 = await axios.post(`https://bssproxy01.neotel.nr/crm/api/savepayment/currency/1/paymentrsult/1/paymentmethod/1?creditCard=1`, // Use default URL for credit card
-                    { ...values2 }, {
-                    headers: {
-                        Authorization: `Bearer ${tokenValue}`,
-                        "Accept": "application/json",
-                        "Content-Type": "application/json"
-                    }
-                }).then(res => {
-                    if (res.status === 201) {
-                        console.log(" saved success fully")
-                        toast.success('Customer  Added successfully!', { autoClose: 2000 });
-                    }
-                }).catch(e => {
-                    if (e.response.status === 401) {
-                        toast.error('Error! Please try again later', { autoClose: 2000 });
-                    }
-                });
-            }
-        },
-    });
-    const [userId, setuserId] = useState(null);
-    const [customerId, setCustomerID] = useState(null);
 
-    useEffect(() => {
-        console.log("submit form useEffect working ")
-        console.log("Inside useEffect");
-        console.log("customerId:", customerId);
-        console.log("userId:", userId);
 
-        if (!isFirstRender.current && customerId !== null && userId !== null) {
-            console.log("Calling submitMainForm2");
-            // submitMainForm2();
-        } else {
-            console.log("Initial render or customerId/userId is null, skipping effect");
-            isFirstRender.current = false;
-        }
-    }, [customerId, userId, submitMainForm2, msisdn, device]);
+
     const renderTextField = ({ label, value, onChange, name, type = "text", error = false, helperText = "", required = false, fullWidth = true }) => (
         <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
             <TextField
@@ -333,7 +293,7 @@ export default function AddCustomerDetails() {
             />
         </Grid>
     );
-    
+
     const renderSelectField = ({ label, value, onChange, name, options, required = false }) => (
         <Grid item lg={6} md={4} sm={6} xs={12} paddingBottom={2}>
             <FormControl fullWidth>
@@ -364,8 +324,9 @@ export default function AddCustomerDetails() {
         }
         return error;
     };
-    
-  
+    const [msisdnDisplay, setMsisdnDisplay] = useState("");
+    const [showHelperText, setShowHelperText] = useState(false);
+
     const commonInputLabelProps = { shrink: true, style: { fontFamily: 'Roboto', } };
     return (
         <Box component="form" onSubmit={handleSubmit} >
@@ -405,28 +366,47 @@ export default function AddCustomerDetails() {
                         marginTop: 1.5,
                         display: 'flex',
                         flexDirection: 'column',
-                        alignItems: 'center',
+                        // alignItems: 'center',
 
                     }}
                 >
 
                     <Grid >
                         <Grid container justifyContent="space-between">
-                            <Grid item lg={2} md={8} sm={6} xs={12} paddingBottom={2} sx={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'left' }}>
+                            <Grid
+                                item
+                                lg={2}
+                                md={8}
+                                sm={6}
+                                xs={12}
+                                paddingBottom={2}
+                                sx={{
+                                    position: 'relative',
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    alignItems: 'left',
+                                }}
+                            >
                                 {/* Display the selected photo */}
                                 {selectedPhoto ? (
                                     <>
-                                        <CancelIcon sx={{ position: 'absolute', top: 0, right: 0, cursor: 'pointer', color: '#1976D2' }} onClick={handleCancelPhoto} />
-                                        {/* Use URL.createObjectURL to display the image */}
-                                        <img src={URL.createObjectURL(selectedPhoto)} alt="Selected" style={{ maxWidth: '100%', maxHeight: '200px', paddingBottom: '10px' }} />
+                                        <CancelIcon
+                                            sx={{ position: 'absolute', top: 0, right: 0, cursor: 'pointer', color: '#1976D2' }}
+                                            onClick={handleCancelPhoto}
+                                        />
+                                        <img
+                                            src={URL.createObjectURL(selectedPhoto)}
+                                            alt="Selected"
+                                            style={{ maxWidth: '100%', maxHeight: '200px', paddingBottom: '10px' }}
+                                        />
                                     </>
                                 ) : (
-                                    <Typography variant="body1" color="textSecondary" sx={{padding:1}}>
-                                        {/* No photo selected */}
+                                    <Typography variant="body1" color="textSecondary" sx={{ padding: 1 }}>
+                                        No photo selected
                                     </Typography>
                                 )}
                                 <input
-                                    accept="image/*"
+                                    accept=".jpg,.jpeg,.png"
                                     style={{ display: 'none' }}
                                     id="upload-photo"
                                     type="file"
@@ -434,70 +414,151 @@ export default function AddCustomerDetails() {
                                     onChange={handlePhotoChange}
                                 />
                                 <label htmlFor="upload-photo">
-                                    <Button variant="contained" sx={{ backgroundColor: '#253A7D' }} color="primary" component="span" fullWidth>
-                                        Uploade Photo
+                                    <Button
+                                        variant="contained"
+                                        sx={{ backgroundColor: '#253A7D' }}
+                                        color="primary"
+                                        component="span"
+                                        fullWidth
+                                    >
+                                        Upload Photo
                                     </Button>
                                 </label>
+                                {/* Error message for invalid file format */}
+                                {photoError && (
+                                    <Typography variant="body2" color="error" sx={{ mt: 1 }}>
+                                        {photoError}
+                                    </Typography>
+                                )}
+                            </Grid>
+                        </Grid>
+
+                        <Divider />
+
+
+                        <Grid container spacing={6} paddingBottom={2} paddingTop={2}>
+                            <Grid item lg={6}>
+                                <Grid container spacing={2}>
+                                    {renderTextField({ label: "Account Type", name: 'customerType', value: accountType || values.customerType, onChange: handleChange })}
+                                    {renderTextField({ label: "Status", value: "Active", onChange: () => { }, required: false })}
+                                    {renderSelectField({
+                                        label: "Service Type",
+                                        value: values.serviceType,
+                                        onChange: handleChange,
+                                        name: 'serviceType',
+                                        options: [
+                                            { value: "Mobility", label: "Mobility" },
+                                            { value: "FTTH", label: "FTTH" },
+                                            { value: "FWA", label: "FWA" },
+                                            { value: "VOIP", label: "VOIP" }
+                                        ]
+                                    })}
+                                    {renderTextField({
+                                        label: "Partner ID",
+                                        name: "partner",
+                                        value: partner,
+                                        onChange: (e) => {
+                                            const value = e.target.value.replace(/[^0-9]/g, ""); // Remove non-numeric characters
+                                            if (value.length <= 4) {
+                                                setpartner(value); // Allow only up to 4 digits
+                                            }
+                                        },
+                                        onFocus: () => setShowHelperText(true), // Show helper text on focus
+                                        onBlur: () => setShowHelperText(false), // Hide helper text on blur
+                                        error: showHelperText && (partner === "" || partner.length !== 4), // Validate length
+                                        helperText:
+                                            showHelperText && (partner === "" || partner.length !== 4)
+                                                ? "Partner ID must be exactly 4 digits."
+                                                : "",
+                                        required: true,
+                                        type: "text",
+                                    })}
+
+
+
+                                    {(accountType.toLowerCase() === 'postpaid' || accountType.toLowerCase() === 'post-paid') && renderSelectField({
+                                        label: "Is VIP",
+                                        value: values.isVip,
+                                        onChange: handleChange,
+                                        name: 'isVip',
+                                        options: [{ value: true, label: "Yes" }, { value: false, label: "No" }]
+                                    })}
+
+                                    <Grid item lg={12} md={4} sm={6} xs={12} paddingBottom={2}>
+                                        <Divider />
+                                    </Grid>
+                                </Grid>
                             </Grid>
 
+                            <Grid item lg={6}>
+                                <Grid container spacing={2}>
+                                    {accountType === "Broadband" ? (
+                                        renderTextField({
+                                            label: "Router ID",
+                                            name: "router",
+                                            value: router,
+                                            onChange: (e) => {
+                                                const value = e.target.value.replace(/[^0-9]/g, "");
+                                                setRouter(value);
+                                            },
+                                            error: router && Number(router) < 0,
+                                            helperText: router && Number(router) < 0 ? "Router ID cannot be negative." : "",
+                                            type: "text"
+                                        })
+                                    ) : (
+                                        <>
+                                            {renderTextField({
+                                                label: "Device ID",
+                                                name: "device",
+                                                value: device,
+                                                onChange: (e) => {
+                                                    const value = e.target.value.replace(/[^0-9]/g, ""); // Allow only numeric input
+                                                    if (value.length <= 10) {
+                                                        setDevice(value); // Update state only if length <= 10
+                                                    }
+                                                    // setDevice(value); // Update state regardless of length
+                                                },
+                                                onFocus: () => setShowHelperText(true), // Show helper text on focus
+                                                onBlur: () => setShowHelperText(false), // Hide helper text on blur
+                                                error: device.length > 9, // Trigger error when length exceeds 10
+                                                helperText: device.length > 9 ? "Cannot enter more than 10 digits." : "", // Display helper text if length > 10
+                                                type: "text", // Use text for flexibility
+                                            })}
+
+
+
+
+                                            {renderTextField({
+                                                label: "MSISDN",
+                                                name: "msisdn",
+                                                value: msisdnDisplay, // Use the formatted display value
+                                                onChange: (e) => {
+                                                    let value = e.target.value.replace(/[^0-9]/g, ""); // Allow only numeric input
+
+                                                    if (!value.startsWith("674")) {
+                                                        value = "674" + value.slice(0, 7); // Enforce '674' prefix and ensure only 10 digits in total
+                                                    } else if (value.length > 10) {
+                                                        value = value.slice(0, 10); // Restrict to 10 digits max
+                                                    }
+
+                                                    setMsisdn(value); // Store the raw value (no spaces)
+                                                    setMsisdnDisplay(value.length > 3 ? value.slice(0, 3) + " " + value.slice(3) : value); // Format the display value with a space
+                                                },
+                                                error: msisdn.length !== 10 || !msisdn.startsWith("674"),
+                                                helperText:
+                                                    msisdn.length !== 10 || !msisdn.startsWith("674")
+                                                        ? "MSISDN must be 10 digits starting with '674'."
+                                                        : "",
+                                                type: "text", // Use text to allow the enforced prefix logic to work
+                                            })}
+
+
+                                        </>
+                                    )}
+                                </Grid>
+                            </Grid>
                         </Grid>
-                        <Divider />
-                       
 
-<Grid container spacing={6} paddingBottom={2} paddingTop={2}>
-    <Grid item lg={6}>
-        <Grid container spacing={2}>
-            {renderTextField({ label: "Account Type", name: 'customerType', value: accountType || values.customerType, onChange: handleChange })}
-            {renderTextField({ label: "Status", value: "Active", onChange: () => {}, required: false })}
-            {renderSelectField({ label: "Service Type", value: values.serviceType, onChange: handleChange, name: 'serviceType', options: [{ value: "Mobility", label: "Mobility" }, { value: "FTTH", label: "FTTH" }, { value: "FWA", label: "FWA" }, { value: "VOIP", label: "VOIP" }] })}
-            {renderTextField({ label: "Partner Id", name: 'partner', value: partner, onChange: e => setpartner(e.target.value), required: true, type: "number" })}
-            
-            {(accountType.toLowerCase() === 'postpaid' || accountType.toLowerCase() === 'post-paid') && renderSelectField({
-                label: "Is VIP", value: values.isVip, onChange: handleChange, name: 'isVip', options: [{ value: true, label: "Yes" }, { value: false, label: "No" }]
-            })}
-            
-            <Grid item lg={12} md={4} sm={6} xs={12} paddingBottom={2}>
-                <Divider />
-            </Grid>
-        </Grid>
-    </Grid>
-
-    <Grid item lg={6}>
-        <Grid container spacing={2}>
-            {accountType === "Broadband" ? (
-                renderTextField({
-                    label: "Router ID",
-                    name: "router",
-                    value: router,
-                    onChange: e => setRouter(e.target.value.replace(/[^0-9]/g, "")),
-                    error: router && Number(router) < 0,
-                    helperText: router && Number(router) < 0 ? "Router ID cannot be negative." : "",
-                    type: "text"
-                })
-            ) : (
-                <>
-                    {renderTextField({
-                        label: "Device ID",
-                        name: "device",
-                        value: device,
-                        onChange: e => setDevice(e.target.value.replace(/[^0-9]/g, "")),
-                        error: device && Number(device) < 0,
-                        helperText: device && Number(device) < 0 ? "Device ID cannot be negative." : "",
-                        type: "text"
-                    })}
-                    {renderTextField({
-                        label: "MSISDN",
-                        name: "msisdn",
-                        value: `674 ${msisdn.slice(3)}`,
-                        onChange: e => setMsisdn(e.target.value.replace(/[^0-9]/g, "")),
-                        error: msisdn.length !== 10 || !msisdn.startsWith("674"),
-                        helperText: msisdn.length !== 10 || !msisdn.startsWith("674") ? "MSISDN must be 10 digits starting with '674'." : ""
-                    })}
-                </>
-            )}
-        </Grid>
-    </Grid>
-</Grid>
 
                     </Grid>
 
@@ -517,13 +578,13 @@ export default function AddCustomerDetails() {
                             {[
                                 { label: 'Email', type: 'email', name: 'email', required: true, validate: validateEmail },
                                 { label: 'Organization Name', type: 'text', name: 'organizationName' },
-                                { label: 'Street Address', type: 'text', name: 'streetAddres1' },
-                                { label: 'Postal Code', type: 'text', name: 'postalCode', required: true },
+                                { label: 'Street Address', type: 'text', name: 'streetAddres1', required: true },
+                                // { label: 'Postal Code', type: 'text', name: 'postalCode', required: true },
                                 { label: 'First Name', type: 'text', name: 'firstName', required: true },
-                                { label: 'Last Name', type: 'text', name: 'lastName', required: true },
+                                { label: 'Last Name', type: 'text', name: 'lastName' },
                                 // { label: 'Phone Number', type: 'text', name: 'phonePhoneNumber' },
                                 // { label: 'eKYC Token', type: 'text', name: 'ekycToken', required: true },
-                                { label: 'Alternate Number', type: 'text', name: 'alternateNumber' },
+                                // { label: 'Alternate Number', type: 'text', name: 'alternateNumber' },
                             ].map(({ label, type, name, required, validate }, index) => (
                                 <Grid item xs={3} key={index}>
                                     <TextField
@@ -541,57 +602,64 @@ export default function AddCustomerDetails() {
                                     />
                                 </Grid>
                             ))}
-
-                            {/* Phone Number Validation */}
                             <Grid item xs={3}>
                                 <TextField
-                                    label="Phone Number"
+                                    label="Postal Code"
+                                    fullWidth
+                                    name="postalCode"
+                                    value={values.postalCode}
+                                    onChange={handleChange}
+                                    onBlur={handleBlur}
+                                    error={touched.postalCode && Boolean(errors.postalCode)}
+                                    helperText={touched.postalCode && errors.postalCode}
+                                    inputProps={{ maxLength: 5 }} // Limits to 5 characters
+                                />
+
+
+                            </Grid>
+                            <Grid item xs={3}>
+                                <TextField
+                                    label="Alternate Number"
                                     type="text"
                                     fullWidth
-                                    name="phonePhoneNumber"
+                                    name="alternateNumber"
                                     required
-                                    value={values.phonePhoneNumber}
+                                    value={values.alternateNumber}
                                     onChange={(e) => {
-                                        if (e.target.value.length <= 10) {
-                                            handleChange(e);
+                                        let value = e.target.value.replace(/[^0-9]/g, ""); // Allow only numeric input
+                                        if (value.startsWith("674")) {
+                                            // Add space after "674" if it's not present
+                                            value = value.length > 3 ? `674 ${value.slice(3)}` : value;
+                                        } else if (value.length <= 3) {
+                                            // Auto-fill "674" if user starts typing
+                                            value = `674 ${value}`;
+                                        }
+                                        if (value.replace(/\s/g, "").length <= 10) { // Total length, excluding spaces, must be 13
+                                            handleChange({
+                                                target: { name: "alternateNumber", value },
+                                            });
                                         }
                                     }}
                                     onBlur={handleBlur}
-                                    error={touched.phonePhoneNumber && !!errors.phonePhoneNumber}
-                                    helperText={touched.phonePhoneNumber && errors.phonePhoneNumber}
+                                    error={touched.alternateNumber && !!errors.alternateNumber}
+                                    helperText={touched.alternateNumber && errors.alternateNumber}
                                     InputLabelProps={{ shrink: true }}
                                 />
                             </Grid>
 
-                            {/* eKYC Token Validation */}
-                            <Grid item xs={3}>
-                                <TextField
-                                    label="eKYC Token"
-                                    type="text"
-                                    fullWidth
-                                    name="ekycToken"
-                                    required
-                                    value={values.ekycToken}
-                                    onChange={(e) => {
-                                        if (e.target.value.length <= 10) {
-                                            handleChange(e);
-                                        }
-                                    }}
-                                    onBlur={handleBlur}
-                                    error={touched.ekycToken && !!errors.ekycToken}
-                                    helperText={touched.ekycToken && errors.ekycToken}
-                                    InputLabelProps={{ shrink: true }}
-                                />
-                            </Grid>
+
+
+
+
 
                             {/* City Dropdown */}
                             <Grid item xs={3}>
                                 <FormControl fullWidth>
-                                    <InputLabel id="city-label">City</InputLabel>
+                                    <InputLabel id="city-label">Locality</InputLabel>
                                     <Select
                                         value={values.city}
                                         onChange={handleChange}
-                                        label="City"
+                                        label="Locality"
                                         onBlur={handleBlur}
                                         name="city"
                                         required
@@ -620,6 +688,7 @@ export default function AddCustomerDetails() {
                                         value={values.gender}
                                         onChange={handleChange}
                                         onBlur={handleBlur}
+                                        label="Gender"
                                         name="gender"
                                         error={touched.gender && !!errors.gender}
                                     >
@@ -638,6 +707,7 @@ export default function AddCustomerDetails() {
                                         value={values.maritalStatus}
                                         onChange={handleChange}
                                         onBlur={handleBlur}
+                                        label="Marital Status"
                                         name="maritalStatus"
                                     >
                                         <MenuItem value="Married">Married</MenuItem>
@@ -657,6 +727,9 @@ export default function AddCustomerDetails() {
                                     value={values.dateOfBirth}
                                     onChange={handleChange}
                                     onBlur={handleBlur}
+                                    inputProps={{
+                                        max: new Date().toISOString().split("T")[0]
+                                    }}
                                     error={touched.dateOfBirth && !!errors.dateOfBirth}
                                     helperText={touched.dateOfBirth && errors.dateOfBirth}
                                     InputLabelProps={{ shrink: true }}
@@ -675,17 +748,37 @@ export default function AddCustomerDetails() {
 
 
             </Paper>
-            <Grid padding={1} lg={4} md={4} sm={6} xs={12} sx={{ paddingTop: 4, textAlign: { lg: 'center', md: 'center', sm: 'center', xs: 'center' } }}>
+            <Grid
+                padding={1}
+                lg={4}
+                md={4}
+                sm={6}
+                xs={12}
+                sx={{ paddingTop: 4, textAlign: { lg: 'center', md: 'center', sm: 'center', xs: 'center' } }}
+            >
                 <Button
                     type="submit"
-
-                    style={{ width: '100px', backgroundColor: '#253A7D', color: 'white' }}
-                    // onClick={submitMainForm2}
-                    sx={{ mb: 5, textAlign: { sm: 'center' }, boxShadow: 15 }}
+                    style={{
+                        width: '100px',
+                        backgroundColor: isValid && dirty ? '#253A7D' : '#B0B0B0', // Enable color when form is valid and dirty
+                        color: 'white',
+                    }}
+                    disabled={!(isValid && dirty)} // Disable if form is invalid or not dirty
+                    sx={{ mb: 5, textAlign: { sm: 'center' }, boxShadow: 15, mr: 2 }}
                 >
                     Submit
                 </Button>
+                <Button
+                    type="button"
+                    style={{ backgroundColor: '#F6B625', color: 'black' }}
+                    sx={{ mb: 5, boxShadow: 20 }}
+                    onClick={() => navigate(-1)} // Navigates to the previous page
+                >
+                    Cancel
+                </Button>
             </Grid>
+
+
 
         </Box>
     )

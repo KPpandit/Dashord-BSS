@@ -20,43 +20,23 @@ export default function PrepaidActivatedPlans() {
     const [selectedPlan, setSelectedPlan] = useState(null);
 
     useEffect(() => {
-        // Fetch category names from the API
-        fetch('https://bssproxy01.neotel.nr/abmf-prepaid-s/api/prepaid/packs?pack_status=Approved')
+        // Fetch all approved plans and organize by category
+        fetch('https://bssproxy01.neotel.nr/abmf-prepaid/api/prepaid/packs?pack_status=Approved')
             .then(response => response.json())
             .then(data => {
                 const uniqueTabList = [...new Set(data.map(item => item.category_name))];
                 setTabList(uniqueTabList);
+
+                // Group data by category
+                const groupedData = uniqueTabList.reduce((acc, category) => {
+                    acc[category] = data.filter(item => item.category_name === category);
+                    return acc;
+                }, {});
+
+                setTabData(groupedData);
             })
-            .catch(error => console.error('Error fetching category names:', error));
+            .catch(error => console.error('Error fetching approved plans:', error));
     }, []);
-
-    useEffect(() => {
-        // Fetch plans data from the API based on selected category and tab name
-        if (tabList.length > 0) {
-            const promises = tabList.map(category =>
-                fetch(`https://bssproxy01.neotel.nr/abmf-prepaid-s/api/prepaid/packs/get/all?category_name=${category}`)
-                    .then(response => response.json())
-                    .then(data => ({ category, data }))
-            );
-
-            Promise.all(promises)
-                .then(results => {
-                    const dataMap = results.reduce((acc, { category, data }) => {
-                        acc[category] = data;
-                        return acc;
-                    }, {});
-                    setTabData(dataMap);
-                })
-                .catch(error => {
-                    console.error('Error fetching plans data:', error)
-                    if (error.response && error.response.status === 401) {
-                        console.log("From inside if condition");
-                        localStorage.removeItem('token');
-                        navigate("/");
-                    }
-                });
-        }
-    }, [tabList]);
 
     useEffect(() => {
         // Set the default selected category when the tab list is available
@@ -119,7 +99,7 @@ export default function PrepaidActivatedPlans() {
                         padding: 1,
                         paddingLeft: 2,
                     }}>
-                       Prepaid Approved Plan
+                        Approved Packs
                     </Typography>
                 </Paper>
 
@@ -163,7 +143,7 @@ export default function PrepaidActivatedPlans() {
                     overflowY: 'auto',
                     position: 'relative',
                     minHeight: 'calc(100vh - 144px)',
-                    margin:'-45px'
+                    margin: '-45px'
                 }}
             >
                 {selectedCategory && (
@@ -180,108 +160,78 @@ export default function PrepaidActivatedPlans() {
                         <Typography textAlign={'left'} sx={{ fontFamily: 'Roboto', fontSize: '18px', paddingLeft: 2.5 }}>
                             All Plans For {selectedCategory}
                         </Typography>
-                        {console.log(selectedCategory + "Selected Category")}
                         <Grid container spacing={2}>
-                            {tabData[selectedCategory] && tabData[selectedCategory].map((plan) => {
-                                if (plan.category_name === selectedCategory) {
-                                    return (
-                                        <Grid item xs={4} key={plan.rating_profile_id}>
-                                            <Card
-                                                elevation={10}
-                                                sx={{
-                                                    margin: '8px',
-                                                    border: '4px solid #e0e0e0',
-                                                    backgroundColor: '#253A7D',
-                                                    
-                                                    flex: '1 0 auto',
-                                                    // height: '270px',
-                                                    borderRadius: '40px',
-                                                    paddingLeft: 2,
-                                                    paddingTop: 2
-                                                }}
-                                            >
-                                                <CardContent sx={{ backgroundColor: '#253A7D', color: 'White' }}>
+                            {tabData[selectedCategory] && tabData[selectedCategory].map((plan) => (
+                                <Grid item xs={4} key={plan.rating_profile_id} sx={{ paddingBottom: 5 }}>
+                                    <Card
+                                        elevation={10}
+                                        sx={{
+                                            margin: '8px',
+                                            border: '4px solid #e0e0e0',
+                                            backgroundColor: '#253A7D',
+                                            flex: '1 0 auto',
+                                            borderRadius: '40px',
+                                            paddingLeft: 2,
+                                            paddingTop: 2,
+                                        }}
+                                    >
+                                        <CardContent sx={{ backgroundColor: '#253A7D', color: 'White' }}>
+                                            <Grid container spacing={2}>
+                                                <Grid item xs={12}>
                                                     <Grid container spacing={2}>
-                                                        <Grid item xs={12}>
+                                                        <Grid item xs={6}>
                                                             <Grid container spacing={2}>
-                                                                <Grid item xs={6}>
-                                                                    <Grid container spacing={2}>
-                                                                        <Grid item xs={12}>
-                                                                            <Typography>
-                                                                                AUD$ {plan.pack_price}
-                                                                            </Typography>
-                                                                        </Grid>
-                                                                        <Grid item xs={12}>
-                                                                            <Typography
-                                                                                sx={{ font: 'Bold', color: 'yellow' }}
-                                                                                style={{ cursor: 'pointer' }}
-                                                                                onClick={() => handleDetailsClick(plan)}
-                                                                            >
-                                                                                View Details...
-                                                                            </Typography>
-                                                                        </Grid>
-                                                                    </Grid>
+                                                                <Grid item xs={12}>
+                                                                    <Typography>
+                                                                        AUD$ {plan.pack_price}
+                                                                    </Typography>
                                                                 </Grid>
-                                                                <Grid item xs={6}>
-                                                                    <Grid container>
-                                                                        <Grid item>
-                                                                            <img src={LogoMo} alt='_blank' />
-                                                                        </Grid>
-                                                                    </Grid>
+                                                                <Grid item xs={12}>
+                                                                    <Typography
+                                                                        sx={{ font: 'Bold', color: 'yellow' }}
+                                                                        style={{ cursor: 'pointer' }}
+                                                                        onClick={() => handleDetailsClick(plan)}
+                                                                    >
+                                                                        View Details...
+                                                                    </Typography>
                                                                 </Grid>
                                                             </Grid>
                                                         </Grid>
-                                                        <Grid item xs={6} sx={{ marginTop: 2 }}>
-                                                            <Grid container spacing={1}>
-                                                                <Grid item xs={12}>
-                                                                    <Typography>Validity :</Typography>
-                                                                </Grid>
-                                                                <Grid item xs={12}>
-                                                                    <Typography>{plan.validity} Days</Typography>
+                                                        <Grid item xs={6}>
+                                                            <Grid container>
+                                                                <Grid item>
+                                                                    <img src={LogoMo} alt='_blank' />
                                                                 </Grid>
                                                             </Grid>
-                                                        </Grid>
-                                                        <Grid item xs={6} sx={{ marginTop: 2 }}>
-                                                            <Grid container spacing={1}>
-                                                                <Grid item xs={12}>
-                                                                    <Typography>Data :</Typography>
-                                                                </Grid>
-                                                                <Grid item xs={12}>
-                                                                    <Typography>{plan.data_balance} {plan.data_balance_parameter}</Typography>
-                                                                </Grid>
-                                                            </Grid>
-                                                        </Grid>
-                                                        <Grid item xs={6} sx={{ marginTop: 1 }}>
-                                                            <Grid container spacing={1}>
-                                                                <Grid item xs={12}>
-                                                                    <Typography>Voice :</Typography>
-                                                                </Grid>
-                                                                <Grid item xs={12}>
-                                                                    <Typography>{plan.onn_call_balance} mins</Typography>
-                                                                </Grid>
-                                                            </Grid>
-                                                        </Grid>
-                                                        <Grid item xs={6} sx={{ marginTop: 1 }}>
-                                                            <Grid container spacing={1}>
-                                                                <Grid item xs={12}>
-                                                                    <Typography>SMS :</Typography>
-                                                                </Grid>
-                                                                <Grid item xs={12}>
-                                                                    <Typography>{plan.onn_sms_balance}</Typography>
-                                                                </Grid>
-                                                            </Grid>
-                                                        </Grid>
-                                                        <Grid item xs={12} sx={{ marginTop: 3 }}>
-                                                            <Typography style={{ fontSize: '15px', fontFamily: 'Roboto' }}>Additional Benefits(s)</Typography>
                                                         </Grid>
                                                     </Grid>
-                                                </CardContent>
-                                            </Card>
-                                        </Grid>
-                                    );
-                                }
-                                return null;
-                            })}
+                                                </Grid>
+                                                <Grid item xs={6} sx={{ marginTop: 2 }}>
+                                                    <Typography>Validity: {plan.validity ?? 0} Days</Typography>
+                                                </Grid>
+                                                <Grid item xs={6} sx={{ marginTop: 2 }}>
+                                                    <Typography>
+                                                        Data: {plan.data_balance === 931 ? 'Unlimited' : `${plan.data_balance ?? 0} ${plan.data_balance_parameter ?? ''}`}
+                                                    </Typography>
+                                                </Grid>
+                                                <Grid item xs={6} sx={{ marginTop: 1 }}>
+                                                    <Typography>
+                                                        Voice: {plan.onn_call_balance === 1666 ? 'Unlimited' : `${plan.onn_call_balance ?? 0} mins`}
+                                                    </Typography>
+                                                </Grid>
+                                                <Grid item xs={6} sx={{ marginTop: 1 }}>
+                                                    <Typography>
+                                                        SMS: {plan.onn_sms_balance === 99999 ? 'Unlimited' : plan.onn_sms_balance ?? 0}
+                                                    </Typography>
+                                                </Grid>
+                                                <Grid item xs={12} sx={{ marginTop: 3 }}>
+                                                    <Typography style={{ fontSize: '15px', fontFamily: 'Roboto' }}>Additional Benefits(s)</Typography>
+                                                </Grid>
+                                            </Grid>
+                                        </CardContent>
+                                    </Card>
+                                </Grid>
+                            ))}
                         </Grid>
                         <PlanDetailsModal
                             open={openModal}

@@ -5,18 +5,25 @@ import {
   TextField,
   Button,
   Paper,
+  CircularProgress,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableRow,
 } from "@mui/material";
 import axios from "axios";
-import { useLocation } from "react-router-dom";
-import 'react-toastify/dist/ReactToastify.css';
-import { ToastContainer, toast } from 'react-toastify';
+import { useLocation, useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { jsPDF } from "jspdf"; // Import jsPDF
 
 export default function AssignBalance() {
-  const location = useLocation();
-  const { record } = location.state || {};
+  const { state: { record } = {} } = useLocation();
+  const navigate = useNavigate();
   const [partnerId, setPartnerId] = useState(record || "");
-  const [product, setProduct] = useState("CBM");
-  const [productType, setProductType] = useState("Core Balance");
+  const [product] = useState("CBM");
+  const [productType] = useState("Core Balance");
   const [totalUnits, setTotalUnits] = useState("");
   const [offeredDiscount, setOfferedDiscount] = useState("");
   const [loading, setLoading] = useState(false);
@@ -26,109 +33,131 @@ export default function AssignBalance() {
 
   const tokenValue = localStorage.getItem("token");
 
+  const headers = {
+    Authorization: `Bearer ${tokenValue?.trim()}`,
+    "Content-Type": "application/json",
+  };
+
+  const handleAPI = async (url, payload, successMsg) => {
+    try {
+      const { data } = await axios.post(url, payload, { headers });
+      if (successMsg) toast.success(successMsg);
+      return data;
+    } catch (err) {
+      toast.error(err.response?.data?.message || "An error occurred.");
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleAssignBalance = async () => {
     setLoading(true);
-
-    if (!tokenValue) {
-      toast.error("Authentication token is missing. Please log in again.");
-      setLoading(false);
-      return;
-    }
-
-    const headers = {
-      Authorization: `Bearer ${tokenValue.trim()}`,
-      "Content-Type": "application/json",
-    };
+    if (!tokenValue) return toast.error("Token missing. Please log in.");
 
     const payload = {
       partnerId: parseInt(partnerId, 10),
       product,
       productType,
-      totalUnits: parseInt(totalUnits, 10),
-      offeredDiscount: parseInt(offeredDiscount, 10),
+      totalUnits: parseFloat(totalUnits),
+      offeredDiscount: parseFloat(offeredDiscount),
     };
 
     try {
-      const response = await axios.post(
+      const { transactionID, payAmount } = await handleAPI(
         "https://bssproxy01.neotel.nr/crm/api/partner/order",
         payload,
-        { headers }
+        "Order is generated"
       );
-
-      const { transactionID, payAmount } = response.data;
-
       setTransactionID(transactionID);
       setPayAmount(payAmount);
-      setStep(2); // Move to the next step
-      toast.success("Order is generated");
-    } catch (err) {
-      toast.error(
-        err.response?.data?.message ||
-        "An error occurred while processing the request."
-      );
-    } finally {
-      setLoading(false);
-    }
+      setStep(2);
+    } catch { }
   };
 
   const handleMakePayment = async () => {
     setLoading(true);
-
-    if (!tokenValue) {
-      toast.error("Authentication token is missing. Please log in again.");
-      setLoading(false);
-      return;
-    }
-
-    const headers = {
-      Authorization: `Bearer ${tokenValue.trim()}`,
-      "Content-Type": "application/json",
-    };
-
     const paymentPayload = {
       partnerId: parseInt(partnerId, 10),
       invoiceNumber: transactionID,
-      amount: payAmount,
+      amount: parseFloat(payAmount),
       paymentMode: "CASH",
     };
-
     try {
-      await axios.post(
+      await handleAPI(
         "https://bssproxy01.neotel.nr/crm/api/save/partner/payment/currency/1?creditCard=1",
         paymentPayload,
-        { headers }
+        "Payment completed successfully!"
       );
-      toast.success("Payment completed successfully!");
-    } catch (err) {
-      toast.error(
-        err.response?.data?.message ||
-        "An error occurred while processing the payment."
-      );
-    } finally {
-      setLoading(false);
-    }
+      setStep(3);
+    } catch { }
   };
 
-  const validateTotalUnits = (value) => {
-    if (/^\d{0,4}$/.test(value)) {
-      setTotalUnits(value);
-    }
+  const handleDownloadPDF = () => {
+    const doc = new jsPDF();
+
+    // Set font style and size
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(12);
+
+    // Table data and headers
+    const headers = ["Label", "Value"];
+    const data = [
+      ["Reseller ID", partnerId],
+      ["Invoice Number", transactionID],
+      ["Total Amount Paid", `$${payAmount}`],
+      ["Product", product],
+      ["Product Type", productType],
+      ["Total Units", `${totalUnits} AUD`],
+      ["Offered Discount", `${offeredDiscount}%`],
+    ];
+
+    // Title text before the table
+    doc.text("Payment Invoice Details", 20, 20);
+
+   
+    doc.autoTable({
+      startY: 30, 
+      head: [headers], 
+      body: data, 
+      theme: 'grid', 
+      columnStyles: {
+        0: { fontStyle: 'bold', cellWidth: 50 },
+        1: { fontStyle: 'normal', cellWidth: 100 }, 
+      },
+      margin: { left: 20, right: 20 }, 
+      styles: { fontSize: 12 }, 
+      headStyles: { fillColor: [22, 160, 133] }, 
+    });
+
+    
+    doc.save("payment.pdf");
   };
 
-  const validateOfferedDiscount = (value) => {
-    if (/^\d{0,3}$/.test(value)) {
-      setOfferedDiscount(value);
-    }
-  };
+  const handleChange = (setter, maxValue = 100) => (e) => {
+    let value = e.target.value;
 
-  const handleChange = (setter, maxDigits) => (event) => {
-    const value = event.target.value.replace(/\D/g, ""); // Remove all non-digits
-    const numericValue = parseInt(value, 10);
-    if (!isNaN(numericValue) && numericValue >= 0) {
-      setter(value.slice(0, maxDigits)); // Limit to max digits
-    } else {
-      setter(""); // Clear invalid or negative input
+    // Allow only digits and a single decimal point
+    value = value.replace(/[^0-9.]/g, '');
+
+    // Ensure there's only one decimal point
+    const parts = value.split('.');
+    if (parts.length > 2) {
+      value = `${parts[0]}.${parts[1]}`;
     }
+
+    // Allow only two digits after the decimal point
+    if (parts[1] && parts[1].length > 2) {
+      value = `${parts[0]}.${parts[1].slice(0, 2)}`;
+    }
+
+    // Convert to number and ensure it's less than or equal to maxValue (100)
+    if (parseFloat(value) > maxValue) {
+      return; // Do not allow the value to exceed maxValue (100)
+    }
+
+    // Set the value if it's valid
+    setter(value);
   };
 
   return (
@@ -138,130 +167,143 @@ export default function AssignBalance() {
         maxWidth: 500,
         margin: "0 auto",
         textAlign: "center",
+        background:
+          "linear-gradient(135deg, #e5b33d 0%, #f7c664 50%, #f9e0a7 100%)",
+        borderRadius: "10px",
+        boxShadow: "0px 8px 20px rgba(0, 0, 0, 0.2)",
       }}
     >
-      {/* ToastContainer */}
-      <ToastContainer
-        position="bottom-left"
-        autoClose={3000}
-        hideProgressBar={true}
-        closeOnClick
-        pauseOnHover
-        draggable
-      />
-
-      <Paper
-        elevation={3}
-        sx={{
-          padding: 3,
-          borderRadius: 2,
-          boxShadow: "0px 4px 10px rgba(0,0,0,0.2)",
-        }}
-      >
+      <ToastContainer position="bottom-left" autoClose={3000} hideProgressBar />
+      <Paper elevation={5} sx={{ padding: 3, borderRadius: 4, background: "white" }}>
         {step === 1 && (
           <>
-            <Typography variant="h5" sx={{ marginBottom: 2 }}>
-              Assign Balance
+            <Typography variant="h4" sx={{ mb: 2, fontWeight: "bold", color: "#253A7D" }}>
+              Assign Core Balance
             </Typography>
-            <TextField
-              label="Partner ID"
-              disabled
-              type="number"
-              value={partnerId}
-              onChange={(e) => setPartnerId(e.target.value)}
-              fullWidth
-              margin="normal"
-            />
-            <TextField
-              label="Product"
-              disabled
-              value={product}
-              onChange={(e) => setProduct(e.target.value)}
-              fullWidth
-              margin="normal"
-            />
-            <TextField
-              label="Product Type"
-              disabled
-              value={productType}
-              onChange={(e) => setProductType(e.target.value)}
-              fullWidth
-              margin="normal"
-            />
-            <TextField
-              label="Total $ AUD "
-              value={totalUnits}
-              onChange={handleChange(setTotalUnits, 5)}
-              fullWidth
-              margin="normal"
-              helperText="Max 5 digits"
-            />
-            <TextField
-              label="Offered Discount (%)"
-              value={offeredDiscount}
-              onChange={handleChange(setOfferedDiscount, 3)}
-              fullWidth
-              margin="normal"
-              // helperText="Max 3 digits"
-            />
-            <Button
-              variant="contained"
-              color="success"
-              sx={{ marginTop: 3 }}
-              onClick={handleAssignBalance}
-              disabled={loading}
-            >
-              {loading ? "Processing..." : "Assign Balance"}
-            </Button>
+            {[{ label: "Partner ID", value: partnerId, disabled: true },
+            { label: "Product", value: product, disabled: true },
+            { label: "Product Type", value: productType, disabled: true },
+            {
+              label: "Total $ AUD",
+              value: totalUnits,
+              onChange: handleChange(setTotalUnits, 99999),
+              helperText: "Max 5 digits, decimals allowed",
+            },
+            {
+              label: "Offered Discount (%)",
+              value: offeredDiscount,
+              onChange: handleChange(setOfferedDiscount, 100),
+              helperText: "Max 3 digits, <100",
+            }].map((field, i) => (
+              <TextField key={i} fullWidth margin="normal" {...field} />
+            ))}
+            <Box display="flex" justifyContent="space-between" mt={0}>
+              <Button
+                variant="contained"
+                sx={{
+                  px: 4,
+                  background: "#253A7D",
+                  color: "white",
+                  "&:hover": { background: "#253A7D" },
+                }}
+                onClick={handleAssignBalance}
+                disabled={loading}
+              >
+                {loading ? <CircularProgress size={20} /> : "Assign Balance"}
+              </Button>
+              <Button
+                variant="outlined"
+                sx={{ px: 4, color: "black", borderColor: "black", backgroundColor: "#F3C25B" }}
+                onClick={() => navigate(-1)}
+              >
+                Cancel
+              </Button>
+            </Box>
+          </>
+        )}
+        {step === 2 && (
+          <>
+            <Typography variant="h5" sx={{ mb: 2, fontWeight: "bold", color: "#253A7D" }}>
+              Make Payment
+            </Typography>
+            {[{ label: "Partner ID", value: partnerId },
+            { label: "Invoice Number", value: transactionID },
+            { label: "Amount", value: payAmount },
+            { label: "Payment Mode", value: "CASH" }].map((field, i) => (
+              <TextField key={i} fullWidth margin="normal" disabled {...field} />
+            ))}
+            <Box display="flex" justifyContent="space-between" mt={3}>
+              <Button
+                variant="contained"
+                sx={{ px: 4, background: "#253A7D", color: "white", "&:hover": { background: "#0056b3" } }}
+                onClick={handleMakePayment}
+                disabled={loading}
+              >
+                {loading ? <CircularProgress size={20} /> : "Make Payment"}
+              </Button>
+              <Button
+                variant="outlined"
+                sx={{ px: 4, color: "black", borderColor: "black", backgroundColor: "#F3C25B" }}
+                onClick={() => setStep(1)}
+              >
+                Back
+              </Button>
+            </Box>
+          </>
+        )}
+        {step === 3 && (
+          <>
+            <Typography variant="h5" sx={{ mb: 2, fontWeight: "bold", color: "#253A7D" }}>
+              Payment Done Succesfully 
+            </Typography>
+            <TableContainer component={Paper}>
+              <Table id="confirmation-table" sx={{ minWidth: 300 }}>
+                <TableBody>
+                  {[
+                    { label: "Reseller ID", value: partnerId },
+                    { label: "Invoice Number", value: transactionID },
+                    { label: "Total Amount Paid", value: `$${payAmount}` },
+                    { label: "Product", value: product },
+                    { label: "Product Type", value: productType },
+                    { label: "Total Units", value: `${totalUnits} AUD` },
+                    { label: "Offered Discount", value: `${offeredDiscount}%` }
+                  ].map((row, i) => (
+                    <TableRow key={i}>
+                      <TableCell><strong>{row.label}</strong></TableCell>
+                      <TableCell>{row.value}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+
+            {/* Buttons section */}
+            <Box sx={{ display: "flex", justifyContent: "space-between", mt: 2 }}>
+              <Button
+                variant="contained"
+                sx={{
+                  px: 2,
+                  background: "#253A7D",
+                  color: "white",
+                  "&:hover": { background: "#0056b3" }
+                }}
+                onClick={handleDownloadPDF}
+              >
+                Download PDF
+              </Button>
+
+              <Button
+                variant="outlined"
+                sx={{ px: 4, color: "black", borderColor: "black", backgroundColor: "#F3C25B" }}
+                onClick={() => navigate(-1)}
+              >
+                Cancel
+              </Button>
+            </Box>
           </>
         )}
 
-        {step === 2 && (
-          <>
-            <Typography variant="h5" sx={{ marginBottom: 2 }}>
-              Make Payment
-            </Typography>
-            <TextField
-              label="Partner ID"
-              type="number"
-              value={partnerId}
-              disabled
-              fullWidth
-              margin="normal"
-            />
-            <TextField
-              label="Invoice Number"
-              value={transactionID}
-              disabled
-              fullWidth
-              margin="normal"
-            />
-            <TextField
-              label="Amount"
-              type="number"
-              value={payAmount}
-              disabled
-              fullWidth
-              margin="normal"
-            />
-            <TextField
-              label="Payment Mode"
-              value="CASH"
-              disabled
-              fullWidth
-              margin="normal"
-            />
-            <Button
-              variant="contained"
-              color="primary"
-              sx={{ marginTop: 3 }}
-              onClick={handleMakePayment}
-              disabled={loading}
-            >
-              {loading ? "Processing..." : "Make Payment"}
-            </Button>
-          </>
-        )}
+
       </Paper>
     </Box>
   );

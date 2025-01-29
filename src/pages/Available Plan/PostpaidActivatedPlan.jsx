@@ -20,7 +20,7 @@ export default function PostpaidActivatedPlan() {
     const [selectedPlan, setSelectedPlan] = useState(null);
 
     useEffect(() => {
-        fetch('https://bssproxy01.neotel.nr/abmf-postpaid-s/api/postpaid/packs?pack_status=Approved')
+        fetch('https://bssproxy01.neotel.nr/abmf-postpaid/api/postpaid/packs?pack_status=Approved')
             .then(response => response.json())
             .then(data => {
                 const uniqueTabList = [...new Set(data.map(item => item.category_name))];
@@ -94,7 +94,7 @@ export default function PostpaidActivatedPlan() {
                         padding: 1,
                         paddingLeft: 2,
                     }}>
-                        Postpaid Activated Plan
+                        Approved Plans
                     </Typography>
                 </Paper>
 
@@ -177,14 +177,21 @@ export default function PostpaidActivatedPlan() {
                                                             <Typography>Validity: {plan.validity ?? 0} Days</Typography>
                                                         </Grid>
                                                         <Grid item xs={6} sx={{ marginTop: 2 }}>
-                                                            <Typography>Data: {plan.data_balance ?? 0} {plan.data_balance_parameter ?? ''}</Typography>
+                                                            <Typography>
+                                                                Data: {plan.data_balance === 931 ? 'Unlimited' : `${plan.data_balance ?? 0} ${plan.data_balance_parameter ?? ''}`}
+                                                            </Typography>
                                                         </Grid>
                                                         <Grid item xs={6} sx={{ marginTop: 1 }}>
-                                                            <Typography>Voice: {plan.onn_call_balance ?? 0} mins</Typography>
+                                                            <Typography>
+                                                                Voice: {plan.onn_call_balance === 1666 ? 'Unlimited' : `${plan.onn_call_balance ?? 0} mins`}
+                                                            </Typography>
                                                         </Grid>
                                                         <Grid item xs={6} sx={{ marginTop: 1 }}>
-                                                            <Typography>SMS: {plan.onn_sms_balance ?? 0}</Typography>
+                                                            <Typography>
+                                                                SMS: {plan.onn_sms_balance === 99999 ? 'Unlimited' : plan.onn_sms_balance ?? 0}
+                                                            </Typography>
                                                         </Grid>
+
                                                         <Grid item xs={12} sx={{ marginTop: 1 }}>
                                                             <Typography style={{ fontSize: '15px', fontFamily: 'Roboto' }}>Additional Benefits(s)</Typography>
                                                         </Grid>
