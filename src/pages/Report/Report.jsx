@@ -67,6 +67,12 @@ export default function Report(props) {
             { report_type: "Sim By Agent" },
             { report_type: "Sim By Status" },
           ];
+          case 'usage':
+            data = [
+              { report_type: "Active and Inactive Users" },
+              { report_type: "Pack use" },
+             
+            ];
 
           break;
         default:
@@ -85,6 +91,12 @@ export default function Report(props) {
         break;
         case 'Agents Report of  All Product':
           navigate('/agentReportByProduct');
+          break;
+          case 'Active and Inactive Users':
+          navigate('/ActiveInactive');
+          break;
+          case 'Pack use':
+          navigate('/packanalyze');
           break;
       case 'Pre-Paid Customer Report':
         navigate('/prepaidcustomerReport');
@@ -192,13 +204,13 @@ export default function Report(props) {
                 {console.log(value + "--------")}
                 <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                   <TabList onChange={(event, newValue) => setValue(newValue)} sx={{ backgroundColor: '#253A7D' }}>
-                    <Tab label="Customer" value="customer" sx={{
+                    {/* <Tab label="Customer" value="customer" sx={{
                       color: value === "customer" ? '#FAC22E' : 'white',
                       '&.Mui-selected': {
                         color: '#FAC22E',
                       },
-                    }} />
-                    <Tab label="Agent" value="agent" sx={{ color: value === "agent" ? '#FAC22E' : 'white',
+                    }} /> */}
+                    <Tab label="Reseller Reports" value="agent" sx={{ color: value === "agent" ? '#FAC22E' : 'white',
                       '&.Mui-selected': {
                         color: '#FAC22E',
                       }, }} />
@@ -206,7 +218,11 @@ export default function Report(props) {
                       '&.Mui-selected': {
                         color: '#FAC22E',
                       }, }} /> */}
-                    <Tab label="Inventory" value="inventory" sx={{ color: value === 'inventory' ? '#FAC22E' : 'white' ,
+                    <Tab label="Pack Activation Reports" value="inventory" sx={{ color: value === 'inventory' ? '#FAC22E' : 'white' ,
+                      '&.Mui-selected': {
+                        color: '#FAC22E',
+                      },}} />
+                       <Tab label="Usage Reports" value="usage" sx={{ color: value === 'usage' ? '#FAC22E' : 'white' ,
                       '&.Mui-selected': {
                         color: '#FAC22E',
                       },}} />
@@ -223,6 +239,9 @@ export default function Report(props) {
                   <RenderTable rows={rows} handleRowClick={handleRowClick} page={page} rowsPerPage={rowsPerPage} handleChangePage={handleChangePage} handleChangeRowsPerPage={handleChangeRowsPerPage} />
                 </TabPanel> */}
                 <TabPanel value="inventory">
+                  <RenderTable rows={rows} handleRowClick={handleRowClick} page={page} rowsPerPage={rowsPerPage} handleChangePage={handleChangePage} handleChangeRowsPerPage={handleChangeRowsPerPage} />
+                </TabPanel>
+                <TabPanel value="usage">
                   <RenderTable rows={rows} handleRowClick={handleRowClick} page={page} rowsPerPage={rowsPerPage} handleChangePage={handleChangePage} handleChangeRowsPerPage={handleChangeRowsPerPage} />
                 </TabPanel>
               </TabContext>

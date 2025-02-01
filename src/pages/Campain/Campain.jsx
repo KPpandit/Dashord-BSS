@@ -3,62 +3,80 @@ import {
   Container,
   Typography,
   TextField,
+  Tabs,
+  Tab,
+  Button,
+  Grid,
+  Paper,
   FormControl,
   InputLabel,
   Select,
   MenuItem,
-  Button,
-  Grid,
-  Paper,
 } from "@mui/material";
 import { Send as SendIcon } from "@mui/icons-material";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-export default function Campaign() {
-  // State for form inputs
-  const [msisdn, setMsisdn] = useState("");
-  const [from, setFrom] = useState("121");
-  const [text, setText] = useState("");
-  const [configId, setConfigId] = useState("1");
-  const [isFlash, setIsFlash] = useState(true);
-  const [locale, setLocale] = useState("en");
+export default function SMSCampaign() {
+  const [tab, setTab] = useState(0);
+  const [singleMessage, setSingleMessage] = useState({ msisdn: "", text: "", isFlash: true });
+  const [bulkMessage, setBulkMessage] = useState({ customerType: "Postpaid", text: "" });
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
-  // Handle form submission
-  const handleSubmit = async (e) => {
+  // Handle tab change
+  const handleTabChange = (_, newValue) => setTab(newValue);
+
+  // Handle form submissions
+  const handleSingleSubmit = async (e) => {
     e.preventDefault();
+    const { msisdn, text, isFlash } = singleMessage;
 
-    // Validate inputs
     if (msisdn.length !== 10) {
       toast.error("MSISDN must be exactly 10 digits.");
       return;
     }
-
-    if (text.length > 160) {
-      toast.error("Message cannot exceed 160 characters.");
+    if (text.length > 160 || text.trim() === "") {
+      toast.error("Message must be between 1 and 160 characters.");
       return;
     }
 
-    if (!from || !text) {
-      toast.error("Please fill all required fields.");
-      return;
-    }
-
-    // Construct API URL
-    const apiUrl = `https://bssproxy01.neotel.nr/sms/smpp/api/send-sms?msisdn=${msisdn}&from=${from}&text=${encodeURIComponent(
+    setIsButtonDisabled(true); // Disable the button after API call
+    const apiUrl = `https://bssproxy01.neotel.nr/sms/smpp/api/send-sms?msisdn=${msisdn}&from=121&text=${encodeURIComponent(
       text
-    )}&configId=${configId}&isFlash=${isFlash}&locale=${locale}`;
+    )}&configId=1&isFlash=${isFlash}&locale=en`;
 
     try {
-      // Call the API
       const response = await fetch(apiUrl, { method: "GET" });
       const data = await response.json();
+      response.ok
+        ? toast.success("Single SMS sent successfully!")
+        : toast.error(`Error: ${data.message || "Unknown error"}`);
+    } catch (error) {
+      toast.error(`Error: ${error.message}`);
+    }
+  };
 
-      if (response.ok) {
-        toast.success("SMS sent successfully!");
-      } else {
-        toast.error(`Failed to send SMS: ${data.message || "Unknown error"}`);
-      }
+  const handleBulkSubmit = async (e) => {
+    e.preventDefault();
+    const { customerType, text } = bulkMessage;
+
+    if (text.length > 160 || text.trim() === "") {
+      toast.error("Message must be between 1 and 160 characters.");
+      return;
+    }
+
+    setIsButtonDisabled(true); // Disable the button after API call
+
+    try {
+      const response = await fetch("https://bssproxy01.neotel.nr/abmf-prepaid/api/send/bulk/sms", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ customerType, msg: text }),
+      });
+      const data = await response.json();
+      response.ok
+        ? toast.success("Bulk SMS sent successfully!")
+        : toast.error(`Error: ${data.text || "Unknown error"}`);
     } catch (error) {
       toast.error(`Error: ${error.message}`);
     }
@@ -69,123 +87,144 @@ export default function Campaign() {
       <Paper elevation={3} sx={{ p: 4 }}>
         <Typography
           variant="h4"
-          component="h1"
-          gutterBottom
           align="center"
-          sx={{ fontWeight: "bold", color: "#253A7D" }}
+          sx={{ fontWeight: "bold", color: "#253A7D", mb: 3 }}
         >
-          Send SMS Campaign
+          SMS Campaign
         </Typography>
+        <Tabs
+          value={tab}
+          onChange={handleTabChange}
+          centered
+          sx={{
+            mb: 3,
+            "& .MuiTabs-indicator": { backgroundColor: "#253A7D" },
+            "& .MuiTab-root": { fontWeight: "bold" },
+          }}
+        >
+          <Tab label="Single SMS" />
+          <Tab label="Bulk SMS" />
+        </Tabs>
 
-        <form onSubmit={handleSubmit}>
-          <Grid container spacing={3}>
-            {/* MSISDN Input */}
-            <Grid item xs={12} sm={12}>
-              <TextField
-                fullWidth
-                label="MSISDN (Phone Number)"
-                variant="outlined"
-                value={msisdn}
-                onChange={(e) => {
-                  const value = e.target.value.replace(/\D/g, ""); // Remove non-numeric characters
-                  if (value.length <= 10) setMsisdn(value); // Restrict to 10 digits
-                }}
-                helperText="Must be exactly 10 digits."
-                required
-              />
-            </Grid>
-
-            {/* From Input */}
-            {/* <Grid item xs={12} sm={6}>
-              <TextField
-                fullWidth
-                label="From (Sender ID)"
-                variant="outlined"
-                value={from}
-                onChange={(e) => setFrom(e.target.value)}
-                required
-              />
-            </Grid> */}
-
-            {/* Message Input */}
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                label="Message Text"
-                variant="outlined"
-                multiline
-                rows={4}
-                value={text}
-                onChange={(e) => {
-                  const value = e.target.value;
-                  if (value.length <= 160) setText(value); // Restrict to 160 characters
-                }}
-                helperText={`${text.length}/160 characters`}
-                required
-              />
-            </Grid>
-
-            {/* Config ID Input */}
-            {/* <Grid item xs={12} sm={6}>
-              <TextField
-                fullWidth
-                label="Config ID"
-                variant="outlined"
-                value={configId}
-                onChange={(e) => setConfigId(e.target.value)}
-                required
-              />
-            </Grid> */}
-
-            {/* Flash SMS Toggle */}
-            <Grid item xs={12} sm={12}>
-              <FormControl fullWidth variant="outlined">
-                <InputLabel>Flash SMS</InputLabel>
-                <Select
-                  value={isFlash}
-                  onChange={(e) => setIsFlash(e.target.value)}
-                  label="Flash SMS"
+        {/* Single SMS Form */}
+        {tab === 0 && (
+          <form onSubmit={handleSingleSubmit}>
+            <Grid container spacing={3}>
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  label="MSISDN (Phone Number)"
+                  variant="outlined"
+                  value={singleMessage.msisdn}
+                  onChange={(e) =>
+                    setSingleMessage({
+                      ...singleMessage,
+                      msisdn: e.target.value.replace(/\D/g, "").slice(0, 10),
+                    })
+                  }
+                  helperText="Must be exactly 10 digits."
+                  required
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  label="Message Text"
+                  variant="outlined"
+                  multiline
+                  rows={4}
+                  value={singleMessage.text}
+                  onChange={(e) =>
+                    setSingleMessage({ ...singleMessage, text: e.target.value.slice(0, 160) })
+                  }
+                  helperText={`${singleMessage.text.length}/160 characters`}
+                  required
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <FormControl fullWidth>
+                  <InputLabel>Flash SMS</InputLabel>
+                  <Select
+                    value={singleMessage.isFlash}
+                    onChange={(e) =>
+                      setSingleMessage({ ...singleMessage, isFlash: e.target.value })
+                    }
+                    label="Flash SMS"
+                  >
+                    <MenuItem value={true}>Yes</MenuItem>
+                    <MenuItem value={false}>No</MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item xs={12}>
+                <Button
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                  fullWidth
+                  startIcon={<SendIcon />}
+                  sx={{ py: 1, bgcolor: "#253A7D" }}
+                  disabled={isButtonDisabled}
                 >
-                  <MenuItem value={true}>Yes</MenuItem>
-                  <MenuItem value={false}>No</MenuItem>
-                </Select>
-              </FormControl>
+                  Send SMS
+                </Button>
+              </Grid>
             </Grid>
+          </form>
+        )}
 
-            {/* Locale Input */}
-            {/* <Grid item xs={12} sm={6}>
-              <TextField
-                fullWidth
-                label="Locale"
-                variant="outlined"
-                value={locale}
-                onChange={(e) => setLocale(e.target.value)}
-                required
-              />
-            </Grid> */}
-
-            {/* Submit Button */}
-            <Grid item xs={12}>
-              <Button
-                type="submit"
-                variant="contained"
-                color="primary"
-                size="large"
-                startIcon={<SendIcon />}
-                fullWidth
-                sx={{ py: 1,bgcolor:"#253A7D"
-                 }}
-              >
-                Send SMS
-              </Button>
+        {/* Bulk SMS Form */}
+        {tab === 1 && (
+          <form onSubmit={handleBulkSubmit}>
+            <Grid container spacing={3}>
+              <Grid item xs={12}>
+                <FormControl fullWidth>
+                  <InputLabel>Customer Type</InputLabel>
+                  <Select
+                    value={bulkMessage.customerType}
+                    onChange={(e) =>
+                      setBulkMessage({ ...bulkMessage, customerType: e.target.value })
+                    }
+                    label="Customer Type"
+                  >
+                    <MenuItem value="Postpaid">Postpaid</MenuItem>
+                    <MenuItem value="Prepaid">Prepaid</MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  label="Message Text"
+                  variant="outlined"
+                  multiline
+                  rows={4}
+                  value={bulkMessage.text}
+                  onChange={(e) =>
+                    setBulkMessage({ ...bulkMessage, text: e.target.value.slice(0, 160) })
+                  }
+                  helperText={`${bulkMessage.text.length}/160 characters`}
+                  required
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <Button
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                  fullWidth
+                  startIcon={<SendIcon />}
+                  sx={{ py: 1, bgcolor: "#253A7D" }}
+                  disabled={isButtonDisabled}
+                >
+                  Send Bulk SMS
+                </Button>
+              </Grid>
             </Grid>
-          </Grid>
-        </form>
+          </form>
+        )}
       </Paper>
-
-      {/* ToastContainer for notifications */}
-      {/* <ToastContainer position="top-right" autoClose={5000} /> */}
-      <ToastContainer position="bottom-left" autoClose={5000}/>
+      <ToastContainer position="bottom-left" autoClose={5000} />
     </Container>
   );
 }

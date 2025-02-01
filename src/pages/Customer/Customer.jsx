@@ -25,6 +25,7 @@ const Customer = (props) => {
         { id: 'firstName', name: 'Name' },
         { id: 'serviceType', name: 'Service Type' },
         { id: 'customerType', name: 'Customer Type' },
+        { id: 'simInventory.simType', name: 'SIM Type' },
         { id: 'simInventory.msisdn', name: 'MSISDN' },
         { id: 'simInventory.imsi', name: 'IMSI' },
         // { id: 'ekycStatus', name: 'eKYC Status' },
@@ -325,6 +326,12 @@ const Customer = (props) => {
                                             <Grid container>
                                                 <Grid item xs={7.3} >
                                                     <Grid container spacing={1.5} >
+                                                        <Grid item xs={6} sx={{ fontWeight: '480', fontSize: '17px', textAlign: 'right' }}>
+                                                            Customer ID :
+                                                        </Grid>
+                                                        <Grid item xs={4}>
+                                                            {selectedRecord.id}
+                                                        </Grid>
 
                                                         <Grid item xs={3.6} sx={{ fontWeight: '480', fontSize: '17px', textAlign: 'right' }}>
                                                             Name :
@@ -343,17 +350,14 @@ const Customer = (props) => {
 
                                                         </Grid>
                                                         {selectedRecord.customerType === "Post-Paid" || selectedRecord.customerType === "postpaid" ? <></> : <></>}
-                                                        <Grid item xs={4.7} sx={{ fontWeight: '480', fontSize: '17px', textAlign: 'right' }}>
-                                                            Agent ID :
+                                                        <Grid item xs={3.1} sx={{ fontWeight: '480', fontSize: '17px', textAlign: 'right' }}>
+                                                            DOB :
                                                         </Grid>
-                                                        <Grid item xs={6} sx={{ textAlign: 'left' }}>
-                                                            <Typography sx={{ textAlign: 'left' }}>
-                                                                {selectedRecord
-                                                                    && selectedRecord.partner &&
-                                                                    selectedRecord.partner.id ? String(selectedRecord.partner.id) : "N/A"}
+                                                        <Grid item xs={8} sx={{ textAlign: 'left' }}>
+                                                            <Typography sx={{ textAlign: 'left' }} gutterBottom >
+                                                                {selectedRecord.dateOfBirth ? selectedRecord.dateOfBirth : "N/A"}
                                                             </Typography>
                                                         </Grid>
-
                                                         <Grid item xs={3.6} sx={{ fontWeight: '480', fontSize: '17px', textAlign: 'right' }}>
                                                             Email :
                                                         </Grid>
@@ -442,31 +446,16 @@ const Customer = (props) => {
                                         <Divider light />
 
                                         <Box sx={{ p: 1 }}>
+
+
+
                                             <Grid container>
-                                                <Grid item xs={6}>
-                                                    <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
-                                                        Electric Meter ID :
-                                                    </Typography>
-                                                </Grid>
-                                                <Grid item xs={6} alignItems={'left'} >
-                                                    <Typography
-                                                        sx={{ fontSize: '17px', textAlign: 'left' }}
-                                                        gutterBottom variant="body2"
-                                                    >
-                                                        {/* {new Date(selectedRecord.createDateTime).toISOString().split('T')[0]} */}
-                                                        {/* {selectedRecord.createDateTime} */}
-                                                        {selectedRecord.electricityMeterId ? selectedRecord.electricityMeterId : "N/A"}
-                                                    </Typography>
-                                                </Grid>
-                                            </Grid>
-                                        </Box> <Box sx={{ p: 1 }}>
-                                            <Grid container>
-                                                <Grid item xs={6}>
+                                                <Grid item xs={4}>
                                                     <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
                                                         eKYC Token :
                                                     </Typography>
                                                 </Grid>
-                                                <Grid item xs={6} alignItems={'left'}>
+                                                <Grid item xs={8} alignItems={'left'}>
                                                     <Typography
                                                         sx={{ fontSize: '17px', textAlign: 'left' }}
                                                         gutterBottom variant="body2">
@@ -534,16 +523,29 @@ const Customer = (props) => {
                                                 <Box sx={{ p: 1 }}>
 
                                                     <Grid container>
-                                                        <Grid item xs={8}>
+                                                        <Grid item xs={7}>
                                                             <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
                                                                 Current Month Amount :
                                                             </Typography>
                                                         </Grid>
-                                                        <Grid item xs={4} alignItems={'left'} >
+                                                        <Grid item xs={5} alignItems={'left'} >
                                                             <Typography
                                                                 sx={{ fontSize: '17px', textAlign: 'left' }}
                                                                 gutterBottom variant="body2">
                                                                 {selectedRecord.currentMonthlyAmount ? selectedRecord.currentMonthlyAmount : 'N/A'}
+                                                            </Typography>
+                                                        </Grid>
+                                                        <Divider light />
+                                                        <Grid item xs={5} paddingTop={2}>
+                                                            <Typography sx={{ fontWeight: '500', fontSize: '17px', textAlign: 'left' }}>
+                                                                Next Invoice Date :
+                                                            </Typography>
+                                                        </Grid>
+                                                        <Grid item xs={7} paddingTop={2} alignItems={'left'} >
+                                                            <Typography
+                                                                sx={{ fontSize: '17px', textAlign: 'left' }}
+                                                                gutterBottom variant="body2">
+                                                                {selectedRecord.nextInoviceDate ? selectedRecord.nextInoviceDate : 'N/A'}
                                                             </Typography>
                                                         </Grid>
                                                     </Grid>
@@ -586,6 +588,24 @@ const Customer = (props) => {
                                             </Grid>
                                         </Box>
                                         <Divider light />
+                                        <Box sx={{ p: 1 }}>
+                                            <Grid container>
+                                                <Grid item xs={3} sx={{ fontWeight: '480', fontSize: '17px', textAlign: 'left' }}>
+                                                    Agent ID :
+                                                </Grid>
+                                                <Grid item xs={9} sx={{ textAlign: 'left' }}>
+                                                    <Typography sx={{ textAlign: 'left' }}>
+                                                        {selectedRecord
+                                                            && selectedRecord.partner &&
+                                                            selectedRecord.partner.id ? String(selectedRecord.partner.id) : "N/A"}
+                                                    </Typography>
+                                                </Grid>
+                                                <Divider light />
+                                            </Grid>
+                                        </Box>
+                                        <Divider light />
+
+
                                     </Grid>
                                 </Grid>
 
@@ -935,13 +955,17 @@ const Customer = (props) => {
                                                                     ) : column.id === 'simInventory.imsi' ? (
                                                                         // Check if MSISDN is empty or not and display 'N/A' if true
                                                                         getNestedValue(row, column.id) || 'N/A'
-                                                                    ) : column.id === 'customerType' ? (
-                                                                        row[column.id] === '' || row[column.id] === null
-                                                                            ? 'N/A'
-                                                                            : capitalizeFirstLetterOfEachWord(String(row[column.id]))
-                                                                    ) : (
-                                                                        capitalizeFirstLetterOfEachWord(String(row[column.id]))
-                                                                    )}
+                                                                    )
+                                                                        : column.id === 'simInventory.simType' ? (
+                                                                            // Check if MSISDN is empty or not and display 'N/A' if true
+                                                                            getNestedValue(row, column.id) || 'N/A'
+                                                                        ) : column.id === 'customerType' ? (
+                                                                            row[column.id] === '' || row[column.id] === null
+                                                                                ? 'N/A'
+                                                                                : capitalizeFirstLetterOfEachWord(String(row[column.id]))
+                                                                        ) : (
+                                                                            capitalizeFirstLetterOfEachWord(String(row[column.id]))
+                                                                        )}
                                                                 </TableCell>
                                                             ))}
                                                         </TableRow>
@@ -981,7 +1005,7 @@ const Customer = (props) => {
                                 )}
                             </Paper>
                         </Box>
-                        <Grid container spacing={2} alignItems="center" sx={{ paddingTop: 2 ,paddingBottom:2}}>
+                        <Grid container spacing={2} alignItems="center" sx={{ paddingTop: 2, paddingBottom: 2 }}>
                             {/* Row 1: Create Subscriber and Bulk Pack Activate Buttons */}
                             <Grid item xs={12}>
                                 <Button
@@ -992,7 +1016,7 @@ const Customer = (props) => {
                                     Create Subscriber
                                 </Button>
                             </Grid>
-                            
+
 
                             {/* Row 2: Add Bulk Subscriber Heading */}
                             <Grid item xs={12}>
@@ -1000,7 +1024,7 @@ const Customer = (props) => {
                                     variant="h6"
                                     sx={{ fontWeight: 'bold', color: '#253A7D', paddingTop: 2 }}
                                 >
-                                    Add Bulk Subscriber : 
+                                    Add Bulk Subscriber :
                                 </Typography>
                             </Grid>
 
@@ -1027,18 +1051,20 @@ const Customer = (props) => {
                                 />
                             </Grid>
 
-                            <Grid item xs={5}>
+                            <Grid item xs={8}>
                                 <Box
                                     sx={{
                                         display: 'flex',
                                         alignItems: 'center',
                                         gap: '16px', // Spacing between elements
+                                        
                                     }}
                                 >
                                     <TextField
                                         type="file"
                                         inputProps={{ accept: '.xlsx' }}
                                         onChange={handleFileChange}
+                                        sx={{width:"50%"}}
                                     />
                                     <Button
                                         style={{
@@ -1046,7 +1072,7 @@ const Customer = (props) => {
                                             color: selectedFile && inputId ? 'black' : 'white',
                                             cursor: selectedFile && inputId ? 'pointer' : 'not-allowed',
                                         }}
-                                        sx={{ boxShadow: 20 }}
+                                        sx={{ boxShadow: 20 ,width:250,height:55}}
                                         onClick={handleFileUpload}
                                         disabled={!selectedFile || !inputId} // Disable if no file or text input
                                     >
@@ -1054,7 +1080,16 @@ const Customer = (props) => {
                                     </Button>
                                 </Box>
                             </Grid>
-                            <Grid item xs={3} sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                           
+                            <Grid item xs={12}>
+                                <Typography
+                                    variant="h6"
+                                    sx={{ fontWeight: 'bold', color: '#253A7D', paddingTop: 2 }}
+                                >
+                                    Activate Bulk Subscriber :
+                                </Typography>
+                            </Grid>
+                            <Grid item xs={3} sx={{ display: 'flex', justifyContent: 'flex-start' }}>
                                 <Button
                                     sx={{ backgroundColor: '#253A7D', boxShadow: 24 }}
                                     variant="contained"

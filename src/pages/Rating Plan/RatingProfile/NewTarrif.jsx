@@ -65,8 +65,8 @@ const NewTarrif = () => {
     onSubmit: async (values) => {
       const isPrepaid = values.tariff_type === "Prepaid";
       const apiUrl = isPrepaid
-        ? "https://bssproxy01.neotel.nr1/abmf-prepaid/api/prepaid/packs/create"
-        : "https://bssproxy01.neotel.nr1/abmf-postpaid/api/postpaid/packs/create";
+        ? "https://bssproxy01.neotel.nr/abmf-prepaid/api/prepaid/packs/create"
+        : "https://bssproxy01.neotel.nr/abmf-postpaid/api/postpaid/packs/create";
 
       const submittedValues = {
         ...values,

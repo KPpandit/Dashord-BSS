@@ -1,359 +1,291 @@
-import { Box, Button, Card, Checkbox, Chip, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, FormControl, Grid, IconButton, InputAdornment, InputLabel, ListItemText, Menu, MenuItem, OutlinedInput, Paper, Select, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TextField, Typography, colors } from '@mui/material';
+import {
+    Box, Button, CircularProgress, Grid, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead,
+    TablePagination, TableRow, Tooltip, Typography, Dialog, DialogTitle, DialogContent, TextField
+} from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import SearchIcon from '@mui/icons-material/Search';
 import axios from "axios";
-import { styled } from '@mui/material/styles';
-import { Download } from '@mui/icons-material';
-import html2canvas from 'html2canvas';
-import jsPDF from 'jspdf';
+import { Visibility } from '@mui/icons-material';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, Legend, ResponsiveContainer } from 'recharts';
+import EqualizerIcon from '@mui/icons-material/Equalizer';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
+import dayjs from 'dayjs';
 
-
-const AllAgentReport = (props) => {
+const AllAgentReport = () => {
     const columns = [
-        { id: 'fristName', name: 'Name' },
-        { id: 'email', name: 'Email' },
-        { id: 'commissionType', name: 'Commission Type' },
-        { id: 'totalPayments', name: 'Total Payment' },
-        { id: 'locallity', name: 'Locality' },
-        { id: 'contact', name: 'Contact' },
-        {id:'creationDate', name:"Creation Date"}
-
-
+        { id: 'partnerId', name: 'Reseller ID' },
+        { id: 'totalCoreBalance', name: 'Total Core Balance' },
+        { id: 'txnReference', name: 'Transaction Reference' },
+        { id: 'status', name: 'Status' },
+        // { id: 'actions', name: 'Actions' },
     ];
+
     const [rows, setRows] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [activeFilter, setActiveFilter] = useState('Active');
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(5);
+    const [graphData, setGraphData] = useState([]);
+    const [graphDialogOpen, setGraphDialogOpen] = useState(false);
+    const [startDate, setStartDate] = useState(dayjs().subtract(1, 'month'));
+    const [endDate, setEndDate] = useState(dayjs());
+
     const tokenValue = localStorage.getItem('token');
-    const [selectedPhoto, setSelectedPhoto] = useState(null);
-    const [selectedRecord, setSelectedRecord] = useState(null);
-    const [open, setOpen] = React.useState(false);
-    const [search,setsearch] = useState()
-    // Generate sample data
-    
-  const [openDialog, setOpenDialog] = useState(false);
+    const navigate = useNavigate();
 
     useEffect(() => {
-        // console.log("record==>",selectedRecord)
         const fetchData = async () => {
+            setLoading(true);
             try {
-                const response = await axios.get('https://bssproxy01.neotel.nr/crm/api/partners', {
+                const response = await axios.get('https://bssproxy01.neotel.nr/cbms/cbm/api/v1/partner/reports/all/balance', {
                     headers: {
                         Authorization: `Bearer ${tokenValue}`,
                         "Accept": "application/json",
                         "Content-Type": "application/json"
                     }
                 });
-                // Assuming your API response is an array of objects similar to the data structure in your generateData function
-                const apiData = response.data;
-
-                // Update the state with the API data
-                setRows(apiData);
+    
+                const filteredData = response.data.filter(row => row.status === `${activeFilter} Account`);
+                setRows(filteredData);
+                setPage(0); // Reset pagination when data changes
+    
+                // Fetch the default graph data for the last one month after balance data is fetched
+                const formattedStartDate = dayjs().subtract(1, 'month').format('YYYY-MM-DD');
+                const formattedEndDate = dayjs().format('YYYY-MM-DD');
+    
+                const graphResponse = await axios.get(
+                    `https://bssproxy01.neotel.nr/cbms/cbm/api/v1/partner/reports/txns/outward/${formattedStartDate}/${formattedEndDate}`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${tokenValue}`,
+                            "Accept": "application/json",
+                            "Content-Type": "application/json"
+                        }
+                    }
+                );
+    
+                const transformedData = transformGraphData(graphResponse.data);
+                setGraphData(transformedData);
+    
             } catch (error) {
-
-                if (error.response && error.response.status === 401) {
-                    // console.log("From inside if condition");
-                    // localStorage.removeItem('token');
-                    // navigate("/");
+                if (error.response?.status === 401) {
+                    localStorage.removeItem('token');
+                    navigate("/");
                 }
-
-                console.error('Error fetching data from API:', error);
-                // Handle error as needed
+                console.error('Error fetching data:', error);
+            } finally {
+                setLoading(false);
             }
         };
-
-        fetchData(); // Invoke the fetchData function when the component mounts
-    }, [tokenValue,selectedPhoto]);
-
-   
-    const handleClickOpen = (row) => {
-        setSelectedRecord(row)
-        // setOpen(true);
-    };
-    const handleClose = () => {
-        setOpen(false);
-    };
     
+        fetchData();
+    }, [tokenValue, activeFilter, navigate]); // Depend on `activeFilter` to refresh data
     
-      const handleCloseDialog = () => {
-        setOpenDialog(false);
-      };
-    
-    const [confirmationDialogOpen, setConfirmationDialogOpen] = useState(false);
-    const [recordIdToDelete, setRecordIdToDelete] = useState(null);
-    const handleOpenConfirmationDialog = (id) => {
-        setRecordIdToDelete(id);
-        setConfirmationDialogOpen(true);
-    };
 
-  
-    const navigate = useNavigate();
-    const handleButtonClick = () => {
-        navigate('/newCustomer');
-    };
+    const handleGraphButtonClick = async () => {
+        if (startDate.isAfter(endDate)) {
+            alert("Start date cannot be later than End date.");
+            return;
+        }
 
-    const handleRowClick = (row) => {
-        setSelectedRecord(row);
-        setOpenDialog(true);
-        // fetchPhoto1(row)
-        navigate('/individualagentreport',{state:{selectedRecord:row}})
+        if (endDate.isAfter(dayjs())) {
+            alert("End date cannot be in the future.");
+            return;
+        }
 
+        setLoading(true);
+        try {
+            const formattedStartDate = startDate.format('YYYY-MM-DD');
+            const formattedEndDate = endDate.format('YYYY-MM-DD');
 
-      };
-   
-   
-
-    const handleSerch = async (e) => {
-        e.preventDefault();
-        return await axios
-            .get(`http://localhost:9696/api/vendor/mgmt/detail/search?keyword=${value}`)
-            .then((res) => {
-                setdata(res.data);
-                console.log(value + "----value sech datas")
-                rowchange(res.data);
-                setValue(value);
-            })
-    }
-    const [selectedOption, setSelectedOption] = useState('');
-    const [highlightedRow, setHighlightedRow] = useState(null);
-
-    const handleRowMouseEnter = (row) => {
-        setHighlightedRow(row)
-    };
-
-    function DownloadPDF(){
-        const capture = document.getElementById('container');
-        html2canvas(capture).then((canvas)=>{
-            const imgdata = canvas.toDataURL('img/png')
-            const doc = new jsPDF('p','pt','a4');
-            const pageHeight= doc.internal.pageSize.height;
-            const pageWidth= doc.internal.pageSize.width;
-            doc.addImage(imgdata,'PNG',0.5,0.5,pageWidth,pageHeight);
-            doc.save('customerProfile.pdf')
-        })
-
-        // let pdf = new jsPDF('p','pt','a4');
-        // let capture = document.getElementById('container')
-        // pdf.html(capture,{
-        //     callback:(pdf=>{
-        //         pdf.save('customer.pdf')
-        //     })
-        // })
-        
-    }
-    const [page, pagechange] = useState(0);
-    const [rowperpage, rowperpagechange] = useState(5);
-    const handlechangepage = (event, newpage) => {
-        pagechange(newpage);
-    };
-    const handleRowsPerPage = (event) => {
-        rowperpagechange(+event.target.value);
-        pagechange(0);
-    };
-    const [startdate, setStartDate] = useState('');
-    const [enddate, setEndDate] = useState('');
-    const [serach, setSearch] = useState('');
-    const handleDateRange = () => {
-
-        const type = 'post-paid';
-
-        // Construct the API URL
-        const apiUrl = `https://bssproxy01.neotel.nr/mis-reports/agent/partners/serach/bydate/range?search=${serach}&startDate=${startdate}&endDate=${enddate}`;
-        // Make the API call
-        fetch(apiUrl, {
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem('token')}`,
-                "Accept": "application/json",
-                "Content-Type": "application/json"
-            }
-
-        })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
+            const response = await axios.get(
+                `https://bssproxy01.neotel.nr/cbms/cbm/api/v1/partner/reports/txns/outward/${formattedStartDate}/${formattedEndDate}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${tokenValue}`,
+                        "Accept": "application/json",
+                        "Content-Type": "application/json"
+                    }
                 }
-                return response.json();
-            })
-            .then(data => {
-                // Handle the response data
-                console.log('API response:', data);
-                // setdata(data);
-                console.log(data + "----value sech datas")
-                // rowchange(data);
-                setRows(data);
-            })
-            .catch(error => {
-                // Handle errors
-                console.error('Error fetching data:', error);
-            });
+            );
+
+            const transformedData = transformGraphData(response.data);
+            setGraphData(transformedData);
+            setGraphDialogOpen(true);
+        } catch (error) {
+            console.error('Error fetching transaction data:', error);
+        } finally {
+            setLoading(false);
+        }
     };
+
+    const transformGraphData = (data) => {
+        const amountMap = {};
+
+        Object.entries(data).forEach(([partnerId, transactions]) => {
+            Object.entries(transactions).forEach(([amount, records]) => {
+                if (!amountMap[amount]) {
+                    amountMap[amount] = { amount: parseFloat(amount) };
+                }
+                amountMap[amount][partnerId] = (amountMap[amount][partnerId] || 0) + records.length;
+            });
+        });
+
+        return Object.values(amountMap);
+    };
+
+    const handleGraphIconClick = (row) => {
+        navigate('/analysisAgent', { state: { selectedRecord: row } });
+    };
+
+    const getColor = (index) => {
+        const colors = ['#8884d8', '#82ca9d', '#ffc658', '#ff7300', '#a832a8', '#32a89e', '#a83242'];
+        return colors[index % colors.length];
+    };
+
+    const handleChangePage = (event, newPage) => {
+        setPage(newPage);
+    };
+
+    const handleChangeRowsPerPage = (event) => {
+        setRowsPerPage(parseInt(event.target.value, 10));
+        setPage(0);
+    };
+
     return (
-        <Box sx={{ display: 'container', marginTop: -2.5 }}>
+        <Box sx={{ display: 'container', marginTop: 2.5 }}>
+            <Box sx={{ width: '100%' }}>
+                <Paper elevation={10} sx={{ padding: 1, margin: 1, backgroundColor: 'white', color: '#253A7D' }}>
+                    <Typography sx={{ fontSize: '20px', paddingLeft: 1, fontWeight: 'bold' }}>
+                        Resellers Balance Report
+                    </Typography>
+                </Paper>
 
-            <Box sx={{ width: '100%', }}>
-                <Box component="main" sx={{ flexGrow: 1, p: 1, width: '100%' }}>
-                    <Paper elevation={10} sx={{ padding: 1, margin: 1, backgroundColor: 'white', color: '#253A7D', marginLeft: -0.8, marginRight: -1 }}>
-                        <Grid>
-                            <Typography
-                                style={{
+                <Grid container spacing={2} sx={{ padding: 2 }}>
+                    <Grid item>
+                        <Button
+                            variant="contained"
+                            sx={{ backgroundColor: activeFilter === 'Active' ? '#253A7D' : '#F6B625', color: 'white' }}
+                            onClick={() => setActiveFilter('Active')}
+                        >
+                            Active Resellers
+                        </Button>
+                    </Grid>
+                    <Grid item>
+                        <Button
+                            variant="contained"
+                            sx={{ backgroundColor: activeFilter === 'Inactive' ? '#253A7D' : '#F6B625', color: 'white' }}
+                            onClick={() => setActiveFilter('Inactive')}
+                        >
+                            Inactive Resellers
+                        </Button>
+                    </Grid>
+                    <Grid item>
+                        <Button
+                            variant="contained"
+                            sx={{ backgroundColor: '#F6B625', color: 'white' }}
+                            onClick={() => setGraphDialogOpen(true)}
+                        >
+                            <EqualizerIcon />
+                        </Button>
+                    </Grid>
+                </Grid>
 
-                                    fontSize: '20px',
-                                    paddingLeft: 10,
-                                    fontWeight: 'bold',
+                <TableContainer component={Paper}>
+                    <Table sx={{ minWidth: 650 }} aria-label="reseller balance report">
+                        <TableHead sx={{backgroundColor:'#253A7D'}}>
+                            <TableRow>
+                                {columns.map((column) => (
+                                    <TableCell sx={{color:'white'}} key={column.id}>{column.name}</TableCell>
+                                ))}
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
+                                <TableRow key={row.partnerId}>
+                                    <TableCell>{row.partnerId}</TableCell>
+                                    <TableCell>{row.totalCoreBalance}</TableCell>
+                                    <TableCell>{row.txnReference}</TableCell>
+                                    <TableCell>{row.status}</TableCell>
+                                    {/* <TableCell>
+                                        <IconButton onClick={() => handleGraphIconClick(row)}
+                                            >
+                                            <Visibility />
+                                        </IconButton>
+                                    </TableCell> */}
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                    <TablePagination
+                    sx={{backgroundColor:'#253A7D',color:'white'}}
+                        rowsPerPageOptions={[5, 10, 25]}
+                        component="div"
+                        count={rows.length}
+                        rowsPerPage={rowsPerPage}
+                        page={page}
+                        onPageChange={handleChangePage}
+                        onRowsPerPageChange={handleChangeRowsPerPage}
+                    />
+                </TableContainer>
 
-                                }}
-                            >All Agent List</Typography>
-                        </Grid>
-                    </Paper>
-                </Box>
+                <Dialog open={graphDialogOpen} onClose={() => setGraphDialogOpen(false)} maxWidth="md" fullWidth>
+                    <DialogTitle sx={{color:'#253A7D'}}>Transaction Count by Amount</DialogTitle>
+                    <DialogContent>
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <Grid container spacing={5} sx={{ marginBottom: 2, paddingTop: 2, paddingLeft:15 }}>
 
-                <Grid lg={4} >
-                    <form
-                        onSubmit={handleSerch}
-                    >
-
-                        <Paper elevation={10} sx={{ marginBottom: 2, paddingBottom: 0.1, paddingTop: 0.5 }}>
-                            <Grid container spacing={2} padding={1}>
-                                <Grid item xs={3}>
-                                    {/* First date field */}
-                                    <TextField
-                                        label="Search"
-                                        type="text"
-                                        fullWidth
-
-                                        onChange={(e) => setSearch(e.target.value)}
-                                        value={serach}
-                                    />
-                                </Grid>
-                                <Grid item xs={3}>
-                                    {/* First date field */}
-                                    <TextField
+                                <Grid item xs={4}>
+                                    <DatePicker
                                         label="Start Date"
-                                        type="date"
-                                        fullWidth
-                                        InputLabelProps={{
-                                            shrink: true,
-                                        }}
-                                        onChange={(e) => setStartDate(e.target.value)}
-                                        value={startdate}
+                                        value={startDate}
+                                        onChange={(newValue) => setStartDate(newValue)}
+                                        maxDate={endDate}
+                                        renderInput={(params) => <TextField {...params} fullWidth />}
                                     />
                                 </Grid>
-                                <Grid item xs={3}>
-                                    {/* Second date field */}
-                                    <TextField
+                                <Grid item xs={4}>
+                                    <DatePicker
                                         label="End Date"
-                                        type="date"
-                                        fullWidth
-                                        InputLabelProps={{
-                                            shrink: true,
-                                        }}
-                                        value={enddate}
-                                        onChange={(e) => setEndDate(e.target.value)}
+                                        value={endDate}
+                                        onChange={(newValue) => setEndDate(newValue)}
+                                        maxDate={dayjs()}
+                                        renderInput={(params) => <TextField {...params} fullWidth />}
                                     />
                                 </Grid>
-
-                                <Grid item xs={3}>
-                                    {/* Search button */}
+                                <Grid item xs={4} sx={{marginTop:0.2}}>
                                     <Button
                                         variant="contained"
-
-                                        // onClick={handleSearch}
-                                        fullWidth
-                                        style={{ height: '100%', backgroundColor: '#F6B625', color: 'black' }}
-                                        onClick={handleDateRange}
+                                        color="primary"
+                                        onClick={handleGraphButtonClick}
+                                        sx={{ height:50,backgroundColor:'#253A7D'}}
                                     >
-                                        Apply
+                                        Submit
                                     </Button>
                                 </Grid>
                             </Grid>
-
-                        </Paper>
-                        {/* <Grid paddingBottom={1}>
-                            <Button type='submit' backgroundColor={'blue'} onSubmit={handleSerch} padding={2}> <SearchIcon /> Search</Button>
-                            </Grid> */}
-                    </form>
-                </Grid>
-                <Box component="main" sx={{ flexGrow: 1, width: '100%' }}>
-                    <Paper elevation={10}>
-                        <TableContainer sx={{ maxHeight: 600 }}>
-                            <Table stickyHeader size='medium' padding="normal">
-                                <TableHead>
-                                    <TableRow>
-                                        {columns.map((column) => (
-                                            <TableCell style={{ backgroundColor: '#253A7D', color: 'white' }} key={column.id} sx={{ textAlign: 'left' }}><Typography >{column.name}</Typography></TableCell>
-                                        ))}
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    {rows &&rows
-                                     .slice(page * rowperpage, page * rowperpage + rowperpage)
-                                    .map((row, i) => {
-                                                return (
-                                                           
-                                                    <TableRow
-                                                        key={i}
-                                                        onClick={() => {
-                                                            handleRowClick(row)
-                                                            handleClickOpen(row)
-                                                        }}
-                                                        onMouseEnter={() => handleRowMouseEnter(row)}
-                                                        //   onMouseLeave={handleRowMouseLeave}
-                                                        sx={
-                                                            highlightedRow === row
-                                                                ? { backgroundColor: '#F6B625' }
-                                                                : {}
-                                                        }
-                                                    >
-                                                        
-                                                        {columns.map((column) => (
+                        </LocalizationProvider>
 
 
-                                                            <TableCell key={column.id} sx={{ textAlign: 'left', fontSize: '17px' }}>
 
-                                                                {column.id === 'ekycDate' ? (
-                                                                    // Render this content if the condition is true
-                                                                    <>{
-                                                                        // new Date(row[column.id]).toISOString().split('T')[0]
-
-                                                                    }</>
-                                                                ) : (
-                                                                    // Render this content if the condition is false
-                                                                    <>{row[column.id]}</>
-                                                                )}
-                                                            </TableCell>
-                                                        ))}
-                                                    </TableRow>
-                                                    
-
-                                                );
-                                            })}
-                                </TableBody>
-                            </Table>
-                        </TableContainer>
-                        <TablePagination
-                            sx={{ color: '#253A7D' }}
-                            rowsPerPageOptions={[5, 10, 25]}
-                            rowsPerPage={rowperpage}
-                            page={page}
-                            count={rows.length}
-                            component="div"
-                            onPageChange={handlechangepage}
-                            onRowsPerPageChange={handleRowsPerPage}
-                        />
-
-                    </Paper>
-                </Box>
+                        <ResponsiveContainer width="100%" height={400}>
+                            <BarChart data={graphData}>
+                                <CartesianGrid strokeDasharray="3 3" />
+                                <XAxis dataKey="amount" />
+                                <YAxis />
+                                <RechartsTooltip />
+                                <Legend />
+                                {Object.keys(graphData[0] || {}).filter(k => k !== "amount").map((partnerId, index) => (
+                                    <Bar key={partnerId} dataKey={partnerId} stackId="a" fill={getColor(index)} />
+                                ))}
+                            </BarChart>
+                        </ResponsiveContainer>
+                    </DialogContent>
+                </Dialog>
             </Box>
-
-            
-        
-      
-       
-          
-
-
-
-
         </Box>
-    )
+    );
 };
 
 export default AllAgentReport;

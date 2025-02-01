@@ -4,8 +4,6 @@ import {
   Grid, InputAdornment, MenuItem, Paper, TextField,
   ThemeProvider, Typography, createTheme
 } from '@mui/material';
-import AddIcon from '@mui/icons-material/Add';
-import RemoveIcon from '@mui/icons-material/Remove';
 import { useFormik } from 'formik';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -17,14 +15,12 @@ export default function PackDetails(selectedRecordId) {
   const navigate = useNavigate();
   const [data, setData] = useState([]);
   const [result, setResult] = useState({});
-  const [showPaper, setShowPaper] = useState(false);
-  const [packId, setPackId] = useState('');
+  const [pack_id, setpack_id] = useState('');
   const [selectedPack, setSelectedPack] = useState({ pack_name: '', rates_offer: '' });
 
   const record = selectedRecordId.selectedRecordId;
   const id = record.simInventory.msisdn;
 
-  // Formik Configuration
   const formik = useFormik({
     initialValues: {
       msisdn: id,
@@ -36,7 +32,7 @@ export default function PackDetails(selectedRecordId) {
           'https://bssproxy01.neotel.nr/abmf-prepaid/api/pack/allocation/prepaid/customer',
           {
             msisdn: values.msisdn,
-            pack_id: packId,
+            pack_id: pack_id,
             partner_msisdn: 0
           },
           {
@@ -52,7 +48,7 @@ export default function PackDetails(selectedRecordId) {
           state: {
             record,
             formValues: values,
-            pack_id: packId,
+            pack_id: pack_id,
             pack_name: selectedPack.pack_name,
             rates_offer: selectedPack.rates_offer
           }
@@ -99,9 +95,20 @@ export default function PackDetails(selectedRecordId) {
     fetchAvailableBalance();
   }, [id, record]);
 
-  const togglePaper = () => setShowPaper(!showPaper);
-  const formatValue = (value, divisor, suffix, unlimitedCheck = 999999999999) =>
-    value === unlimitedCheck ? 'Unlimited' : value ? Math.floor(value / divisor) + suffix : '';
+  const formatValue = (value, divisor, suffix, unlimitedCheck = 999999999999) => {
+    if (value === 1666) {
+      return 'Unlimited'; // Voice-related fields
+    }
+    if (value === 99999) {
+      return 'Unlimited'; // SMS-related fields
+    }
+    return value === unlimitedCheck
+      ? 'Unlimited'
+      : value
+      ? Math.floor(value / divisor) + suffix
+      : '';
+  };
+
   const defaultTheme = createTheme();
 
   return (
@@ -109,29 +116,76 @@ export default function PackDetails(selectedRecordId) {
       <ToastContainer position="bottom-left" />
       <Container component="main" maxWidth="lg">
         <CssBaseline />
-        <Box sx={{ marginTop: 2, display: 'flex', flexDirection: 'column' }}>
-          <Box component="form" onSubmit={formik.handleSubmit} noValidate>
-            <Grid container spacing={2}>
+        <Box sx={{ marginTop: 0, display: 'flex', flexDirection: 'column', gap: 2 }}>
+          {/* Customer Information Section */}
+          <Box>
+            <Typography variant="h6" component="div" sx={{ flexGrow: 1 ,textAlign:'left',color:'#253A7D' }} >Customer Information : </Typography>
+            <Grid container spacing={2} sx={{paddingTop:2}}>
               {[
                 { label: 'MSISDN', value: formik.values.msisdn },
                 { label: 'IMSI', value: formik.values.imsi },
                 { label: 'Customer Id', value: formik.values.customer_id },
+              ].map(({ label, value }, index) => (
+                <Grid item xs={4} key={index}>
+                  <TextField
+                    label={label}
+                    fullWidth
+                    disabled
+                    value={value || ''}
+                    InputLabelProps={{ shrink: true }}
+                  />
+                </Grid>
+              ))}
+            </Grid>
+          </Box>
+
+          {/* Pack Details Section */}
+          <Box >
+            <Typography variant="h6" component="div" sx={{ flexGrow: 1 ,textAlign:'left',color:'#253A7D' }}>Pack Details :  </Typography>
+            <Grid container spacing={2} sx={{paddingTop:2}}>
+              {[ { label: 'Pack ID', value: result.pack_id },
                 { label: 'Pack Name', value: result.pack_name },
+                { label: 'Validity', value: result.pack_valid_for },
+                { label: 'Expiration Date', value: result.expiration_date },
+              ].map(({ label, value }, index) => (
+                <Grid item xs={4} key={index}>
+                  <TextField
+                    label={label}
+                    fullWidth
+                    disabled
+                    value={value || ''}
+                    InputLabelProps={{ shrink: true }}
+                  />
+                </Grid>
+              ))}
+            </Grid>
+          </Box>
+
+          {/* Offered Details Section */}
+          <Box>
+            <Typography variant="h6" component="div" sx={{ flexGrow: 1 ,textAlign:'left',color:'#253A7D' }}>Offered Details : </Typography>
+            <Grid container spacing={2} sx={{paddingTop:2}}>
+              {[
+                 
                 { label: 'Data Available', value: formatValue(result.total_data_available, 1024 ** 3, ' GB') },
                 { label: 'Data Offered', value: formatValue(result.offered_data, 1024 ** 3, ' GB') },
                 { label: 'Voice ON NET Available', value: formatValue(result.total_onn_calls_available, 60, ' min') },
                 { label: 'Voice Off NET Available', value: formatValue(result.total_ofn_calls_available, 60, ' min') },
                 { label: 'Voice ON NET Offered', value: formatValue(result.offered_onn_calls, 60, ' min') },
                 { label: 'Voice OFF NET Offered', value: formatValue(result.offered_ofn_calls, 60, ' min') },
-                { label: 'SMS ON NET Available', value: result.total_onn_sms_available },
-                { label: 'SMS OFF NET Available', value: result.total_ofn_sms_available },
-                { label: 'SMS ON NET Offered', value: result.offered_onn_sms },
-                { label: 'SMS OFF NET Offered', value: result.offered_ofn_sms },
-                { label: 'Validity', value: result.pack_valid_for },
-                { label: 'Expiration Date', value: result.expiration_date }
+                { label: 'SMS ON NET Available', value: formatValue(result.total_onn_sms_available, 1, '') },
+                { label: 'SMS OFF NET Available', value: formatValue(result.total_ofn_sms_available, 1, '') },
+                { label: 'SMS ON NET Offered', value: formatValue(result.offered_onn_sms, 1, '') },
+                { label: 'SMS OFF NET Offered', value: formatValue(result.offered_ofn_sms, 1, '') },
               ].map(({ label, value }, index) => (
                 <Grid item xs={4} key={index}>
-                  <TextField label={label} fullWidth disabled value={value || ''} InputLabelProps={{ shrink: true }} />
+                  <TextField
+                    label={label}
+                    fullWidth
+                    disabled
+                    value={value || ''}
+                    InputLabelProps={{ shrink: true }}
+                  />
                 </Grid>
               ))}
             </Grid>

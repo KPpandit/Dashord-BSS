@@ -587,7 +587,7 @@ export default function EditCustomerDetails() {
                                             <Select
                                                 labelId="demo-simple-select-label"
                                                 id="demo-simple-select"
-                                                disabled
+                                                // disabled
 
                                                 value={values.isVip}
                                                 name='isVip'

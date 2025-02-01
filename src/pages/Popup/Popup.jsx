@@ -20,7 +20,7 @@ const useStyles = makeStyles(theme => ({
     const classes = useStyles();
 
     return (
-        <Dialog open={openPopup} classes={{ paper: classes.dialogWrapper }}  >
+        <Dialog open={openPopup}  classes={{ paper: classes.dialogWrapper }}  >
            <Paper elevation={10}>
            <DialogTitle style={{backgroundColor:'#253A7D', border:20}} >
                 <Grid style={{ display: 'flex' }} lg={6}>

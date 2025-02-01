@@ -66,23 +66,26 @@ const SimManage = () => {
 
     const handleSearch = async (e) => {
         e.preventDefault();
-
+    
         if (!searchValue) {
             setFilteredRows(rows);  // If search is empty, show all rows
             return;
         }
-
-
+    
         const filteredData = rows.filter((row) =>
-            row.msisdn.includes(searchValue) ||
-            row.imsi.includes(searchValue) ||
-            row.category.includes(searchValue)
+            row.msisdn?.includes(searchValue) ||
+            row.imsi?.includes(searchValue) ||
+            row.category?.includes(searchValue) ||
+            row.iccId?.includes(searchValue)  // Safely access iccId
         );
-
+    
+        if (filteredData.length === 0) {
+            toast.info('No matching records found.');
+        }
+    
         setFilteredRows(filteredData);  // Update filteredRows with search results
         setPage(0);  // Reset pagination to the first page
     };
-
     const handlePageChange = (event, newPage) => setPage(newPage);
 
     const handleRowsPerPageChange = (event) => {

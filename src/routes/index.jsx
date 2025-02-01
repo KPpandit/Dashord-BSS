@@ -164,6 +164,9 @@ import TicketManagment from '../pages/Complaint Management/Ticket/TicketManagmen
 import NewTicket from '../pages/Complaint Management/Ticket/NewTicket';
 import BulkPackActivate from '../pages/Customer/BulkPackActivate';
 import Campain from '../pages/Campain/Campain';
+import ActiveInActive from '../pages/Report/Usage/ActiveInActve';
+import PackGraph from '../pages/Report/Usage/PackGraph';
+import AnalysisAgent from '../pages/Report/AgnetReports/AnalysisAgent';
 export const Routers = () => {
     return (
         <>
@@ -389,7 +392,9 @@ export const Routers = () => {
                         <Route path='/agentReportByPayment' element={<AgentReportByPayment />} />
                         <Route path='/agentReportByProduct' element={<AgentReportByProduct />} />
                         <Route path='/prepaidUsageReport' element={<PrepaidCustomerUsageReport />} />
-
+                        <Route path='/ActiveInactive' element={<ActiveInActive />} />
+                        <Route path='/packanalyze' element={<PackGraph />} />
+                        <Route path='/analysisAgent' element={<AnalysisAgent />} />
 
                         {/* Sim Invrntory Reports */}
                         <Route path='/simBysellingPrice' element={<SimBySellingPrice />} />

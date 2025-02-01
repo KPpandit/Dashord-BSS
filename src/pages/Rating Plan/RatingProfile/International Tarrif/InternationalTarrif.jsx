@@ -200,7 +200,7 @@ const InternationalTariff = () => {
                             <Table stickyHeader size="medium" padding="normal">
                                 <TableHead>
                                     <TableRow>
-                                        {["Country", "Zone", "Price (AUD)", "Actions"].map((header) => (
+                                        {["Country","Country Code","Country Litral", "Zone", "Price (AUD)", "Actions"].map((header) => (
                                             <TableCell
                                                 style={{ backgroundColor: "#253A7D", color: "white" }}
                                                 key={header}
@@ -221,7 +221,7 @@ const InternationalTariff = () => {
                                                     backgroundColor: isEditing[item.id] ? "#F6B625" : "",
                                                 }}
                                             >
-                                                {["country", "zone", "priceAud"].map((field) => (
+                                                {[,"country", "countryCode","country3Letter","zone", "priceAud"].map((field) => (
                                                     <TableCell key={field} sx={{ textAlign: "left", fontSize: "17px" }}>
                                                         {field === "priceAud" && isEditing[item.id] ? (
                                                             <TextField

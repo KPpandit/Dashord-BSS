@@ -9,10 +9,9 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 export default function PlanDetails({ selectedRecordId, onClose }) {
-    const [category_name, setCategory_name_list] = useState();
-    const [notify, setNotify] = useState({ isOpen: false, message: '', type: '' });
+
     const [result, setResult] = useState([]);
-    const navigate = useNavigate();
+
     const [data, setData] = useState([]);
 
     // Check if selectedRecordId and its simInventory property are defined
@@ -20,9 +19,9 @@ export default function PlanDetails({ selectedRecordId, onClose }) {
     const msisdn = record.simInventory ? record.simInventory.msisdn : '';
     const imsi = record.simInventory ? record.simInventory.imsi : '';
     const const_id = record.id || '';
-    
+
     const [showPaper, setShowPaper] = useState(false);
-    const [selectedPlan, setSelectedPlan] = useState(null);
+
     const [plan_id, setPlanId] = useState('');
     const [planName, setPlanName] = useState('');
     const [planPrice, setPlanPrice] = useState('');
@@ -30,7 +29,7 @@ export default function PlanDetails({ selectedRecordId, onClose }) {
     const handlePackChange = (e) => {
         const selectedPlan = e.target.value;
         const selectedPack = data.find(pack => pack.rating_profile_id === selectedPlan);
-        
+
         if (selectedPack) {
             console.log("Selected pack -->", selectedPack);
             setPlanId(selectedPlan);
@@ -38,7 +37,7 @@ export default function PlanDetails({ selectedRecordId, onClose }) {
             setPlanPrice(selectedPack.plan_price); // Store the selected plan price
         }
     };
-    
+
     const { handleChange, handleSubmit, handleBlur, values, setValues } = useFormik({
         initialValues: {
             msisdn: msisdn,
@@ -48,8 +47,8 @@ export default function PlanDetails({ selectedRecordId, onClose }) {
         },
         onSubmit: async (values) => {
             try {
-               
-        
+
+
                 // First API call
                 const amountApiResponse = await axios.post(
                     `https://bssproxy01.neotel.nr/crm/api/set/monthly/amount/msisdn/${values.msisdn}/amount/${planPrice}`,
@@ -62,7 +61,7 @@ export default function PlanDetails({ selectedRecordId, onClose }) {
                         },
                     }
                 );
-        
+
                 if (amountApiResponse.status === 200) {
                     // Second API call
                     const packApiResponse = await axios.post(
@@ -76,7 +75,7 @@ export default function PlanDetails({ selectedRecordId, onClose }) {
                             },
                         }
                     );
-        
+
                     if (packApiResponse.status === 200) {
                         toast.success("Plan Updated Successfully", { autoClose: 2000 });
                         setTimeout(() => {
@@ -93,62 +92,24 @@ export default function PlanDetails({ selectedRecordId, onClose }) {
                     });
                 }
             } catch (err) {
+                toast.error(
+                    "Cannot Change the Plan rght now",
+
+                );
                 // Detailed error handling for the first API call
-                if (err.response) {
-                    if (err.response.status === 400) {
-                        toast.error(
-                            "Cannot Change the Plan rght now",
-                            { autoClose: 2000 }
-                        );
-                    } else if (err.response.status === 401) {
-                        toast.error(
-                            "Unauthorized request. Please log in again.",
-                            { autoClose: 2000 }
-                        );
-                    } else if (err.response.status === 403) {
-                        toast.error(
-                            "Forbidden: You do not have permission to perform this action.",
-                            { autoClose: 2000 }
-                        );
-                    } else if (err.response.status === 404) {
-                        toast.error(
-                            "The requested resource was not found.",
-                            { autoClose: 2000 }
-                        );
-                    } else if (err.response.status === 500) {
-                        toast.error(
-                            "Server error. Please try again later.",
-                            { autoClose: 2000 }
-                        );
-                    } else {
-                        toast.error(
-                            `Unexpected error occurred: ${err.response.statusText}`,
-                            { autoClose: 2000 }
-                        );
-                    }
-                } else if (err.request) {
-                    toast.error(
-                        "No response received from the server. Please check your network connection.",
-                        { autoClose: 2000 }
-                    );
-                } else {
-                    toast.error(
-                        `An error occurred while making the request: ${err.message}`,
-                        { autoClose: 2000 }
-                    );
-                }
+
             }
         },
-        
-        
+
+
     });
-    
+
 
     const togglePaper = () => {
         setShowPaper(!showPaper);
     };
 
-   
+
 
     useEffect(() => {
         fetch("https://bssproxy01.neotel.nr/abmf-postpaid/api/postpaid/packs?pack_status=Approved")
@@ -190,91 +151,143 @@ export default function PlanDetails({ selectedRecordId, onClose }) {
 
     return (
         <ThemeProvider theme={defaultTheme}>
-        <ToastContainer position="bottom-left" />
-        <Container component="main" maxWidth="lg">
-            <CssBaseline />
-            <Box sx={{ marginTop: 2, display: 'flex', flexDirection: 'column' }}>
-                <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
-                    <Grid container spacing={1}>
-                        {[
-                            { label: "MSISDN", name: "msisdn", value: values.msisdn, disabled: true },
-                            { label: "IMSI", name: "imsi", value: values.imsi, disabled: true },
-                            { label: "Pack name", name: "name", value: result.plan_name, disabled: true },
-                            { label: "Data Available", value: result.total_data_available ? `${Math.floor(result.total_data_available / (1024 * 1024 * 1024))} GB` : '', disabled: true },
-                            { label: "Data Offered", value: result.offered_data ? `${Math.floor(result.offered_data / (1024 * 1024 * 1024))} GB` : '', disabled: true },
-                            { label: "Voice ON NET Available", value: result.total_onn_calls_available === 99999 ? 'Unlimited' : result.total_onn_calls_available ? `${Math.floor(result.total_onn_calls_available / 60)} min` : '', disabled: true },
-                            { label: "Voice Off NET Available", value: result.total_ofn_calls_available === 99999 ? 'Unlimited' : result.total_ofn_calls_available ? `${Math.floor(result.total_ofn_calls_available / 60)} min` : '', disabled: true },
-                            { label: "Voice ON NET Offered", value: result.offered_onn_calls === 99999 ? 'Unlimited' : result.offered_onn_calls ? `${Math.floor(result.offered_onn_calls / 60)} min` : '', disabled: true },
-                            { label: "Voice OFF NET Offered", value: result.offered_ofn_calls === 99999 ? 'Unlimited' : result.offered_ofn_calls ? `${Math.floor(result.offered_ofn_calls / 60)} min` : '', disabled: true },
-                            { label: "SMS ON NET Available", value: result.total_onn_sms_available === 99999 ? 'Unlimited' : result.total_onn_sms_available || '', disabled: true },
-                            { label: "SMS OFF NET Available", value: result.total_ofn_sms_available === 99999 ? 'Unlimited' : result.total_ofn_sms_available || '', disabled: true },
-                            { label: "SMS ON NET Offered", value: result.offered_onn_sms === 99999 ? 'Unlimited' : result.offered_onn_sms || '', disabled: true },
-                            { label: "SMS OFF NET Offered", value: result.offered_ofn_sms === 99999 ? 'Unlimited' : result.offered_ofn_sms || '', disabled: true },
-                        ].map(({ label, name, value, disabled }, idx) => (
-                            <Grid item xs={4} key={idx}>
-                                <TextField
-                                    label={label}
-                                    name={name}
-                                    value={value}
-                                    disabled={disabled}
-                                    fullWidth
-                                    InputLabelProps={{ shrink: true }}
-                                    onChange={handleChange}
-                                    onBlur={handleBlur}
-                                />
+            <ToastContainer position="bottom-left" />
+            <Container component="main" maxWidth="lg">
+                <CssBaseline />
+                <Box sx={{ marginTop: 0, display: 'flex', flexDirection: 'column' }}>
+                    <Typography variant="h6" component="div" sx={{ flexGrow: 1 ,textAlign:'left',color:'#253A7D' }}>
+                        Customer Information
+                    </Typography>
+                    <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 2 }}>
+                        <Grid container spacing={2}>
+                            {/* Customer Information Section */}
+                            {[
+                                { label: "Customer ID", name: "customer_id", value: values.customer_id, disabled: true },
+                                { label: "MSISDN", name: "msisdn", value: values.msisdn, disabled: true },
+                                { label: "IMSI", name: "imsi", value: values.imsi, disabled: true },
+                            ].map(({ label, name, value, disabled }, idx) => (
+                                <Grid item xs={4} key={idx}>
+                                    <TextField
+                                        label={label}
+                                        name={name}
+                                        value={value}
+                                        disabled={disabled}
+                                        fullWidth
+                                        InputLabelProps={{ shrink: true }}
+                                        onChange={handleChange}
+                                        onBlur={handleBlur}
+                                    />
+                                </Grid>
+                            ))}
+
+                            {/* Plan Information Section */}
+                            <Grid item xs={12}>
+                                <Typography variant="h6" component="div" sx={{ flexGrow: 1 ,textAlign:'left',color:'#253A7D' }}>
+                                    Plan Information
+                                </Typography>
                             </Grid>
-                        ))}
-                        <Grid item xs={12}>
-                            <Box>
-                                <Box sx={{ backgroundColor: '#253A7D' }}>
-                                    <Button onClick={togglePaper}>
-                                        <Typography variant="body1" sx={{ marginRight: 1, color: 'white' }}>Change Plan</Typography>
-                                        {showPaper ? <RemoveIcon sx={{ color: 'white' }} /> : <AddIcon sx={{ color: 'white' }} />}
-                                    </Button>
-                                </Box>
-                                {showPaper && (
-                                    <Paper sx={{ padding: 2, marginTop: 2 }}>
-                                        <Grid container spacing={2}>
-                                            <Grid item xs={12}>
-                                                <FormControl fullWidth sx={{ paddingBottom: 1 }}>
-                                                    <TextField
-                                                        label="Select Pack"
-                                                        select
-                                                        required
-                                                        value={plan_id}
-                                                        onChange={handlePackChange}
-                                                    >
-                                                        {data.map(pack => (
-                                                            <MenuItem key={pack.rating_profile_id} value={pack.rating_profile_id}>
-                                                                {pack.plan_name} 
-                                                            </MenuItem>
-                                                        ))}
-                                                    </TextField>
-                                                </FormControl>
+                            {[
+                                { label: "Plan ID", name: "plan_id", value: result.plan_id, disabled: true },
+                                { label: "Plan Name", name: "name", value: result.plan_name, disabled: true },
+                                { label: "Validity", name: "plan_valid_for", value: result.plan_valid_for, disabled: true },
+                                { label: 'Expiration Date', value: result.expiration_date , disabled: true },
+                            ].map(({ label, name, value, disabled }, idx) => (
+                                <Grid item xs={4} key={idx}>
+                                    <TextField
+                                        label={label}
+                                        name={name}
+                                        value={value}
+                                        disabled={disabled}
+                                        fullWidth
+                                        InputLabelProps={{ shrink: true }}
+                                        onChange={handleChange}
+                                        onBlur={handleBlur}
+                                    />
+                                </Grid>
+                            ))}
+
+                            {/* Offered Details Section */}
+                            <Grid item xs={12}>
+                                <Typography variant="h6" component="div" sx={{ flexGrow: 1 ,textAlign:'left',color:'#253A7D' }}>
+                                    Offered Details
+                                </Typography>
+                            </Grid>
+                            {[
+                                { label: "Data Available", value: result.total_data_available ? `${Math.floor(result.total_data_available / (1024 * 1024 * 1024))} GB` : '', disabled: true },
+                                { label: "Data Offered", value: result.offered_data ? `${Math.floor(result.offered_data / (1024 * 1024 * 1024))} GB` : '', disabled: true },
+                                { label: "Voice ON NET Available", value: result.total_onn_calls_available === 99999 ? 'Unlimited' : result.total_onn_calls_available ? `${Math.floor(result.total_onn_calls_available / 60)} min` : '', disabled: true },
+                                { label: "Voice OFF NET Available", value: result.total_ofn_calls_available === 99999 ? 'Unlimited' : result.total_ofn_calls_available ? `${Math.floor(result.total_ofn_calls_available / 60)} min` : '', disabled: true },
+                                { label: "Voice ON NET Offered", value: result.offered_onn_calls === 99999 ? 'Unlimited' : result.offered_onn_calls ? `${Math.floor(result.offered_onn_calls / 60)} min` : '', disabled: true },
+                                { label: "Voice OFF NET Offered", value: result.offered_ofn_calls === 99999 ? 'Unlimited' : result.offered_ofn_calls ? `${Math.floor(result.offered_ofn_calls / 60)} min` : '', disabled: true },
+                                { label: "SMS ON NET Available", value: result.total_onn_sms_available === 99999 ? 'Unlimited' : result.total_onn_sms_available || '', disabled: true },
+                                { label: "SMS OFF NET Available", value: result.total_ofn_sms_available === 99999 ? 'Unlimited' : result.total_ofn_sms_available || '', disabled: true },
+                                { label: "SMS ON NET Offered", value: result.offered_onn_sms === 99999 ? 'Unlimited' : result.offered_onn_sms || '', disabled: true },
+                                { label: "SMS OFF NET Offered", value: result.offered_ofn_sms === 99999 ? 'Unlimited' : result.offered_ofn_sms || '', disabled: true },
+                            ].map(({ label, value, disabled }, idx) => (
+                                <Grid item xs={4} key={idx}>
+                                    <TextField
+                                        label={label}
+                                        value={value}
+                                        disabled={disabled}
+                                        fullWidth
+                                        InputLabelProps={{ shrink: true }}
+                                    />
+                                </Grid>
+                            ))}
+
+                            {/* Change Plan Section */}
+                            <Grid item xs={12}>
+                                <Box>
+                                    <Box sx={{ backgroundColor: '#253A7D' }}>
+                                        <Button onClick={togglePaper}>
+                                            <Typography variant="body1" sx={{ marginRight: 1, color: 'white' }}>Change Plan</Typography>
+                                            {showPaper ? <RemoveIcon sx={{ color: 'white' }} /> : <AddIcon sx={{ color: 'white' }} />}
+                                        </Button>
+                                    </Box>
+                                    {showPaper && (
+                                        <Paper sx={{ padding: 2, marginTop: 2 }}>
+                                            <Grid container spacing={2}>
+                                                <Grid item xs={12}>
+                                                    <FormControl fullWidth sx={{ paddingBottom: 1 }}>
+                                                        <TextField
+                                                            label="Select Pack"
+                                                            select
+                                                            required
+                                                            value={plan_id}
+                                                            onChange={handlePackChange}
+                                                        >
+                                                            {data.map(pack => (
+                                                                <MenuItem key={pack.rating_profile_id} value={pack.rating_profile_id}>
+                                                                    {pack.plan_name}
+                                                                </MenuItem>
+                                                            ))}
+                                                        </TextField>
+                                                    </FormControl>
+                                                </Grid>
                                             </Grid>
-                                        </Grid>
-                                        <Grid item xs={12}>
-                                            <Button
-                                                style={{ backgroundColor: '#F6B625' }}
-                                                type="button"
-                                                fullWidth
-                                                variant="contained"
-                                                disabled={!plan_id}
-                                                onClick={handleSubmit}
-                                                sx={{ mt: 1, mb: 2 }}
-                                            >
-                                                Submit
-                                            </Button>
-                                        </Grid>
-                                    </Paper>
-                                )}
-                            </Box>
+                                            <Grid item xs={12}>
+                                                <Button
+                                                    style={{ backgroundColor: '#F6B625' }}
+                                                    type="button"
+                                                    fullWidth
+                                                    variant="contained"
+                                                    disabled={!plan_id}
+                                                    onClick={handleSubmit}
+                                                    sx={{ mt: 1, mb: 2 }}
+                                                >
+                                                    Submit
+                                                </Button>
+                                            </Grid>
+                                        </Paper>
+                                    )}
+                                </Box>
+                            </Grid>
                         </Grid>
-                    </Grid>
+                    </Box>
                 </Box>
-            </Box>
-        </Container>
-    </ThemeProvider>
-    
+            </Container>
+        </ThemeProvider>
+
+
     );
 }
