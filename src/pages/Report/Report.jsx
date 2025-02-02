@@ -42,10 +42,8 @@ export default function Report(props) {
           break;
         case 'agent':
           data = [
-            { report_type: "Agent Report" },
-            { report_type: "Agent Comission" },
-            { report_type: "Agents Report by Payment" },
-            { report_type: "Agents Report of  All Product" },
+            { report_type: "Reseller Report" },
+          
           ];
 
           break;
@@ -70,7 +68,7 @@ export default function Report(props) {
           case 'usage':
             data = [
               { report_type: "Active and Inactive Users" },
-              { report_type: "Pack use" },
+              { report_type: "Pack Activation" },
              
             ];
 
@@ -95,7 +93,7 @@ export default function Report(props) {
           case 'Active and Inactive Users':
           navigate('/ActiveInactive');
           break;
-          case 'Pack use':
+          case 'Pack Activation':
           navigate('/packanalyze');
           break;
       case 'Pre-Paid Customer Report':
@@ -110,7 +108,7 @@ export default function Report(props) {
       case 'Inactive Customer Report':
         navigate('/inactivecustomerReport');
         break;
-      case 'Agent Report':
+      case 'Reseller Report':
         navigate('/allagentreport');
         break;
       case 'Customer signup Report':
