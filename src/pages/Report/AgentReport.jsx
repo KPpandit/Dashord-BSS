@@ -17,6 +17,7 @@ import GraphDialogAgentpack from './AgnetReports/GraphDialogAgentpack';
 const AllAgentReport = () => {
     const columns = [
         { id: 'partnerId', name: 'Reseller ID' },
+        { id: 'msisdn', name: 'Reseller MSISDN' },
         { id: 'totalCoreBalance', name: 'Total Core Balance' },
         { id: 'txnReference', name: 'Transaction Reference' },
         { id: 'status', name: 'Status' },
@@ -118,7 +119,7 @@ const AllAgentReport = () => {
                             sx={{ backgroundColor: '#F6B625', color: 'white' }}
                             onClick={() => setGraphDialogOpen1(true)}
                         >
-                           Reseller Pack <EqualizerIcon />
+                           Reseller Topup <EqualizerIcon />
                         </Button>
                     </Grid>
                 </Grid>
@@ -133,26 +134,39 @@ const AllAgentReport = () => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
-                                <TableRow key={row.partnerId}>
-                                    <TableCell>{row.partnerId}</TableCell>
-                                    <TableCell>{row.totalCoreBalance}</TableCell>
-                                    <TableCell>{row.txnReference}</TableCell>
-                                    <TableCell>{row.status}</TableCell>
+                            {rows.length === 0 ? (
+                                <TableRow>
+                                    <TableCell colSpan={columns.length} align="center">
+                                        <Typography variant="body1" sx={{ color: 'text.secondary' }}>
+                                            No records exist
+                                        </Typography>
+                                    </TableCell>
                                 </TableRow>
-                            ))}
+                            ) : (
+                                rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
+                                    <TableRow key={row.partnerId}>
+                                        <TableCell>{row.partnerId}</TableCell>
+                                        <TableCell>{row.msisdn}</TableCell>
+                                        <TableCell>{row.totalCoreBalance}</TableCell>
+                                        <TableCell>{row.txnReference}</TableCell>
+                                        <TableCell>{row.status}</TableCell>
+                                    </TableRow>
+                                ))
+                            )}
                         </TableBody>
                     </Table>
-                    <TablePagination
-                        sx={{ backgroundColor: '#253A7D', color: 'white' }}
-                        rowsPerPageOptions={[5, 10, 25]}
-                        component="div"
-                        count={rows.length}
-                        rowsPerPage={rowsPerPage}
-                        page={page}
-                        onPageChange={handleChangePage}
-                        onRowsPerPageChange={handleChangeRowsPerPage}
-                    />
+                    {rows.length > 0 && (
+                        <TablePagination
+                            sx={{ backgroundColor: '#253A7D', color: 'white' }}
+                            rowsPerPageOptions={[5, 10, 25]}
+                            component="div"
+                            count={rows.length}
+                            rowsPerPage={rowsPerPage}
+                            page={page}
+                            onPageChange={handleChangePage}
+                            onRowsPerPageChange={handleChangeRowsPerPage}
+                        />
+                    )}
                 </TableContainer>
 
                 <Box sx={{ display: 'container', marginTop: 2.5 }}>

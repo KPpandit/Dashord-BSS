@@ -57,18 +57,32 @@ const GraphDialog = ({ graphDialogOpen, setGraphDialogOpen, tokenValue }) => {
 
     const transformGraphData = (data) => {
         const amountMap = {};
-
-        Object.entries(data).forEach(([partnerId, transactions]) => {
-            Object.entries(transactions).forEach(([amount, records]) => {
+        const partnerIds = new Set();
+    
+        // Loop through each partner's data
+        Object.entries(data).forEach(([partnerMsisdn, amounts]) => {
+            partnerIds.add(partnerMsisdn); // Store all partner IDs
+            Object.entries(amounts).forEach(([amount, records]) => {
                 if (!amountMap[amount]) {
                     amountMap[amount] = { amount: parseFloat(amount) };
                 }
-                amountMap[amount][partnerId] = (amountMap[amount][partnerId] || 0) + records.length;
+                amountMap[amount][partnerMsisdn] = (amountMap[amount][partnerMsisdn] || 0) + records.length;
             });
         });
-
+    
+        // Ensure every partner ID is included in all data points
+        Object.values(amountMap).forEach(entry => {
+            partnerIds.forEach(partnerId => {
+                if (!entry[partnerId]) {
+                    entry[partnerId] = 0; // Add missing partner IDs with zero transactions
+                }
+            });
+        });
+    
         return Object.values(amountMap);
     };
+    
+    
 
     const handleRangeChange = (range) => {
         setDateRange(range);

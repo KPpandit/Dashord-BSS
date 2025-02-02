@@ -5,7 +5,6 @@ import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from "recharts";
 import dayjs from "dayjs";
 import axios from "axios";
-
 const GraphDialogAgentpack = ({ graphDialogOpen, setGraphDialogOpen, tokenValue }) => {
     const [graphData, setGraphData] = useState([]);
     const [startDate, setStartDate] = useState(dayjs().subtract(1, 'month'));
