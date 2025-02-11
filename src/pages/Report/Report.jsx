@@ -23,63 +23,54 @@ export default function Report(props) {
     const generateData = () => {
       let data = [];
       switch (value) {
-        case 'customer':
-          data = [
-            { report_type: "All Customer Report" },
-            { report_type: "Pre-Paid Customer Report" },
-            { report_type: "Post-Paid Customer Report" },
-            // { report_type: "Active Customer Report" },
-            // { report_type: "Inactive Customer Report" },
-            { report_type: "Customer signup Report" },
-            { report_type: "Top Customers Pre-Paid Usage Report" },
-            { report_type: "Top Customers Post-Paid Data Usage Report" },
-            { report_type: "Top Customers Post-Paid Call Usage Report" },
-            { report_type: "Top Customers Post-Paid SMS Usage Report" },
-            { report_type: "Customers Data Available Pre-Paid" },
-            { report_type: "On Board Customer Reports" }
-            // Add other customer reports here
-          ];
-          break;
+      
         case 'agent':
           data = [
-            { report_type: "Reseller Report" },
-          
+            { report_type: "Reseller Report" }
           ];
-
           break;
-        // case 'billing':
-        //   data = [
-        //     { report_type: "Pre-Paid Customer Report" },
-        //     { report_type: "Post-Paid Customer Report" },
-        //   ];
-        //   break;
+  
         case 'inventory':
           data = [
-            { report_type: "SIM By Selling Price" },
-            { report_type: "All Device By Selling Price" },
-            { report_type: "All Device By Agent" },
-            { report_type: "All Device By Vendor" },
-            { report_type: "All Sim by Activation Date" },
-            { report_type: "Sim Reports" },
-            { report_type: "Sim By Vendor" },
-            { report_type: "Sim By Agent" },
-            { report_type: "Sim By Status" },
+            // { report_type: "SIM By Selling Price" },
+            // { report_type: "All Device By Selling Price" },
+            // { report_type: "All Device By Agent" },
+            // { report_type: "All Device By Vendor" },
+            // { report_type: "All Sim by Activation Date" },
+            // { report_type: "Sim Reports" },
+            // { report_type: "Sim By Vendor" },
+            // { report_type: "Sim By Agent" },
+            // { report_type: "Sim By Status" }
+            { report_type: "Active and Inactive Users" },
+            { report_type: "Pack Activation" }
           ];
-          case 'usage':
-            data = [
-              { report_type: "Active and Inactive Users" },
-              { report_type: "Pack Activation" },
-             
-            ];
-
           break;
+  
+        case 'usage':
+          data = [
+            { report_type: "Usage Report of Customer" },
+            { report_type: "Customer Pack Detail" }
+          ];
+          break;
+  
+        case 'offer':
+          data = [
+            { report_type: "Active Offers" },
+            { report_type: "All Free Offers" },
+            { report_type: "Free Offer All Customer Consumption" },
+            { report_type: "Free Offer Active Customer Consumption" }
+          ];
+          break;
+  
         default:
+          data = [];
           break;
       }
       setRows(data);
     };
     generateData();
   }, [value]);
+  
 
   const handleRowClick = (row) => {
     sessionStorage.setItem('report_Type', row.report_type);
@@ -87,17 +78,35 @@ export default function Report(props) {
       case 'All Customer Report':
         navigate('/allcustomerReport');
         break;
+        case 'Customer Pack Detail':
+          navigate('/customerpackDetails');
+          break;
+        case 'Usage Report of Customer':
+          navigate('/usageReportCustomer');
+          break;
         case 'Agents Report of  All Product':
           navigate('/agentReportByProduct');
           break;
           case 'Active and Inactive Users':
           navigate('/ActiveInactive');
           break;
+          case 'Free Offer All Customer Consumption':
+            navigate('/offerAllCustomers');
+            break;
+          case 'All Free Offers':
+          navigate('/allFreeOffers');
+          break;
+          case 'Free Offer Active Customer Consumption':
+            navigate('/offerActiveCustomers');
+            break;
           case 'Pack Activation':
           navigate('/packanalyze');
           break;
       case 'Pre-Paid Customer Report':
         navigate('/prepaidcustomerReport');
+        break;
+        case 'Active Offers':
+        navigate('/activeOffers');
         break;
       case 'Post-Paid Customer Report':
         navigate('/postpaidcustomerReport');
@@ -171,6 +180,9 @@ export default function Report(props) {
       case 'All Device By Vendor':
         navigate('/deviceByVendor');
         break;
+        case 'Active Offers':
+        navigate('/deviceByVendor');
+        break;
       default:
         console.log('Unknown report type:', row.report_type);
     }
@@ -202,12 +214,7 @@ export default function Report(props) {
                 {console.log(value + "--------")}
                 <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                   <TabList onChange={(event, newValue) => setValue(newValue)} sx={{ backgroundColor: '#253A7D' }}>
-                    {/* <Tab label="Customer" value="customer" sx={{
-                      color: value === "customer" ? '#FAC22E' : 'white',
-                      '&.Mui-selected': {
-                        color: '#FAC22E',
-                      },
-                    }} /> */}
+                    
                     <Tab label="Reseller Reports" value="agent" sx={{ color: value === "agent" ? '#FAC22E' : 'white',
                       '&.Mui-selected': {
                         color: '#FAC22E',
@@ -224,12 +231,16 @@ export default function Report(props) {
                       '&.Mui-selected': {
                         color: '#FAC22E',
                       },}} />
+                       {/* <Tab label="Offer Reports" value="offer" sx={{ color: value === 'offer' ? '#FAC22E' : 'white' ,
+                      '&.Mui-selected': {
+                        color: '#FAC22E',
+                      },}} /> */}
                   </TabList>
                 </Box>
 
-                <TabPanel value="customer">
+                {/* <TabPanel value="customer">
                   <RenderTable rows={rows} handleRowClick={handleRowClick} page={page} rowsPerPage={rowsPerPage} handleChangePage={handleChangePage} handleChangeRowsPerPage={handleChangeRowsPerPage} />
-                </TabPanel>
+                </TabPanel> */}
                 <TabPanel value="agent">
                   <RenderTable rows={rows} handleRowClick={handleRowClick} page={page} rowsPerPage={rowsPerPage} handleChangePage={handleChangePage} handleChangeRowsPerPage={handleChangeRowsPerPage} />
                 </TabPanel>
@@ -242,6 +253,9 @@ export default function Report(props) {
                 <TabPanel value="usage">
                   <RenderTable rows={rows} handleRowClick={handleRowClick} page={page} rowsPerPage={rowsPerPage} handleChangePage={handleChangePage} handleChangeRowsPerPage={handleChangeRowsPerPage} />
                 </TabPanel>
+                {/* <TabPanel value="offer">
+                  <RenderTable rows={rows} handleRowClick={handleRowClick} page={page} rowsPerPage={rowsPerPage} handleChangePage={handleChangePage} handleChangeRowsPerPage={handleChangeRowsPerPage} />
+                </TabPanel> */}
               </TabContext>
             </Grid>
           </Paper>

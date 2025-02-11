@@ -95,10 +95,12 @@ export default function Loginform({ children }) {
             setToken(jwtToken);
             // console.log(setToken+"---set JWT Token")
             // Save the authentication token or user data as needed
+            console.log(responseData.user.roles[0].name,' --')
             localStorage.setItem('token', jwtToken);
-            localStorage.setItem('auth', 'super');
+            // localStorage.setItem('auth', 'super');
+            localStorage.setItem('auth', responseData.user.roles[0].name);
             localStorage.setItem('userName', username.name);
-            localStorage.setItem('auth', "super");
+            // localStorage.setItem('auth', "super");
             localStorage.setItem('customer_id', username.id);
 
             showNotification('Login successful!', 'success');

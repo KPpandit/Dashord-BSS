@@ -61,7 +61,15 @@ export default function AllTransaction() {
                         },
                     }
                 );
-                setRows(response.data || []);
+
+                const updatedRows = response.data.map(row => ({
+                    ...row,
+                    coreBalance: row.amount && row.discountApplied
+                        ? (row.amount / (1 - (parseFloat(row.discountApplied) || 0) / 100)).toFixed(2)
+                        : row.amount
+                }));
+
+                setRows(updatedRows);
             } catch (error) {
                 console.error('Error fetching data from API:', error);
                 setRows([]);
@@ -102,7 +110,7 @@ export default function AllTransaction() {
                 column.id === "direction"
                     ? row[column.id] === "INWARD" ? "Inward" : "Outward"
                     : column.id === "coreBalance"
-                        ? `AUD $${(row.amount / (1 - (parseFloat(row.discountApplied) || 0) / 100)).toFixed(2)}`
+                        ? `AUD $${row[column.id]}`
                         : column.id === "amount"
                             ? `AUD $${row[column.id]}`
                             : row[column.id]
@@ -201,7 +209,10 @@ export default function AllTransaction() {
                                         <TableRow key={i}>
                                             {columns.map((column) => (
                                                 <TableCell key={column.id}>
-                                                    {row[column.id]}
+                                                    {column.id === "coreBalance" || column.id === "amount" 
+                                                        ? `AUD $${row[column.id]}`
+                                                        : row[column.id]}
+
                                                 </TableCell>
                                             ))}
                                         </TableRow>

@@ -6,21 +6,30 @@ import {
   Paper,
 } from "@mui/material";
 import axios from "axios";
-import { BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer } from "recharts";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  CartesianGrid,
+  ResponsiveContainer,
+} from "recharts";
 
 export default function PackGraph() {
-  const [data, setData] = useState([]);
+  const [activeData, setActiveData] = useState([]);
+  const [inactiveData, setInactiveData] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const currentDate = new Date().toISOString().split("T")[0]; 
         const response = await axios.get(
-          `https://bssproxy01.neotel.nr/abmf-prepaid/api/prepaid/packs/get/activation/packs/report?start_date=${currentDate}`
+          "https://bssproxy01.neotel.nr/abmf-prepaid/api/prepaid/packs/get/active/inactive/packs/count"
         );
 
-        setData(response.data); // Set response data into state
+        setActiveData(response.data.active_packs);
+        setInactiveData(response.data.inactive_packs);
         setLoading(false);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -77,13 +86,38 @@ export default function PackGraph() {
         >
           Pack Activation Report
         </Typography>
-        <ResponsiveContainer width="100%" height={400}>
-          <BarChart data={data}>
+
+        {/* Active Packs Graph */}
+        <Typography
+          variant="h6"
+          sx={{ textAlign: "center", marginBottom: 2, color: "#1976d2" }}
+        >
+          Customers Active Pack wise
+        </Typography>
+        <ResponsiveContainer width="100%" height={300}>
+          <BarChart data={activeData}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="pack_name" />
             <YAxis />
             <Tooltip />
-            <Bar dataKey="pack_count" fill="#1976d2" barSize={40} />
+            <Bar dataKey="pack_count" fill="#4CAF50" barSize={40} />
+          </BarChart>
+        </ResponsiveContainer>
+
+        {/* Inactive Packs Graph */}
+        <Typography
+          variant="h6"
+          sx={{ textAlign: "center", marginTop: 4, marginBottom: 2, color: "#D32F2F" }}
+        >
+         Customers InActive Pack wise
+        </Typography>
+        <ResponsiveContainer width="100%" height={300}>
+          <BarChart data={inactiveData}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="pack_name" />
+            <YAxis />
+            <Tooltip />
+            <Bar dataKey="pack_count" fill="#D32F2F" barSize={40} />
           </BarChart>
         </ResponsiveContainer>
       </Paper>

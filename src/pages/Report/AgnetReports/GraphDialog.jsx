@@ -1,5 +1,8 @@
 import React, { useState } from "react";
-import { Dialog, DialogTitle, DialogContent, Grid, Button, TextField, CircularProgress } from "@mui/material";
+import {
+    Dialog, DialogTitle, DialogContent, Grid, Button, TextField, CircularProgress,
+    Table, TableHead, TableBody, TableRow, TableCell, TableContainer, Paper, Pagination
+} from "@mui/material";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from "recharts";
@@ -12,6 +15,8 @@ const GraphDialog = ({ graphDialogOpen, setGraphDialogOpen, tokenValue }) => {
     const [endDate, setEndDate] = useState(dayjs());
     const [loading, setLoading] = useState(false);
     const [dateRange, setDateRange] = useState("monthly");
+    const [page, setPage] = useState(1);
+    const [rowsPerPage] = useState(5);
 
     const getColor = (index) => {
         const colors = ['#8884d8', '#82ca9d', '#ffc658', '#ff7300', '#a832a8', '#32a89e', '#a83242'];
@@ -24,14 +29,13 @@ const GraphDialog = ({ graphDialogOpen, setGraphDialogOpen, tokenValue }) => {
             return;
         }
 
-        if (endDate.isAfter(dayjs())) {
+        if (endDate.isAfter(dayjs().add(1, "day"))) {
             alert("End date cannot be in the future.");
             return;
         }
 
         setLoading(true);
         try {
-            // Format dates to YYYY-DD-MM for API call
             const formattedStartDate = startDate.format('YYYY-MM-DD');
             const formattedEndDate = endDate.format('YYYY-MM-DD');
 
@@ -58,10 +62,9 @@ const GraphDialog = ({ graphDialogOpen, setGraphDialogOpen, tokenValue }) => {
     const transformGraphData = (data) => {
         const amountMap = {};
         const partnerIds = new Set();
-    
-        // Loop through each partner's data
+
         Object.entries(data).forEach(([partnerMsisdn, amounts]) => {
-            partnerIds.add(partnerMsisdn); // Store all partner IDs
+            partnerIds.add(partnerMsisdn);
             Object.entries(amounts).forEach(([amount, records]) => {
                 if (!amountMap[amount]) {
                     amountMap[amount] = { amount: parseFloat(amount) };
@@ -69,44 +72,45 @@ const GraphDialog = ({ graphDialogOpen, setGraphDialogOpen, tokenValue }) => {
                 amountMap[amount][partnerMsisdn] = (amountMap[amount][partnerMsisdn] || 0) + records.length;
             });
         });
-    
-        // Ensure every partner ID is included in all data points
+
         Object.values(amountMap).forEach(entry => {
             partnerIds.forEach(partnerId => {
                 if (!entry[partnerId]) {
-                    entry[partnerId] = 0; // Add missing partner IDs with zero transactions
+                    entry[partnerId] = 0;
                 }
             });
         });
-    
+
         return Object.values(amountMap);
     };
-    
-    
 
     const handleRangeChange = (range) => {
         setDateRange(range);
         let start, end;
         if (range === "weekly") {
             start = dayjs().startOf('week');
-            end = dayjs(); // Set the end date to current date (not future)
+            end = dayjs();
         } else if (range === "monthly") {
             start = dayjs().startOf('month');
-            end = dayjs(); // End date is always current date
+            end = dayjs();
         } else if (range === "yearly") {
             start = dayjs().startOf('year');
-            end = dayjs(); // End date is always current date
+            end = dayjs();
         }
         setStartDate(start);
         setEndDate(end);
-        
-        // Trigger API call whenever range is changed
         handleGraphButtonClick();
     };
 
+    const handlePageChange = (event, newPage) => {
+        setPage(newPage);
+    };
+
+    const paginatedData = graphData.slice((page - 1) * rowsPerPage, page * rowsPerPage);
+
     return (
         <Dialog open={graphDialogOpen} onClose={() => setGraphDialogOpen(false)} maxWidth="md" fullWidth>
-            <DialogTitle sx={{ color: "#253A7D" }}>Transaction Count by Amount</DialogTitle>
+            <DialogTitle sx={{ color: "#253A7D" }}>Resellers Transactions</DialogTitle>
             <DialogContent>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <Grid container spacing={5} sx={{ marginBottom: 2, paddingTop: 2, paddingLeft: 15 }}>
@@ -124,7 +128,7 @@ const GraphDialog = ({ graphDialogOpen, setGraphDialogOpen, tokenValue }) => {
                                 label="End Date"
                                 value={endDate}
                                 onChange={(newValue) => setEndDate(newValue)}
-                                maxDate={dayjs()}
+                                maxDate={dayjs().add(1, "day")}
                                 renderInput={(params) => <TextField {...params} fullWidth />}
                             />
                         </Grid>
@@ -137,32 +141,6 @@ const GraphDialog = ({ graphDialogOpen, setGraphDialogOpen, tokenValue }) => {
                                 disabled={loading}
                             >
                                 {loading ? <CircularProgress size={24} /> : "Submit"}
-                            </Button>
-                        </Grid>
-                    </Grid>
-                    <Grid container spacing={2} sx={{ marginBottom: 2,paddingLeft:30 }}>
-                        <Grid item sx={4}>
-                            <Button
-                                variant={dateRange === "weekly" ? "contained" : "outlined"}
-                                onClick={() => handleRangeChange("weekly")}
-                            >
-                                Weekly
-                            </Button>
-                        </Grid>
-                        <Grid item sx={4}>
-                            <Button
-                                variant={dateRange === "monthly" ? "contained" : "outlined"}
-                                onClick={() => handleRangeChange("monthly")}
-                            >
-                                Monthly
-                            </Button>
-                        </Grid>
-                        <Grid item sx={4}>
-                            <Button
-                                variant={dateRange === "yearly" ? "contained" : "outlined"}
-                                onClick={() => handleRangeChange("yearly")}
-                            >
-                                Yearly
                             </Button>
                         </Grid>
                     </Grid>
@@ -180,6 +158,36 @@ const GraphDialog = ({ graphDialogOpen, setGraphDialogOpen, tokenValue }) => {
                         ))}
                     </BarChart>
                 </ResponsiveContainer>
+
+                <TableContainer component={Paper} sx={{ marginTop: 4 }}>
+                    <Table>
+                        <TableHead >
+                            <TableRow>
+                                <TableCell >Amount</TableCell>
+                                {Object.keys(graphData[0] || {}).filter(k => k !== "amount").map((partnerId) => (
+                                    <TableCell key={partnerId}>{partnerId}</TableCell>
+                                ))}
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {paginatedData.map((row, index) => (
+                                <TableRow key={index}>
+                                    <TableCell >{row.amount}</TableCell>
+                                    {Object.keys(row).filter(k => k !== "amount").map((partnerId) => (
+                                        <TableCell key={partnerId}>{row[partnerId]}</TableCell>
+                                    ))}
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+
+                <Pagination
+                    count={Math.ceil(graphData.length / rowsPerPage)}
+                    page={page}
+                    onChange={handlePageChange}
+                    sx={{ marginTop: 2, display: 'flex', justifyContent: 'center'}}
+                />
             </DialogContent>
         </Dialog>
     );

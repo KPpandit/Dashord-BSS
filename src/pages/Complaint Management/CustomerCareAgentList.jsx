@@ -26,7 +26,7 @@ export default function CustomerCareAgentList(props) {
     const fetchData = async () => {
 
         try {
-            const response = await axios.get('https://bssproxy01.neotel.nr/tickets//api/agentconfig', {
+            const response = await axios.get('https://bssproxy01.neotel.nr/tickets/api/agentconfig', {
                 headers: {
                     Authorization: `Bearer ${tokenValue}`,
                     Accept: 'application/json',

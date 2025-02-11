@@ -619,7 +619,7 @@ const Customer = (props) => {
                                             }}
                                         >Edit</Button>
                                     </Grid>
-                                    {/* <Grid item sx={6}>
+                                    <Grid item sx={6}>
                                         <Button
                                             onClick={() => {
                                                 handleOpenConfirmationDialog(selectedRecord.id)
@@ -627,7 +627,7 @@ const Customer = (props) => {
                                             }}
                                             sx={{ backgroundColor: '#253A7D' }}
                                             variant="contained">Delete</Button>
-                                    </Grid> */}
+                                    </Grid>
                                     {console.log(selectedRecord.customerType + "account type")}
                                     {["post-paid", "postpaid"].includes(selectedRecord?.customerType?.toLowerCase()) && (
                                         <>

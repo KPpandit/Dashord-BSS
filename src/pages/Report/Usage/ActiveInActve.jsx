@@ -12,6 +12,11 @@ import {
   CircularProgress,
 } from "@mui/material";
 import axios from "axios";
+import { Bar } from "react-chartjs-2";
+import { Chart, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from "chart.js";
+
+// Register necessary components for Chart.js
+Chart.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 export default function ActiveInActive() {
   const [data, setData] = useState([]);
@@ -36,14 +41,17 @@ export default function ActiveInActive() {
           {
             category: "Prepaid FWA",
             inactiveCustomers: responses[0].data.count_of_pack_inactive_customers,
+            activeCustomers: responses[0].data.count_of_pack_active_customers || 0, 
           },
           {
             category: "Prepaid",
             inactiveCustomers: responses[1].data.count_of_pack_inactive_customers,
+            activeCustomers: responses[1].data.count_of_pack_active_customers || 0, 
           },
           {
             category: "Postpaid",
             inactiveCustomers: responses[2].data.count_of_plan_inactive_customers,
+            activeCustomers: responses[2].data.count_of_plan_active_customers || 0, 
           },
         ];
 
@@ -74,6 +82,23 @@ export default function ActiveInActive() {
     );
   }
 
+  // Prepare data for the chart
+  const chartData = {
+    labels: data.map((item) => item.category),
+    datasets: [
+      {
+        label: "Inactive Customers",
+        data: data.map((item) => item.inactiveCustomers),
+        backgroundColor: "#FF6B6B",
+      },
+      {
+        label: "Active Customers",
+        data: data.map((item) => item.activeCustomers),
+        backgroundColor: "#4CAF50",
+      },
+    ],
+  };
+
   return (
     <Box
       sx={{
@@ -102,8 +127,10 @@ export default function ActiveInActive() {
               textTransform: "uppercase",
             }}
           >
-            Inactive Customers Report
+            Customers Report (Active vs Inactive)
           </Typography>
+
+          {/* Data Table */}
           <TableContainer>
             <Table>
               <TableHead>
@@ -130,6 +157,17 @@ export default function ActiveInActive() {
                   >
                     Inactive Customers
                   </TableCell>
+                  <TableCell
+                    sx={{
+                      fontWeight: "bold",
+                      fontSize: "16px",
+                      backgroundColor: "#2b6777",
+                      color: "white",
+                      textAlign: "center",
+                    }}
+                  >
+                    Active Customers
+                  </TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -155,16 +193,42 @@ export default function ActiveInActive() {
                         fontSize: "14px",
                         textAlign: "center",
                         fontWeight: "500",
-                        color: "#2b6777",
+                        color: "#FF6B6B",
                       }}
                     >
                       {row.inactiveCustomers}
+                    </TableCell>
+                    <TableCell
+                      sx={{
+                        fontSize: "14px",
+                        textAlign: "center",
+                        fontWeight: "500",
+                        color: "#4CAF50",
+                      }}
+                    >
+                      {row.activeCustomers}
                     </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
             </Table>
           </TableContainer>
+
+          {/* Graph */}
+          <Box sx={{ marginTop: 4 }}>
+            <Typography
+              variant="h5"
+              sx={{
+                fontWeight: "bold",
+                marginBottom: 2,
+                textAlign: "center",
+                color: "#2b6777",
+              }}
+            >
+              Active vs Inactive Customers (Graph)
+            </Typography>
+            <Bar data={chartData} />
+          </Box>
         </Paper>
       </Box>
     </Box>

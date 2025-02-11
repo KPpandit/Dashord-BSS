@@ -167,6 +167,13 @@ import Campain from '../pages/Campain/Campain';
 import ActiveInActive from '../pages/Report/Usage/ActiveInActve';
 import PackGraph from '../pages/Report/Usage/PackGraph';
 import AnalysisAgent from '../pages/Report/AgnetReports/AnalysisAgent';
+import PhysicalToESIMConvert from '../pages/Settings/PhysicalToESIMConvert';
+import ActiveOffer from '../pages/Report/AgnetReports/Offer Reports/ActiveOffers';
+import AllFreeOffers from '../pages/Report/AgnetReports/Offer Reports/AllFreeOffers';
+import AllOfferedCustomers from '../pages/Report/AgnetReports/Offer Reports/AllOfferedCustomers';
+import AllActiveOfferConsumption from '../pages/Report/AgnetReports/Offer Reports/AllActiveOfferConsumption';
+import UsageReportCustomer from '../pages/Report/Usage/usaegRepotCustomer';
+import CustomerPackDetails from '../pages/Report/Usage/CustomerPackDetails';
 export const Routers = () => {
     return (
         <>
@@ -404,7 +411,14 @@ export const Routers = () => {
                         <Route path='/simByAgent' element={<SimByAgent />} />
                         <Route path='/simByStatus' element={<SimByStatus />} />
 
-                        {/* Device INventory Reports */}
+                        {/* Offer Reports */}
+                        <Route path='/activeOffers' element={<ActiveOffer />} />
+                        <Route path='/allFreeOffers' element={<AllFreeOffers />} />
+                        <Route path='/offerAllCustomers' element={<AllOfferedCustomers />} />
+                        <Route path='/offerActiveCustomers' element={<AllActiveOfferConsumption />} />
+                        <Route path='/usageReportCustomer' element={<UsageReportCustomer />} />
+                        <Route path='/customerpackDetails' element={<CustomerPackDetails />} />
+                        {/* Device Inventory Reports */}
                         <Route path='/deviceSellingReports' element={<DeviceBySellingRates />} />
                         <Route path='/deviceByAgent' element={<DeviceByAgent />} />
                         <Route path='/deviceByVendor' element={<DeviceByVendor />} />
@@ -419,6 +433,9 @@ export const Routers = () => {
                         <Route path='/ticket' element={<TicketManagment />} />
                         <Route path='/ticket/newTicket' element={<NewTicket />} />
 
+
+                            {/* Settings */}
+                            <Route path='/convertSim' element={<PhysicalToESIMConvert />} />    
                         {/* <Route path='/add-Noc-sub' element={<AddNoc />} />
                         <Route path='/all-Noc-sub' element={<AllNoc />} />
                         <Route path='/all-Noc-query' element={<NOCQuery />} />

@@ -30,6 +30,7 @@ const AllAgentReport = () => {
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [graphDialogOpen, setGraphDialogOpen] = useState(false);
     const [graphDialogOpen1, setGraphDialogOpen1] = useState(false);
+    const [searchTerm, setSearchTerm] = useState('');
 
     const tokenValue = localStorage.getItem('token');
     const navigate = useNavigate();
@@ -76,12 +77,18 @@ const AllAgentReport = () => {
         setPage(0);
     };
 
+    const handleSearchChange = (event) => {
+        setSearchTerm(event.target.value);
+    };
+
+    const filteredRows = rows.filter(row => row.msisdn.includes(searchTerm));
+
     return (
         <Box sx={{ display: 'container', marginTop: 2.5 }}>
             <Box sx={{ width: '100%' }}>
                 <Paper elevation={10} sx={{ padding: 1, margin: 1, backgroundColor: 'white', color: '#253A7D' }}>
                     <Typography sx={{ fontSize: '20px', paddingLeft: 1, fontWeight: 'bold' }}>
-                        Resellers Balance Report
+                        Resellers Reports
                     </Typography>
                 </Paper>
 
@@ -110,7 +117,7 @@ const AllAgentReport = () => {
                             sx={{ backgroundColor: '#F6B625', color: 'white' }}
                             onClick={() => setGraphDialogOpen(true)}
                         >
-                           Reseller Amount <EqualizerIcon />
+                           Reseller Sales <EqualizerIcon />
                         </Button>
                     </Grid>
                     <Grid item>
@@ -121,6 +128,14 @@ const AllAgentReport = () => {
                         >
                            Reseller Topup <EqualizerIcon />
                         </Button>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <TextField
+                            label="Search by MSISDN"
+                            variant="outlined"
+                            value={searchTerm}
+                            onChange={handleSearchChange}
+                        />
                     </Grid>
                 </Grid>
 
@@ -134,7 +149,13 @@ const AllAgentReport = () => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {rows.length === 0 ? (
+                            {loading ? (
+                                <TableRow>
+                                    <TableCell colSpan={columns.length} align="center">
+                                        <CircularProgress sx={{ color: '#253A7D' }} />
+                                    </TableCell>
+                                </TableRow>
+                            ) : filteredRows.length === 0 ? (
                                 <TableRow>
                                     <TableCell colSpan={columns.length} align="center">
                                         <Typography variant="body1" sx={{ color: 'text.secondary' }}>
@@ -143,7 +164,7 @@ const AllAgentReport = () => {
                                     </TableCell>
                                 </TableRow>
                             ) : (
-                                rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
+                                filteredRows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
                                     <TableRow key={row.partnerId}>
                                         <TableCell>{row.partnerId}</TableCell>
                                         <TableCell>{row.msisdn}</TableCell>
@@ -155,12 +176,12 @@ const AllAgentReport = () => {
                             )}
                         </TableBody>
                     </Table>
-                    {rows.length > 0 && (
+                    {filteredRows.length > 0 && (
                         <TablePagination
                             sx={{ backgroundColor: '#253A7D', color: 'white' }}
                             rowsPerPageOptions={[5, 10, 25]}
                             component="div"
-                            count={rows.length}
+                            count={filteredRows.length}
                             rowsPerPage={rowsPerPage}
                             page={page}
                             onPageChange={handleChangePage}

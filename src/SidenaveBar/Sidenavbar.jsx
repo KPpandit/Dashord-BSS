@@ -26,7 +26,7 @@ import PaymentsIcon from '@mui/icons-material/Payments';
 
 import TimelineIcon from '@mui/icons-material/Timeline';
 import HandshakeIcon from '@mui/icons-material/Handshake';
-
+import LocalOfferIcon from '@mui/icons-material/LocalOffer';
 import SettingsCellIcon from '@mui/icons-material/SettingsCell';
 import LogoMo from '../assets/LogoMo.jpg'
 import Inventory2Icon from '@mui/icons-material/Inventory2';
@@ -157,10 +157,10 @@ export default function Sidenavbar() {
         isActiveRoute(route) || (subRoute && isActiveSubRoute(subRoute))
     );
   };
-
+  const userRole = localStorage.getItem('auth');
   const links = {
 
-    super: [
+    ROLE_ADMIN: [
       { label: 'Subscriber Management ', icon: <Person />, route: '/subscriber' },
       {
         label: 'Reseller Management',
@@ -178,6 +178,18 @@ export default function Sidenavbar() {
 
           },
 
+
+        ]
+      },
+      {
+        label: 'Offers',
+        // route: '/partner',
+        icon: <LocalOfferIcon />,
+        subRoute: [
+          { label: 'Active Customers Offers', route: '/activeOffers' },
+          { label: 'All Free Offers', route: '/allFreeOffers' },
+          { label: 'All Customer Consumption', route: '/offerAllCustomers' },
+          { label: 'Active Offer Consumption', route: '/offerActiveCustomers' },
 
         ]
       },
@@ -374,6 +386,12 @@ export default function Sidenavbar() {
             label: 'Campaign',
             route: '/campain'
           },
+          {
+            label: 'SIM Conversion',
+            route: '/convertSim'
+          },
+
+          
 
 
         ]
@@ -392,6 +410,25 @@ export default function Sidenavbar() {
         icon: <TimelineIcon />,
       },
     ],
+    ROLE_CUSTOMER_CARE:[
+      // { label: 'Subscriber Management ', icon: <Person />, route: '/subscriber' },
+      {
+        label: 'Complaints Management',
+        // route: '/configuration',
+        // route: '#',
+        icon: <DisplaySettingsIcon />,
+        subRoute:[
+          {
+            label: 'CustomerCare AgentList',
+            route: '/CustomerCareAgentList',
+          },
+          {
+            label: 'All Tickets',
+            route: '/ticket',
+          }
+        ]
+      },
+    ]
   };
   const NestedMenuItems = ({ subRoute, paddingLeft = 10 }) => {
     return (
@@ -440,6 +477,7 @@ export default function Sidenavbar() {
       </List>
     );
   };
+  const menuLinks = links[userRole] || [];
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
@@ -494,7 +532,7 @@ export default function Sidenavbar() {
         </Grid>
         <Divider />
         <List>
-          {links.super.map(({ label, route, icon, subRoute }) => {
+          {menuLinks.map(({ label, route, icon, subRoute }) => {
             const isActive = isActiveRoute(route) || (subRoute && isActiveSubRoute(subRoute));
             const isOpen = openSections[label] ?? isActive; // Use current state or default to active
 
